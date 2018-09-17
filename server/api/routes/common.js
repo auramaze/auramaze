@@ -18,7 +18,7 @@ Common.prototype.validateUsername = function (username) {
 };
 
 // Check if item satisfies variants in PUT method
-Common.prototype.validateItem = function(item) {
+Common.prototype.validateItem = function (item) {
     return Boolean(item && item.username && item.name && item.name.default);
 };
 
@@ -51,16 +51,34 @@ Common.prototype.getItem = function (group, id, callback) {
         Object.assign(params, {
             IndexName: 'username_index',
             KeyConditionExpression: 'username = :v1',
-            ExpressionAttributeValues: {':v1': id}
+            ExpressionAttributeValues: {':v1': id.toString()}
         });
     } else {
         Object.assign(params, {
             KeyConditionExpression: 'id = :v1',
-            ExpressionAttributeValues: {':v1': id}
+            ExpressionAttributeValues: {':v1': parseInt(id)}
         });
     }
 
     dynamodb.query(params, callback);
+};
+
+// Put item data into DynamoDB
+Common.prototype.putItem = function (group, item, callback) {
+    const params = {
+        Item: item,
+        TableName: group
+    };
+    dynamodb.put(params, callback);
+};
+
+// Delete item data from DynamoDB
+Common.prototype.deleteItem = function (group, id, callback) {
+    const params = {
+        Key: {id: parseInt(id)},
+        TableName: group
+    };
+    dynamodb.delete(params, callback);
 };
 
 

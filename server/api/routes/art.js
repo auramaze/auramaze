@@ -100,14 +100,9 @@ router.put('/:username', function (req, res, next) {
                                         next(err);
                                     } else {
                                         const id = result[0].id;
-                                        let art = _.omit(req.body, 'relations');
-                                        art.id = parseInt(id);
-                                        const params = {
-                                            Item: art,
-                                            TableName: 'art'
-                                        };
+                                        const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
                                         // Put art into DynamoDB table `art`
-                                        dynamodb.put(params, function (err, data) {
+                                        common.putItem('art', art, function (err, data) {
                                             if (err) {
                                                 next(err);
                                             } else {
@@ -159,11 +154,7 @@ router.delete('/:id', function (req, res, next) {
                         next(err);
                     } else {
                         // Delete art data from DynamoDB
-                        const params = {
-                            Key: {'id': id},
-                            TableName: 'art'
-                        };
-                        dynamodb.delete(params, function (err, data) {
+                        common.deleteItem('art', id, function (err, data) {
                             if (err) {
                                 next(err);
                             } else {
