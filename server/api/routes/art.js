@@ -79,7 +79,7 @@ router.get('/:id', function (req, res, next) {
     });
 });
 
-/* PUT art username, data. */
+/* PUT art username, data, relations. */
 router.put('/:username', function (req, res, next) {
     if (common.validateUsername(req.params.username)) {
         if (validateArt(req.body) && req.params.username === req.body.username) {
