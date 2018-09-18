@@ -17,9 +17,9 @@ Common.prototype.validateUsername = function (username) {
     return Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 };
 
-// Check if item satisfies variants in PUT method
+// Check if item satisfies variants for PUT request
 Common.prototype.validateItem = function (item) {
-    return Boolean(item && item.username && item.name && item.name.default);
+    return Boolean(item && !item.id && item.username && item.name && item.name.default);
 };
 
 // Delete username from Aurora table `username`

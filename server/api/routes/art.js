@@ -4,7 +4,7 @@ const _ = require('lodash');
 const common = require('./common');
 const rds = common.rds;
 
-// Check art has the required keys
+// Check art has the required keys for PUT request
 function validateArt(art) {
     return common.validateItem(art) && Boolean(art.relations);
 }

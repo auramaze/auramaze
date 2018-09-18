@@ -3,7 +3,7 @@ const router = express.Router();
 const common = require('./common');
 const rds = common.rds;
 
-// Check artizen has the required keys
+// Check artizen has the required keys for PUT request
 function validateArtizen(artizen) {
     return common.validateItem(artizen);
 }
