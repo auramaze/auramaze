@@ -1,11 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const common = require('./common');
+const dynamodb = common.dynamodb;
 const rds = common.rds;
 
 // Check artizen has the required keys for PUT request
 function validateArtizen(artizen) {
     return common.validateItem(artizen);
+}
+
+// Add type to artizen data in DynamoDB table `artizen`
+function addType(id, type, callback) {
+    var params = {
+        TableName: 'artizen',
+        Key: {id: id},
+        UpdateExpression: 'ADD #k :v',
+        ExpressionAttributeNames: {'#k': 'type'},
+        ExpressionAttributeValues: {
+            ':v': dynamodb.createSet([type])
+        }
+    };
+
+    dynamodb.update(params, callback);
 }
 
 /* GET artizen data. */
@@ -48,7 +64,11 @@ router.put('/:username', function (req, res, next) {
                             next(err);
                         } else {
                             const id = result[0].id;
-                            const artizen = Object.assign(req.body, {id: parseInt(id)});
+                            let artizen = Object.assign(req.body, {id: parseInt(id)});
+                            // Convert artizen type to set of strings
+                            if (artizen.type) {
+                                artizen.type = dynamodb.createSet(artizen.type);
+                            }
                             // Put artizen into DynamoDB table `artizen`
                             common.putItem('artizen', artizen, function (err, data) {
                                 if (err) {
