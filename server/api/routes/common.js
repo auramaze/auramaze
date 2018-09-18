@@ -14,7 +14,7 @@ Common.prototype.rds = rds;
 
 // Check if username satisfies variants
 Common.prototype.validateUsername = function (username) {
-    return Boolean(username.match(/^(?!.*--)[a-z][a-z0-9\-]{1,48}[a-z0-9]$/));
+    return Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 };
 
 // Check if item satisfies variants in PUT method

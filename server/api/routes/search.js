@@ -29,7 +29,7 @@ router.get('/', function (req, res, next) {
 
 
     back_req.on('error', function (err) {
-        console.log(`problem with request: ${err.message}`); /* eslint-disable-line no-console */
+        next(err);
     });
 
     back_req.end();

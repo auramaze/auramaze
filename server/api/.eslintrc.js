@@ -28,7 +28,7 @@ module.exports = {
         "no-unused-vars": [
             "error",
             {
-                "argsIgnorePattern": "next"
+                "argsIgnorePattern": "(next|data|result|fields)"
             }
         ]
     }
