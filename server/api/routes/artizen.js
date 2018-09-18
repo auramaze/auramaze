@@ -9,21 +9,6 @@ function validateArtizen(artizen) {
     return common.validateItem(artizen);
 }
 
-// Add type to artizen data in DynamoDB table `artizen`
-function addType(id, type, callback) {
-    var params = {
-        TableName: 'artizen',
-        Key: {id: id},
-        UpdateExpression: 'ADD #k :v',
-        ExpressionAttributeNames: {'#k': 'type'},
-        ExpressionAttributeValues: {
-            ':v': dynamodb.createSet([type])
-        }
-    };
-
-    dynamodb.update(params, callback);
-}
-
 /* GET artizen data. */
 router.get('/:id', function (req, res, next) {
     common.getItem('artizen', req.params.id, function (err, data) {

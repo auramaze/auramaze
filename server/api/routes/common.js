@@ -82,4 +82,20 @@ Common.prototype.deleteItem = function (group, id, callback) {
 };
 
 
+// Add type to artizen data in DynamoDB table `artizen`
+Common.prototype.addType = function (id, type, callback) {
+    var params = {
+        TableName: 'artizen',
+        Key: {id: parseInt(id)},
+        UpdateExpression: 'ADD #k :v',
+        ExpressionAttributeNames: {'#k': 'type'},
+        ExpressionAttributeValues: {
+            ':v': dynamodb.createSet([type])
+        }
+    };
+
+    dynamodb.update(params, callback);
+};
+
+
 module.exports = new Common();

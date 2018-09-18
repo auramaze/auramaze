@@ -41,6 +41,26 @@ function checkArtizens(usernames, callback) {
     }
 }
 
+// Add types to artizens in DynamoDB table `artizen`
+function addTypes(relations, callback) {
+    if (!relations) {
+        callback(null);
+    } else {
+        let add = _.after(relations.length, function () {
+            callback(null);
+        });
+        for (let relation of relations) {
+            common.addType(relation.artizen, relation.type, function (err, data) {
+                if (err) {
+                    callback(err);
+                } else {
+                    add();
+                }
+            });
+        }
+    }
+}
+
 /* GET art data. */
 router.get('/:id', function (req, res, next) {
     common.getItem('art', req.params.id, function (err, data) {
@@ -63,7 +83,7 @@ router.get('/:id', function (req, res, next) {
 router.put('/:username', function (req, res, next) {
     if (common.validateUsername(req.params.username)) {
         if (validateArt(req.body) && req.params.username === req.body.username) {
-            const relations = req.body.relations;
+            let relations = req.body.relations;
             const usernames = relations.map(relation => relation.artizen);
             // Check if all artizen username exist in DynamoDB table `artizen`
             checkArtizens(usernames, function (err, exists) {
@@ -80,6 +100,11 @@ router.put('/:username', function (req, res, next) {
                             message: `Related artizen not found: ${req.params.username} ${JSON.stringify(nonExistUsernames)}`
                         });
                     } else {
+                        // Convert artizen usernames to ids
+                        relations = relations.map(relation => ({
+                            artizen: exists[relation.artizen],
+                            type: relation.type
+                        }));
                         // Insert username of art into Aurora table `username`
                         common.insertUsername(req.params.username, function (err, result, fields) {
                             if (err) {
@@ -104,16 +129,23 @@ router.put('/:username', function (req, res, next) {
                                             if (err) {
                                                 next(err);
                                             } else {
-                                                // Insert art's relations with artizens into Aurora table `archive`
-                                                rds.query('INSERT INTO archive (artizen_id, art_id, type) VALUES ?',
-                                                    [relations.map(relation => [parseInt(exists[relation.artizen]), parseInt(id), relation.type])],
-                                                    function (err, result, fields) {
-                                                        if (err) {
-                                                            next(err);
-                                                        } else {
-                                                            res.send('Art put: ' + req.params.username);
-                                                        }
-                                                    });
+                                                // Add types to artizen data in DynamoDB table `artizen`
+                                                addTypes(relations, function (err) {
+                                                    if (err) {
+                                                        next(err);
+                                                    } else {
+                                                        // Insert art's relations with artizens into Aurora table `archive`
+                                                        rds.query('INSERT INTO archive (artizen_id, art_id, type) VALUES ?',
+                                                            [relations.map(relation => [parseInt(relation.artizen), parseInt(id), relation.type])],
+                                                            function (err, result, fields) {
+                                                                if (err) {
+                                                                    next(err);
+                                                                } else {
+                                                                    res.send('Art put: ' + req.params.username);
+                                                                }
+                                                            });
+                                                    }
+                                                });
                                             }
                                         });
                                     }
