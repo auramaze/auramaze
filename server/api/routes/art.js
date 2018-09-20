@@ -91,10 +91,10 @@ router.get('/:id/artizen', function (req, res, next) {
                 // Get artizen id and type from Aurora table `archive`
                 let sql, parameters;
                 if (req.query.type) {
-                    sql = 'SELECT * FROM archive WHERE art_id=? AND type=?';
+                    sql = 'SELECT * FROM archive WHERE art_id=? AND type=? ORDER BY artizen_id DESC';
                     parameters = [parseInt(data.Items[0].id), req.query.type];
                 } else {
-                    sql = 'SELECT * FROM archive WHERE art_id=?';
+                    sql = 'SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id DESC';
                     parameters = [parseInt(data.Items[0].id)];
                 }
                 rds.query(sql, parameters, function (err, result, fields) {
