@@ -90,41 +90,54 @@ router.get('/:id/artizen', function (req, res, next) {
             if (data.Count) {
                 // Get artizen id and type from Aurora table `archive`
                 rds.query('SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id', [parseInt(data.Items[0].id)], function (err, result, fields) {
-                    // Get artizen ids and generate id->type dict
-                    const artizen_ids = result.map(item => ({id: parseInt(item.artizen_id)}));
-                    const artizen_types = result.reduce((acc, cur) => {
-                        acc[cur.artizen_id.toString()] = cur.type;
-                        return acc;
-                    }, {});
-                    // Get other attributes from DynamoDB table `artizen`
-                    const params = {
-                        RequestItems: {
-                            'artizen': {
-                                Keys: artizen_ids,
-                                ProjectionExpression: '#id, #name, #avatar',
-                                ExpressionAttributeNames: {
-                                    '#id': 'id',
-                                    '#name': 'name',
-                                    '#avatar': 'avatar'
+                    if (result.length) {
+                        // Get artizen ids and generate id->type dict
+                        const artizen_ids = result.map(item => ({id: parseInt(item.artizen_id)}));
+                        const artizen_types = result.reduce((acc, cur) => {
+                            acc[cur.artizen_id.toString()] = cur.type;
+                            return acc;
+                        }, {});
+                        // Get other attributes from DynamoDB table `artizen`
+                        const params = {
+                            RequestItems: {
+                                'artizen': {
+                                    Keys: artizen_ids,
+                                    ProjectionExpression: '#id, #name, #avatar',
+                                    ExpressionAttributeNames: {
+                                        '#id': 'id',
+                                        '#name': 'name',
+                                        '#avatar': 'avatar'
+                                    }
+                                }
+                            },
+                        };
+                        dynamodb.batchGet(params, function (err, data) {
+                            if (err) {
+                                next(err);
+                            } else {
+                                // Assert Aurora and DynamoDB data array has equal lengths
+                                data = data.Responses.artizen;
+                                if (result.length !== data.length) {
+                                    next(new Error('Aurora and DynamoDB data array has different lengths'));
+                                } else {
+                                    // Group by type
+                                    data = data.reduce((acc, cur) => {
+                                        let type = artizen_types[cur.id];
+                                        (acc[type] = acc[type] || []).push(cur);
+                                        return acc;
+                                    }, {});
+                                    // Convert object to array
+                                    data = Object.keys(data).map(function (key) {
+                                        return {type: key, data: data[key]};
+                                    });
+                                    res.json(data);
                                 }
                             }
-                        },
-                    };
-                    dynamodb.batchGet(params, function (err, data) {
-                        if (err) {
-                            next(err);
-                        } else {
-                            // Assert Aurora and DynamoDB data array has equal lengths
-                            data = data.Responses.artizen;
-                            if (result.length !== data.length) {
-                                next(new Error('Aurora and DynamoDB data array has different lengths'));
-                            } else {
-                                // Add type from Aurora table `artizen` to DynamoDB data
-                                data = data.map(item => Object.assign(item, {type: artizen_types[item.id.toString()]}));
-                                res.json(data);
-                            }
-                        }
-                    });
+                        });
+                    } else {
+                        // No relations found
+                        res.json([]);
+                    }
                 });
             } else {
                 res.status(404).json({
