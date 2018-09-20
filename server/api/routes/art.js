@@ -89,7 +89,15 @@ router.get('/:id/artizen', function (req, res, next) {
         } else {
             if (data.Count) {
                 // Get artizen id and type from Aurora table `archive`
-                rds.query('SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id', [parseInt(data.Items[0].id)], function (err, result, fields) {
+                let sql, parameters;
+                if (req.query.type) {
+                    sql = 'SELECT * FROM archive WHERE art_id=? AND type=?';
+                    parameters = [parseInt(data.Items[0].id), req.query.type];
+                } else {
+                    sql = 'SELECT * FROM archive WHERE art_id=?';
+                    parameters = [parseInt(data.Items[0].id)];
+                }
+                rds.query(sql, parameters, function (err, result, fields) {
                     if (result.length) {
                         // Get artizen ids and generate id->type dict
                         const artizen_ids = result.map(item => ({id: parseInt(item.artizen_id)}));
