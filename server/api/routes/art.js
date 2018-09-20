@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const common = require('./common');
+const dynamodb = common.dynamodb;
 const rds = common.rds;
 
 // Check art has the required keys for PUT request
@@ -69,6 +70,62 @@ router.get('/:id', function (req, res, next) {
         } else {
             if (data.Count) {
                 res.json(data.Items[0]);
+            } else {
+                res.status(404).json({
+                    code: 'ART_NOT_FOUND',
+                    message: `Art not found: ${req.params.id}`
+                });
+            }
+        }
+    });
+});
+
+/* GET art relations. */
+router.get('/:id/artizen', function (req, res, next) {
+    // Check art exists
+    common.getItem('art', req.params.id, function (err, data) {
+        if (err) {
+            next(err);
+        } else {
+            if (data.Count) {
+                // Get artizen id and type from Aurora table `archive`
+                rds.query('SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id', [parseInt(data.Items[0].id)], function (err, result, fields) {
+                    // Get artizen ids and generate id->type dict
+                    const artizen_ids = result.map(item => ({id: parseInt(item.artizen_id)}));
+                    const artizen_types = result.reduce((acc, cur) => {
+                        acc[cur.artizen_id.toString()] = cur.type;
+                        return acc;
+                    }, {});
+                    // Get other attributes from DynamoDB table `artizen`
+                    const params = {
+                        RequestItems: {
+                            'artizen': {
+                                Keys: artizen_ids,
+                                ProjectionExpression: '#id, #name, #avatar',
+                                ExpressionAttributeNames: {
+                                    '#id': 'id',
+                                    '#name': 'name',
+                                    '#avatar': 'avatar'
+                                }
+                            }
+                        },
+                    };
+                    dynamodb.batchGet(params, function (err, data) {
+                        if (err) {
+                            next(err);
+                        } else {
+                            // Assert Aurora and DynamoDB data array has equal lengths
+                            data = data.Responses.artizen;
+                            if (result.length !== data.length) {
+                                next(new Error('Aurora and DynamoDB data array has different lengths'));
+                            } else {
+                                // Add type from Aurora table `artizen` to DynamoDB data
+                                data = data.map(item => Object.assign(item, {type: artizen_types[item.id.toString()]}));
+                                res.json(data);
+                            }
+                        }
+                    });
+                });
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',
