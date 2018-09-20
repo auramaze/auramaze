@@ -30,7 +30,7 @@ router.get('/:id', function (req, res, next) {
 /* GET artizen relations. */
 router.get('/:id/art', function (req, res, next) {
     const page = parseInt(req.query.page) >= 0 ? parseInt(req.query.page) : 0;
-    const size = 2;
+    const size = 20;
 
     // Check artizen exists
     common.getItem('artizen', req.params.id, function (err, data) {
