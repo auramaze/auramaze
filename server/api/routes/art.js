@@ -99,12 +99,11 @@ router.get('/:id/artizen', function (req, res, next) {
                 }
                 rds.query(sql, parameters, function (err, result, fields) {
                     if (result.length) {
-                        // Get artizen ids and generate id->type dict
-                        const artizen_ids = result.map(item => ({id: parseInt(item.artizen_id)}));
-                        const artizen_types = result.reduce((acc, cur) => {
-                            acc[cur.artizen_id.toString()] = cur.type;
-                            return acc;
-                        }, {});
+                        // Get artizen ids and remove duplicate
+                        const artizen_ids = result.map(item => item.artizen_id).filter(function (item, index, array) {
+                            return !index || item !== array[index - 1];
+                        }).map(item => ({id: parseInt(item)}));
+
                         // Get other attributes from DynamoDB table `artizen`
                         const params = {
                             RequestItems: {
@@ -123,23 +122,28 @@ router.get('/:id/artizen', function (req, res, next) {
                             if (err) {
                                 next(err);
                             } else {
-                                // Assert Aurora and DynamoDB data array has equal lengths
                                 data = data.Responses.artizen;
-                                if (result.length !== data.length) {
-                                    next(new Error('Aurora and DynamoDB data array has different lengths'));
-                                } else {
-                                    // Group by type
-                                    data = data.reduce((acc, cur) => {
-                                        let type = artizen_types[cur.id];
-                                        (acc[type] = acc[type] || []).push(cur);
-                                        return acc;
-                                    }, {});
-                                    // Convert object to array
-                                    data = Object.keys(data).map(function (key) {
-                                        return {type: key, data: data[key]};
-                                    });
-                                    res.json(data);
-                                }
+
+                                // Convert data to dict
+                                const artizen_dict = data.reduce((acc, cur) => {
+                                    acc[cur.id.toString()] = cur;
+                                    return acc;
+                                }, {});
+
+                                // Add DynamoDB data to Aurora results
+                                result = result.map(item => Object.assign({type: item.type}, {data: artizen_dict[item.artizen_id.toString()]}));
+
+                                // Group by type
+                                result = result.reduce((acc, cur) => {
+                                    (acc[cur.type] = acc[cur.type] || []).push(cur.data);
+                                    return acc;
+                                }, {});
+
+                                // Convert object to array
+                                result = Object.keys(result).map(function (key) {
+                                    return {type: key, data: result[key]};
+                                });
+                                res.json(result);
                             }
                         });
                     } else {
