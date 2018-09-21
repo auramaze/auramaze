@@ -37,7 +37,8 @@ router.get('/:id', [
 /* GET artizen relations. */
 router.get('/:id/art', [
     param('id').isLength({min: 3}),
-    query('page').isInt()
+    query('page').optional().isInt(),
+    query('type').optional().matches(/^[a-z]+$/)
 ], function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {

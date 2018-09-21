@@ -4,7 +4,7 @@ const _ = require('lodash');
 const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
-const {param, validationResult} = require('express-validator/check');
+const {param, query, validationResult} = require('express-validator/check');
 
 // Check art has the required keys for PUT request
 function validateArt(art) {
@@ -89,7 +89,8 @@ router.get('/:id', [
 
 /* GET art relations. */
 router.get('/:id/artizen', [
-    param('id').isLength({min: 3})
+    param('id').isLength({min: 3}),
+    query('type').optional().matches(/^[a-z]+$/)
 ], function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
