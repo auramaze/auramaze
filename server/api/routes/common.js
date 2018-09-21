@@ -34,8 +34,7 @@ Common.prototype.insertUsername = function (username, callback) {
 
 // Increment id in Aurora table `art_id` or `artizen_id` and return new id
 Common.prototype.incrementId = function (group, callback) {
-    const tableName = group + '_id';
-    rds.query(`UPDATE ${tableName} SET id=LAST_INSERT_ID(id+1)`, function (err, result, fields) {
+    rds.query(`INSERT INTO ${group} VALUES ()`, function (err, result, fields) {
         if (err) {
             callback(err, result, fields);
         } else {
