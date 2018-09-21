@@ -192,85 +192,78 @@ router.put('/:username', [
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    if (validateArt(req.body) && req.params.username === req.body.username) {
-        let relations = req.body.relations;
-        const usernames = relations.map(relation => relation.artizen);
-        // Check if all artizen username exist in DynamoDB table `artizen`
-        checkArtizens(usernames, function (err, exists) {
-            if (err) {
-                next(err);
-            } else {
-                const allExist = Object.keys(exists).every(function (k) {
-                    return exists[k];
+    let relations = req.body.relations;
+    const usernames = relations.map(relation => relation.artizen);
+    // Check if all artizen username exist in DynamoDB table `artizen`
+    checkArtizens(usernames, function (err, exists) {
+        if (err) {
+            next(err);
+        } else {
+            const allExist = Object.keys(exists).every(function (k) {
+                return exists[k];
+            });
+            if (!allExist) {
+                const nonExistUsernames = usernames.filter(username => !exists[username]);
+                res.status(404).json({
+                    code: 'RELATED_ARTIZEN_NOT_FOUND',
+                    message: `Related artizen not found: ${req.params.username} ${JSON.stringify(nonExistUsernames)}`
                 });
-                if (!allExist) {
-                    const nonExistUsernames = usernames.filter(username => !exists[username]);
-                    res.status(404).json({
-                        code: 'RELATED_ARTIZEN_NOT_FOUND',
-                        message: `Related artizen not found: ${req.params.username} ${JSON.stringify(nonExistUsernames)}`
-                    });
-                } else {
-                    // Convert artizen usernames to ids
-                    relations = relations.map(relation => ({
-                        artizen: exists[relation.artizen],
-                        type: relation.type
-                    }));
-                    // Insert username of art into Aurora table `username`
-                    common.insertUsername(req.params.username, function (err, result, fields) {
-                        if (err) {
-                            if (err.code === 'ER_DUP_ENTRY') {
-                                res.status(400).json({
-                                    code: 'USERNAME_EXIST',
-                                    message: `Username already exists: ${req.params.username}`
-                                });
-                            } else {
-                                next(err);
-                            }
-                        } else {
-                            // Increment id in Aurora table `artizen_id`
-                            common.incrementId('art', function (err, result, fields) {
-                                if (err) {
-                                    next(err);
-                                } else {
-                                    const id = result[0].id;
-                                    const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
-                                    // Put art into DynamoDB table `art`
-                                    common.putItem('art', art, function (err, data) {
-                                        if (err) {
-                                            next(err);
-                                        } else {
-                                            // Add types to artizen data in DynamoDB table `artizen`
-                                            addTypes(relations, function (err) {
-                                                if (err) {
-                                                    next(err);
-                                                } else {
-                                                    // Insert art's relations with artizens into Aurora table `archive`
-                                                    rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
-                                                        [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
-                                                        function (err, result, fields) {
-                                                            if (err) {
-                                                                next(err);
-                                                            } else {
-                                                                res.send('Art put: ' + req.params.username);
-                                                            }
-                                                        });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
+            } else {
+                // Convert artizen usernames to ids
+                relations = relations.map(relation => ({
+                    artizen: exists[relation.artizen],
+                    type: relation.type
+                }));
+                // Insert username of art into Aurora table `username`
+                common.insertUsername(req.params.username, function (err, result, fields) {
+                    if (err) {
+                        if (err.code === 'ER_DUP_ENTRY') {
+                            res.status(400).json({
+                                code: 'USERNAME_EXIST',
+                                message: `Username already exists: ${req.params.username}`
                             });
+                        } else {
+                            next(err);
                         }
-                    });
-                }
+                    } else {
+                        // Increment id in Aurora table `artizen_id`
+                        common.incrementId('art', function (err, result, fields) {
+                            if (err) {
+                                next(err);
+                            } else {
+                                const id = result[0].id;
+                                const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
+                                // Put art into DynamoDB table `art`
+                                common.putItem('art', art, function (err, data) {
+                                    if (err) {
+                                        next(err);
+                                    } else {
+                                        // Add types to artizen data in DynamoDB table `artizen`
+                                        addTypes(relations, function (err) {
+                                            if (err) {
+                                                next(err);
+                                            } else {
+                                                // Insert art's relations with artizens into Aurora table `archive`
+                                                rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
+                                                    [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
+                                                    function (err, result, fields) {
+                                                        if (err) {
+                                                            next(err);
+                                                        } else {
+                                                            res.send('Art put: ' + req.params.username);
+                                                        }
+                                                    });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
-        });
-    } else {
-        res.status(400).json({
-            code: 'ART_DATA_INVALID',
-            message: `Art data invalid: ${JSON.stringify(req.body)}`
-        });
-    }
+        }
+    });
 });
 
 /* DELETE art relations, data, username. */
