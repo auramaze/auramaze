@@ -6,11 +6,6 @@ const dynamodb = common.dynamodb;
 const rds = common.rds;
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 
-// Check art has the required keys for PUT request
-function validateArt(art) {
-    return common.validateItem(art) && Boolean(art.relations);
-}
-
 // Check if usernames of all artizens exist in DynamoDB table `artizen`
 // Return an object with username as key and id/false as value
 function checkArtizens(usernames, callback) {
@@ -183,6 +178,7 @@ router.get('/:id/artizen', [
 router.put('/:username', [
     param('username').custom(common.validateUsername).withMessage('Invalid username'),
     body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
+    body('id').not().exists(),
     body('title.default').isLength({min: 1}),
     body('relations').isArray(),
     body('relations.*.artizen').custom(common.validateUsername).withMessage('Invalid relation username'),

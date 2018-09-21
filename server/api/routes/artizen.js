@@ -3,12 +3,7 @@ const router = express.Router();
 const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
-const {param, query, oneOf, validationResult} = require('express-validator/check');
-
-// Check artizen has the required keys for PUT request
-function validateArtizen(artizen) {
-    return common.validateItem(artizen);
-}
+const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 
 /* GET artizen data. */
 router.get('/:id', oneOf([
@@ -145,56 +140,47 @@ router.get('/:id/art', [
 });
 
 /* PUT artizen username, data. */
-router.put('/:username', function (req, res, next) {
-    if (common.validateUsername(req.params.username)) {
-        if (validateArtizen(req.body) && req.params.username === req.body.username) {
-            // Insert username of art into Aurora table `username`
-            common.insertUsername(req.params.username, function (err, result, fields) {
+router.put('/:username', [
+    param('username').custom(common.validateUsername).withMessage('Invalid username'),
+    body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
+    body('id').not().exists(),
+    body('name.default').isLength({min: 1})
+], function (req, res, next) {
+    // Insert username of art into Aurora table `username`
+    common.insertUsername(req.params.username, function (err, result, fields) {
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                res.status(400).json({
+                    code: 'USERNAME_EXIST',
+                    message: `Username already exists: ${req.params.username}`
+                });
+            } else {
+                next(err);
+            }
+        } else {
+            // Increment id in Aurora table `artizen_id`
+            common.incrementId('artizen', function (err, result, fields) {
                 if (err) {
-                    if (err.code === 'ER_DUP_ENTRY') {
-                        res.status(400).json({
-                            code: 'USERNAME_EXIST',
-                            message: `Username already exists: ${req.params.username}`
-                        });
-                    } else {
-                        next(err);
-                    }
+                    next(err);
                 } else {
-                    // Increment id in Aurora table `artizen_id`
-                    common.incrementId('artizen', function (err, result, fields) {
+                    const id = result[0].id;
+                    let artizen = Object.assign(req.body, {id: parseInt(id)});
+                    // Convert artizen type to set of strings
+                    if (artizen.type) {
+                        artizen.type = dynamodb.createSet(artizen.type);
+                    }
+                    // Put artizen into DynamoDB table `artizen`
+                    common.putItem('artizen', artizen, function (err, data) {
                         if (err) {
                             next(err);
                         } else {
-                            const id = result[0].id;
-                            let artizen = Object.assign(req.body, {id: parseInt(id)});
-                            // Convert artizen type to set of strings
-                            if (artizen.type) {
-                                artizen.type = dynamodb.createSet(artizen.type);
-                            }
-                            // Put artizen into DynamoDB table `artizen`
-                            common.putItem('artizen', artizen, function (err, data) {
-                                if (err) {
-                                    next(err);
-                                } else {
-                                    res.send(`Artizen put: ${req.params.username}`);
-                                }
-                            });
+                            res.send(`Artizen put: ${req.params.username}`);
                         }
                     });
                 }
             });
-        } else {
-            res.status(400).json({
-                code: 'ARTIZEN_DATA_INVALID',
-                message: `Artizen data invalid: ${JSON.stringify(req.body)}`
-            });
         }
-    } else {
-        res.status(400).json({
-            code: 'USERNAME_INVALID',
-            message: `Username invalid: ${req.params.username}`
-        });
-    }
+    });
 });
 
 /* DELETE artizen relations, data, username. */
