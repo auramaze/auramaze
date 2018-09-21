@@ -184,7 +184,10 @@ router.put('/:username', [
 });
 
 /* DELETE artizen relations, data, username. */
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', oneOf([
+    param('id').isInt().isLength({min: 10, max: 10}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), function (req, res, next) {
     common.getItem('artizen', req.params.id, function (err, data) {
         if (err) {
             next(err);
