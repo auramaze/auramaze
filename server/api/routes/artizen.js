@@ -3,7 +3,7 @@ const router = express.Router();
 const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
-const {param, validationResult} = require('express-validator/check');
+const {param, query, validationResult} = require('express-validator/check');
 
 // Check artizen has the required keys for PUT request
 function validateArtizen(artizen) {
@@ -36,7 +36,8 @@ router.get('/:id', [
 
 /* GET artizen relations. */
 router.get('/:id/art', [
-    param('id').isLength({min: 3})
+    param('id').isLength({min: 3}),
+    query('page').isInt()
 ], function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
