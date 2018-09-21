@@ -217,8 +217,8 @@ router.put('/:username', function (req, res, next) {
                                                         next(err);
                                                     } else {
                                                         // Insert art's relations with artizens into Aurora table `archive`
-                                                        rds.query('INSERT INTO archive (artizen_id, art_id, type) VALUES ?',
-                                                            [relations.map(relation => [parseInt(relation.artizen), parseInt(id), relation.type])],
+                                                        rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
+                                                            [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
                                                             function (err, result, fields) {
                                                                 if (err) {
                                                                     next(err);
