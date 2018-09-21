@@ -9,7 +9,7 @@ dynamoose.AWS.config.update({
     region: 'us-east-2',
 });
 
-const Art = dynamoose.model('Art', { id: Number, title: String });
+const Art = dynamoose.model('art', { id: Number, title: String });
 
 // Check art has the required keys for PUT request
 function validateArt(art) {
