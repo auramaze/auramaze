@@ -13,23 +13,21 @@ Common.prototype.dynamodb = dynamodb;
 Common.prototype.rds = rds;
 
 // Check if username satisfies variants
-Common.prototype.validateUsername = function (username) {
-    return Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
-};
+Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
 // Delete username from Aurora table `username`
-Common.prototype.deleteUsername = function (username, callback) {
+Common.prototype.deleteUsername = (username, callback) => {
     rds.query('DELETE FROM username WHERE username=?', [username], callback);
 };
 
 // Insert username into Aurora table `username`
-Common.prototype.insertUsername = function (username, callback) {
+Common.prototype.insertUsername = (username, callback) => {
     rds.query('INSERT INTO username (username) VALUES (?)', [username], callback);
 };
 
 // Increment id in Aurora table `art_id` or `artizen_id` and return new id
-Common.prototype.incrementId = function (group, callback) {
-    rds.query(`INSERT INTO ${group} VALUES ()`, function (err, result, fields) {
+Common.prototype.incrementId = (group, callback) => {
+    rds.query(`INSERT INTO ${group} VALUES ()`, (err, result, fields) => {
         if (err) {
             callback(err, result, fields);
         } else {
@@ -39,7 +37,7 @@ Common.prototype.incrementId = function (group, callback) {
 };
 
 // Get item data from DynamoDB
-Common.prototype.getItem = function (group, id, callback) {
+Common.prototype.getItem = (group, id, callback) => {
     let params = {TableName: group};
     if (isNaN(parseInt(id))) {
         Object.assign(params, {
@@ -58,7 +56,7 @@ Common.prototype.getItem = function (group, id, callback) {
 };
 
 // Put item data into DynamoDB
-Common.prototype.putItem = function (group, item, callback) {
+Common.prototype.putItem = (group, item, callback) => {
     const params = {
         Item: item,
         TableName: group
@@ -67,7 +65,7 @@ Common.prototype.putItem = function (group, item, callback) {
 };
 
 // Delete item data from DynamoDB
-Common.prototype.deleteItem = function (group, id, callback) {
+Common.prototype.deleteItem = (group, id, callback) => {
     const params = {
         Key: {id: parseInt(id)},
         TableName: group
@@ -77,7 +75,7 @@ Common.prototype.deleteItem = function (group, id, callback) {
 
 
 // Add type to artizen data in DynamoDB table `artizen`
-Common.prototype.addType = function (id, type, callback) {
+Common.prototype.addType = (id, type, callback) => {
     var params = {
         TableName: 'artizen',
         Key: {id: parseInt(id)},

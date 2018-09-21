@@ -9,12 +9,12 @@ const {param, query, body, oneOf, validationResult} = require('express-validator
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 10, max: 10}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), function (req, res, next) {
+]), (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.getItem('artizen', req.params.id, function (err, data) {
+    common.getItem('artizen', req.params.id, (err, data) => {
         if (err) {
             next(err);
         } else {
@@ -37,7 +37,7 @@ router.get('/:id/art', [
         param('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
     query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/)
-], function (req, res, next) {
+], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
@@ -46,13 +46,13 @@ router.get('/:id/art', [
     const size = 20;
 
     // Check artizen exists
-    common.getItem('artizen', req.params.id, function (err, data) {
+    common.getItem('artizen', req.params.id, (err, data) => {
         if (err) {
             next(err);
         } else {
             if (data.Count) {
                 // Get all available types
-                rds.query('SELECT DISTINCT type FROM archive WHERE artizen_id=?', [parseInt(data.Items[0].id)], function (err, result, fields) {
+                rds.query('SELECT DISTINCT type FROM archive WHERE artizen_id=?', [parseInt(data.Items[0].id)], (err, result, fields) => {
                     if (err) {
                         next(err);
                     } else {
@@ -69,10 +69,10 @@ router.get('/:id/art', [
                                 parameters.push(parseInt(data.Items[0].id), type, size, page * size);
                             }
                         }
-                        rds.query(sql, parameters, function (err, result, fields) {
+                        rds.query(sql, parameters, (err, result, fields) => {
                             if (result.length) {
                                 // Get art ids and remove duplicate
-                                const art_ids = result.map(item => item.art_id).filter(function (item, index, array) {
+                                const art_ids = result.map(item => item.art_id).filter((item, index, array) => {
                                     return !index || item !== array[index - 1];
                                 }).map(item => ({id: parseInt(item)}));
 
@@ -90,7 +90,7 @@ router.get('/:id/art', [
                                         }
                                     },
                                 };
-                                dynamodb.batchGet(params, function (err, data) {
+                                dynamodb.batchGet(params, (err, data) => {
                                     if (err) {
                                         next(err);
                                     } else {
@@ -112,13 +112,11 @@ router.get('/:id/art', [
                                         }, {});
 
                                         // Convert object to array
-                                        result = Object.keys(result).map(function (key) {
-                                            return {
-                                                type: key,
-                                                data: result[key],
-                                                next: `/${req.params.id}/art?type=${key}&page=${page + 1}`
-                                            };
-                                        });
+                                        result = Object.keys(result).map(key => ({
+                                            type: key,
+                                            data: result[key],
+                                            next: `/${req.params.id}/art?type=${key}&page=${page + 1}`
+                                        }));
                                         res.json(result);
                                     }
                                 });
@@ -145,9 +143,9 @@ router.put('/:username', [
     body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
     body('id').not().exists(),
     body('name.default').isLength({min: 1})
-], function (req, res, next) {
+], (req, res, next) => {
     // Insert username of art into Aurora table `username`
-    common.insertUsername(req.params.username, function (err, result, fields) {
+    common.insertUsername(req.params.username, (err, result, fields) => {
         if (err) {
             if (err.code === 'ER_DUP_ENTRY') {
                 res.status(400).json({
@@ -159,7 +157,7 @@ router.put('/:username', [
             }
         } else {
             // Increment id in Aurora table `artizen_id`
-            common.incrementId('artizen', function (err, result, fields) {
+            common.incrementId('artizen', (err, result, fields) => {
                 if (err) {
                     next(err);
                 } else {
@@ -170,7 +168,7 @@ router.put('/:username', [
                         artizen.type = dynamodb.createSet(artizen.type);
                     }
                     // Put artizen into DynamoDB table `artizen`
-                    common.putItem('artizen', artizen, function (err, data) {
+                    common.putItem('artizen', artizen, (err, data) => {
                         if (err) {
                             next(err);
                         } else {
@@ -187,8 +185,8 @@ router.put('/:username', [
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 10, max: 10}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), function (req, res, next) {
-    common.getItem('artizen', req.params.id, function (err, data) {
+]), (req, res, next) => {
+    common.getItem('artizen', req.params.id, (err, data) => {
         if (err) {
             next(err);
         } else {
@@ -196,18 +194,18 @@ router.delete('/:id', oneOf([
                 const id = data.Items[0].id;
                 const username = data.Items[0].username;
                 // Delete artizen id and relations from Aurora table `artizen` and `archive`
-                rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], function (err, result, fields) {
+                rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], (err, result, fields) => {
                     if (err) {
                         next(err);
                     } else {
                         // Delete artizen data from DynamoDB
-                        common.deleteItem('artizen', id, function (err, data) {
+                        common.deleteItem('artizen', id, (err, data) => {
                             if (err) {
                                 next(err);
                             } else {
                                 if (username) {
                                     // Delete artizen username from Aurora table `username`
-                                    common.deleteUsername(username, function (err, result, fields) {
+                                    common.deleteUsername(username, (err, result, fields) => {
                                         if (err) {
                                             next(err);
                                         } else {
