@@ -212,8 +212,8 @@ router.put('/:username', function (req, res, next) {
                                                         next(err);
                                                     } else {
                                                         // Insert art's relations with artizens into Aurora table `archive`
-                                                        rds.query('INSERT INTO archive (artizen_id, art_id, type) VALUES ?',
-                                                            [relations.map(relation => [parseInt(relation.artizen), parseInt(id), relation.type])],
+                                                        rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
+                                                            [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
                                                             function (err, result, fields) {
                                                                 if (err) {
                                                                     next(err);
@@ -255,8 +255,8 @@ router.delete('/:id', function (req, res, next) {
             if (data.Count) {
                 const id = data.Items[0].id;
                 const username = data.Items[0].username;
-                // Delete art relations from Aurora table `archive`
-                rds.query('DELETE FROM archive WHERE art_id=?', [parseInt(id)], function (err, result, fields) {
+                // Delete art id and relations from Aurora table `art` and `archive`
+                rds.query('DELETE FROM art WHERE id=?', [parseInt(id)], function (err, result, fields) {
                     if (err) {
                         next(err);
                     } else {

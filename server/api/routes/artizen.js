@@ -188,8 +188,8 @@ router.delete('/:id', function (req, res, next) {
             if (data.Count) {
                 const id = data.Items[0].id;
                 const username = data.Items[0].username;
-                // Delete artizen relations from Aurora table `archive`
-                rds.query('DELETE FROM archive WHERE artizen_id=?', [parseInt(id)], function (err, result, fields) {
+                // Delete artizen id and relations from Aurora table `artizen` and `archive`
+                rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], function (err, result, fields) {
                     if (err) {
                         next(err);
                     } else {
