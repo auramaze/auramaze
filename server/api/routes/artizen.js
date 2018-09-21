@@ -13,7 +13,7 @@ function validateArtizen(artizen) {
 /* GET artizen data. */
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 10, max: 10}),
-    param('id').custom(common.validateUsername)
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
 ]), function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -39,9 +39,9 @@ router.get('/:id', oneOf([
 router.get('/:id/art', [
     oneOf([
         param('id').isInt().isLength({min: 10, max: 10}),
-        param('id').custom(common.validateUsername)
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
-    query('type').optional().matches(/^[a-z]+$/)
+    query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/)
 ], function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
