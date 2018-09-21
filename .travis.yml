@@ -3,15 +3,14 @@ language: node_js
 node_js:
   - "stable"
 
+env:
+  - API_DIR=server/api
+
 cache:
   directories:
-    - node_modules
-
-install:
-  - npm install
-
-before_script:
-  - npm run pretest
+    - $API_DIR/node_modules
 
 script:
-  - npm start
+  - cd $API_DIR
+  - npm install
+  - npm run pretest
