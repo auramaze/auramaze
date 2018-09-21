@@ -3,6 +3,7 @@ const router = express.Router();
 const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
+const {param, validationResult} = require('express-validator/check');
 
 // Check artizen has the required keys for PUT request
 function validateArtizen(artizen) {
@@ -10,7 +11,13 @@ function validateArtizen(artizen) {
 }
 
 /* GET artizen data. */
-router.get('/:id', function (req, res, next) {
+router.get('/:id', [
+    param('id').isLength({min: 3})
+], function (req, res, next) {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
     common.getItem('artizen', req.params.id, function (err, data) {
         if (err) {
             next(err);
@@ -28,7 +35,13 @@ router.get('/:id', function (req, res, next) {
 });
 
 /* GET artizen relations. */
-router.get('/:id/art', function (req, res, next) {
+router.get('/:id/art', [
+    param('id').isLength({min: 3})
+], function (req, res, next) {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
     const page = parseInt(req.query.page) >= 0 ? parseInt(req.query.page) : 0;
     const size = 20;
 
