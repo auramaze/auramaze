@@ -10,6 +10,7 @@
     "aws-sdk": "^2.315.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dynamoose": "^0.8.7",
     "express": "~4.16.0",
     "http": "0.0.0",
     "http-errors": "~1.6.2",

@@ -4,6 +4,12 @@ const _ = require('lodash');
 const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
+const dynamoose = require('dynamoose');
+dynamoose.AWS.config.update({
+    region: 'us-east-2',
+});
+
+const Art = dynamoose.model('Art', { id: Number, title: String });
 
 // Check art has the required keys for PUT request
 function validateArt(art) {
@@ -64,19 +70,8 @@ function addTypes(relations, callback) {
 
 /* GET art data. */
 router.get('/:id', function (req, res, next) {
-    common.getItem('art', req.params.id, function (err, data) {
-        if (err) {
-            next(err);
-        } else {
-            if (data.Count) {
-                res.json(data.Items[0]);
-            } else {
-                res.status(404).json({
-                    code: 'ART_NOT_FOUND',
-                    message: `Art not found: ${req.params.id}`
-                });
-            }
-        }
+    Art.get({id:'10000001'}, function (art) {
+        res.json(art);
     });
 });
 
