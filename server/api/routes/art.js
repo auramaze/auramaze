@@ -9,15 +9,6 @@ const {param, query, body, oneOf, validationResult} = require('express-validator
 // Check if usernames of all artizens exist in DynamoDB table `artizen`
 // Return an object with username as key and id/false as value
 function checkArtizens(usernames, callback) {
-    for (let username of usernames) {
-        if (!common.validateUsername(username)) {
-            return false;
-        }
-    }
-    if (usernames.length === 0 || (new Set(usernames)).size !== usernames.length) {
-        return false;
-    }
-
     let exists = {};
     let check = _.after(usernames.length, () => {
         callback(null, exists);
@@ -179,8 +170,9 @@ router.put('/:username', [
     body('id').not().exists(),
     body('title.default').isLength({min: 1}),
     body('relations').isArray(),
-    body('relations.*.artizen').custom(common.validateUsername).withMessage('Invalid relation username'),
-    body('relations.*.type').matches(/^[a-z][a-z-]*[a-z]$/).withMessage('Invalid relation type')
+    body('relations').isLength({min: 1}),
+    body('relations.*.artizen').exists().custom(common.validateUsername).withMessage('Invalid relation username'),
+    body('relations.*.type').exists().matches(/^[a-z][a-z-]*[a-z]$/).withMessage('Invalid relation type')
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {

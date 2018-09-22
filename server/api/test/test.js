@@ -153,6 +153,48 @@ describe('Art API', () => {
                 .end(done);
         });
     });
+
+    describe('PUT art', () => {
+        it('should put art data and relations', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'default': 'This is title A', 'en': 'This is title A'},
+                    'username': username,
+                    'relations': [
+                        {'artizen': 'nga', 'type': 'museum'},
+                        {'artizen': 'nga', 'type': 'exhibition'},
+                        {'artizen': 'caravaggio', 'type': 'artist'},
+                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                })
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.username === username && res.body.id.toString().match(/^\d{10}$/))
+                .end(() => {
+                    request(app).get(`/v1/art/${username}/artizen`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            if (res.body.length !== 3) {
+                                return false;
+                            }
+                            for (let item of res.body) {
+                                if (item.type === 'artist' && item.data.length !== 2) {
+                                    return false;
+                                }
+                                if (item.type === 'museum' && item.data.length !== 1) {
+                                    return false;
+                                }
+                                if (item.type === 'exhibition' && (item.data.length !== 1 || parseInt(item.data[0].id) !== 1000000012)) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        })
+                        .end(done);
+                });
+        });
+    });
 });
 
 after(function () {
