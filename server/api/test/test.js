@@ -437,7 +437,14 @@ describe('Test api', function () {
                                     .expect(res => {
                                         assert(res.body.type.length === 2);
                                     })
-                                    .end(done);
+                                    .end(() => {
+                                        request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                            .expect(200)
+                                            .expect(res => {
+                                                assert(res.body.length === 1);
+                                            })
+                                            .end(done);
+                                    });
                             });
                     });
             });
@@ -597,6 +604,45 @@ describe('Test api', function () {
                                                 assert(res.body.length === 0);
                                             })
                                             .end(done);
+                                    });
+                            });
+                    });
+            });
+
+            it('should delete data and relations of art', done => {
+                const artizenUsername = randomUsername();
+                request(app).put(`/v1/artizen/${artizenUsername}`)
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        'username': artizenUsername,
+                        'type': ['museum']
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(() => {
+                        const artUsername = randomUsername();
+                        request(app).put(`/v1/art/${artUsername}`)
+                            .send({
+                                'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                'username': artUsername,
+                                'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
+                            })
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .end(() => {
+                                request(app).delete(`/v1/art/${artUsername}`)
+                                    .expect(200)
+                                    .end(() => {
+                                        request(app).get(`/v1/art/${artUsername}`)
+                                            .expect(404)
+                                            .end(() => {
+                                                request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                    .expect(200)
+                                                    .expect(res => {
+                                                        assert(res.body.length === 0);
+                                                    })
+                                                    .end(done);
+                                            });
                                     });
                             });
                     });
