@@ -612,6 +612,16 @@ describe('Test api', function () {
             it('should not return 404', done => {
                 request(app).delete(`/v1/artizen/${randomUsername()}`).expect(200, done);
             });
+
+            it('should report invalid username', done => {
+                request(app).delete('/v1/artizen/as')
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
         });
 
         describe('DELETE art', () => {
@@ -656,6 +666,16 @@ describe('Test api', function () {
 
             it('should not return 404', done => {
                 request(app).delete(`/v1/art/${randomUsername()}`).expect(200, done);
+            });
+
+            it('should report invalid username', done => {
+                request(app).delete('/v1/art/as')
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
             });
         });
     });
