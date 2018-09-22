@@ -196,8 +196,3 @@ describe('Art API', () => {
         });
     });
 });
-
-after(function () {
-    process.exit(0);
-});
-
