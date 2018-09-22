@@ -19,7 +19,12 @@ router.get('/:id', oneOf([
             next(err);
         } else {
             if (data.Count) {
-                res.json(data.Items[0]);
+                let artizen = data.Items[0];
+                // Convert type set to array
+                if (artizen.type) {
+                    artizen.type = artizen.type.values;
+                }
+                res.json(artizen);
             } else {
                 res.status(404).json({
                     code: 'ARTIZEN_NOT_FOUND',
@@ -142,7 +147,11 @@ router.put('/:username', [
     param('username').custom(common.validateUsername).withMessage('Invalid username'),
     body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
     body('id').not().exists(),
-    body('name.default').isLength({min: 1})
+    body('name.default').isLength({min: 1}),
+    oneOf([
+        body('type').isLength({min: 1}),
+        body('type').not().exists()
+    ])
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
