@@ -28,6 +28,7 @@ Common.prototype.insertUsername = (username, callback) => {
 // Increment id in Aurora table `art_id` or `artizen_id` and return new id
 Common.prototype.incrementId = (group, callback) => {
     rds.query(`INSERT INTO ${group} VALUES ()`, (err, result, fields) => {
+        /* istanbul ignore if */
         if (err) {
             callback(err, result, fields);
         } else {

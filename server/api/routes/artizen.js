@@ -15,6 +15,7 @@ router.get('/:id', oneOf([
         return res.status(400).json({errors: errors.array()});
     }
     common.getItem('artizen', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -52,12 +53,14 @@ router.get('/:id/art', [
 
     // Check artizen exists
     common.getItem('artizen', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             if (data.Count) {
                 // Get all available types
                 rds.query('SELECT DISTINCT type FROM archive WHERE artizen_id=?', [parseInt(data.Items[0].id)], (err, result, fields) => {
+                    /* istanbul ignore if */
                     if (err) {
                         next(err);
                     } else {
@@ -81,6 +84,7 @@ router.get('/:id/art', [
                             }
                         }
                         rds.query(sql, parameters, (err, result, fields) => {
+                            /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
@@ -105,6 +109,7 @@ router.get('/:id/art', [
                                         },
                                     };
                                     dynamodb.batchGet(params, (err, data) => {
+                                        /* istanbul ignore if */
                                         if (err) {
                                             next(err);
                                         } else {
@@ -175,12 +180,13 @@ router.put('/:username', [
                     code: 'USERNAME_EXIST',
                     message: `Username already exists: ${req.params.username}`
                 });
-            } else {
+            } /* istanbul ignore else */ else {
                 next(err);
             }
         } else {
             // Increment id in Aurora table `artizen_id`
             common.incrementId('artizen', (err, result, fields) => {
+                /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {
@@ -192,6 +198,7 @@ router.put('/:username', [
                     }
                     // Put artizen into DynamoDB table `artizen`
                     common.putItem('artizen', artizen, (err, data) => {
+                        /* istanbul ignore if */
                         if (err) {
                             next(err);
                         } else {
@@ -218,6 +225,7 @@ router.delete('/:id', oneOf([
         return res.status(400).json({errors: errors.array()});
     }
     common.getItem('artizen', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -226,17 +234,20 @@ router.delete('/:id', oneOf([
                 const username = data.Items[0].username;
                 // Delete artizen id and relations from Aurora table `artizen` and `archive`
                 rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], (err, result, fields) => {
+                    /* istanbul ignore if */
                     if (err) {
                         next(err);
                     } else {
                         // Delete artizen data from DynamoDB
                         common.deleteItem('artizen', id, (err, data) => {
+                            /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
                                 if (username) {
                                     // Delete artizen username from Aurora table `username`
                                     common.deleteUsername(username, (err, result, fields) => {
+                                        /* istanbul ignore if */
                                         if (err) {
                                             next(err);
                                         } else {

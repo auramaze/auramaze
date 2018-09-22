@@ -59,6 +59,7 @@ router.get('/:id', oneOf([
         return res.status(400).json({errors: errors.array()});
     }
     common.getItem('art', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -88,6 +89,7 @@ router.get('/:id/artizen', [
     }
     // Check art exists
     common.getItem('art', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -123,6 +125,7 @@ router.get('/:id/artizen', [
                             },
                         };
                         dynamodb.batchGet(params, (err, data) => {
+                            /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
@@ -182,6 +185,7 @@ router.put('/:username', [
     const usernames = relations.map(relation => relation.artizen);
     // Check if all artizen username exist in DynamoDB table `artizen`
     checkArtizens(usernames, (err, exists) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -206,12 +210,13 @@ router.put('/:username', [
                                 code: 'USERNAME_EXIST',
                                 message: `Username already exists: ${req.params.username}`
                             });
-                        } else {
+                        } /* istanbul ignore else */ else {
                             next(err);
                         }
                     } else {
                         // Increment id in Aurora table `artizen_id`
                         common.incrementId('art', (err, result, fields) => {
+                            /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
@@ -219,11 +224,13 @@ router.put('/:username', [
                                 const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
                                 // Put art into DynamoDB table `art`
                                 common.putItem('art', art, (err, data) => {
+                                    /* istanbul ignore if */
                                     if (err) {
                                         next(err);
                                     } else {
                                         // Add types to artizen data in DynamoDB table `artizen`
                                         addTypes(relations, (err) => {
+                                            /* istanbul ignore if */
                                             if (err) {
                                                 next(err);
                                             } else {
@@ -231,6 +238,7 @@ router.put('/:username', [
                                                 rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
                                                     [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
                                                     (err, result, fields) => {
+                                                        /* istanbul ignore if */
                                                         if (err) {
                                                             next(err);
                                                         } else {
@@ -264,6 +272,7 @@ router.delete('/:id', oneOf([
         return res.status(400).json({errors: errors.array()});
     }
     common.getItem('art', req.params.id, (err, data) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
@@ -272,17 +281,20 @@ router.delete('/:id', oneOf([
                 const username = data.Items[0].username;
                 // Delete art id and relations from Aurora table `art` and `archive`
                 rds.query('DELETE FROM art WHERE id=?', [parseInt(id)], (err, result, fields) => {
+                    /* istanbul ignore if */
                     if (err) {
                         next(err);
                     } else {
                         // Delete art data from DynamoDB
                         common.deleteItem('art', id, (err, data) => {
+                            /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
                                 if (username) {
                                     // Delete art username from Aurora table `username`
                                     common.deleteUsername(username, (err, result, fields) => {
+                                        /* istanbul ignore if */
                                         if (err) {
                                             next(err);
                                         } else {
