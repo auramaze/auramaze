@@ -144,6 +144,10 @@ router.put('/:username', [
     body('id').not().exists(),
     body('name.default').isLength({min: 1})
 ], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
     // Insert username of art into Aurora table `username`
     common.insertUsername(req.params.username, (err, result, fields) => {
         if (err) {

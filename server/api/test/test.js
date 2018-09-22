@@ -118,5 +118,16 @@ describe('Art API', () => {
                         .end(done);
                 });
         });
+        it('should report invalid data', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/artizen/${username}`)
+                .send({
+                    'name': {'en': 'This is name A'},
+                    'username': username
+                })
+                .expect(400)
+                .expect(res => res.body.errors)
+                .end(done);
+        });
     });
 });
