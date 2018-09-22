@@ -17,4 +17,4 @@ cache:
 script:
   - cd $API_DIR
   - npm install
-  - npm run pretest
+  - npm test
