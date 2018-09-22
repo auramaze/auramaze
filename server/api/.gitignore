@@ -63,3 +63,4 @@ typings/
 # Others
 .idea/
 .DS_Store
+scripts/before_install.sh
