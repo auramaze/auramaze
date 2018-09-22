@@ -30,3 +30,6 @@ script:
   - cd $API_DIR
   - npm install
   - npm test
+
+after_success:
+  - npm run coveralls
