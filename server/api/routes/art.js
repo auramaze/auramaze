@@ -242,7 +242,11 @@ router.put('/:username', [
                                                         if (err) {
                                                             next(err);
                                                         } else {
-                                                            res.send('Art put: ' + req.params.username);
+                                                            res.json({
+                                                                message: `PUT art success: ${req.params.username}`,
+                                                                id: parseInt(art.id),
+                                                                username: art.username
+                                                            });
                                                         }
                                                     });
                                             }
@@ -286,18 +290,24 @@ router.delete('/:id', oneOf([
                                         if (err) {
                                             next(err);
                                         } else {
-                                            res.send('Art deleted: ' + req.params.id);
+                                            res.json({
+                                                message: `DELETE art success: ${req.params.id}`
+                                            });
                                         }
                                     });
                                 } else {
-                                    res.send('Art deleted: ' + req.params.id);
+                                    res.json({
+                                        message: `DELETE art success: ${req.params.id}`
+                                    });
                                 }
                             }
                         });
                     }
                 });
             } else {
-                res.send('Art not found: ' + req.params.id);
+                res.json({
+                    message: `Art not found: ${req.params.id}`
+                });
             }
         }
     });

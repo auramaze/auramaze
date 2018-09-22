@@ -24,6 +24,7 @@
   "devDependencies": {
     "eslint": "^5.6.0",
     "mocha": "^5.2.0",
-    "supertest": "^3.3.0"
+    "supertest": "^3.3.0",
+    "uuid": "^3.3.2"
   }
 }

@@ -172,7 +172,11 @@ router.put('/:username', [
                         if (err) {
                             next(err);
                         } else {
-                            res.send(`Artizen put: ${req.params.username}`);
+                            res.json({
+                                message: `PUT artizen success: ${req.params.username}`,
+                                id: parseInt(artizen.id),
+                                username: artizen.username
+                            });
                         }
                     });
                 }
@@ -209,18 +213,24 @@ router.delete('/:id', oneOf([
                                         if (err) {
                                             next(err);
                                         } else {
-                                            res.send(`Artizen deleted: ${req.params.id}`);
+                                            res.json({
+                                                message: `DELETE artizen success: ${req.params.id}`
+                                            });
                                         }
                                     });
                                 } else {
-                                    res.send(`Artizen deleted: ${req.params.id}`);
+                                    res.json({
+                                        message: `DELETE artizen success: ${req.params.id}`
+                                    });
                                 }
                             }
                         });
                     }
                 });
             } else {
-                res.send(`Artizen not found: ${req.params.id}`);
+                res.json({
+                    message: `Artizen not found: ${req.params.id}`
+                });
             }
         }
     });
