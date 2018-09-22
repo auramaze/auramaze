@@ -194,6 +194,10 @@ router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 10, max: 10}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
 ]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
     common.getItem('artizen', req.params.id, (err, data) => {
         if (err) {
             next(err);
