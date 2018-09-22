@@ -105,7 +105,8 @@ describe('Art API', () => {
             request(app).put(`/v1/artizen/${username}`)
                 .send({
                     'name': {'default': 'This is name A', 'en': 'This is name A'},
-                    'username': username
+                    'username': username,
+                    'type': ['museum', 'exhibition']
                 })
                 .expect(200)
                 .expect('Content-Type', /json/)
@@ -114,7 +115,7 @@ describe('Art API', () => {
                     request(app).get(`/v1/artizen/${username}`)
                         .expect(200)
                         .expect('Content-Type', /json/)
-                        .expect(res => res.body.name.default === 'This is name A')
+                        .expect(res => res.body.name.default === 'This is name A' && res.body.type.length === 2)
                         .end(done);
                 });
         });
@@ -123,8 +124,7 @@ describe('Art API', () => {
             request(app).put(`/v1/artizen/${username}`)
                 .send({
                     'name': {'en': 'This is name A'},
-                    'username': randomUsername(),
-                    'type': ['museum','exhibition']
+                    'username': randomUsername()
                 })
                 .expect(400)
                 .expect(res => res.body.errors)
@@ -145,11 +145,11 @@ describe('Art API', () => {
             const username = 'nga';
             request(app).put('/v1/artizen/nga')
                 .send({
-                    'name': {'en': 'NGA'},
+                    'name': {'default': 'NGA', 'en': 'NGA'},
                     'username': username
                 })
                 .expect(400)
-                .expect(res => res.body.errors)
+                .expect(res => res.body.code === 'USERNAME_EXIST')
                 .end(done);
         });
     });
