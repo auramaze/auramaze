@@ -15,6 +15,7 @@ function checkArtizens(usernames, callback) {
     });
     for (let username of usernames) {
         common.getItem('artizen', username, (err, data) => {
+            /* istanbul ignore if */
             if (err) {
                 callback(err, false);
             } else {
@@ -31,21 +32,18 @@ function checkArtizens(usernames, callback) {
 
 // Add types to artizens in DynamoDB table `artizen`
 function addTypes(relations, callback) {
-    if (!relations) {
+    let add = _.after(relations.length, () => {
         callback(null);
-    } else {
-        let add = _.after(relations.length, () => {
-            callback(null);
+    });
+    for (let relation of relations) {
+        common.addType(relation.artizen, relation.type, (err, data) => {
+            /* istanbul ignore if */
+            if (err) {
+                callback(err);
+            } else {
+                add();
+            }
         });
-        for (let relation of relations) {
-            common.addType(relation.artizen, relation.type, (err, data) => {
-                if (err) {
-                    callback(err);
-                } else {
-                    add();
-                }
-            });
-        }
     }
 }
 
@@ -205,12 +203,13 @@ router.put('/:username', [
                 // Insert username of art into Aurora table `username`
                 common.insertUsername(req.params.username, (err, result, fields) => {
                     if (err) {
+                        /* istanbul ignore else */
                         if (err.code === 'ER_DUP_ENTRY') {
                             res.status(400).json({
                                 code: 'USERNAME_EXIST',
                                 message: `Username already exists: ${req.params.username}`
                             });
-                        } /* istanbul ignore else */ else {
+                        } else {
                             next(err);
                         }
                     } else {

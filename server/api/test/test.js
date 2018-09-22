@@ -449,6 +449,35 @@ describe('Test api', function () {
                     });
             });
 
+            it('should report USERNAME_EXIST', done => {
+                const username = randomUsername();
+                request(app).put(`/v1/art/${username}`)
+                    .send({
+                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                        'username': username,
+                        'relations': [
+                            {'artizen': 'nga', 'type': 'museum'},
+                            {'artizen': 'nga', 'type': 'exhibition'},
+                            {'artizen': 'caravaggio', 'type': 'artist'},
+                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                    })
+                    .expect(200)
+                    .end(() => {
+                        request(app).put(`/v1/art/${username}`)
+                            .send({
+                                'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                'username': username,
+                                'relations': [
+                                    {'artizen': 'nga', 'type': 'museum'},
+                                    {'artizen': 'nga', 'type': 'exhibition'},
+                                    {'artizen': 'caravaggio', 'type': 'artist'},
+                                    {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                            })
+                            .expect(400)
+                            .end(done);
+                    });
+            });
+
             it('should report invalid title', done => {
                 const username = randomUsername();
                 request(app).put(`/v1/art/${username}`)

@@ -175,12 +175,13 @@ router.put('/:username', [
     // Insert username of art into Aurora table `username`
     common.insertUsername(req.params.username, (err, result, fields) => {
         if (err) {
+            /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {
                 res.status(400).json({
                     code: 'USERNAME_EXIST',
                     message: `Username already exists: ${req.params.username}`
                 });
-            } /* istanbul ignore else */ else {
+            } else {
                 next(err);
             }
         } else {
