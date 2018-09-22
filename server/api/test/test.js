@@ -609,6 +609,12 @@ describe('Test api', function () {
                     });
             });
 
+            it('should not return 404', done => {
+                request(app).delete(`/v1/artizen/${randomUsername()}`).expect(200, done);
+            });
+        });
+
+        describe('DELETE art', () => {
             it('should delete data and relations of art', done => {
                 const artizenUsername = randomUsername();
                 request(app).put(`/v1/artizen/${artizenUsername}`)
@@ -646,6 +652,10 @@ describe('Test api', function () {
                                     });
                             });
                     });
+            });
+
+            it('should not return 404', done => {
+                request(app).delete(`/v1/art/${randomUsername()}`).expect(200, done);
             });
         });
     });
