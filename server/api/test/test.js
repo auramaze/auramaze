@@ -9,9 +9,12 @@ function randomUsername() {
     return uuidv4().replace(/^[-\d]+/, '').replace(/-+$/, '');
 }
 
-describe('Index page', () => {
+describe('Test router', () => {
     it('should render successfully', done => {
         request(app).get('/').expect(200, done);
+    });
+    it('should return 404', done => {
+        request(app).get('/v0').expect(404, done);
     });
 });
 
@@ -220,6 +223,15 @@ describe('Test api', function () {
             });
 
             it('should return specified type of relations', done => {
+                request(app).get('/v1/artizen/metmuseum/art?type=museum').expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.length > 0);
+                    })
+                    .end(done);
+            });
+
+            it('should return empty relations', done => {
                 request(app).get('/v1/artizen/metmuseum/art?type=artist').expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -228,46 +240,49 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            // it('should return empty relations', done => {
-            //     request(app).get('/v1/art/10000003/artizen?type=notexist').expect(200)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.length === 0);)
-            //         .end(done);
-            // });
-            //
-            // it('should report invalid id', done => {
-            //     request(app).get('/v1/art/1000003/artizen').expect(400)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.errors)
-            //         .end(done);
-            // });
-            //
-            // it('should report invalid username', done => {
-            //     request(app).get('/v1/art/as/artizen').expect(400)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.errors)
-            //         .end(done);
-            // });
-            //
-            // it('should report ART_NOT_FOUND', done => {
-            //     request(app).get('/v1/art/00000000/artizen').expect(404)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.code === 'ART_NOT_FOUND')
-            //         .end(done);
-            // });
-            //
-            // it('should report ART_NOT_FOUND', done => {
-            //     request(app).get('/v1/art/notexist/artizen').expect(404)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.code === 'ART_NOT_FOUND')
-            //         .end(done);
-            // });
-            // it('should report invalid type', done => {
-            //     request(app).get('/v1/art/10000003/artizen?type=123').expect(400)
-            //         .expect('Content-Type', /json/)
-            //         .expect(res => {assert(res.body.errors)
-            //         .end(done);
-            // });
+            it('should report invalid id', done => {
+                request(app).get('/v1/artizen/10000001/art').expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid username', done => {
+                request(app).get('/v1/artizen/as/art').expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should report ARTIZEN_NOT_FOUND', done => {
+                request(app).get('/v1/artizen/0000000000/art').expect(404)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                    })
+                    .end(done);
+            });
+
+            it('should report ARTIZEN_NOT_FOUND', done => {
+                request(app).get('/v1/artizen/notexist/art').expect(404)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                    })
+                    .end(done);
+            });
+            it('should report invalid type', done => {
+                request(app).get('/v1/artizen/10000003/art?type=123').expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
         });
     });
 
