@@ -104,13 +104,19 @@ describe('Art API', () => {
             const username = randomUsername();
             request(app).put(`/v1/artizen/${username}`)
                 .send({
-                    'name': {'default': 'This is a name', 'en': 'This is a name'},
+                    'name': {'default': 'This is name A', 'en': 'This is name A'},
                     'username': username
                 })
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .expect(res => res.body.username === username && res.body.id.toString().match(/^\d{10}$/))
-                .end(done);
+                .end(() => {
+                    request(app).get(`/v1/artizen/${username}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => res.body.name.default === 'This is name A')
+                        .end(done);
+                });
         });
     });
 });
