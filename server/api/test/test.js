@@ -194,5 +194,86 @@ describe('Art API', () => {
                         .end(done);
                 });
         });
+        it('should report invalid title', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'en': 'This is title B'},
+                    'username': username,
+                    'relations': [
+                        {'artizen': 'nga', 'type': 'museum'},
+                        {'artizen': 'nga', 'type': 'exhibition'},
+                        {'artizen': 'caravaggio', 'type': 'artist'},
+                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                })
+                .expect(400)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.errors)
+                .end(done);
+        });
+        it('should report invalid username', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'default': 'This is title B', 'en': 'This is title B'},
+                    'username': randomUsername(),
+                    'relations': [
+                        {'artizen': 'nga', 'type': 'museum'},
+                        {'artizen': 'nga', 'type': 'exhibition'},
+                        {'artizen': 'caravaggio', 'type': 'artist'},
+                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                })
+                .expect(400)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.errors)
+                .end(done);
+        });
+        it('should report invalid relation', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'default': 'This is title C', 'en': 'This is title C'},
+                    'username': username,
+                    'relations': []
+                })
+                .expect(400)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.errors)
+                .end(done);
+        });
+        it('should report invalid relation', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'default': 'This is title D', 'en': 'This is title D'},
+                    'username': username,
+                    'relations': [
+                        {'artizen': '1234', 'type': 'museum'},
+                        {'artizen': 'nga', 'type': '5678'},
+                        {'artizen': 'caravaggio', 'type': 'artist'},
+                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                })
+                .expect(400)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.errors)
+                .end(done);
+        });
+        it('should report RELATED_ARTIZEN_NOT_FOUND', done => {
+            const username = randomUsername();
+            request(app).put(`/v1/art/${username}`)
+                .send({
+                    'title': {'default': 'This is title E', 'en': 'This is title E'},
+                    'username': username,
+                    'relations': [
+                        {'artizen': 'nga', 'type': 'museum'},
+                        {'artizen': 'notexist', 'type': 'exhibition'},
+                        {'artizen': 'caravaggio', 'type': 'artist'},
+                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                })
+                .expect(404)
+                .expect('Content-Type', /json/)
+                .expect(res => res.body.code === 'RELATED_ARTIZEN_NOT_FOUND')
+                .end(done);
+        });
     });
 });
