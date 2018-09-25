@@ -7,7 +7,7 @@ const {param, query, body, oneOf, validationResult} = require('express-validator
 
 /* GET artizen data. */
 router.get('/:id', oneOf([
-    param('id').isInt().isLength({min: 10, max: 10}),
+    param('id').isInt().isLength({min: 9, max: 9}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
 ]), (req, res, next) => {
     const errors = validationResult(req);
@@ -39,7 +39,7 @@ router.get('/:id', oneOf([
 /* GET artizen relations. */
 router.get('/:id/art', [
     oneOf([
-        param('id').isInt().isLength({min: 10, max: 10}),
+        param('id').isInt().isLength({min: 9, max: 9}),
         param('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
     query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/)
@@ -218,7 +218,7 @@ router.put('/:username', [
 
 /* DELETE artizen relations, data, username. */
 router.delete('/:id', oneOf([
-    param('id').isInt().isLength({min: 10, max: 10}),
+    param('id').isInt().isLength({min: 9, max: 9}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
 ]), (req, res, next) => {
     const errors = validationResult(req);

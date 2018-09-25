@@ -156,7 +156,7 @@ describe('Test api', function () {
 
         describe('GET artizen data', () => {
             it('should get artizen data', done => {
-                request(app).get('/v1/artizen/1000000011')
+                request(app).get('/v1/artizen/100000011')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -170,7 +170,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(parseInt(res.body.id) === 1000000011);
+                        assert(parseInt(res.body.id) === 100000011);
                     })
                     .end(done);
             });
@@ -194,7 +194,7 @@ describe('Test api', function () {
             });
 
             it('should report ARTIZEN_NOT_FOUND', done => {
-                request(app).get('/v1/artizen/0000000000').expect(404)
+                request(app).get('/v1/artizen/000000000').expect(404)
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.code === 'ARTIZEN_NOT_FOUND');
@@ -259,7 +259,7 @@ describe('Test api', function () {
             });
 
             it('should report ARTIZEN_NOT_FOUND', done => {
-                request(app).get('/v1/artizen/0000000000/art').expect(404)
+                request(app).get('/v1/artizen/000000000/art').expect(404)
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.code === 'ARTIZEN_NOT_FOUND');
@@ -298,7 +298,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{10}$/));
+                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
                     })
                     .end(() => {
                         request(app).get(`/v1/artizen/${username}`)
@@ -322,7 +322,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{10}$/));
+                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
                     })
                     .end(() => {
                         request(app).get(`/v1/artizen/${username}`)
@@ -394,7 +394,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{10}$/));
+                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
                     })
                     .end(() => {
                         request(app).get(`/v1/art/${username}/artizen`)
@@ -403,7 +403,7 @@ describe('Test api', function () {
                             .expect(res => {
                                 assert(res.body.length === 3);
                                 for (let item of res.body) {
-                                    assert((item.type === 'artist' && item.data.length === 2) || (item.type === 'museum' && item.data.length === 1) || (item.type === 'exhibition' && item.data.length === 1 && parseInt(item.data[0].id) === 1000000012));
+                                    assert((item.type === 'artist' && item.data.length === 2) || (item.type === 'museum' && item.data.length === 1) || (item.type === 'exhibition' && item.data.length === 1 && parseInt(item.data[0].id) === 100000012));
                                 }
                             })
                             .end(done);
