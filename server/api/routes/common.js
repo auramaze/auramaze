@@ -5,6 +5,8 @@ const path = require('path');
 const os = require('os');
 const mysql = require('mysql');
 const rds = mysql.createConnection(JSON.parse(fs.readFileSync(path.join(os.homedir(), '.aws/rds'), 'utf8')));
+const franc = require('franc-min');
+const convert3To1 = require('iso-639-3-to-1');
 
 function Common() {
 }
@@ -88,6 +90,11 @@ Common.prototype.addType = (id, type, callback) => {
     };
 
     dynamodb.update(params, callback);
+};
+
+// Detect language of text and return ISO 639-1 code, undefined if not detected
+Common.prototype.detectLanguage = (text) => {
+    return convert3To1(franc(text, {minLength: 1}));
 };
 
 

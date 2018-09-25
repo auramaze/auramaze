@@ -320,4 +320,21 @@ router.delete('/:id', oneOf([
     });
 });
 
+// /* POST art introduction. */
+// router.post('/:id/introduction', [
+//     oneOf([
+//         param('id').isInt().isLength({min: 8, max: 8}),
+//         param('id').custom(common.validateUsername).withMessage('Invalid username')
+//     ]),
+//     body('author_id').exists().isInt().isLength({min: 9, max: 9}),
+//     body('content').exists().isLength({min: 1})
+// ], (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!validationResult(req).isEmpty()) {
+//         return res.status(400).json({errors: errors.array()});
+//     }
+//     res.json(common.detectLanguage('这句话。'));
+//
+// });
+
 module.exports = router;

@@ -163,6 +163,7 @@ router.put('/:username', [
     body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
     body('id').not().exists(),
     body('name.default').isLength({min: 1}),
+    body('type').isArray(),
     oneOf([
         body('type').isLength({min: 1}),
         body('type').not().exists()
