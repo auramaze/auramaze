@@ -821,5 +821,62 @@ describe('Test api', function () {
                     .end(done);
             });
         });
+
+        describe('POST review of art', () => {
+            it('should post review of art', done => {
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'content': 'Review of Ginevra de\' Benci'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should post review of art with rate', done => {
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': 'Review of Ginevra de\' Benci'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should report invalid id', done => {
+                request(app).post('/v1/art/artid/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid review body', done => {
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'content': ''
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
     });
 });
