@@ -320,21 +320,38 @@ router.delete('/:id', oneOf([
     });
 });
 
-// /* POST art introduction. */
-// router.post('/:id/introduction', [
-//     oneOf([
-//         param('id').isInt().isLength({min: 8, max: 8}),
-//         param('id').custom(common.validateUsername).withMessage('Invalid username')
-//     ]),
-//     body('author_id').exists().isInt().isLength({min: 9, max: 9}),
-//     body('content').exists().isLength({min: 1})
-// ], (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (!validationResult(req).isEmpty()) {
-//         return res.status(400).json({errors: errors.array()});
-//     }
-//     res.json(common.detectLanguage('这句话。'));
-//
-// });
+/* POST art introduction. */
+router.post('/:id/introduction', [
+    oneOf([
+        param('id').isInt().isLength({min: 8, max: 8}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
+    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
+    body('rate').not().exists(),
+    body('content').exists().isLength({min: 1})
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+    const language = common.detectLanguage(req.body.content);
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 0, null, req.body.content, language, 0]], (err, result, fields) => {
+        if (err) {
+            next(err);
+        } else {
+            rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                if (err) {
+                    next(err);
+                } else {
+                    const id = result[0].id;
+                    res.json({
+                        id: parseInt(id),
+                        message: `Insert introduction success: ${req.params.id} ${id}`
+                    });
+                }
+            });
+        }
+    });
+});
 
 module.exports = router;

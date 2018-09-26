@@ -708,4 +708,22 @@ describe('Test api', function () {
             });
         });
     });
+
+    describe('POST api', () => {
+        describe('POST introduction to art', () => {
+            it('should post introdcution to art', done => {
+                request(app).post('/v1/art/10000003/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+        });
+    });
 });
