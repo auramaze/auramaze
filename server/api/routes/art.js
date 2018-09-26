@@ -333,10 +333,12 @@ router.post('/:id/introduction', [
     }
     const language = common.detectLanguage(req.body.content);
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 0, null, req.body.content, language, 0]], (err, result, fields) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {
@@ -367,10 +369,12 @@ router.post('/:id/review', [
     }
     const language = common.detectLanguage(req.body.content);
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 1, parseInt(req.body.rate) ? parseInt(req.body.rate) : null, req.body.content, language, 1]], (err, result, fields) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {

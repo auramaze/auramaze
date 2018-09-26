@@ -288,10 +288,12 @@ router.post('/:id/introduction', [
     }
     const language = common.detectLanguage(req.body.content);
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), null, parseInt(req.params.id), 0, null, req.body.content, language, 0]], (err, result, fields) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {
@@ -322,10 +324,12 @@ router.post('/:id/review', [
     }
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), null, parseInt(req.params.id), 1, parseInt(req.body.rate) ? parseInt(req.body.rate) : null, req.body.content, language, 1]], (err, result, fields) => {
+        /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {
@@ -339,8 +343,5 @@ router.post('/:id/review', [
         }
     });
 });
-
-module.exports = router;
-
 
 module.exports = router;
