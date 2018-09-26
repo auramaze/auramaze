@@ -322,10 +322,7 @@ router.delete('/:id', oneOf([
 
 /* POST art introduction. */
 router.post('/:id/introduction', [
-    oneOf([
-        param('id').isInt().isLength({min: 8, max: 8}),
-        param('id').custom(common.validateUsername).withMessage('Invalid username')
-    ]),
+    param('id').isInt().isLength({min: 8, max: 8}),
     body('author_id').exists().isInt().isLength({min: 9, max: 9}),
     body('rate').not().exists(),
     body('content').exists().isLength({min: 1})
