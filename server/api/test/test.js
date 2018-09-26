@@ -765,5 +765,61 @@ describe('Test api', function () {
                     .end(done);
             });
         });
+
+        describe('POST introduction to artizen', () => {
+            it('should post introdcution to artizen', done => {
+                request(app).post('/v1/artizen/100000011/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should report invalid id', done => {
+                request(app).post('/v1/artizen/metmuseum/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid introdcution', done => {
+                request(app).post('/v1/artizen/100000011/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid introduction content', done => {
+                request(app).post('/v1/artizen/100000011/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': ''
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
     });
 });
