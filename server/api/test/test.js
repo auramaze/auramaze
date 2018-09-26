@@ -836,6 +836,19 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
+            it('should post rate of art', done => {
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
             it('should post review of art with rate', done => {
                 request(app).post('/v1/art/10000003/review')
                     .send({
@@ -866,6 +879,104 @@ describe('Test api', function () {
             });
             it('should report invalid review body', done => {
                 request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': ''
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid review content', done => {
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'content': ''
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('POST review of artizen', () => {
+            it('should post review of artizen', done => {
+                request(app).post('/v1/artizen/100000011/review')
+                    .send({
+                        'author_id': '100000010',
+                        'content': 'Review of Metropolitan Museum of Art'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should post rate of artizen', done => {
+                request(app).post('/v1/artizen/100000011/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should post review of artizen with rate', done => {
+                request(app).post('/v1/artizen/100000011/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': 'Review of Metropolitan Museum of Art'
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.id.toString().match(/^\d{10}$/));
+                    })
+                    .end(done);
+            });
+            it('should report invalid id', done => {
+                request(app).post('/v1/artizen/metmuseum/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid review body', done => {
+                request(app).post('/v1/artizen/100000011/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rate': 5,
+                        'content': ''
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report invalid review content', done => {
+                request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
                         'content': ''

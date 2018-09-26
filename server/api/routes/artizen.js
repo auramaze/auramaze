@@ -306,4 +306,41 @@ router.post('/:id/introduction', [
     });
 });
 
+/* POST artizen review. */
+router.post('/:id/review', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
+    body('content').optional().isLength({min: 1}),
+    oneOf([
+        body('rate').exists().isInt({min: 1, max: 5}),
+        body('content').exists().isLength({min: 1})
+    ])
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+    const language = req.body.content ? common.detectLanguage(req.body.content) : null;
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rate, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), null, parseInt(req.params.id), 1, parseInt(req.body.rate) ? parseInt(req.body.rate) : null, req.body.content, language, 1]], (err, result, fields) => {
+        if (err) {
+            next(err);
+        } else {
+            rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                if (err) {
+                    next(err);
+                } else {
+                    const id = result[0].id;
+                    res.json({
+                        id: parseInt(id),
+                        message: `Insert review success: ${req.params.id} ${id}`
+                    });
+                }
+            });
+        }
+    });
+});
+
+module.exports = router;
+
+
 module.exports = router;
