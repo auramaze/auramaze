@@ -53,6 +53,12 @@ class Slides extends Component {
         }
     }
 
+    static getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight) {
+        const startStyle = this.getImgStartStyle(imgWidth, imgHeight, windowWidth, windowHeight);
+        const distance = -startStyle[Object.keys(startStyle)[0]];
+        return distance * 10;
+    }
+
     render() {
         return (
 
@@ -65,9 +71,11 @@ class Slides extends Component {
                  }}>
                 <VelocityComponent
                     animation={Slides.getImgEndStyle(this.state.imgWidth, this.state.imgHeight, this.state.windowWidth, this.state.windowHeight)}
-                    duration={5000} runOnMount complete={() => {
-                    alert('complete');
-                }}>
+                    duration={Slides.getImgAnimDuration(this.state.imgWidth, this.state.imgHeight, this.state.windowWidth, this.state.windowHeight)}
+                    runOnMount
+                    complete={() => {
+                        alert('complete');
+                    }}>
                     <img
                         src={this.state.imgSrc}
                         style={{
