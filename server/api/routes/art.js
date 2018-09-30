@@ -5,6 +5,7 @@ const common = require('./common');
 const dynamodb = common.dynamodb;
 const rds = common.rds;
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
+const kafka = require('kafka-node');
 
 // Check if usernames of all artizens exist in DynamoDB table `artizen`
 // Return an object with username as key and id/false as value
@@ -386,6 +387,39 @@ router.post('/:id/review', [
                 }
             });
         }
+    });
+});
+
+
+
+router.get('/kafka/producer', (req, res, next) => {
+    const client = new kafka.KafkaClient({kafkaHost: '18.221.37.189:9092'});
+    console.log('client');
+    const producer = new kafka.Producer(client);
+    const payloads = [
+        {topic: 'test', messages: 'hi'}];
+    producer.on('ready', function () {
+        console.log('ready');
+        producer.send(payloads, function (err, data) {
+            if (err) {
+                console.log(err);
+            }
+            res.send('sent');
+        });
+    });
+});
+
+router.get('/kafka/consumer', (req, res, next) => {
+    const client = new kafka.KafkaClient({kafkaHost: '18.221.37.189:9092'});
+
+    const consumer = new kafka.Consumer(
+        client,
+        [
+            {topic: 'test'}
+        ]
+    );
+    consumer.on('message', function (message) {
+        res.send(message);
     });
 });
 
