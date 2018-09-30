@@ -1,19 +1,24 @@
 import React, {Component} from 'react';
-import {Motion, spring} from 'react-motion';
+import {VelocityComponent} from 'velocity-react';
 import './Slides.css';
 
 class Slides extends Component {
     constructor(props) {
         super(props);
-        this.state = {width: 0, height: 0};
+        this.state = {
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+            imgSrc: 'https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg',
+            imgWidth: 1136,
+            imgHeight: 900,
+            imgFixedStyle: {},
+        };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-        const currentImgSrc = 'https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg';
-        //const currentImgStyle =
     }
 
     componentWillUnmount() {
@@ -21,20 +26,57 @@ class Slides extends Component {
     }
 
     updateWindowDimensions() {
-        this.setState({width: window.innerWidth, height: window.innerHeight});
+        this.setState({windowWidth: window.innerWidth, windowHeight: window.innerHeight});
+    }
+
+    static getImgFixedStyle(imgWidth, imgHeight, windowWidth, windowHeight) {
+        if (imgWidth / imgHeight > windowWidth / windowHeight) {
+            return {height: windowHeight};
+        } else {
+            return {width: windowWidth};
+        }
+    }
+
+    static getImgStartStyle(imgWidth, imgHeight, windowWidth, windowHeight) {
+        if (imgWidth / imgHeight > windowWidth / windowHeight) {
+            return {marginLeft: windowWidth - imgWidth * windowHeight / imgHeight};
+        } else {
+            return {marginTop: windowHeight - imgHeight * windowWidth / imgWidth};
+        }
+    }
+
+    static getImgEndStyle(imgWidth, imgHeight, windowWidth, windowHeight) {
+        if (imgWidth / imgHeight > windowWidth / windowHeight) {
+            return {marginLeft: 0};
+        } else {
+            return {marginTop: 0};
+        }
     }
 
     render() {
         return (
-            <div className="Slides" style={{height: this.state.height, backgroundColor: '#666666'}}>
-                <Motion defaultStyle={{x: 0}} style={{x: spring(1000)}} onRest={()=>{alert('onRest');}}>
 
-                    {value => <img src="https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg"
-                                   height={value.x}/>}
-                </Motion>
-
-
+            <div className="Slides"
+                 style={{
+                     height: this.state.windowHeight,
+                     width: this.state.windowWidth,
+                     backgroundColor: '#666666',
+                     overflow: 'hidden',
+                 }}>
+                <VelocityComponent
+                    animation={Slides.getImgEndStyle(this.state.imgWidth, this.state.imgHeight, this.state.windowWidth, this.state.windowHeight)}
+                    duration={5000} runOnMount complete={() => {
+                    alert('complete');
+                }}>
+                    <img
+                        src={this.state.imgSrc}
+                        style={{
+                            ...Slides.getImgFixedStyle(this.state.imgWidth, this.state.imgHeight, this.state.windowWidth, this.state.windowHeight),
+                            ...Slides.getImgStartStyle(this.state.imgWidth, this.state.imgHeight, this.state.windowWidth, this.state.windowHeight)
+                        }}/>
+                </VelocityComponent>
             </div>
+
         );
     }
 }
