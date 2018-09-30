@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Motion, spring} from 'react-motion';
 import './Slides.css';
 
 class Slides extends Component {
@@ -11,6 +12,8 @@ class Slides extends Component {
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
+        const currentImgSrc = 'https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg';
+        //const currentImgStyle =
     }
 
     componentWillUnmount() {
@@ -24,7 +27,13 @@ class Slides extends Component {
     render() {
         return (
             <div className="Slides" style={{height: this.state.height, backgroundColor: '#666666'}}>
-                <img src="https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg" height="100%"/>
+                <Motion defaultStyle={{x: 0}} style={{x: spring(1000)}} onRest={()=>{alert('onRest');}}>
+
+                    {value => <img src="https://s3.us-east-2.amazonaws.com/auramaze-test/slides/starry-night.jpg"
+                                   height={value.x}/>}
+                </Motion>
+
+
             </div>
         );
     }
