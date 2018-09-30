@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import Slides from './Slides';
 import './Home.css';
 
 class Home extends Component {
     render() {
         return (
             <div>
-                <h2>Home</h2>
+                <Slides/>
             </div>
         );
     }
