@@ -1,22 +1,16 @@
 import React, {Component} from 'react';
-import {VelocityComponent} from 'velocity-react';
 
 class Slide extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            style: {
-                ...Slide.getImgFixedStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
-                ...Slide.getImgStartStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight)
-            }
-        };
     }
 
     componentWillMount() {
         this.setState({
             style: {
                 ...Slide.getImgFixedStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
-                ...Slide.getImgStartStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight)
+                ...Slide.getImgStartStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
+                opacity: 0
             }
         });
     }
@@ -27,9 +21,19 @@ class Slide extends Component {
                 style: {
                     ...Slide.getImgFixedStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
                     ...Slide.getImgEndStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
+                    opacity: 1
                 }
             });
         }.bind(this), 0);
+        setTimeout(function () {
+            this.setState({
+                style: {
+                    ...Slide.getImgFixedStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
+                    ...Slide.getImgEndStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight),
+                    opacity: 0
+                }
+            });
+        }.bind(this), Slide.getImgAnimDuration(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight) - 1000);
         setTimeout(function () {
             this.props.onComplete();
         }.bind(this), Slide.getImgAnimDuration(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight))
@@ -47,12 +51,12 @@ class Slide extends Component {
         if (imgWidth / imgHeight > windowWidth / windowHeight) {
             return {
                 marginLeft: windowWidth - imgWidth * windowHeight / imgHeight,
-                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms`
+                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms, opacity 1000ms`
             };
         } else {
             return {
                 marginTop: windowHeight - imgHeight * windowWidth / imgWidth,
-                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms`
+                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms, opacity 1000ms`
             };
         }
     }
@@ -61,12 +65,12 @@ class Slide extends Component {
         if (imgWidth / imgHeight > windowWidth / windowHeight) {
             return {
                 marginLeft: 0,
-                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms`
+                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms, opacity 1000ms`
             };
         } else {
             return {
                 marginTop: 0,
-                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms`
+                transition: `all ${this.getImgAnimDuration(imgWidth, imgHeight, windowWidth, windowHeight)}ms, opacity 1000ms`
             };
         }
     }

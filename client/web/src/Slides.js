@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {VelocityComponent} from 'velocity-react';
 import Slide from './Slide';
 import './Slides.css';
 
