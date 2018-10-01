@@ -32,6 +32,16 @@ describe('Test api', function () {
                     .end(done);
             });
 
+            it('should get empty data', done => {
+                request(app).get('/v1/art/dummy')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+
             it('should report invalid id', done => {
                 request(app).get('/v1/art/1000002')
                     .expect(400)
@@ -171,6 +181,16 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(parseInt(res.body.id) === 100000011);
+                    })
+                    .end(done);
+            });
+
+            it('should get empty data', done => {
+                request(app).get('/v1/artizen/zianke')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
                     })
                     .end(done);
             });
