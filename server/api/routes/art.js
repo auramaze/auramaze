@@ -200,8 +200,8 @@ router.put('/:username', [
                     artizen: exists[relation.artizen],
                     type: relation.type
                 }));
-                // Insert username of art into Aurora table `username`
-                common.insertUsername(req.params.username, (err, result, fields) => {
+                // Insert username of art into Aurora table `art`
+                common.insertUsername('art', req.params.username, (err, result, fields) => {
                     if (err) {
                         /* istanbul ignore else */
                         if (err.code === 'ER_DUP_ENTRY') {
@@ -213,43 +213,35 @@ router.put('/:username', [
                             next(err);
                         }
                     } else {
-                        // Increment id in Aurora table `artizen_id`
-                        common.incrementId('art', (err, result, fields) => {
+                        const id = result[0].id;
+                        const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
+                        // Put art into DynamoDB table `art`
+                        common.putItem('art', art, (err, data) => {
                             /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
-                                const id = result[0].id;
-                                const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
-                                // Put art into DynamoDB table `art`
-                                common.putItem('art', art, (err, data) => {
+                                // Add types to artizen data in DynamoDB table `artizen`
+                                addTypes(relations, (err) => {
                                     /* istanbul ignore if */
                                     if (err) {
                                         next(err);
                                     } else {
-                                        // Add types to artizen data in DynamoDB table `artizen`
-                                        addTypes(relations, (err) => {
-                                            /* istanbul ignore if */
-                                            if (err) {
-                                                next(err);
-                                            } else {
-                                                // Insert art's relations with artizens into Aurora table `archive`
-                                                rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
-                                                    [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
-                                                    (err, result, fields) => {
-                                                        /* istanbul ignore if */
-                                                        if (err) {
-                                                            next(err);
-                                                        } else {
-                                                            res.json({
-                                                                message: `PUT art success: ${req.params.username}`,
-                                                                id: parseInt(art.id),
-                                                                username: art.username
-                                                            });
-                                                        }
+                                        // Insert art's relations with artizens into Aurora table `archive`
+                                        rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
+                                            [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
+                                            (err, result, fields) => {
+                                                /* istanbul ignore if */
+                                                if (err) {
+                                                    next(err);
+                                                } else {
+                                                    res.json({
+                                                        message: `PUT art success: ${req.params.username}`,
+                                                        id: parseInt(art.id),
+                                                        username: art.username
                                                     });
-                                            }
-                                        });
+                                                }
+                                            });
                                     }
                                 });
                             }
@@ -277,7 +269,6 @@ router.delete('/:id', oneOf([
         } else {
             if (data.Count) {
                 const id = data.Items[0].id;
-                const username = data.Items[0].username;
                 // Delete art id and relations from Aurora table `art` and `archive`
                 rds.query('DELETE FROM art WHERE id=?', [parseInt(id)], (err, result, fields) => {
                     /* istanbul ignore if */
@@ -290,23 +281,9 @@ router.delete('/:id', oneOf([
                             if (err) {
                                 next(err);
                             } else {
-                                if (username) {
-                                    // Delete art username from Aurora table `username`
-                                    common.deleteUsername(username, (err, result, fields) => {
-                                        /* istanbul ignore if */
-                                        if (err) {
-                                            next(err);
-                                        } else {
-                                            res.json({
-                                                message: `DELETE art success: ${req.params.id}`
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    res.json({
-                                        message: `DELETE art success: ${req.params.id}`
-                                    });
-                                }
+                                res.json({
+                                    message: `DELETE art success: ${req.params.id}`
+                                });
                             }
                         });
                     }

@@ -172,8 +172,8 @@ router.put('/:username', [
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    // Insert username of art into Aurora table `username`
-    common.insertUsername(req.params.username, (err, result, fields) => {
+    // Insert username of art into Aurora table `artizen`
+    common.insertUsername('artizen', req.params.username, (err, result, fields) => {
         if (err) {
             /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {
@@ -185,30 +185,22 @@ router.put('/:username', [
                 next(err);
             }
         } else {
-            // Increment id in Aurora table `artizen_id`
-            common.incrementId('artizen', (err, result, fields) => {
+            const id = result[0].id;
+            let artizen = Object.assign(req.body, {id: parseInt(id)});
+            // Convert artizen type to set of strings
+            if (artizen.type) {
+                artizen.type = dynamodb.createSet(artizen.type);
+            }
+            // Put artizen into DynamoDB table `artizen`
+            common.putItem('artizen', artizen, (err, data) => {
                 /* istanbul ignore if */
                 if (err) {
                     next(err);
                 } else {
-                    const id = result[0].id;
-                    let artizen = Object.assign(req.body, {id: parseInt(id)});
-                    // Convert artizen type to set of strings
-                    if (artizen.type) {
-                        artizen.type = dynamodb.createSet(artizen.type);
-                    }
-                    // Put artizen into DynamoDB table `artizen`
-                    common.putItem('artizen', artizen, (err, data) => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            next(err);
-                        } else {
-                            res.json({
-                                message: `PUT artizen success: ${req.params.username}`,
-                                id: parseInt(artizen.id),
-                                username: artizen.username
-                            });
-                        }
+                    res.json({
+                        message: `PUT artizen success: ${req.params.username}`,
+                        id: parseInt(artizen.id),
+                        username: artizen.username
                     });
                 }
             });
@@ -232,7 +224,6 @@ router.delete('/:id', oneOf([
         } else {
             if (data.Count) {
                 const id = data.Items[0].id;
-                const username = data.Items[0].username;
                 // Delete artizen id and relations from Aurora table `artizen` and `archive`
                 rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], (err, result, fields) => {
                     /* istanbul ignore if */
@@ -245,23 +236,9 @@ router.delete('/:id', oneOf([
                             if (err) {
                                 next(err);
                             } else {
-                                if (username) {
-                                    // Delete artizen username from Aurora table `username`
-                                    common.deleteUsername(username, (err, result, fields) => {
-                                        /* istanbul ignore if */
-                                        if (err) {
-                                            next(err);
-                                        } else {
-                                            res.json({
-                                                message: `DELETE artizen success: ${req.params.id}`
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    res.json({
-                                        message: `DELETE artizen success: ${req.params.id}`
-                                    });
-                                }
+                                res.json({
+                                    message: `DELETE artizen success: ${req.params.id}`
+                                });
                             }
                         });
                     }

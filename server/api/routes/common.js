@@ -17,19 +17,9 @@ Common.prototype.rds = rds;
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
-// Delete username from Aurora table `username`
-Common.prototype.deleteUsername = (username, callback) => {
-    rds.query('DELETE FROM username WHERE username=?', [username], callback);
-};
-
-// Insert username into Aurora table `username`
-Common.prototype.insertUsername = (username, callback) => {
-    rds.query('INSERT INTO username (username) VALUES (?)', [username], callback);
-};
-
-// Increment id in Aurora table `art_id` or `artizen_id` and return new id
-Common.prototype.incrementId = (group, callback) => {
-    rds.query(`INSERT INTO ${group} VALUES ()`, (err, result, fields) => {
+// Insert username into Aurora table `art` or `artizen`
+Common.prototype.insertUsername = (group, username, callback) => {
+    rds.query(`INSERT INTO ${group} (username) VALUES (?)`, [username], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             callback(err, result, fields);
