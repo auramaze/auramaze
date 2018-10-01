@@ -26,7 +26,7 @@ class Slide extends Component {
                     opacity: 1
                 }
             });
-        }.bind(this), 0);
+        }.bind(this), 100);
 
         setTimeout(function () {
             this.setState({
