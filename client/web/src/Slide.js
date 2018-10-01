@@ -87,7 +87,7 @@ class Slide extends Component {
         } else {
             distance = imgHeight * windowWidth / imgWidth - windowHeight;
         }
-        return Math.max(Math.round(distance * 20), 7000);
+        return Math.max(Math.round(distance * 25), 7000);
     }
 
     render() {

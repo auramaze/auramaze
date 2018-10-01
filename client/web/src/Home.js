@@ -7,6 +7,7 @@ class Home extends Component {
         return (
             <div>
                 <Slides/>
+                <h2>Home</h2>
             </div>
         );
     }
