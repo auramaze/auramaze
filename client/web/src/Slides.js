@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import Slide from './Slide';
+import {API_ENDPOINT} from './Common';
 import './Slides.css';
 
 class Slides extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             windowWidth: window.innerWidth,
             windowHeight: window.innerHeight,
