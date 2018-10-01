@@ -304,6 +304,17 @@ describe('Test api', function () {
                     .end(done);
             });
         });
+
+        describe('GET slide urls', () => {
+            it('should get slide urls', done => {
+                request(app).get('/v1/slide').expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.length > 0 && res.body.every(item => item.includes('https') && item.includes('s3') && item.includes('amazonaws')));
+                    })
+                    .end(done);
+            });
+        });
     });
 
     describe('PUT api', () => {
