@@ -29,23 +29,37 @@ Common.prototype.insertUsername = (group, username, callback) => {
     });
 };
 
+// Check item existence in Aurora and return id if item exists
+Common.prototype.checkExist = (group, id, callback) => {
+    let sql, parameters;
+    if (isNaN(parseInt(id))) {
+        sql = `SELECT * FROM ${group} WHERE username=?`;
+        parameters = [id.toString()];
+    } else {
+        sql = `SELECT * FROM ${group} WHERE id=?`;
+        parameters = [parseInt(id)];
+    }
+    rds.query(sql, parameters, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            callback(err, null);
+        } else {
+            if (result.length) {
+                callback(null, parseInt(result[0].id));
+            } else {
+                callback(null, null);
+            }
+        }
+    });
+};
+
 // Get item data from DynamoDB
 Common.prototype.getItem = (group, id, callback) => {
-    let params = {TableName: group};
-    if (isNaN(parseInt(id))) {
-        Object.assign(params, {
-            IndexName: 'username_index',
-            KeyConditionExpression: 'username = :v1',
-            ExpressionAttributeValues: {':v1': id.toString()}
-        });
-    } else {
-        Object.assign(params, {
-            KeyConditionExpression: 'id = :v1',
-            ExpressionAttributeValues: {':v1': parseInt(id)}
-        });
-    }
-
-    dynamodb.query(params, callback);
+    const params = {
+        Key: {id: parseInt(id)},
+        TableName: group
+    };
+    dynamodb.get(params, callback);
 };
 
 // Put item data into DynamoDB

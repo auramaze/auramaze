@@ -14,18 +14,29 @@ router.get('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.getItem('artizen', req.params.id, (err, data) => {
+    common.checkExist('artizen', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
-                let artizen = data.Items[0];
-                // Convert type set to array
-                if (artizen.type) {
-                    artizen.type = artizen.type.values;
-                }
-                res.json(artizen);
+            if (id) {
+                common.getItem('artizen', req.params.id, (err, data) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        next(err);
+                    } else {
+                        if (data.Item) {
+                            let artizen = data.Item;
+                            // Convert type set to array
+                            if (artizen.type) {
+                                artizen.type = artizen.type.values;
+                            }
+                            res.json(artizen);
+                        } else {
+                            res.json({});
+                        }
+                    }
+                });
             } else {
                 res.status(404).json({
                     code: 'ARTIZEN_NOT_FOUND',

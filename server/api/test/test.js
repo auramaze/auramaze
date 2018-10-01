@@ -155,7 +155,7 @@ describe('Test api', function () {
         });
 
         describe('GET artizen data', () => {
-            it('should get artizen data', done => {
+            it('should get artizen data by id', done => {
                 request(app).get('/v1/artizen/100000011')
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -165,7 +165,7 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should get artizen data', done => {
+            it('should get artizen data by username', done => {
                 request(app).get('/v1/artizen/metmuseum')
                     .expect(200)
                     .expect('Content-Type', /json/)

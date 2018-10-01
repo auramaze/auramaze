@@ -56,13 +56,24 @@ router.get('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.getItem('art', req.params.id, (err, data) => {
+    common.checkExist('art', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
-                res.json(data.Items[0]);
+            if (id) {
+                common.getItem('art', id, (err, data) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        next(err);
+                    } else {
+                        if (data.Item) {
+                            res.json(data.Item);
+                        } else {
+                            res.json({});
+                        }
+                    }
+                });
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',
@@ -102,56 +113,61 @@ router.get('/:id/artizen', [
                     parameters = [parseInt(data.Items[0].id)];
                 }
                 rds.query(sql, parameters, (err, result, fields) => {
-                    if (result.length) {
-                        // Get artizen ids and remove duplicate
-                        const artizen_ids = result.map(item => item.artizen_id)
-                            .filter((item, index, array) => (!index || item !== array[index - 1]))
-                            .map(item => ({id: parseInt(item)}));
-
-                        // Get other attributes from DynamoDB table `artizen`
-                        const params = {
-                            RequestItems: {
-                                'artizen': {
-                                    Keys: artizen_ids,
-                                    ProjectionExpression: '#id, #name, #avatar',
-                                    ExpressionAttributeNames: {
-                                        '#id': 'id',
-                                        '#name': 'name',
-                                        '#avatar': 'avatar'
-                                    }
-                                }
-                            },
-                        };
-                        dynamodb.batchGet(params, (err, data) => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                next(err);
-                            } else {
-                                data = data.Responses.artizen;
-
-                                // Convert data to dict
-                                const artizen_dict = data.reduce((acc, cur) => {
-                                    acc[cur.id.toString()] = cur;
-                                    return acc;
-                                }, {});
-
-                                // Add DynamoDB data to Aurora results
-                                result = result.map(item => Object.assign({type: item.type}, {data: artizen_dict[item.artizen_id.toString()]}));
-
-                                // Group by type
-                                result = result.reduce((acc, cur) => {
-                                    (acc[cur.type] = acc[cur.type] || []).push(cur.data);
-                                    return acc;
-                                }, {});
-
-                                // Convert object to array
-                                result = Object.keys(result).map(key => ({type: key, data: result[key]}));
-                                res.json(result);
-                            }
-                        });
+                    /* istanbul ignore if */
+                    if (err) {
+                        next(err);
                     } else {
-                        // No relations found
-                        res.json([]);
+                        if (result.length) {
+                            // Get artizen ids and remove duplicate
+                            const artizen_ids = result.map(item => item.artizen_id)
+                                .filter((item, index, array) => (!index || item !== array[index - 1]))
+                                .map(item => ({id: parseInt(item)}));
+
+                            // Get other attributes from DynamoDB table `artizen`
+                            const params = {
+                                RequestItems: {
+                                    'artizen': {
+                                        Keys: artizen_ids,
+                                        ProjectionExpression: '#id, #name, #avatar',
+                                        ExpressionAttributeNames: {
+                                            '#id': 'id',
+                                            '#name': 'name',
+                                            '#avatar': 'avatar'
+                                        }
+                                    }
+                                },
+                            };
+                            dynamodb.batchGet(params, (err, data) => {
+                                /* istanbul ignore if */
+                                if (err) {
+                                    next(err);
+                                } else {
+                                    data = data.Responses.artizen;
+
+                                    // Convert data to dict
+                                    const artizen_dict = data.reduce((acc, cur) => {
+                                        acc[cur.id.toString()] = cur;
+                                        return acc;
+                                    }, {});
+
+                                    // Add DynamoDB data to Aurora results
+                                    result = result.map(item => Object.assign({type: item.type}, {data: artizen_dict[item.artizen_id.toString()]}));
+
+                                    // Group by type
+                                    result = result.reduce((acc, cur) => {
+                                        (acc[cur.type] = acc[cur.type] || []).push(cur.data);
+                                        return acc;
+                                    }, {});
+
+                                    // Convert object to array
+                                    result = Object.keys(result).map(key => ({type: key, data: result[key]}));
+                                    res.json(result);
+                                }
+                            });
+                        } else {
+                            // No relations found
+                            res.json([]);
+                        }
                     }
                 });
             } else {
