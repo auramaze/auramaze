@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+const fadeTime = 2500;
+
 class Slide extends Component {
     constructor(props) {
         super(props);
@@ -35,7 +37,7 @@ class Slide extends Component {
                     opacity: 0
                 }
             });
-        }.bind(this), duration - 1000);
+        }.bind(this), duration - fadeTime);
 
         setTimeout(function () {
             this.props.onComplete();
@@ -55,12 +57,12 @@ class Slide extends Component {
         if (imgWidth / imgHeight > windowWidth / windowHeight) {
             return {
                 marginLeft: windowWidth - imgWidth * windowHeight / imgHeight,
-                transition: `all ${duration}ms, opacity 1000ms`
+                transition: `all ${duration}ms, opacity ${fadeTime}ms`
             };
         } else {
             return {
                 marginTop: windowHeight - imgHeight * windowWidth / imgWidth,
-                transition: `all ${duration}ms, opacity 1000ms`
+                transition: `all ${duration}ms, opacity ${fadeTime}ms`
             };
         }
     }
@@ -70,12 +72,12 @@ class Slide extends Component {
         if (imgWidth / imgHeight > windowWidth / windowHeight) {
             return {
                 marginLeft: 0,
-                transition: `all ${duration}ms, opacity 1000ms`
+                transition: `all ${duration}ms, opacity ${fadeTime}ms`
             };
         } else {
             return {
                 marginTop: 0,
-                transition: `all ${duration}ms, opacity 1000ms`
+                transition: `all ${duration}ms, opacity ${fadeTime}ms`
             };
         }
     }
