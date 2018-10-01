@@ -20,7 +20,7 @@ router.get('/:id', oneOf([
             next(err);
         } else {
             if (id) {
-                common.getItem('artizen', req.params.id, (err, data) => {
+                common.getItem('artizen', id, (err, data) => {
                     /* istanbul ignore if */
                     if (err) {
                         next(err);
@@ -63,14 +63,14 @@ router.get('/:id/art', [
     const size = 20;
 
     // Check artizen exists
-    common.getItem('artizen', req.params.id, (err, data) => {
+    common.checkExist('artizen', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
+            if (id) {
                 // Get all available types
-                rds.query('SELECT DISTINCT type FROM archive WHERE artizen_id=?', [parseInt(data.Items[0].id)], (err, result, fields) => {
+                rds.query('SELECT DISTINCT type FROM archive WHERE artizen_id=?', [parseInt(id)], (err, result, fields) => {
                     /* istanbul ignore if */
                     if (err) {
                         next(err);
@@ -79,19 +79,19 @@ router.get('/:id/art', [
                         let sql, parameters;
                         if (req.query.type) {
                             sql = 'SELECT * FROM archive WHERE artizen_id=? AND type=? ORDER BY art_id DESC LIMIT ? OFFSET ?';
-                            parameters = [parseInt(data.Items[0].id), req.query.type, size, page * size];
+                            parameters = [parseInt(id), req.query.type, size, page * size];
                         } else {
                             if (result.length) {
                                 const types = result.map(item => item.type);
                                 sql = Array(types.length).fill('(SELECT * FROM archive WHERE artizen_id=? AND type=? ORDER BY art_id DESC LIMIT ? OFFSET ?)').join(' UNION ALL ') + ' ORDER BY art_id DESC';
                                 parameters = [];
                                 for (let type of types) {
-                                    parameters.push(parseInt(data.Items[0].id), type, size, page * size);
+                                    parameters.push(parseInt(id), type, size, page * size);
                                 }
                             } else {
                                 // Artizen not in archive
                                 sql = 'SELECT * FROM archive WHERE artizen_id=? ORDER BY art_id DESC LIMIT ? OFFSET ?';
-                                parameters = [parseInt(data.Items[0].id), size, page * size];
+                                parameters = [parseInt(id), size, page * size];
                             }
                         }
                         rds.query(sql, parameters, (err, result, fields) => {
@@ -228,13 +228,12 @@ router.delete('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.getItem('artizen', req.params.id, (err, data) => {
+    common.checkExist('artizen', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
-                const id = data.Items[0].id;
+            if (id) {
                 // Delete artizen id and relations from Aurora table `artizen` and `archive`
                 rds.query('DELETE FROM artizen WHERE id=?', [parseInt(id)], (err, result, fields) => {
                     /* istanbul ignore if */

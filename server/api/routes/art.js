@@ -14,13 +14,13 @@ function checkArtizens(usernames, callback) {
         callback(null, exists);
     });
     for (let username of usernames) {
-        common.getItem('artizen', username, (err, data) => {
+        common.checkExist('artizen', username, (err, id) => {
             /* istanbul ignore if */
             if (err) {
                 callback(err, false);
             } else {
-                if (data.Count) {
-                    exists[username] = data.Items[0].id;
+                if (id) {
+                    exists[username] = id;
                 } else {
                     exists[username] = false;
                 }
@@ -97,20 +97,20 @@ router.get('/:id/artizen', [
         return res.status(400).json({errors: errors.array()});
     }
     // Check art exists
-    common.getItem('art', req.params.id, (err, data) => {
+    common.checkExist('art', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
+            if (id) {
                 // Get artizen id and type from Aurora table `archive`
                 let sql, parameters;
                 if (req.query.type) {
                     sql = 'SELECT * FROM archive WHERE art_id=? AND type=? ORDER BY artizen_id DESC';
-                    parameters = [parseInt(data.Items[0].id), req.query.type];
+                    parameters = [parseInt(id), req.query.type];
                 } else {
                     sql = 'SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id DESC';
-                    parameters = [parseInt(data.Items[0].id)];
+                    parameters = [parseInt(id)];
                 }
                 rds.query(sql, parameters, (err, result, fields) => {
                     /* istanbul ignore if */
@@ -278,13 +278,12 @@ router.delete('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.getItem('art', req.params.id, (err, data) => {
+    common.checkExist('art', req.params.id, (err, id) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (data.Count) {
-                const id = data.Items[0].id;
+            if (id) {
                 // Delete art id and relations from Aurora table `art` and `archive`
                 rds.query('DELETE FROM art WHERE id=?', [parseInt(id)], (err, result, fields) => {
                     /* istanbul ignore if */
