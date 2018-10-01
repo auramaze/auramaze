@@ -43,12 +43,12 @@ class Slides extends Component {
     render() {
         return (
             <div className="Slides" key={this.state.imgSrc}
-                 style={{
-                     height: this.state.windowHeight,
-                     width: this.state.windowWidth,
-                     backgroundColor: '#666666',
-                     overflow: 'hidden',
-                 }}>
+                style={{
+                    height: this.state.windowHeight,
+                    width: this.state.windowWidth,
+                    backgroundColor: '#666666',
+                    overflow: 'hidden',
+                }}>
                 <Slide
                     key={this.state.imgSrc}
                     imgSrc={this.state.imgSrc}
