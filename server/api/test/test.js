@@ -310,7 +310,7 @@ describe('Test api', function () {
                 request(app).get('/v1/slide').expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.length > 0 && res.body.every(item => item.includes('https') && item.includes('s3') && item.includes('amazonaws')));
+                        assert(res.body.length > 1 && res.body.every(item => item.includes('https') && item.includes('s3') && item.includes('amazonaws')));
                     })
                     .end(done);
             });
