@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import './Artizen.css';
 
 class Artizen extends Component {
@@ -10,5 +11,13 @@ class Artizen extends Component {
         );
     }
 }
+
+Artizen.propTypes = {
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            artizenId: PropTypes.number
+        })
+    }),
+};
 
 export default Artizen;

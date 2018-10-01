@@ -1,20 +1,18 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 const fadeTime = 2500;
 
 class Slide extends Component {
     constructor(props) {
         super(props);
-    }
-
-    componentWillMount() {
-        const imgStartStyle = (this.props.reverse ? Slide.getImgEndStyle : Slide.getImgStartStyle)(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight);
-        this.setState({
+        const imgStartStyle = (props.reverse ? Slide.getImgEndStyle : Slide.getImgStartStyle)(props.imgWidth, props.imgHeight, props.windowWidth, props.windowHeight);
+        this.state = {
             style: {
                 ...imgStartStyle,
                 opacity: 0
             }
-        });
+        };
     }
 
     componentDidMount() {
@@ -100,5 +98,15 @@ class Slide extends Component {
         );
     }
 }
+
+Slide.propTypes = {
+    imgSrc: PropTypes.string,
+    imgWidth: PropTypes.number,
+    imgHeight: PropTypes.number,
+    windowWidth: PropTypes.number,
+    windowHeight: PropTypes.number,
+    reverse: PropTypes.bool,
+    onComplete: PropTypes.func
+};
 
 export default Slide;
