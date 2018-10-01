@@ -170,8 +170,15 @@ router.get('/:id/art', [
 
 /* PUT artizen username, data. */
 router.put('/:username', [
-    param('username').custom(common.validateUsername).withMessage('Invalid username'),
-    body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames'),
+    oneOf([
+        [
+            param('username').custom(common.validateUsername).withMessage('Invalid username'),
+            body('username').custom((value, {req}) => (value === req.params.username)).withMessage('Unequal usernames')],
+        [
+            param('username').equals('000000000'),
+            body('username').not().exists()
+        ]
+    ]),
     body('id').not().exists(),
     body('name.default').isLength({min: 1}),
     oneOf([
@@ -184,7 +191,7 @@ router.put('/:username', [
         return res.status(400).json({errors: errors.array()});
     }
     // Insert username of art into Aurora table `artizen`
-    common.insertUsername('artizen', req.params.username, (err, result, fields) => {
+    common.insertItem('artizen', req.params.username, (err, result, fields) => {
         if (err) {
             /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {

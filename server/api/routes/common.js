@@ -18,8 +18,16 @@ Common.prototype.rds = rds;
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
 // Insert username into Aurora table `art` or `artizen`
-Common.prototype.insertUsername = (group, username, callback) => {
-    rds.query(`INSERT INTO ${group} (username) VALUES (?)`, [username], (err, result, fields) => {
+Common.prototype.insertItem = (group, username, callback) => {
+    let sql, parameters;
+    if (parseInt(username) === 0) {
+        sql = `INSERT INTO ${group} VALUES ()`;
+        parameters = null;
+    } else {
+        sql = `INSERT INTO ${group} (username) VALUES (?)`;
+        parameters = [username];
+    }
+    rds.query(sql, parameters, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             callback(err, result, fields);
