@@ -308,7 +308,7 @@ describe('Test api', function () {
 
     describe('PUT api', () => {
         describe('PUT artizen', () => {
-            it('should put artizen data', done => {
+            it('should put artizen data with username', done => {
                 const username = randomUsername();
                 request(app).put(`/v1/artizen/${username}`)
                     .send({
@@ -331,7 +331,7 @@ describe('Test api', function () {
                     });
             });
 
-            it('should put artizen data', done => {
+            it('should put artizen data with username and types', done => {
                 const username = randomUsername();
                 request(app).put(`/v1/artizen/${username}`)
                     .send({
@@ -355,11 +355,62 @@ describe('Test api', function () {
                     });
             });
 
-            it('should report invalid data', done => {
+            it('should put artizen data without username', done => {
+                let id;
+                request(app).put('/v1/artizen/000000000')
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(!res.body.username);
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).get(`/v1/artizen/${id}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.name.default === 'This is name A' && !res.body.type);
+                            })
+                            .end(done);
+                    });
+            });
+
+            it('should report invalid url', done => {
+                request(app).put('/v1/artizen/100000000')
+                    .send({
+                        'name': {'default': 'This is name B', 'en': 'This is name B'},
+                        'type': ['museum', 'exhibition']
+                    })
+                    .expect(400)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should not have username', done => {
+                const username = randomUsername();
+                request(app).put('/v1/artizen/000000000')
+                    .send({
+                        'name': {'default': 'This is name B', 'en': 'This is name B'},
+                        'username': username,
+                        'type': ['museum', 'exhibition']
+                    })
+                    .expect(400)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid data with unequal usernames', done => {
                 const username = randomUsername();
                 request(app).put(`/v1/artizen/${username}`)
                     .send({
-                        'name': {'en': 'This is name A'},
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
                         'username': randomUsername()
                     })
                     .expect(400)
@@ -369,7 +420,7 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should report invalid data', done => {
+            it('should report invalid data without default name', done => {
                 const username = randomUsername();
                 request(app).put(`/v1/artizen/${username}`)
                     .send({
@@ -467,6 +518,70 @@ describe('Test api', function () {
                                     });
                             });
                     });
+            });
+
+            it('should put art data without username', done => {
+                let id;
+                request(app).put('/v1/art/00000000')
+                    .send({
+                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                        'relations': [
+                            {'artizen': 'nga', 'type': 'museum'},
+                            {'artizen': 'nga', 'type': 'exhibition'},
+                            {'artizen': 'caravaggio', 'type': 'artist'},
+                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(!res.body.username);
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).get(`/v1/art/${id}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.title.default === 'This is title A');
+                            })
+                            .end(done);
+                    });
+            });
+
+            it('should report invalid url', done => {
+                request(app).put('/v1/art/10000000')
+                    .send({
+                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                        'relations': [
+                            {'artizen': 'nga', 'type': 'museum'},
+                            {'artizen': 'nga', 'type': 'exhibition'},
+                            {'artizen': 'caravaggio', 'type': 'artist'},
+                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                    })
+                    .expect(400)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should not have username', done => {
+                const username = randomUsername();
+                request(app).put('/v1/art/00000000')
+                    .send({
+                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                        'username': username,
+                        'relations': [
+                            {'artizen': 'nga', 'type': 'museum'},
+                            {'artizen': 'nga', 'type': 'exhibition'},
+                            {'artizen': 'caravaggio', 'type': 'artist'},
+                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                    })
+                    .expect(400)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
             });
 
             it('should report USERNAME_EXIST', done => {
