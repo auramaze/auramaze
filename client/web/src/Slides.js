@@ -13,30 +13,20 @@ class Slides extends Component {
             reverse: false
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-        this.updateImages = this.updateImages.bind(this);
+        this.updateImage = this.updateImage.bind(this);
+        this.getNextIndex = this.getNextIndex.bind(this);
+        this.loadImage = this.loadImage.bind(this);
     }
 
     componentDidMount() {
-        request.get({url: `${API_ENDPOINT}/slide`, json: true}, function (error, response, body) {
-            if (response && response.statusCode === 200 && body.length > 0) {
-                this.setState({urls: body, images: Array.apply(null, Array(body.length))});
-                request.get({url: body[0], encoding: null}, function (error, response, body) {
-                    const data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
-                    const image = new Image();
-                    image.onload = function () {
-                        this.setState({
-                            imgWidth: image.width,
-                            imgHeight: image.height,
-                        });
-                    }.bind(this);
-                    image.src = data;
-                    this.setState({
-                        imgSrc: data,
-                        index: 0
-                    });
-                }.bind(this));
+        request.get({url: `${API_ENDPOINT}/slide`, json: true}, (error, response, body) => {
+            if (response && response.statusCode === 200 && body.length > 1) {
+                this.setState({urls: body, index: 0});
+                for (let index of [0, 1]) {
+                    this.loadImage(body, index)
+                }
             }
-        }.bind(this));
+        });
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
     }
@@ -49,13 +39,42 @@ class Slides extends Component {
         this.setState({windowWidth: window.innerWidth, windowHeight: window.innerHeight});
     }
 
-    updateImages() {
+    updateImage() {
+        let nextIndex;
+        if (this.state[`imgSrc-${this.getNextIndex()}`] && this.state[`imgWidth-${this.getNextIndex()}`] && this.state[`imgHeight-${this.getNextIndex()}`]) {
+            nextIndex = this.getNextIndex();
+        } else {
+            nextIndex = 0;
+        }
         this.setState({
-            imgSrc: 'https://s3.us-east-2.amazonaws.com/auramaze-test/slides/fighting-temeraire.jpg',
-            imgWidth: 800,
-            imgHeight: 525,
+            index: nextIndex,
             reverse: !this.state.reverse
         });
+        this.loadImage(this.state.urls, (nextIndex + 1) % this.state.urls.length)
+    }
+
+    loadImage(urls, index) {
+        if (this.state[`imgSrc-${index}`] && this.state[`imgWidth-${index}`] && this.state[`imgHeight-${index}`]) {
+            return;
+        }
+        request.get({url: urls[index], encoding: null}, function (error, response, body) {
+            const data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
+            const image = new Image();
+            image.onload = function () {
+                this.setState({
+                    [`imgWidth-${index}`]: image.width,
+                    [`imgHeight-${index}`]: image.height
+                });
+            }.bind(this);
+            image.src = data;
+            this.setState({
+                [`imgSrc-${index}`]: data,
+            });
+        }.bind(this));
+    }
+
+    getNextIndex() {
+        return (this.state.index + 1) % this.state.urls.length;
     }
 
     render() {
@@ -67,16 +86,16 @@ class Slides extends Component {
                      backgroundColor: '#666666',
                      overflow: 'hidden',
                  }}>
-                {this.state && this.state.imgSrc && this.state.imgWidth && this.state.imgHeight &&
+                {this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`] &&
                 <Slide
-                    key={this.state.imgSrc}
-                    imgSrc={this.state.imgSrc}
-                    imgWidth={this.state.imgWidth}
-                    imgHeight={this.state.imgHeight}
+                    key={this.state[`imgSrc-${this.state.index}`]}
+                    imgSrc={this.state[`imgSrc-${this.state.index}`]}
+                    imgWidth={this.state[`imgWidth-${this.state.index}`]}
+                    imgHeight={this.state[`imgHeight-${this.state.index}`]}
                     windowWidth={this.state.windowWidth}
                     windowHeight={this.state.windowHeight}
                     reverse={this.state.reverse}
-                    onComplete={this.updateImages}
+                    onComplete={this.updateImage}
                 />}
             </div>
         );
