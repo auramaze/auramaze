@@ -7,7 +7,7 @@
     left: 0;
     right: 0;
     font-family: 'CenturyGothic', serif;
-    font-size: 25px;
+    font-size: 20px;
     background-color: rgba(102, 102, 102, 0);
     transition: background-color 0.8s;
     transition-timing-function: ease;
@@ -40,18 +40,32 @@
     line-height: 56px;
     vertical-align: center;
     width: 150px;
-    transition: background-color 0.8s;
+    transition: background-color 0.25s;
     transition-timing-function: ease;
 }
 
 .Nav-item a {
+    position: relative;
     display: block;
     color: white;
     text-align: center;
-    padding: 10px;
     text-decoration: none;
 }
 
-.Nav-item:hover {
-    background-color: rgba(102, 102, 102, 1);
+.Nav-item a:before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 2px;
+    bottom: 2px;
+    left: 25px;
+    background-color: white;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.Nav-item a:hover:before {
+    visibility: visible;
+    transform: scaleX(1);
 }
