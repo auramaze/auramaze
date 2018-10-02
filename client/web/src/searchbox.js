@@ -7,7 +7,7 @@ class Searchbox extends Component {
     render() {
         return (
             <div {...this.props}>
-                <span className="slogan">AuraMaze</span>
+                <div className="slogan">AuraMaze</div>
                 <form>
                     <div className="searchbox">
                         <input value="Coming Soon!" readOnly/>
@@ -17,7 +17,6 @@ class Searchbox extends Component {
                     </div>
                 </form>
             </div>
-
         );
     }
 }

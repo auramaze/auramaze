@@ -98,6 +98,8 @@ class Slides extends Component {
                 />}
                 <Searchbox style={{
                     position: 'absolute',
+                    width: 500,
+                    maxWidth: '80%',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
