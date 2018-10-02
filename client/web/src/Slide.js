@@ -94,6 +94,7 @@ class Slide extends Component {
         return (
             <img
                 src={this.props.imgSrc}
+                alt="painting"
                 style={{...Slide.getImgFixedStyle(this.props.imgWidth, this.props.imgHeight, this.props.windowWidth, this.props.windowHeight), ...this.state.style}}/>
         );
     }
