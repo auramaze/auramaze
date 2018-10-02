@@ -9,8 +9,8 @@ class Slides extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            windowWidth: window.innerWidth,
-            windowHeight: window.innerHeight,
+            windowWidth: document.documentElement.clientWidth,
+            windowHeight: document.documentElement.clientHeight,
             reverse: false
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -37,7 +37,7 @@ class Slides extends Component {
     }
 
     updateWindowDimensions() {
-        this.setState({windowWidth: window.innerWidth, windowHeight: window.innerHeight});
+        this.setState({windowWidth: document.documentElement.clientWidth, windowHeight: document.documentElement.clientHeight});
     }
 
     updateImage() {
