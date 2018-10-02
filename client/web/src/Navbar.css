@@ -1,10 +1,12 @@
+@import 'fonts.css';
+
 .Navbar {
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     right: 0;
-    font-family: "Century Gothic", Century Gothic, serif;
+    font-family: 'CenturyGothic', serif;
     font-size: 20px;
     background-color: rgba(102, 102, 102, 0);
     transition: background-color 0.8s;

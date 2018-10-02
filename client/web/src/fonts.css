@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'CenturyGothic';
+    src: url('./fonts/century_gothic_regular.TTF') format('truetype');
+}
+
+@font-face {
+    font-family: 'CenturyGothic';
+    src: url('./fonts/century_gothic_bold.TTF') format('truetype');
+    font-weight: bold;
+}
