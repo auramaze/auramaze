@@ -7,7 +7,7 @@ class Home extends Component {
         return (
             <div>
                 <Slides/>
-                <h2>Home</h2>
+                <h2 style={{marginBottom: 4000}}>Home</h2>
             </div>
         );
     }

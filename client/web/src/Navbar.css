@@ -1,9 +1,49 @@
 .Navbar {
-    position: absolute;
+    position: fixed;
     width: 100%;
-    height: 50px;
     top: 0;
     left: 0;
     right: 0;
-    background-color: #666666;
+    font-family: "Century Gothic", Century Gothic, serif;
+    font-size: 20px;
+    background-color: rgba(102, 102, 102, 0);
+    transition: background-color 0.8s;
+    transition-timing-function: ease;
+    align-items: center;
+}
+
+.Navbar:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.Nav-logo {
+    float: left;
+    margin-left: 35px;
+}
+
+.Logo {
+    height: 65px;
+}
+
+.Nav-items {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+}
+
+.Nav-item {
+    float: right;
+    display: inline;
+    line-height: 50px;
+    vertical-align: center;
+    margin-right: 35px;
+}
+
+.Nav-item a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
 }
