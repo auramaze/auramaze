@@ -81,10 +81,10 @@ class Slides extends Component {
     render() {
         return (
             <div className="Slides"
-                 style={{
-                     height: this.state.windowHeight,
-                     width: this.state.windowWidth,
-                 }}>
+                style={{
+                    height: this.state.windowHeight,
+                    width: this.state.windowWidth,
+                }}>
                 {(this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`]) &&
                 <Slide
                     key={this.state.index}
