@@ -9,10 +9,12 @@ class Navbar extends Component {
             <div className="Navbar">
                 <div className="Nav-logo">
                     <Link to="/">
-                        <img src={logo} class="Logo" alt="logo"/>
+                        <img src={logo} className="Logo" alt="logo"/>
                     </Link>
                 </div>
                 <div className="Nav-items">
+                    <div className="Nav-item"><Link to="/login">Log in</Link></div>
+                    <div className="Nav-item"><Link to="/signup">Sign up</Link></div>
                     <div className="Nav-item"><Link to="/search">Search</Link></div>
                     <div className="Nav-item"><Link to="/topics">Topics</Link></div>
                 </div>

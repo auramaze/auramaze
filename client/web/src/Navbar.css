@@ -7,7 +7,7 @@
     left: 0;
     right: 0;
     font-family: 'CenturyGothic', serif;
-    font-size: 20px;
+    font-size: 25px;
     background-color: rgba(102, 102, 102, 0);
     transition: background-color 0.8s;
     transition-timing-function: ease;
@@ -24,7 +24,7 @@
 }
 
 .Logo {
-    height: 65px;
+    height: 70px;
 }
 
 .Nav-items {
@@ -37,9 +37,11 @@
 .Nav-item {
     float: right;
     display: inline;
-    line-height: 50px;
+    line-height: 56px;
     vertical-align: center;
-    margin-right: 35px;
+    width: 150px;
+    transition: background-color 0.8s;
+    transition-timing-function: ease;
 }
 
 .Nav-item a {
@@ -48,4 +50,8 @@
     text-align: center;
     padding: 10px;
     text-decoration: none;
+}
+
+.Nav-item:hover {
+    background-color: rgba(102, 102, 102, 1);
 }
