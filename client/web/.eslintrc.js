@@ -40,5 +40,8 @@ module.exports = {
             "error",
             "always"
         ]
+    },
+    "globals": {
+        "Buffer": false
     }
 };

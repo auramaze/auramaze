@@ -23,7 +23,7 @@ class Slides extends Component {
             if (response && response.statusCode === 200 && body.length > 1) {
                 this.setState({urls: body, index: 0});
                 for (let index of [0, 1]) {
-                    this.loadImage(body, index)
+                    this.loadImage(body, index);
                 }
             }
         });
@@ -50,7 +50,7 @@ class Slides extends Component {
             index: nextIndex,
             reverse: !this.state.reverse
         });
-        this.loadImage(this.state.urls, (nextIndex + 1) % this.state.urls.length)
+        this.loadImage(this.state.urls, (nextIndex + 1) % this.state.urls.length);
     }
 
     loadImage(urls, index) {
@@ -58,7 +58,7 @@ class Slides extends Component {
             return;
         }
         request.get({url: urls[index], encoding: null}, function (error, response, body) {
-            const data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
+            const data = 'data:' + response.headers['content-type'] + ';base64,' + new Buffer(body).toString('base64');
             const image = new Image();
             image.onload = function () {
                 this.setState({
@@ -80,12 +80,12 @@ class Slides extends Component {
     render() {
         return (
             <div className="Slides"
-                 style={{
-                     height: this.state.windowHeight,
-                     width: this.state.windowWidth,
-                     backgroundColor: '#666666',
-                     overflow: 'hidden',
-                 }}>
+                style={{
+                    height: this.state.windowHeight,
+                    width: this.state.windowWidth,
+                    backgroundColor: '#666666',
+                    overflow: 'hidden',
+                }}>
                 {this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`] &&
                 <Slide
                     key={this.state[`imgSrc-${this.state.index}`]}
