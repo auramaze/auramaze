@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import request from 'request';
 import Slide from './Slide';
+import Searchbox from './Searchbox';
 import {API_ENDPOINT} from './Common';
 import './Slides.css';
 
@@ -80,10 +81,10 @@ class Slides extends Component {
     render() {
         return (
             <div className="Slides"
-                style={{
-                    height: this.state.windowHeight,
-                    width: this.state.windowWidth,
-                }}>
+                 style={{
+                     height: this.state.windowHeight,
+                     width: this.state.windowWidth,
+                 }}>
                 {(this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`]) &&
                 <Slide
                     key={this.state.index}
@@ -95,6 +96,12 @@ class Slides extends Component {
                     reverse={this.state.reverse}
                     onComplete={this.updateImage}
                 />}
+                <Searchbox style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}/>
             </div>
         );
     }

@@ -1,0 +1,36 @@
+@import 'fonts.css';
+
+.Searchbox {
+    position: relative;
+    width: 350px;
+    height: 50px;
+    background-color: rgba(200, 200, 200, 0.7);
+    border-radius: 10px;
+}
+
+.slogan {
+    color: #ffffff;
+    font-family: 'CenturyGothic', serif;
+    font-size: 20px;
+    line-height: 50px;
+}
+
+.Searchbox .icon {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+}
+
+.Searchbox input {
+    width: calc(100% - 50px);
+    height: 100%;
+    margin-left: 50px;
+    box-sizing: border-box;
+    border-style: none;
+    outline: none;
+    background-color: rgba(200, 200, 200, 0);
+    color: #ffffff;
+    font-size: 20px;
+}
