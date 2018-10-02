@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import './Artizen.css';
+import './artizen.css';
 
 class Artizen extends Component {
     render() {

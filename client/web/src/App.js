@@ -3,12 +3,11 @@ import {
     BrowserRouter as Router,
     Route,
 } from 'react-router-dom';
-import Navbar from './Navbar';
-import Home from './Home';
-import Search from './Search';
-import Art from './Art';
-import Artizen from './Artizen';
-import './App.css';
+import Navbar from './navbar';
+import Home from './home';
+import Search from './search';
+import Art from './art';
+import Artizen from './artizen';
 
 class App extends Component {
     render() {

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
-import './Searchbox.css';
+import './searchbox.css';
 
 class Searchbox extends Component {
     render() {
@@ -9,7 +9,7 @@ class Searchbox extends Component {
             <div {...this.props}>
                 <span className="slogan">AuraMaze</span>
                 <form>
-                    <div className="Searchbox">
+                    <div className="searchbox">
                         <input value="Coming Soon!" readOnly/>
                         <div className="icon">
                             <FontAwesomeIcon icon={faSearch} size="lg"/>

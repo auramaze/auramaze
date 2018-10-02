@@ -1,6 +1,6 @@
 @import 'fonts.css';
 
-.Navbar {
+.navbar {
     position: fixed;
     width: 100%;
     top: 0;
@@ -14,27 +14,27 @@
     align-items: center;
 }
 
-.Navbar:hover {
+.navbar:hover {
     background-color: rgba(0, 0, 0, 1);
 }
 
-.Nav-logo {
+.nav-logo {
     float: left;
     margin-left: 35px;
 }
 
-.Logo {
+.logo {
     height: 70px;
 }
 
-.Nav-items {
+.nav-items {
     position: absolute;
     top: 50%;
     right: 0;
     transform: translate(0, -50%);
 }
 
-.Nav-item {
+.nav-item {
     float: right;
     display: inline;
     line-height: 56px;
@@ -44,7 +44,7 @@
     transition-timing-function: ease;
 }
 
-.Nav-item a {
+.nav-item a {
     position: relative;
     display: block;
     color: white;
@@ -52,7 +52,7 @@
     text-decoration: none;
 }
 
-.Nav-item a:before {
+.nav-item a:before {
     content: "";
     position: absolute;
     width: 100px;
@@ -65,7 +65,7 @@
     transition: all 0.3s ease-in-out 0s;
 }
 
-.Nav-item a:hover:before {
+.nav-item a:hover:before {
     visibility: visible;
     transform: scaleX(1);
 }

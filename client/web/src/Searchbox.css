@@ -1,6 +1,6 @@
 @import 'fonts.css';
 
-.Searchbox {
+.searchbox {
     position: relative;
     width: 350px;
     height: 50px;
@@ -15,7 +15,7 @@
     line-height: 50px;
 }
 
-.Searchbox .icon {
+.searchbox .icon {
     position: absolute;
     top: 25px;
     left: 25px;
@@ -23,7 +23,7 @@
     color: #ffffff;
 }
 
-.Searchbox input {
+.searchbox input {
     width: calc(100% - 50px);
     height: 100%;
     margin-left: 50px;

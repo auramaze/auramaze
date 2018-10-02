@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import request from 'request';
-import Slide from './Slide';
-import Searchbox from './Searchbox';
-import {API_ENDPOINT} from './Common';
-import './Slides.css';
+import Slide from './slide';
+import Searchbox from './searchbox';
+import {API_ENDPOINT} from './common';
+import './slides.css';
 
 class Slides extends Component {
     constructor(props) {
@@ -80,7 +80,7 @@ class Slides extends Component {
 
     render() {
         return (
-            <div className="Slides"
+            <div className="slides"
                 style={{
                     height: this.state.windowHeight,
                     width: this.state.windowWidth,
