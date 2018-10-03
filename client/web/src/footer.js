@@ -47,7 +47,7 @@ class Footer extends Component {
                         <td width="45%">
                             <MapWithAMarker
                                 googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`}
-                                position={{lat: 42.297, lng: -83.721}}
+                                position={{lat: 42.297264, lng: -83.721180}}
                                 loadingElement={<div style={{height: '100%'}}/>}
                                 containerElement={<div style={{height: '300px'}}/>}
                                 mapElement={<div style={{height: '100%'}}/>}
