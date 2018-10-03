@@ -50,9 +50,9 @@ class NavbarMobile extends Component {
                 <div className={`nav-toggle ${this.state.expand && 'nav-toggle-cancel'}`} onClick={() => {
                     this.setState({expand: !this.state.expand});
                 }}>
-                    <div className="nav-toggle-line" id="nav-toggle-1"></div>
-                    <div className="nav-toggle-line" id="nav-toggle-2"></div>
-                    <div className="nav-toggle-line" id="nav-toggle-3"></div>
+                    <div className="nav-toggle-line" id="nav-toggle-1"/>
+                    <div className="nav-toggle-line" id="nav-toggle-2"/>
+                    <div className="nav-toggle-line" id="nav-toggle-3"/>
                 </div>
             </div>
         );
