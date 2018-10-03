@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     BrowserRouter as Router,
     Route,
+    Switch
 } from 'react-router-dom';
 import Navbar from './navbar';
 import NavbarMobile from './navbar-mobile';
@@ -9,6 +10,24 @@ import Home from './home';
 import Search from './search';
 import Art from './art';
 import Artizen from './artizen';
+
+const HomeNavbar = (props) => {
+    return (
+        <Navbar
+            home
+            {...props}
+        />
+    );
+};
+
+const HomeNavbarMobile = (props) => {
+    return (
+        <NavbarMobile
+            home
+            {...props}
+        />
+    );
+};
 
 class App extends Component {
     constructor(props) {
@@ -45,7 +64,11 @@ class App extends Component {
                     <Route path="/search" component={Search}/>
                     <Route path="/art/:artId" component={Art}/>
                     <Route path="/artizen/:artizenId" component={Artizen}/>
-                    {this.state.windowWidth > 768 ? <Navbar/> : <NavbarMobile/>}
+                    <Switch>
+                        <Route exact path="/" render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}/>
+                        <Route path='/' component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}/>
+                    </Switch>
+
                 </div>
             </Router>
         );
