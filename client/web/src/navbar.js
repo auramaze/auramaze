@@ -8,8 +8,8 @@ class Navbar extends Component {
         return (
             <div className="navbar">
                 <div className="nav-items">
-                    <div className="nav-item"><Link to="/#contact">Contact</Link></div>
-                    <div className="nav-item"><Link to="/#about">About</Link></div>
+                    <div className="nav-item"><a href="/#contact">Contact</a></div>
+                    <div className="nav-item"><a href="/#about">About</a></div>
                 </div>
                 <div className="nav-logo">
                     <Link to="/">

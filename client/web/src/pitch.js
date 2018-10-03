@@ -14,7 +14,7 @@ class Pitch extends Component {
 
     render() {
         return (
-            <div className={this.isWideScreen() ? 'pitch' : 'pitch-mobile'}>
+            <div className={this.isWideScreen() ? 'pitch' : 'pitch-mobile'} id="about">
                 <div className="demo">
                     <img src="https://s3.us-east-2.amazonaws.com/auramaze-test/static/auramaze-demo.png" alt="demo"/>
                 </div>

@@ -36,8 +36,16 @@ class NavbarMobile extends Component {
                 <div className={`nav-items-mobile ${!this.state.expand && 'nav-items-mobile-collapse'}`}
                     style={{width: this.state.windowWidth, height: this.state.windowHeight}}>
                     <div className="nav-items-wrapper-mobile">
-                        <div className="nav-item-mobile"><Link to="/#about">About</Link></div>
-                        <div className="nav-item-mobile"><Link to="/#contact">Contact</Link></div>
+                        <div className="nav-item-mobile">
+                            <a href="/#about" onClick={() => {
+                                this.setState({expand: false});
+                            }}>About</a>
+                        </div>
+                        <div className="nav-item-mobile">
+                            <a href="/#contact" onClick={() => {
+                                this.setState({expand: false});
+                            }}>Contact</a>
+                        </div>
                     </div>
                 </div>
                 <div className="nav-logo-mobile">

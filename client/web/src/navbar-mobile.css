@@ -71,7 +71,7 @@
 }
 
 .nav-items-mobile {
-    position: absolute;
+    position: fixed;
     background-color: #000000;
     opacity: 1;
     visibility: visible;
