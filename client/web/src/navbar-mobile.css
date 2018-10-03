@@ -71,15 +71,16 @@
 }
 
 .nav-items-mobile {
-    display: block;
     position: absolute;
     background-color: #000000;
     opacity: 1;
+    visibility: visible;
     transition: all 0.3s;
 }
 
 .nav-items-mobile-collapse {
     opacity: 0;
+    visibility: hidden;
 }
 
 .nav-items-wrapper-mobile {
