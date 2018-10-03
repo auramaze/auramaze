@@ -1,0 +1,52 @@
+.pitch {
+    background-color: #fafafa;
+    height: 700px;
+}
+
+.pitch > div {
+    display: inline-block;
+}
+
+.pitch .demo {
+    position: relative;
+    width: 40%;
+    height: 100%;
+}
+
+.pitch .demo > img {
+    position: absolute;
+    max-width: 80%;
+    max-height: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pitch .topics {
+    width: 60%;
+    height: 100%;
+}
+
+.pitch-mobile {
+    background-color: #aaaaaa;
+}
+
+.pitch-mobile > div {
+    display: block;
+    width: 100%;
+}
+
+.pitch-mobile .demo {
+    padding: 50px 0;
+}
+
+.pitch-mobile .demo > img {
+    width: 50%;
+    display: block;
+    margin: auto;
+}
+
+.pitch-mobile .topics {
+    height: 500px;
+    background: blue;
+}
