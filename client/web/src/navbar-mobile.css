@@ -39,7 +39,7 @@
     background-color: #ffffff;
     height: 2px;
     width: 100%;
-    transition: all .25s;
+    transition: all 0.3s;
 }
 
 #nav-toggle-1 {
@@ -70,14 +70,16 @@
     transform: translate(0, -50%) rotate(-45deg);
 }
 
-.nav-items-mobile-expand {
+.nav-items-mobile {
     display: block;
     position: absolute;
     background-color: #000000;
+    opacity: 1;
+    transition: all 0.3s;
 }
 
 .nav-items-mobile-collapse {
-    display: none;
+    opacity: 0;
 }
 
 .nav-items-wrapper-mobile {
@@ -112,7 +114,7 @@
     background-color: white;
     visibility: hidden;
     transform: scaleX(0);
-    transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s;
 }
 
 .nav-item-mobile a:hover:before {

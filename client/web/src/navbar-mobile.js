@@ -33,7 +33,7 @@ class NavbarMobile extends Component {
     render() {
         return (
             <div className="navbar-mobile">
-                <div className={this.state.expand ? 'nav-items-mobile-expand' : 'nav-items-mobile-collapse'}
+                <div className={`nav-items-mobile ${!this.state.expand && 'nav-items-mobile-collapse'}`}
                     style={{width: this.state.windowWidth, height: this.state.windowHeight}}>
                     <div className="nav-items-wrapper-mobile">
                         <div className="nav-item-mobile"><Link to="/login">Log in</Link></div>
