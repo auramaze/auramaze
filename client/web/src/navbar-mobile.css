@@ -29,6 +29,7 @@
     width: 25px;
     height: 25px;
     transform: translate(0, -50%);
+    cursor: pointer;
 }
 
 .nav-toggle-line {
