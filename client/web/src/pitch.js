@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import './pitch.css';
 
 class Pitch extends Component {
@@ -17,5 +18,10 @@ class Pitch extends Component {
         );
     }
 }
+
+Pitch.propTypes = {
+    windowWidth: PropTypes.number,
+    windowHeight: PropTypes.number,
+};
 
 export default Pitch;

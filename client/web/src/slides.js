@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import request from 'request';
 import Slide from './slide';
 import Searchbox from './searchbox';
@@ -95,5 +96,10 @@ class Slides extends Component {
         );
     }
 }
+
+Slides.propTypes = {
+    windowWidth: PropTypes.number,
+    windowHeight: PropTypes.number,
+};
 
 export default Slides;
