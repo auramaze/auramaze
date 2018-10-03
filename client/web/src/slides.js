@@ -9,11 +9,8 @@ class Slides extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight,
             reverse: false
         };
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.updateImage = this.updateImage.bind(this);
         this.getNextIndex = this.getNextIndex.bind(this);
         this.loadImage = this.loadImage.bind(this);
@@ -28,16 +25,6 @@ class Slides extends Component {
                 }
             }
         });
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
-    updateWindowDimensions() {
-        this.setState({windowWidth: document.documentElement.clientWidth, windowHeight: document.documentElement.clientHeight});
     }
 
     updateImage() {
@@ -82,8 +69,8 @@ class Slides extends Component {
         return (
             <div className="slides"
                 style={{
-                    height: this.state.windowHeight,
-                    width: this.state.windowWidth,
+                    height: this.props.windowHeight,
+                    width: this.props.windowWidth,
                 }}>
                 {(this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`]) &&
                 <Slide
@@ -91,8 +78,8 @@ class Slides extends Component {
                     imgSrc={this.state[`imgSrc-${this.state.index}`]}
                     imgWidth={this.state[`imgWidth-${this.state.index}`]}
                     imgHeight={this.state[`imgHeight-${this.state.index}`]}
-                    windowWidth={this.state.windowWidth}
-                    windowHeight={this.state.windowHeight}
+                    windowWidth={this.props.windowWidth}
+                    windowHeight={this.props.windowHeight}
                     reverse={this.state.reverse}
                     onComplete={this.updateImage}
                 />}

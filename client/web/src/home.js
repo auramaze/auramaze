@@ -33,7 +33,7 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <Slides/>
+                <Slides windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
                 <Pitch windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
                 <Footer windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
             </div>
