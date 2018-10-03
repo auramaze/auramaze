@@ -136,7 +136,7 @@ ALTER USER django WITH PASSWORD 'auramaze';
 * Run Django server
 ```
 cd eecs441-starter-app-auramaze/django_project
-python manage.py runserver localhost:9000 
+python manage.py runserver localhost:9000
 ```
 * Test API
 ```
