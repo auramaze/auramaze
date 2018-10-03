@@ -42,6 +42,7 @@ module.exports = {
         ]
     },
     "globals": {
-        "Buffer": false
+        "Buffer": false,
+        "process": false
     }
 };

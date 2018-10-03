@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Slides from './slides';
+import Footer from './footer';
 import './home.css';
 
 class Home extends Component {
@@ -7,7 +8,7 @@ class Home extends Component {
         return (
             <div>
                 <Slides/>
-                <h2 style={{marginBottom: 4000}}>Home</h2>
+                <Footer/>
             </div>
         );
     }
