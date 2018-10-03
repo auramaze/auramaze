@@ -35,7 +35,7 @@ class Footer extends Component {
                         <tr>
                             {this.state.wideScreen &&
                         <td width="10%">
-                            <img src={logo} className="logo" alt="logo"/>
+                            <img src={logo} className="logo-footer" alt="logo"/>
                         </td>}
                             <td width={this.state.wideScreen ? '45%' : '80%'}>
                                 <div className="contact-info">

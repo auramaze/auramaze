@@ -13,7 +13,7 @@ class Navbar extends Component {
                 </div>
                 <div className="nav-logo">
                     <Link to="/">
-                        <img src={logo} className="logo" alt="logo"/>
+                        <img src={logo} className="logo-header" alt="logo"/>
                     </Link>
                 </div>
                 <div className="nav-toggle">

@@ -54,3 +54,7 @@
     visibility: visible;
     transform: scaleX(1);
 }
+
+.logo-footer {
+    height: 100px;
+}
