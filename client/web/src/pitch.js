@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 import {faCamera} from '@fortawesome/free-solid-svg-icons';
 import {faHeadphonesAlt} from '@fortawesome/free-solid-svg-icons';
 import {faShareAlt} from '@fortawesome/free-solid-svg-icons';
-import PropTypes from 'prop-types';
+import Fade from 'react-reveal/Fade';
+import PitchCard from './pitch-card';
 import './pitch.css';
-import PitchCard from "./pitch-card";
 
 class Pitch extends Component {
     isWideScreen() {
@@ -19,21 +19,29 @@ class Pitch extends Component {
                     <img src="https://s3.us-east-2.amazonaws.com/auramaze-test/static/auramaze-demo.png" alt="demo"/>
                 </div>
                 <div className="topics">
-                    <PitchCard
-                        cardTitle={"VIEW"}
-                        cardText={"Painting identification with camera and image search engine"}
-                        cardIconSrc={faCamera}
-                    />
-                    <PitchCard
-                        cardTitle={"HEAR"}
-                        cardText={"Text-to-speech on introductions via Wikipedia & art experts"}
-                        cardIconSrc={faHeadphonesAlt}
-                    />
-                    <PitchCard
-                        cardTitle={"SHARE"}
-                        cardText={"Platform for every art lover to review favorite artworks"}
-                        cardIconSrc={faShareAlt}
-                    />
+                    <div className="pitch-cards">
+                        <Fade right={this.isWideScreen()} bottom={!this.isWideScreen()}>
+                            <PitchCard
+                                cardTitle={'VIEW'}
+                                cardText={'Painting identification with camera and image search engine'}
+                                cardIconSrc={faCamera}
+                            />
+                        </Fade>
+                        <Fade right={this.isWideScreen()} bottom={!this.isWideScreen()}>
+                            <PitchCard
+                                cardTitle={'HEAR'}
+                                cardText={'Text-to-speech on introductions via Wikipedia & art experts'}
+                                cardIconSrc={faHeadphonesAlt}
+                            />
+                        </Fade>
+                        <Fade right={this.isWideScreen()} bottom={!this.isWideScreen()}>
+                            <PitchCard
+                                cardTitle={'SHARE'}
+                                cardText={'Platform for every art lover to review favorite artworks'}
+                                cardIconSrc={faShareAlt}
+                            />
+                        </Fade>
+                    </div>
                 </div>
             </div>
         );
