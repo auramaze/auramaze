@@ -44,7 +44,7 @@ app.use('/v1/search', searchRouter);
 app.use('/v1/art', artRouter);
 app.use('/v1/artizen', artizenRouter);
 app.use('/v1/slide', slideRouter);
-app.use('/v1/authRouter', authRouter);
+app.use('/v1/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
