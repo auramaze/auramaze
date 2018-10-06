@@ -1,7 +1,7 @@
 // const providers = ['twitter', 'google', 'facebook', 'github']
 const providers = ['facebook'];
 
-const callbacks = providers.map(provider => `https://apidev.auramaze.org/${provider}/callback`);
+const callbacks = providers.map(provider => `https://apidev.auramaze.org/v1/auth/${provider}/callback`);
 
 // const [twitterURL, googleURL, facebookURL, githubURL] = callbacks
 const [facebookURL] = callbacks;
