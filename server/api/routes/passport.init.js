@@ -9,7 +9,7 @@ const {Strategy: FacebookStrategy} = require('passport-facebook');
 
 const {
     FACEBOOK_CONFIG
-} = require('../config');
+} = require('./auth.config');
 
 module.exports = () => {
 

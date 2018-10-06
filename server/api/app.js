@@ -1,15 +1,21 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const passport = require('passport');
+const session = require('express-session');
+
 
 const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
 const artRouter = require('./routes/art');
 const artizenRouter = require('./routes/artizen');
 const slideRouter = require('./routes/slide');
+const authRouter = require('./routes/auth');
+const passportInit = require('./routes/passport.init');
 
 const app = express();
 app.use(cors());
@@ -24,11 +30,21 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(passport.initialize());
+passportInit();
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true
+}));
+
+
 app.use('/', indexRouter);
 app.use('/v1/search', searchRouter);
 app.use('/v1/art', artRouter);
 app.use('/v1/artizen', artizenRouter);
 app.use('/v1/slide', slideRouter);
+app.use('/v1/authRouter', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
