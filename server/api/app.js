@@ -1,17 +1,17 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var searchRouter = require('./routes/search');
-var artRouter = require('./routes/art');
-var artizenRouter = require('./routes/artizen');
-var slideRouter = require('./routes/slide');
+const indexRouter = require('./routes/index');
+const searchRouter = require('./routes/search');
+const artRouter = require('./routes/art');
+const artizenRouter = require('./routes/artizen');
+const slideRouter = require('./routes/slide');
 
-var app = express();
+const app = express();
 app.use(cors());
 
 // view engine setup
