@@ -1,38 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const http = require('https');
+const _ = require('lodash');
+const request = require('request');
 /* GET search results. */
 router.get('/', function (req, res, next) {
-    const keywords = req.query.q;
     let results = {'art': [], 'artizen': []};
 
-    const options = {
-        hostname: 'vpc-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com',
-        port: 443,
-        method: 'GET',
-        path: '/art/_search?q=' + keywords,
-    };
-
-    let back_req = http.request(options, function (response) {
-        var responseBody = '';
-        response.setEncoding('UTF-8');
-        response.on('data', function (chunk) {
-            responseBody += chunk;
-        });
-
-        response.on('end', function () {
-            results['art'] = responseBody;
-            res.send(JSON.stringify(results));
-        });
-
+    const search = _.after(Object.keys(results).length, () => {
+        res.json(results);
     });
 
-
-    back_req.on('error', function (err) {
-        next(err);
-    });
-
-    back_req.end();
+    for (let index in results) {
+        request.get({
+            url: `https://vpc-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com/${index}/_search`,
+            qs: {q: req.query.q},
+            json: true
+        }, (error, response, body) => {
+            if (error) {
+                next(error);
+            } else {
+                if (response && response.statusCode === 200) {
+                    results[index] = body.hits.hits.map(item => item._source);
+                    search();
+                } else {
+                    res.status(response.statusCode);
+                }
+            }
+        });
+    }
 });
 
 module.exports = router;
