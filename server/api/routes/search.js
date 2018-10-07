@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
                 next(error);
             } else {
                 if (response && response.statusCode === 200) {
-                    results[index] = body.hits.hits;
+                    results[index] = body.hits.hits.map(item => item._source);
                     search();
                 } else {
                     res.status(response.statusCode);
