@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 
     for (let index in results) {
         request.get({
-            url: `https://vpc-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com/${index}/_search`,
+            url: `${process.env.ESROOT}/${index}/_search`,
             qs: {q: req.query.q},
             json: true
         }, (error, response, body) => {
