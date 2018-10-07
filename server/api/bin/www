@@ -21,7 +21,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-const io = app.io;
+const io = app.get('io');
 io.attach(server);
 
 /**
