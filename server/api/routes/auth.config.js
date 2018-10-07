@@ -1,10 +1,10 @@
 // const providers = ['twitter', 'google', 'facebook', 'github']
-const providers = ['facebook'];
+const providers = ['facebook', 'github'];
 
 const callbacks = providers.map(provider => `https://apidev.auramaze.org/v1/auth/${provider}/callback`);
 
 // const [twitterURL, googleURL, facebookURL, githubURL] = callbacks
-const [facebookURL] = callbacks;
+const [facebookURL, githubURL] = callbacks;
 
 // exports.TWITTER_CONFIG = {
 //   consumerKey: process.env.TWITTER_KEY,
@@ -25,8 +25,8 @@ exports.FACEBOOK_CONFIG = {
     callbackURL: facebookURL
 };
 
-// exports.GITHUB_CONFIG = {
-//   clientID: process.env.GITHUB_KEY,
-//   clientSecret: process.env.GITHUB_SECRET,
-//   callbackURL: githubURL
-// }
+exports.GITHUB_CONFIG = {
+    clientID: process.env.GITHUB_KEY,
+    clientSecret: process.env.GITHUB_SECRET,
+    callbackURL: githubURL
+};

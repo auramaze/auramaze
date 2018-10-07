@@ -7,14 +7,14 @@ const authController = require('./auth.controller');
 // const twitterAuth = passport.authenticate('twitter');
 // const googleAuth = passport.authenticate('google', {scope: ['profile']});
 const facebookAuth = passport.authenticate('facebook');
-// const githubAuth = passport.authenticate('github');
+const githubAuth = passport.authenticate('github');
 
 // Routes that are triggered by the callbacks from each OAuth provider once 
 // the user has authenticated successfully
 // router.get('/twitter/callback', twitterAuth, authController.twitter);
 // router.get('/google/callback', googleAuth, authController.google);
 router.get('/facebook/callback', facebookAuth, authController.facebook);
-// router.get('/github/callback', githubAuth, authController.github);
+router.get('/github/callback', githubAuth, authController.github);
 
 // This custom middleware allows us to attach the socket id to the session
 // With that socket id we can send back the right user info to the right 
@@ -28,6 +28,6 @@ router.use((req, res, next) => {
 // router.get('/twitter', twitterAuth);
 // router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
-// router.get('/github', githubAuth);
+router.get('/github', githubAuth);
 
 module.exports = router;
