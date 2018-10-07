@@ -5,14 +5,14 @@ const authController = require('./auth.controller');
 
 // Setting up the passport middleware for each of the OAuth providers
 // const twitterAuth = passport.authenticate('twitter');
-// const googleAuth = passport.authenticate('google', {scope: ['profile']});
+const googleAuth = passport.authenticate('google', {scope: ['profile']});
 const facebookAuth = passport.authenticate('facebook');
 const githubAuth = passport.authenticate('github');
 
 // Routes that are triggered by the callbacks from each OAuth provider once 
 // the user has authenticated successfully
 // router.get('/twitter/callback', twitterAuth, authController.twitter);
-// router.get('/google/callback', googleAuth, authController.google);
+router.get('/google/callback', googleAuth, authController.google);
 router.get('/facebook/callback', facebookAuth, authController.facebook);
 router.get('/github/callback', githubAuth, authController.github);
 
@@ -26,7 +26,7 @@ router.use((req, res, next) => {
 
 // Routes that are triggered on the client
 // router.get('/twitter', twitterAuth);
-// router.get('/google', googleAuth);
+router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
 router.get('/github', githubAuth);
 
