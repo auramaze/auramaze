@@ -40,7 +40,7 @@ app.use(session({
 }));
 
 const io = socketio();
-app.io = io;
+app.set('io', io);
 
 app.use('/', indexRouter);
 app.use('/v1/search', searchRouter);
