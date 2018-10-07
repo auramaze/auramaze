@@ -9,6 +9,7 @@ const passport = require('passport');
 const session = require('express-session');
 const debug = require('debug')('auramaze-node-server:server');
 const http = require('http');
+const socketio = require('socket.io');
 
 
 const indexRouter = require('./routes/index');
@@ -80,6 +81,9 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
+
+const io = socketio(server);
+app.set('io', io);
 
 /**
  * Listen on provided port, on all network interfaces.
