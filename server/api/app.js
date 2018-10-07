@@ -7,6 +7,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
+const socketio = require('socket.io');
 
 
 const indexRouter = require('./routes/index');
@@ -38,6 +39,8 @@ app.use(session({
     saveUninitialized: true
 }));
 
+const io = socketio();
+app.io = io;
 
 app.use('/', indexRouter);
 app.use('/v1/search', searchRouter);
