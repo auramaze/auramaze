@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../server');
 const uuidv4 = require('uuid/v4');
 const assert = require('assert');
 
