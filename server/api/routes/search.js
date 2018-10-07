@@ -1,38 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const http = require('https');
+const request = require('request');
 /* GET search results. */
 router.get('/', function (req, res, next) {
     const keywords = req.query.q;
     let results = {'art': [], 'artizen': []};
 
-    const options = {
-        hostname: 'vpc-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com',
-        port: 443,
-        method: 'GET',
-        path: '/art/_search?q=' + keywords,
-    };
 
-    let back_req = http.request(options, function (response) {
-        var responseBody = '';
-        response.setEncoding('UTF-8');
-        response.on('data', function (chunk) {
-            responseBody += chunk;
-        });
-
-        response.on('end', function () {
-            results['art'] = responseBody;
-            res.send(JSON.stringify(results));
-        });
-
+    request.get({
+        url: 'https://vpc-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com/art/_search',
+        qs: {q: req.query.q},
+        json: true
+    }, (error, response, body) => {
+        if (error){
+            next(error);
+        } else {
+            if (response && response.statusCode === 200) {
+                res.json(body);
+            } else {
+                res.status(response.statusCode);
+            }
+        }
     });
-
-
-    back_req.on('error', function (err) {
-        next(err);
-    });
-
-    back_req.end();
 });
 
 module.exports = router;
