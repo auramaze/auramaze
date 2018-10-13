@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
@@ -16,8 +17,11 @@ router.get('/', function (req, res, next) {
             qs: {q: req.query.q},
             json: true
         }, (error, response, body) => {
-            if (error) {
-                next(error);
+            if (error || response.statusCode !== 200) {
+                res.status(500).json({
+                    code: 'ES_ERROR',
+                    message: 'Error in ElasticSearch service'
+                });
             } else {
                 if (response && response.statusCode === 200) {
                     results[index] = body.hits.hits.map(item => item._source);
