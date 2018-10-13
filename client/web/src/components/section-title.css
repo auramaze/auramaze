@@ -1,0 +1,9 @@
+@import '../fonts/fonts.css';
+
+.title {
+    padding: 5px;
+    font-family: 'CenturyGothic', serif;
+    font-size: 22px;
+    color: #666666;
+    border-bottom: #666666 3px solid;
+}

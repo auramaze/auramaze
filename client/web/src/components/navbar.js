@@ -10,7 +10,7 @@ const scroll = Scroll.animateScroll;
 class Navbar extends Component {
     render() {
         return (
-            <div className="navbar">
+            <div className="navbar" style={{backgroundColor: this.props.home ? "" : "#000000"}}>
                 <div className="nav-items">
                     <div className="nav-item">
                         {this.props.home ?
