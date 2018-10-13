@@ -14,8 +14,8 @@ cache:
   directories:
     - $API_DIR/node_modules
 
-before_script:
-  - openssl aes-256-cbc -K $encrypted_80b785a14e2e_key -iv $encrypted_80b785a14e2e_iv -in before_install.sh.enc -out $API_DIR/scripts/before_install.sh -d
+before_install:
+  - openssl aes-256-cbc -K $encrypted_80b785a14e2e_key -iv $encrypted_80b785a14e2e_iv -in .env.enc -out $API_DIR/.env -d
   - chmod +x $API_DIR/scripts/before_install.sh
   - $API_DIR/scripts/before_install.sh
 
