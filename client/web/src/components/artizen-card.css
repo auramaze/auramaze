@@ -34,9 +34,7 @@
     height: 150px;
     margin: 0 10px;
     padding: 10px;
-    border-top-style: solid;
-    border-top-color: #666666;
-    border-top-width: 1px;
+    border-top: 1px solid #666666;
     overflow: hidden;
     white-space: normal;
     font-family: 'SegoeUI', serif;
