@@ -9,6 +9,7 @@
     "i": "^0.3.6",
     "npm": "^6.4.1",
     "react": "^16.5.2",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.5.2",
     "react-google-maps": "^9.4.5",
     "react-reveal": "^1.2.2",
