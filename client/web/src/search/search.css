@@ -1,12 +1,23 @@
-.search-result {
-    background-color: #666666;
+.result-list {
+    background-color: #ffffff;
     width: 90%;
     margin: 70px auto;
 }
 
 @media screen and (max-width: 768px) {
-    .search-result {
+    .result-list {
         width: 100%;
         margin: 60px auto;
     }
+}
+
+.result-list-container {
+    width: 100%;
+    display: inline-block;
+}
+
+.result-artizen-container {
+    width: 100%;
+    overflow-x: scroll;
+    white-space: nowrap;
 }

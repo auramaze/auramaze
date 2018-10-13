@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'CenturyGothic';
+    src: url('https://s3.us-east-2.amazonaws.com/auramaze-test/static/fonts/century_gothic_regular.TTF') format('truetype');
+}
+
+@font-face {
+    font-family: 'CenturyGothic';
+    src: url('https://s3.us-east-2.amazonaws.com/auramaze-test/static/fonts/century_gothic_bold.TTF') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'SegoeUI';
+    src: url('https://s3.us-east-2.amazonaws.com/auramaze-test/static/fonts/segoeui.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'SegoeUI';
+    src: url('https://s3.us-east-2.amazonaws.com/auramaze-test/static/fonts/segoeuib.ttf') format('truetype');
+    font-weight: bold;
+}

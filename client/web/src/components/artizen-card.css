@@ -1,7 +1,6 @@
 @import '../fonts/fonts.css';
 
 .artizen-card {
-    font-family: 'CenturyGothic', serif;
     background-color: #ffffff;
 }
 
@@ -27,6 +26,7 @@
     margin: 10px;
     line-height: 60px;
     font-size: 18px;
+    font-family: 'CenturyGothic', serif;
 }
 
 .artizen-card-abstract {
@@ -38,6 +38,8 @@
     border-top-color: #666666;
     border-top-width: 1px;
     overflow: hidden;
+    white-space: normal;
+    font-family: 'SegoeUI', serif;
 }
 
 .artizen-card-mask-bottom {

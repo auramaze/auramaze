@@ -4,16 +4,17 @@ import './section-title.css';
 
 class SectionTitle extends Component {
     render() {
+        const {sectionTitle, ...props} = this.props;
         return (
-            <div {...this.props} className="title">
-                {this.props.title}
+            <div {...props} className="section-title">
+                {this.props.sectionTitle}
             </div>
         );
     }
 }
 
 SectionTitle.propTypes = {
-    title: PropTypes.string,
+    sectionTitle: PropTypes.string,
 };
 
 export default SectionTitle;
