@@ -4,7 +4,7 @@ import './section-title.css';
 
 class SectionTitle extends Component {
     render() {
-        const {sectionTitle, ...props} = this.props;
+        const {...props} = this.props;
         return (
             <div {...props} className="section-title">
                 {this.props.sectionTitle}

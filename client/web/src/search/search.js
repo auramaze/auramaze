@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import * as qs from 'query-string';
 import ItemList from '../components/item-list';
 import './search.css';
-import request from "request";
-import {API_ENDPOINT} from "../common";
+import request from 'request';
+import {API_ENDPOINT} from '../common';
 
 class Search extends Component {
     constructor(props) {
@@ -33,5 +34,9 @@ class Search extends Component {
         );
     }
 }
+
+Search.propTypes = {
+    location: PropTypes.object,
+};
 
 export default Search;

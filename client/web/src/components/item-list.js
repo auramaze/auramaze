@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Scrollbars} from 'react-custom-scrollbars';
 import ArtizenCard from './artizen-card';
 import SectionTitle from './section-title';
@@ -38,5 +39,9 @@ class ItemList extends Component {
         );
     }
 }
+
+ItemList.propTypes = {
+    items: PropTypes.object,
+};
 
 export default ItemList;
