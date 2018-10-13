@@ -1168,6 +1168,36 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
+
+            it('should return empty', done => {
+                request(app).get('/v1/search?q=marina&from=999')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen.length === 0 && res.body.art.length === 0);
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid query', done => {
+                request(app).get('/v1/search?q=')
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid from', done => {
+                request(app).get('/v1/search?q=marina&from=a')
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
         });
 
         describe('Search art', () => {
