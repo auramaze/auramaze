@@ -1,10 +1,18 @@
+require('dotenv').config();
 const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10', region: 'us-east-2'});
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+const dynamodb = new AWS.DynamoDB.DocumentClient({
+    apiVersion: '2012-08-10',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+});
 const mysql = require('mysql');
-const rds = mysql.createConnection(JSON.parse(fs.readFileSync(path.join(os.homedir(), '.aws/rds'), 'utf8')));
+const rds = mysql.createConnection({
+    'host': process.env.AWS_RDS_HOST,
+    'user': process.env.AWS_RDS_USER,
+    'password': process.env.AWS_RDS_PASSWORD,
+    'database': process.env.AWS_RDS_DATABASE
+});
 const franc = require('franc-min');
 const convert3To1 = require('iso-639-3-to-1');
 
