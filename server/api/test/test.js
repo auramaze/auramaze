@@ -1136,4 +1136,61 @@ describe('Test api', function () {
             });
         });
     });
+
+    describe('Search api', () => {
+        describe('Search artizen', () => {
+            it('should get artizen data', done => {
+                request(app).get('/v1/search?q=marina')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'marina'));
+                    })
+                    .end(done);
+            });
+
+            it('should get art data', done => {
+                request(app).get('/v1/search?q=met')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000006));
+                    })
+                    .end(done);
+            });
+
+            it('should support artizen name in Chinese', done => {
+                request(app).get('/v1/search?q=' + encodeURIComponent('达芬奇'))
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci') && res.body.art && res.body.art.some(e => e.id === 10000003));
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('Search art', () => {
+            it('should get art data', done => {
+                request(app).get('/v1/search?q=musician')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000006));
+                    })
+                    .end(done);
+            });
+
+            it('should support art name in Chinese', done => {
+                request(app).get('/v1/search?q=' + encodeURIComponent('奴隶'))
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000004));
+                    })
+                    .end(done);
+            });
+        });
+
+    });
 });
