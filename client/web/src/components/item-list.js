@@ -18,7 +18,7 @@ class ItemList extends Component {
                                     {this.props.items.artizen.map((artizen, index) =>
                                         <ArtizenCard
                                             key={index}
-                                            style={{width: 300, display: 'inline-block', margin: 20}}
+                                            style={{width: 280, display: 'inline-block', margin: 20}}
                                             name={artizen.name.default}
                                             avatar={artizen.avatar}
                                             abstract={artizen.introduction[0].en}

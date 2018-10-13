@@ -23,7 +23,7 @@
 .artizen-card-name {
     display: inline-block;
     vertical-align: top;
-    margin: 10px;
+    margin: 10px 0;
     line-height: 60px;
     font-size: 18px;
     font-family: 'CenturyGothic', serif;
