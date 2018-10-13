@@ -36,7 +36,7 @@ class NavbarMobile extends Component {
 
     render() {
         return (
-            <div className="navbar-mobile">
+            <div className="navbar-mobile" style={{backgroundColor: this.props.home ? '' : '#000000'}}>
                 <div className={`nav-items-mobile ${!this.state.expand && 'nav-items-mobile-collapse'}`}
                     style={{width: this.state.windowWidth, height: this.state.windowHeight}}>
                     <div className="nav-items-wrapper-mobile">
