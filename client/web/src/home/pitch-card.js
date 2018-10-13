@@ -4,12 +4,6 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 class PitchCard extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {hovered: false};
-    }
-
-
     render() {
         return (
             <div className='pitch-card'>

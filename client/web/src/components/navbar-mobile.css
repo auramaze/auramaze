@@ -1,4 +1,4 @@
-@import 'fonts.css';
+@import '../fonts/fonts.css';
 
 .navbar-mobile {
     position: absolute;

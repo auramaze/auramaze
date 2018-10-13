@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Slides from './slides';
 import Pitch from './pitch';
-import Footer from './footer';
+import Footer from '../components/footer';
 import './home.css';
 
 class Home extends Component {

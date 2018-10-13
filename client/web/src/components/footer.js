@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import MapWithAMarker from './map-with-marker';
-import logo from './logo-white-frame.svg';
+import logo from '../static/logo-white-frame.svg';
 import './footer.css';
 
 class Footer extends Component {

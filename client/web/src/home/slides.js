@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import request from 'request';
 import Slide from './slide';
-import Searchbox from './searchbox';
-import {API_ENDPOINT} from './common';
+import Searchbox from '../components/searchbox';
+import {API_ENDPOINT} from '../common';
 import './slides.css';
 
 class Slides extends Component {

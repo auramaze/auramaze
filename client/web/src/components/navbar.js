@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import * as Scroll from 'react-scroll';
-import logo from './logo-white-frame.svg';
+import logo from '../static/logo-white-frame.svg';
 import './navbar.css';
 
 const scroll = Scroll.animateScroll;

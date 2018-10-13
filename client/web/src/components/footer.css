@@ -1,4 +1,4 @@
-@import 'fonts.css';
+@import '../fonts/fonts.css';
 
 .footer {
     position: relative;

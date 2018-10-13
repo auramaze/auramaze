@@ -4,12 +4,12 @@ import {
     Route,
     Switch
 } from 'react-router-dom';
-import Navbar from './navbar';
-import NavbarMobile from './navbar-mobile';
-import Home from './home';
-import Search from './search';
-import Art from './art';
-import Artizen from './artizen';
+import Navbar from './components/navbar';
+import NavbarMobile from './components/navbar-mobile';
+import Home from './home/home';
+import Search from './search/search';
+import Art from './art/art';
+import Artizen from './artizen/artizen';
 
 const HomeNavbar = (props) => {
     return (
