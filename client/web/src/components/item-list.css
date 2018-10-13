@@ -16,6 +16,12 @@
     display: inline-block;
 }
 
+.scrollbar-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+
 .artizen-container {
     white-space: nowrap;
 }

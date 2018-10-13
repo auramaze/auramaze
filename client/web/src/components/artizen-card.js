@@ -9,7 +9,7 @@ class ArtizenCard extends Component {
                 <div className="artizen-card-title">
                     {this.props.avatar ? <img src={this.props.avatar} alt="avatar" className="artizen-card-avatar"/> :
                         <div className="artizen-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
-                    <span className="artizen-card-name">Paul Cezanne</span>
+                    <span className="artizen-card-name">{this.props.name}</span>
                 </div>
                 {this.props.abstract && <div className="artizen-card-abstract">
                     {this.props.abstract}
