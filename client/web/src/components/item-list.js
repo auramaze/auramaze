@@ -2,11 +2,24 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Scrollbars} from 'react-custom-scrollbars';
 import ArtizenCard from './artizen-card';
-import ArtCard from "./art-card";
+import ArtCardLayout from './art-card-layout';
 import SectionTitle from './section-title';
 import './item-list.css';
 
 class ItemList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            arts: props.items.art
+        };
+    }
+
+    componentDidUpdate() {
+        setTimeout(function() {
+            this.setState({arts: [...this.state.arts, ...this.props.items.art]});
+        }.bind(this), 2000);
+    }
+
     render() {
         return (
             <div className="item-list">
@@ -20,7 +33,12 @@ class ItemList extends Component {
                                     {this.props.items.artizen.map((artizen, index) =>
                                         <ArtizenCard
                                             key={index}
-                                            style={{width: 280, display: 'inline-block', margin: 20}}
+                                            style={{
+                                                width: 280,
+                                                display: 'inline-block',
+                                                margin: 20,
+                                                verticalAlign: 'top'
+                                            }}
                                             name={artizen.name.default}
                                             avatar={artizen.avatar}
                                             abstract={artizen.introduction && artizen.introduction.length > 0 && artizen.introduction[0].en}
@@ -34,16 +52,7 @@ class ItemList extends Component {
                     {this.props.items.art && this.props.items.art.length > 0 &&
                     <div className="art-section">
                         <SectionTitle sectionTitle="Art" style={{margin: '30px 20px 10px 20px'}}/>
-                        {this.props.items.art.map((art, index) =>
-                            <ArtCard
-                                key={index}
-                                image={art.image.default.url}
-                                artist={art.artist.default}
-                                completionYear={art.completion_year}
-                                title={art.title.default}
-                                avatar={art.avatar}
-                                abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
-                            />)}
+                        <ArtCardLayout arts={this.state.arts} columns={2}/>
                     </div>}
                 </div>
             </div>

@@ -28,7 +28,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/el-greco/1610/191039.jpg",
-                                        "size": [1777, 2000]
+                                        "width": 1777,
+                                        "height": 2000
                                     }
                                 },
                                 "id": 10000011,
@@ -70,7 +71,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/rembrandt/1631/220275.jpg",
-                                        "size": [734, 813]
+                                        "width": 734,
+                                        "height": 813
                                     }
                                 },
                                 "id": 10000001,
@@ -104,7 +106,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/jacques-louis-david/1787/197945.jpg",
-                                        "size": [2943, 1916]
+                                        "width": 2943,
+                                        "height": 1916
                                     }
                                 },
                                 "id": 10000005,
@@ -147,7 +150,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/vincent-van-gogh/1887/206763.jpg",
-                                        "size": [1778, 2317]
+                                        "width": 1778,
+                                        "height": 2317
                                     }
                                 },
                                 "id": 10000010,
@@ -186,7 +190,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg",
-                                        "size": [2663, 1971]
+                                        "width": 2663,
+                                        "height": 1971
                                     }
                                 },
                                 "id": 10000004,
@@ -228,7 +233,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/caravaggio/1595/186671.jpg",
-                                        "size": [1188, 912]
+                                        "width": 1188,
+                                        "height": 912
                                     }
                                 },
                                 "id": 10000007,
@@ -269,7 +275,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-adolphe-bouguereau/1859/232545.jpg",
-                                        "size": [844, 1084]
+                                        "width": 844,
+                                        "height": 1084
                                     }
                                 },
                                 "id": 10000008,
@@ -302,7 +309,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/vincent-van-gogh/1887/206786.jpg",
-                                        "size": [1758, 2186]
+                                        "width": 1758,
+                                        "height": 2186
                                     }
                                 },
                                 "id": 10000009,
@@ -342,7 +350,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/caravaggio/1595/186648.jpg",
-                                        "size": [949, 708]
+                                        "width": 949,
+                                        "height": 708
                                     }
                                 },
                                 "id": 10000006,
@@ -381,7 +390,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/leonardo-da-vinci/1474/225199.jpg",
-                                        "size": [1024, 1087]
+                                        "width": 1024,
+                                        "height": 1087
                                     }
                                 },
                                 "id": 10000003,
@@ -423,7 +433,8 @@ class Search extends Component {
                                 "image": {
                                     "default": {
                                         "url": "https://s3.us-east-2.amazonaws.com/auramaze-test/images/rembrandt/1653/9223372032559808999.jpg",
-                                        "size": [2500, 2641]
+                                        "width": 2500,
+                                        "height": 2641
                                     }
                                 },
                                 "id": 10000002,

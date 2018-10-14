@@ -11,10 +11,10 @@ class ArtizenCard extends Component {
                         <div className="artizen-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
                     <span className="artizen-card-name">{this.props.name}</span>
                 </div>
-                {this.props.abstract && <div className="artizen-card-abstract">
+                <div className="artizen-card-abstract">
                     {this.props.abstract}
                     <div className="artizen-card-mask-bottom"/>
-                </div>}
+                </div>
             </div>
         );
     }
