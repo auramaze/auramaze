@@ -4,19 +4,20 @@ import '../common.css';
 
 class ArtCard extends Component {
     render() {
+        const {image, title, artist, avatar, completionYear, abstract, ...props} = this.props;
         return (
-            <div {...this.props} className="art-card card-shadow">
-                {this.props.image ? <img src={this.props.image} alt="avatar" className="art-card-artwork"/> :
+            <div {...props} className="art-card card-shadow">
+                {image ? <img src={image} alt="avatar" className="art-card-artwork"/> :
                     <div className="art-card-artwork" style={{backgroundColor: '#cdcdcd', height: 200}}/>}
                 <div className="art-card-title">
                     <div className="art-card-names">
-                        <span className="art-card-name">{this.props.title}</span><br/>
-                        <span className="art-card-subname">{this.props.artist}, {this.props.completionYear}</span>
+                        <span className="art-card-name">{title}</span><br/>
+                        <span className="art-card-subname">{artist}{completionYear && `, ${completionYear}`}</span>
                     </div>
-                    {this.props.avatar && <img src={this.props.avatar} alt="avatar" className="art-card-avatar"/>}
+                    {avatar && <img src={avatar} alt="avatar" className="art-card-avatar"/>}
                 </div>
                 <div className="art-card-abstract">
-                    {this.props.abstract}
+                    {abstract}
                     <div className="art-card-mask-bottom"/>
                 </div>
             </div>

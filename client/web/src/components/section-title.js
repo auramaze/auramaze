@@ -4,10 +4,10 @@ import './section-title.css';
 
 class SectionTitle extends Component {
     render() {
-        const {...props} = this.props;
+        const {sectionTitle, ...props} = this.props;
         return (
             <div {...props} className="section-title">
-                {this.props.sectionTitle}
+                {sectionTitle}
             </div>
         );
     }
