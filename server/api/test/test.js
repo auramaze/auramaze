@@ -97,14 +97,14 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should get empty data', done => {
+            it('should not get empty data', done => {
                 request(app).post('/v1/art/batch')
                     .send({
                         'id': [10000000, 10000003]
                     })
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(JSON.stringify(res.body[10000000]) === JSON.stringify({}));
+                        assert(!res.body.hasOwnProperty(10000000));
                     })
                     .end(done);
             });
@@ -122,15 +122,15 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should report ART_NOT_FOUND', done => {
+            it('should not report ART_NOT_FOUND', done => {
                 request(app).post('/v1/art/batch')
                     .send({
                         'id': [90000000]
                     })
-                    .expect(404)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ART_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
                     })
                     .end(done);
             });

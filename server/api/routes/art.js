@@ -94,41 +94,20 @@ router.post('/batch', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    let result = {};
+    const params = {RequestItems: {'art': {Keys: req.body.id.map(id => ({id: id}))}}};
 
-    let get = _.after(req.body.id.length, () => {
-        res.json(result);
+    dynamodb.batchGet(params, function (err, data) {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        }
+        else {
+            res.json(data.Responses.art.reduce((result, item) => {
+                result[item.id] = item; //a, b, c
+                return result;
+            }, {}));
+        }
     });
-
-    for (let reqId of req.body.id) {
-        common.checkExist('art', parseInt(reqId), (err, id) => {
-            /* istanbul ignore if */
-            if (err) {
-                next(err);
-            } else {
-                if (id) {
-                    common.getItem('art', id, (err, data) => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            next(err);
-                        } else {
-                            if (data.Item) {
-                                result[parseInt(id)] = data.Item;
-                            } else {
-                                result[parseInt(id)] = {};
-                            }
-                            get();
-                        }
-                    });
-                } else {
-                    res.status(404).json({
-                        code: 'ART_NOT_FOUND',
-                        message: `Art not found: ${reqId}`
-                    });
-                }
-            }
-        });
-    }
 });
 
 /* GET art relations. */
