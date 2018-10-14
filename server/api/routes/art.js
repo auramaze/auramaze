@@ -94,9 +94,7 @@ router.post('/batch', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const params = {RequestItems: {'art': {Keys: req.body.id.map(id => ({id: id}))}}};
-
-    dynamodb.batchGet(params, function (err, data) {
+    common.batchGetItems('art', req.body.id, function (err, data) {
         /* istanbul ignore if */
         if (err) {
             next(err);

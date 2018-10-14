@@ -285,6 +285,73 @@ describe('Test api', function () {
             });
         });
 
+
+        describe('Batch GET artizen data', () => {
+            it('should batch get artizen data', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000012, 100000013]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[100000012].name.en === 'National Gallery of Art, Washington, DC, US');
+                    })
+                    .end(done);
+            });
+
+            it('should convert types to array', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000012, 100000013]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[100000012].type.length === 2);
+                    })
+                    .end(done);
+            });
+
+            it('should not get empty data', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000000, 100000003]
+                    })
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(!res.body.hasOwnProperty(100000000));
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid id', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [10000001]
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should not report ART_NOT_FOUND', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [900000000]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+        });
+
         describe('GET artizen relations', () => {
             it('should return related arts of artizen', done => {
                 request(app).get('/v1/artizen/metmuseum/art').expect(200)

@@ -78,6 +78,12 @@ Common.prototype.getItem = (group, id, callback) => {
     dynamodb.get(params, callback);
 };
 
+// Batch get item data from DynamoDB
+Common.prototype.batchGetItems = (group, id, callback) => {
+    const params = {RequestItems: {[group]: {Keys: id.map(id => ({id: id}))}}};
+    dynamodb.batchGet(params, callback);
+};
+
 // Put item data into DynamoDB
 Common.prototype.putItem = (group, item, callback) => {
     const params = {
