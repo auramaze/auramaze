@@ -10,17 +10,12 @@ class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight,
             query: qs.parse(props.location.search, {ignoreQueryPrefix: true}).q,
             items: {art: [], artizen: []}
         };
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     componentDidMount() {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
         request.get({
             url: `${API_ENDPOINT}/search?q=${encodeURIComponent(this.state.query)}`,
             json: true
@@ -43,22 +38,10 @@ class Search extends Component {
         });
     }
 
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
-
-    updateWindowDimensions() {
-        this.setState({
-            windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight
-        });
-    }
-
     render() {
         return (
             <div>
-                <ItemList items={this.state.items} windowWidth={this.state.windowWidth}/>
+                <ItemList items={this.state.items}/>
             </div>
         );
     }
