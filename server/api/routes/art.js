@@ -84,8 +84,8 @@ router.get('/:id', oneOf([
     });
 });
 
-/* Bulk GET art data. */
-router.post('/bulk', [
+/* Batch GET art data. */
+router.post('/batch', [
     body('id').isArray().isLength({min: 1}),
     body('id.*').isInt().isLength({min: 8, max: 8})
 ], (req, res, next) => {

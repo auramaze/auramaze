@@ -83,9 +83,9 @@ describe('Test api', function () {
             });
         });
 
-        describe('Bulk GET art data', () => {
-            it('should get art data bulk', done => {
-                request(app).post('/v1/art/bulk')
+        describe('Batch GET art data', () => {
+            it('should batch get art data', done => {
+                request(app).post('/v1/art/batch')
                     .send({
                         'id': [10000002, 10000003]
                     })
@@ -98,7 +98,7 @@ describe('Test api', function () {
             });
 
             it('should get empty data', done => {
-                request(app).post('/v1/art/bulk')
+                request(app).post('/v1/art/batch')
                     .send({
                         'id': [10000000, 10000003]
                     })
@@ -110,7 +110,7 @@ describe('Test api', function () {
             });
 
             it('should report invalid id', done => {
-                request(app).post('/v1/art/bulk')
+                request(app).post('/v1/art/batch')
                     .send({
                         'id': [100000001]
                     })
@@ -123,7 +123,7 @@ describe('Test api', function () {
             });
 
             it('should report ART_NOT_FOUND', done => {
-                request(app).post('/v1/art/bulk')
+                request(app).post('/v1/art/batch')
                     .send({
                         'id': [90000000]
                     })
