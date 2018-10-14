@@ -13,8 +13,7 @@ class ArtCard extends Component {
                         <span className="art-card-name">{this.props.title}</span><br/>
                         <span className="art-card-subname">{this.props.artist}, {this.props.completionYear}</span>
                     </div>
-                    {this.props.avatar ? <img src={this.props.avatar} alt="avatar" className="art-card-avatar"/> :
-                        <div className="art-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
+                    {this.props.avatar && <img src={this.props.avatar} alt="avatar" className="art-card-avatar"/>}
                 </div>
                 <div className="art-card-abstract">
                     {this.props.abstract}
