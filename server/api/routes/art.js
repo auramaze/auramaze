@@ -84,6 +84,53 @@ router.get('/:id', oneOf([
     });
 });
 
+/* Bulk GET art data. */
+router.post('/bulk', [
+    body('id').isArray().isLength({min: 1}),
+    body('id.*').isInt().isLength({min: 8, max: 8})
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    let result = {};
+
+    let get = _.after(req.body.id.length, () => {
+        res.json(result);
+    });
+
+    for (let reqId of req.body.id) {
+        common.checkExist('art', parseInt(reqId), (err, id) => {
+            /* istanbul ignore if */
+            if (err) {
+                next(err);
+            } else {
+                if (id) {
+                    common.getItem('art', id, (err, data) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            if (data.Item) {
+                                result[parseInt(id)] = data.Item;
+                            } else {
+                                result[parseInt(id)] = {};
+                            }
+                            get();
+                        }
+                    });
+                } else {
+                    res.status(404).json({
+                        code: 'ART_NOT_FOUND',
+                        message: `Art not found: ${reqId}`
+                    });
+                }
+            }
+        });
+    }
+});
+
 /* GET art relations. */
 router.get('/:id/artizen', [
     oneOf([

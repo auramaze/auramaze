@@ -83,6 +83,59 @@ describe('Test api', function () {
             });
         });
 
+        describe('Bulk GET art data', () => {
+            it('should get art data bulk', done => {
+                request(app).post('/v1/art/bulk')
+                    .send({
+                        'id': [10000002, 10000003]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[10000002].title.en === 'Aristotle with a Bust of Homer');
+                    })
+                    .end(done);
+            });
+
+            it('should get empty data', done => {
+                request(app).post('/v1/art/bulk')
+                    .send({
+                        'id': [10000000, 10000003]
+                    })
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body[10000000]) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid id', done => {
+                request(app).post('/v1/art/bulk')
+                    .send({
+                        'id': [100000001]
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should report ART_NOT_FOUND', done => {
+                request(app).post('/v1/art/bulk')
+                    .send({
+                        'id': [90000000]
+                    })
+                    .expect(404)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.code === 'ART_NOT_FOUND');
+                    })
+                    .end(done);
+            });
+        });
+
         describe('GET art relations', () => {
             it('should return related artizens of art', done => {
                 request(app).get('/v1/art/10000003/artizen')
