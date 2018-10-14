@@ -69,29 +69,38 @@ class ArtCardLayout extends Component {
         }
     }
 
+    static getArtCardWidth(width, columns) {
+        return Math.floor((width - 40 * columns) / columns);
+    }
+
     render() {
         return (
-            this.state.images.map((column, index) =>
-                <div
-                    key={index}
-                    style={{display: 'inline-block', verticalAlign: 'top'}}
-                >
-                    {
-                        column.map((art, index) =>
-                            <ArtCard
-                                key={index}
-                                style={{width: 250}}
-                                image={art.image.default.url}
-                                artist={art.artist.default}
-                                completionYear={art.completion_year}
-                                title={art.title.default}
-                                avatar={art.avatar}
-                                abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
-                            />)
-                    }
+            <div style={{whiteSpace: 'nowrap', width: this.props.width, overflowX: 'hidden'}}>
+                {this.state.images.map((column, index) =>
+                    <div
+                        key={index}
+                        style={{display: 'inline-block', verticalAlign: 'top'}}
+                    >
+                        {
+                            column.map((art, index) =>
+                                <ArtCard
+                                    key={index}
+                                    style={{
+                                        width: ArtCardLayout.getArtCardWidth(this.props.width, this.props.columns),
+                                        margin: 20
+                                    }}
+                                    image={art.image.default.url}
+                                    artist={art.artist.default}
+                                    completionYear={art.completion_year}
+                                    title={art.title.default}
+                                    avatar={art.avatar}
+                                    abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
+                                />)
+                        }
 
-                </div>
-            )
+                    </div>
+                )}
+            </div>
         );
     }
 }

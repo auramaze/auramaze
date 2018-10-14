@@ -58,7 +58,7 @@ class Search extends Component {
     render() {
         return (
             <div>
-                <ItemList items={this.state.items} columns={parseInt(this.state.windowWidth / 500)}/>
+                <ItemList items={this.state.items} windowWidth={this.state.windowWidth}/>
             </div>
         );
     }
