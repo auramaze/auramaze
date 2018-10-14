@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Scrollbars} from 'react-custom-scrollbars';
-import ArtizenCard from './artizen-card';
 import ArtCard from './art-card';
-import SectionTitle from './section-title';
 import './art-card-layout.css';
 
 class ArtCardLayout extends Component {
@@ -104,5 +101,10 @@ class ArtCardLayout extends Component {
         );
     }
 }
+
+ArtCardLayout.propTypes = {
+    width: PropTypes.number,
+    columns: PropTypes.number
+};
 
 export default ArtCardLayout;
