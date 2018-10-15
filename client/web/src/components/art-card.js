@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import './art-card.css';
-import '../common.css';
 
 class ArtCard extends Component {
     render() {

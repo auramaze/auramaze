@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import './artizen-card.css';
-import '../common.css';
 
 class ArtizenCard extends Component {
     render() {

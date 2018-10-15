@@ -26,8 +26,6 @@
     right: 0;
     width: 62%;
     max-width: calc(100% - 400px);
-    height: 1000px;
-    background-color: #cdcdcd;
     padding: 20px;
     box-sizing: border-box;
 }

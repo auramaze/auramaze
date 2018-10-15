@@ -28,7 +28,6 @@ class ArtCardLayout extends Component {
     }
 
     static getArtHeight(art) {
-        console.log(art);
         return art.image.default.height;
     }
 
