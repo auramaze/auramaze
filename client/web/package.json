@@ -9,7 +9,7 @@
     "i": "^0.3.6",
     "lodash.after": "^4.0.4",
     "npm": "^6.4.1",
-    "query-string": "^6.2.0",
+    "query-string": "^5.1.1",
     "react": "^16.5.2",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.5.2",
