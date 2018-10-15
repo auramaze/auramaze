@@ -4,6 +4,7 @@ import * as qs from 'query-string';
 import ItemList from '../components/item-list';
 import './search.css';
 import request from 'request';
+import after from 'lodash.after';
 import {API_ENDPOINT} from '../common';
 
 class Search extends Component {
@@ -20,18 +21,30 @@ class Search extends Component {
             url: `${API_ENDPOINT}/search?q=${encodeURIComponent(this.state.query)}`,
             json: true
         }, (error, response, items) => {
+            let get = after(2, () => {
+                this.setState({
+                    items: items
+                });
+            });
             if (response && response.statusCode === 200) {
-                const id = items.art.map(art => art.id);
                 request.post({
-                    url: `${API_ENDPOINT}/art/bulk`,
-                    body: {id: id},
+                    url: `${API_ENDPOINT}/art/batch`,
+                    body: {id: items.art.map(art => art.id)},
                     json: true
                 }, (error, response, body) => {
                     if (response && response.statusCode === 200) {
                         items.art = items.art.map(art => Object.assign(art, body[art.id]));
-                        this.setState({
-                            items: items
-                        });
+                        get();
+                    }
+                });
+                request.post({
+                    url: `${API_ENDPOINT}/artizen/batch`,
+                    body: {id: items.artizen.map(artizen => artizen.id)},
+                    json: true
+                }, (error, response, body) => {
+                    if (response && response.statusCode === 200) {
+                        items.artizen = items.artizen.map(artizen => Object.assign(artizen, body[artizen.id]));
+                        get();
                     }
                 });
             }

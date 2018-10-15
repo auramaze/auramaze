@@ -4,15 +4,16 @@ import '../common.css';
 
 class ArtizenCard extends Component {
     render() {
+        const {name, avatar, abstract, ...props} = this.props;
         return (
-            <div {...this.props} className="artizen-card card-shadow">
+            <div {...props} className="artizen-card card-shadow">
                 <div className="artizen-card-title">
-                    {this.props.avatar ? <img src={this.props.avatar} alt="avatar" className="artizen-card-avatar"/> :
+                    {avatar ? <img src={avatar} alt="avatar" className="artizen-card-avatar"/> :
                         <div className="artizen-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
-                    <span className="artizen-card-name">{this.props.name}</span>
+                    <span className="artizen-card-name">{name}</span>
                 </div>
                 <div className="artizen-card-abstract">
-                    {this.props.abstract}
+                    {abstract}
                     <div className="artizen-card-mask-bottom"/>
                 </div>
             </div>
