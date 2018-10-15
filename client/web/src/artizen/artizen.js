@@ -79,6 +79,7 @@ class Artizen extends Component {
                         name={this.state.artizen.name && this.state.artizen.name.default}
                         avatar={this.state.artizen.avatar}
                         style={{backgroundColor: '#fafafa'}}
+                        type={this.state.artizen.type}
                     />
                     <SectionTitle sectionTitle="Reviews"/>
                 </div>
@@ -86,8 +87,11 @@ class Artizen extends Component {
                     {this.state.art.map(section => section.data.length > 0 &&
                         <div key={section.type}>
                             <SectionTitle sectionTitle={Artizen.convertArtizenTypeToSectionTitle(section.type)}/>
-                            <ArtCardLayout arts={section.data} width={this.getArtCardLayoutWidth()}
-                                           columns={this.getArtCardLayoutColumns()}/>
+                            <ArtCardLayout
+                                arts={section.data}
+                                width={this.getArtCardLayoutWidth()}
+                                columns={this.getArtCardLayoutColumns()}
+                            />
                         </div>
                     )}
                 </div>

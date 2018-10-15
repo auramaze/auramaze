@@ -18,3 +18,12 @@
     font-family: 'CenturyGothic', serif;
     margin: 10px;
 }
+
+.artizen-badges {
+    text-align: center;
+}
+
+.artizen-badge {
+    width: 25px;
+    height: 25px;
+}
