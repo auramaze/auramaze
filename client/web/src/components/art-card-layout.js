@@ -32,7 +32,7 @@ class ArtCardLayout extends Component {
     }
 
     static appendArts(arts, prevState, artCardWidth, extendedHeight) {
-        let nextState = JSON.parse(JSON.stringify(prevState));
+        let nextState = prevState;
         for (let art of arts) {
             const minIndex = ArtCardLayout.getMinIndex(nextState.heights);
             nextState.heights[minIndex] += (ArtCardLayout.getArtHeight(art) / ArtCardLayout.getArtWidth(art) * artCardWidth + extendedHeight);
