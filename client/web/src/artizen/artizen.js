@@ -80,6 +80,7 @@ class Artizen extends Component {
                         avatar={this.state.artizen.avatar}
                         style={{backgroundColor: '#fafafa'}}
                     />
+                    <SectionTitle sectionTitle="Reviews"/>
                 </div>
                 <div className="artizen-right-section" ref={this.artSection}>
                     {this.state.art.map(section => section.data.length > 0 &&
