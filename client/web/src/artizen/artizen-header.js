@@ -1,19 +1,24 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
+
 import './artizen-header.css';
 
 class ArtizenHeader extends Component {
     render() {
-        const {...props} = this.props;
+        const {avatar, name, ...props} = this.props;
         return (
             <div className="artizen-header" {...props}>
-                <div className="artizen-header-avatar">
-                    <img
-                        src="https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/vincent-van-gogh.jpg"
-                        alt="avatar"
-                        className="artizen-header-avatar-img"
-                    />
-                </div>
+                {avatar ?
+                    <div className="artizen-header-avatar">
+                        <img
+                            src={avatar}
+                            alt="avatar"
+                            className="artizen-header-avatar-img"
+                        />
+                    </div> :
+                    <div className="artizen-header-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
+                <div className="artizen-header-name">{name}</div>
             </div>
         );
     }
