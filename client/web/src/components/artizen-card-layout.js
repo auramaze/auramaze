@@ -7,7 +7,7 @@ import './artizen-card-layout.css';
 class ArtizenCardLayout extends Component {
     render() {
         return (
-            <div className="scrollbar-container">
+            <div className="artizen-card-layout" style={{height: this.props.extended ? 300 : 130}}>
                 <Scrollbars style={{width: '100%', height: '100%'}}>
                     <div className="artizen-container">
                         {this.props.artizens.map((artizen, index) =>
