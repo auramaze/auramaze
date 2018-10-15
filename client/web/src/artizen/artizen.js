@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import ArtizenHeader from './artizen-header';
 import './artizen.css';
 
 class Artizen extends Component {
+    componentDidMount() {
+        console.log(this.props.match.params.artizenId);
+    }
+
     render() {
         return (
             <div className="artizen">
-                <h3>{this.props.match.params.artizenId}</h3>
+                <ArtizenHeader style={{width: 500, backgroundColor: '#fafafa'}}/>
             </div>
         );
     }
