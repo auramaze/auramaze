@@ -106,6 +106,7 @@ class ArtCardLayout extends Component {
 }
 
 ArtCardLayout.propTypes = {
+    arts: PropTypes.array,
     width: PropTypes.number,
     columns: PropTypes.number,
     extended: PropTypes.bool

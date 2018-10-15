@@ -1,0 +1,25 @@
+.scrollbar-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+
+.artizen-container {
+    white-space: nowrap;
+}
+
+.artizen-container-mask-left {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    bottom: 50px;
+    box-shadow: 0 0 40px 30px #ffffff;
+}
+
+.artizen-container-mask-right {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    bottom: 50px;
+    box-shadow: 0 0 40px 30px #ffffff;
+}
