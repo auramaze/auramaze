@@ -5,7 +5,7 @@ import './artizen.css';
 class Artizen extends Component {
     render() {
         return (
-            <div>
+            <div className="artizen">
                 <h3>{this.props.match.params.artizenId}</h3>
             </div>
         );
@@ -15,7 +15,7 @@ class Artizen extends Component {
 Artizen.propTypes = {
     match: PropTypes.shape({
         params: PropTypes.shape({
-            artizenId: PropTypes.number
+            artizenId: PropTypes.string
         })
     }),
 };

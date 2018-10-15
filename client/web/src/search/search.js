@@ -53,7 +53,7 @@ class Search extends Component {
 
     render() {
         return (
-            <div>
+            <div className="search">
                 <ItemList items={this.state.items} extended/>
             </div>
         );

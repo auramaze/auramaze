@@ -1,0 +1,12 @@
+.artizen {
+    background-color: #ffffff;
+    width: 90%;
+    margin: 70px auto;
+}
+
+@media screen and (max-width: 768px) {
+    .artizen {
+        width: 100%;
+        margin: 60px auto;
+    }
+}

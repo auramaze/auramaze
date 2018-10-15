@@ -1,37 +1,12 @@
-.item-list {
+.search {
     background-color: #ffffff;
     width: 90%;
     margin: 70px auto;
 }
 
 @media screen and (max-width: 768px) {
-    .result-list {
+    .search {
         width: 100%;
         margin: 60px auto;
     }
-}
-
-.item-list-container {
-    width: 100%;
-    display: inline-block;
-}
-
-.artizen-container {
-    white-space: nowrap;
-}
-
-.artizen-container-mask-left {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    bottom: 50px;
-    box-shadow: 0 0 40px 30px #ffffff;
-}
-
-.artizen-container-mask-right {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    bottom: 50px;
-    box-shadow: 0 0 40px 30px #ffffff;
 }
