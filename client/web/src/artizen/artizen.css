@@ -1,4 +1,5 @@
 .artizen {
+    position: relative;
     background-color: #ffffff;
     margin: 70px auto;
 }
@@ -7,4 +8,25 @@
     .artizen {
         margin: 60px auto;
     }
+}
+
+.artizen-left-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 38%;
+    min-width: 400px;
+    background-color: #666666;
+}
+
+.artizen-right-section {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 62%;
+    max-width: calc(100% - 400px);
+    height: 1000px;
+    background-color: #cdcdcd;
+    padding: 20px;
+    box-sizing: border-box;
 }

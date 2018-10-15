@@ -28,6 +28,7 @@ class ArtCardLayout extends Component {
     }
 
     static getArtHeight(art) {
+        console.log(art);
         return art.image.default.height;
     }
 
@@ -87,10 +88,10 @@ class ArtCardLayout extends Component {
                                         margin: 20
                                     }}
                                     id={art.id}
-                                    image={art.image.default.url}
-                                    artist={art.artist.default}
+                                    image={art.image && art.image.default.url}
+                                    artist={art.artist && art.artist.default}
                                     completionYear={art.completion_year}
-                                    title={art.title.default}
+                                    title={art.title && art.title.default}
                                     avatar={art.avatar}
                                     abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
                                     extended={this.props.extended}
