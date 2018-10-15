@@ -42,6 +42,7 @@ class ItemList extends Component {
                                             name={artizen.name.default}
                                             avatar={artizen.avatar}
                                             abstract={artizen.introduction && artizen.introduction.length > 0 && artizen.introduction[0].en}
+                                            extended={this.props.extended}
                                         />)}
                                 </div>
                             </Scrollbars>
@@ -56,6 +57,7 @@ class ItemList extends Component {
                             arts={this.props.items.art}
                             columns={this.getArtCardLayoutColumns()}
                             width={this.getArtCardLayoutWidth()}
+                            extended={this.props.extended}
                         />
                     </div>}
                 </div>
@@ -66,6 +68,7 @@ class ItemList extends Component {
 
 ItemList.propTypes = {
     items: PropTypes.object,
+    extended: PropTypes.bool
 };
 
 export default ItemList;

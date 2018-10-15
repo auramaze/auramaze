@@ -31,17 +31,17 @@ class ArtCardLayout extends Component {
         return art.image.default.height;
     }
 
-    static appendArts(arts, prevState) {
+    static appendArts(arts, prevState, artCardWidth, extendedHeight) {
         let nextState = JSON.parse(JSON.stringify(prevState));
         for (let art of arts) {
             const minIndex = ArtCardLayout.getMinIndex(nextState.heights);
-            nextState.heights[minIndex] += ArtCardLayout.getArtHeight(art) / ArtCardLayout.getArtWidth(art);
+            nextState.heights[minIndex] += (ArtCardLayout.getArtHeight(art) / ArtCardLayout.getArtWidth(art) * artCardWidth + extendedHeight);
             nextState.images[minIndex].push(art);
         }
         return nextState;
     }
 
-    static resetArts(arts, columns) {
+    static resetArts(arts, columns, artCardWidth, extendedHeight) {
         let heights = [];
         let images = [];
         for (let i = 0; i < columns; i++) {
@@ -54,15 +54,15 @@ class ArtCardLayout extends Component {
             images: images
         };
 
-        return ArtCardLayout.appendArts(arts, nextState);
+        return ArtCardLayout.appendArts(arts, nextState, artCardWidth, extendedHeight);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.columns !== prevState.columns) {
-            return ArtCardLayout.resetArts(nextProps.arts, nextProps.columns);
+            return ArtCardLayout.resetArts(nextProps.arts, nextProps.columns, ArtCardLayout.getArtCardWidth(nextProps.width, nextProps.columns), nextProps.extended ? 250 : 80);
         } else {
             let imageSum = prevState.images.reduce((acc, cur) => acc + cur.length, 0);
-            return ArtCardLayout.appendArts(nextProps.arts.slice(imageSum), prevState);
+            return ArtCardLayout.appendArts(nextProps.arts.slice(imageSum), prevState, ArtCardLayout.getArtCardWidth(nextProps.width, nextProps.columns), nextProps.extended ? 250 : 80);
         }
     }
 
@@ -92,6 +92,7 @@ class ArtCardLayout extends Component {
                                     title={art.title.default}
                                     avatar={art.avatar}
                                     abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
+                                    extended={this.props.extended}
                                 />)
                         }
 
@@ -104,7 +105,8 @@ class ArtCardLayout extends Component {
 
 ArtCardLayout.propTypes = {
     width: PropTypes.number,
-    columns: PropTypes.number
+    columns: PropTypes.number,
+    extended: PropTypes.bool
 };
 
 export default ArtCardLayout;
