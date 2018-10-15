@@ -39,6 +39,8 @@ class ItemList extends Component {
                                                 margin: 20,
                                                 verticalAlign: 'top'
                                             }}
+                                            id={artizen.id}
+                                            username={artizen.username}
                                             name={artizen.name.default}
                                             avatar={artizen.avatar}
                                             abstract={artizen.introduction && artizen.introduction.length > 0 && artizen.introduction[0].en}

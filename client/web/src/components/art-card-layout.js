@@ -86,6 +86,7 @@ class ArtCardLayout extends Component {
                                         width: ArtCardLayout.getArtCardWidth(this.props.width, this.props.columns),
                                         margin: 20
                                     }}
+                                    id={art.id}
                                     image={art.image.default.url}
                                     artist={art.artist.default}
                                     completionYear={art.completion_year}
@@ -93,7 +94,8 @@ class ArtCardLayout extends Component {
                                     avatar={art.avatar}
                                     abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
                                     extended={this.props.extended}
-                                />)
+                                />
+                            )
                         }
 
                     </div>
