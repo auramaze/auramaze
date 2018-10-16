@@ -1,9 +1,6 @@
-@import '../fonts/fonts.css';
-
 .section-title {
     padding: 5px;
-    font-family: 'CenturyGothic', serif;
-    font-size: 22px;
+    font-size: 20px;
     color: #666666;
     border-bottom: #666666 2px solid;
 }
