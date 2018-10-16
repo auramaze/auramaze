@@ -34,7 +34,7 @@ class TextCard extends Component {
     }
 
     render() {
-        const {authorId, authorUsername, authorName, avatar, itemType, itemId, itemUsername, textType, textId, rating, content, likes, dislikes, ...props} = this.props;
+        const {authorId, authorUsername, authorName, avatar, itemType, itemId, itemUsername, textType, textId, rating, content, up, down, ...props} = this.props;
         return (
             <div {...props} className="text-card card-shadow">
                 <div className="text-card-title">
@@ -75,13 +75,13 @@ class TextCard extends Component {
                         icon={this.props.status === 1 ? faThumbsUpSolid : faThumbsUpRegular}
                         size="lg"
                     />
-                    <span>{likes}</span>
+                    <span>{up}</span>
                     <FontAwesomeIcon
                         className="text-card-vote-icon"
                         icon={this.props.status === -1 ? faThumbsDownSolid : faThumbsDownRegular}
                         size="lg"
                     />
-                    <span>{dislikes}</span>
+                    <span>{down}</span>
                 </div>
             </div>
         );
