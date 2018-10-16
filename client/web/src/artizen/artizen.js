@@ -9,6 +9,8 @@ import ArtizenHeader from './artizen-header';
 import SectionTitle from '../components/section-title';
 import ArtCardLayout from '../components/art-card-layout';
 import TextCard from '../components/text-card';
+import SlickPrevArror from '../components/slick-prev-arrow';
+import SlickNextArror from '../components/slick-next-arrow';
 import {API_ENDPOINT} from '../common';
 import './artizen.css';
 
@@ -86,13 +88,15 @@ class Artizen extends Component {
                     />
                     <SectionTitle sectionTitle="Introductions"/>
                     <div className="slider-container">
-                        <Slider {...{
-                            dots: true,
-                            infinite: true,
-                            speed: 500,
-                            slidesToShow: 1,
-                            slidesToScroll: 1
-                        }}>
+                        <Slider
+                            dots
+                            infinite
+                            speed={500}
+                            slidesToShow={1}
+                            slidesToScroll={1}
+                            prevArrow={<SlickPrevArror/>}
+                            nextArrow={<SlickNextArror/>}
+                        >
                             <div className="slide-container">
                                 <TextCard
                                     key="1000000003"

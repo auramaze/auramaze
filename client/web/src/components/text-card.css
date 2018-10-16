@@ -66,6 +66,7 @@
     white-space: normal;
     font-size: 15px;
     font-family: 'SegoeUI', serif;
+    user-select: text;
 }
 
 .text-card-mask-bottom {
