@@ -43,3 +43,16 @@
         max-width: 100%;
     }
 }
+
+.slider-container {
+    margin-bottom: 50px;
+}
+
+.slider-container * {
+    outline: none;
+}
+
+.slide-container {
+    padding: 20px;
+    box-sizing: border-box;
+}

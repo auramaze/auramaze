@@ -15,7 +15,7 @@ class Art extends Component {
 Art.propTypes = {
     match: PropTypes.shape({
         params: PropTypes.shape({
-            artId: PropTypes.number
+            artId: PropTypes.string
         })
     }),
 };

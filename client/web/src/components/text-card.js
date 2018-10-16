@@ -27,8 +27,10 @@ class TextCard extends Component {
         return (
             <div {...props} className="text-card card-shadow">
                 <div className="text-card-title">
-                    {avatar ? <img src={avatar} alt="avatar" className="text-card-avatar"/> :
-                        <div className="text-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
+                    <Link to={`/artizen/${authorUsername || authorId}`}>
+                        {avatar ? <img src={avatar} alt="avatar" className="text-card-avatar"/> :
+                            <div className="text-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
+                    </Link>
                     <span className="text-card-name">{authorName}</span>
                     <Link to={`/${itemType}/${itemUsername || itemId}/${textType}/${textId}`}>
                         <div className="text-card-more">

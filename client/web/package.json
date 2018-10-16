@@ -19,7 +19,9 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "react-scroll": "^1.7.10",
-    "request": "^2.88.0"
+    "react-slick": "^0.23.1",
+    "request": "^2.88.0",
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
 import request from 'request';
 import ArtizenHeader from './artizen-header';
 import SectionTitle from '../components/section-title';
@@ -81,6 +84,53 @@ class Artizen extends Component {
                         avatar={this.state.artizen.avatar}
                         type={this.state.artizen.type}
                     />
+                    <SectionTitle sectionTitle="Introductions"/>
+                    <div className="slider-container">
+                        <Slider {...{
+                            dots: true,
+                            infinite: true,
+                            speed: 500,
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }}>
+                            <div className="slide-container">
+                                <TextCard
+                                    key="1000000003"
+                                    authorId="100000011"
+                                    authorUsername="metmuseum"
+                                    authorName="Metropolitan Museum of Art (Met), New York City, NY, US"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/metmuseum.png"
+                                    itemType="artizen"
+                                    itemId="100204915"
+                                    itemUsername="vincent-van-gogh"
+                                    textType="introduction"
+                                    textId="1000000003"
+                                    content="Vincent Willem van Gogh (Dutch: [ˈvɪnsɛnt ˈʋɪləm vɑŋ ˈɣɔx] (About this sound listen);[note 1] 30 March 1853 – 29 July 1890) was a Dutch Post-Impressionist painter who is among the most famous and influential figures in the history of Western art. In just over a decade he created about 2,100 artworks, including around 860 oil paintings, most of them in the last two years of his life. They include landscapes, still lifes, portraits and self-portraits, and are characterised by bold colours and dramatic, impulsive and expressive brushwork that contributed to the foundations of modern art. His suicide at 37 followed years of mental illness and poverty."
+                                    likes={666}
+                                    dislikes={222}
+                                    status={1}
+                                />
+                            </div>
+                            <div className="slide-container">
+                                <TextCard
+                                    key="1000000004"
+                                    authorId="100000011"
+                                    authorUsername="metmuseum"
+                                    authorName="Metropolitan Museum of Art (Met), New York City, NY, US"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/metmuseum.png"
+                                    itemType="artizen"
+                                    itemId="100204915"
+                                    itemUsername="vincent-van-gogh"
+                                    textType="introduction"
+                                    textId="1000000004"
+                                    content="文森特·威廉·梵高（荷兰语：Vincent Willem van Gogh 荷兰语读音：[ˈvɪnsɛnt ˈʋɪləm vɑn ˈɣɔx]  聆听;[注 1]，1853年3月30日－1890年7月29日），荷兰后印象派画家。他是表现主义的先驱，并深深影响了二十世纪艺术，尤其是野兽派与德国表现主义。梵高的作品，如《星夜》、《向日葵》、《有乌鸦的麦田》等，现已跻身于全球最具名、广为人知的艺术作品的行列。他在2004年票选最伟大的荷兰人当中，排名第十，次于第九伟大的17世纪画家林布兰。"
+                                    likes={666}
+                                    dislikes={222}
+                                    status={-1}
+                                />
+                            </div>
+                        </Slider>
+                    </div>
                     <SectionTitle sectionTitle="Reviews"/>
                     <TextCard
                         key="1000000001"

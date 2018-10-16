@@ -13,7 +13,7 @@
 }
 
 .text-card-avatar {
-    display: inline-block;
+    display: inline-block !important;
     vertical-align: top;
     margin: 8px;
     width: 40px;
