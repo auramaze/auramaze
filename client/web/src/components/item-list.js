@@ -12,11 +12,11 @@ class ItemList extends Component {
     }
 
     getArtCardLayoutColumns() {
-        return Math.max(Math.floor(this.itemList.current.offsetWidth / 320), 1);
+        return Math.max(Math.floor(this.itemList.current.clientWidth / 320), 1);
     }
 
     getArtCardLayoutWidth() {
-        return this.itemList.current.offsetWidth;
+        return this.itemList.current.clientWidth;
     }
 
     render() {

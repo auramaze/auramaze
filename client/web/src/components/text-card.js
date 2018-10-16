@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import ReactStars from 'react-stars';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faThumbsUp as faThumbsUpSolid} from '@fortawesome/free-solid-svg-icons';
 import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-icons';
@@ -14,16 +15,27 @@ class TextCard extends Component {
         super(props);
         this.state = {contentHeight: 0, audio: false};
         this.content = React.createRef();
+        this.updateContentHeight = this.updateContentHeight.bind(this);
     }
 
     componentDidMount() {
+        this.updateContentHeight();
+        window.addEventListener('resize', this.updateContentHeight);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateContentHeight);
+    }
+
+    updateContentHeight() {
         this.setState({
-            contentHeight: this.content.current.offsetHeight,
+            contentHeight: this.content.current.clientHeight,
         });
+        console.log(this.content.current.clientHeight);
     }
 
     render() {
-        const {authorId, authorUsername, authorName, avatar, itemType, itemId, itemUsername, textType, textId, content, likes, dislikes, ...props} = this.props;
+        const {authorId, authorUsername, authorName, avatar, itemType, itemId, itemUsername, textType, textId, rating, content, likes, dislikes, ...props} = this.props;
         return (
             <div {...props} className="text-card card-shadow">
                 <div className="text-card-title">
@@ -42,8 +54,21 @@ class TextCard extends Component {
                     </div>}
                 </div>
                 <div className="text-card-content">
-                    <span ref={this.content}>{content}</span>
-                    {this.state.contentHeight > 150 && <div className="text-card-mask-bottom"/>}
+                    <div ref={this.content}>
+                        {this.props.textType === 'review' && this.props.rating &&
+                        <div className="react-stars-container">
+                            <ReactStars
+                                count={5}
+                                value={rating}
+                                size={24}
+                                edit={false}
+                                color2={'#ffd700'}
+                            />
+                        </div>
+                        }
+                        {content}
+                    </div>
+                    {this.state.contentHeight > 200 && <div className="text-card-mask-bottom"/>}
                 </div>
                 <div className="text-card-vote">
                     <FontAwesomeIcon
