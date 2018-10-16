@@ -31,7 +31,6 @@ class TextCard extends Component {
         this.setState({
             contentHeight: this.content.current.clientHeight,
         });
-        console.log(this.content.current.clientHeight);
     }
 
     render() {
