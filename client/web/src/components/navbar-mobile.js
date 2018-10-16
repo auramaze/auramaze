@@ -37,26 +37,32 @@ class NavbarMobile extends Component {
     render() {
         return (
             <div className="navbar-mobile" style={{backgroundColor: this.props.home ? '' : '#000000'}}>
-                <div className={`nav-items-mobile ${!this.state.expand && 'nav-items-mobile-collapse'}`}
-                    style={{width: this.state.windowWidth, height: this.state.windowHeight}}>
+                <div
+                    className={`nav-items-mobile ${!this.state.expand && 'nav-items-mobile-collapse'}`}
+                    style={{width: this.state.windowWidth, height: this.state.windowHeight}}
+                >
                     <div className="nav-items-wrapper-mobile">
                         <div className="nav-item-mobile">
                             {this.props.home ?
                                 <a onClick={() => {
+                                    document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                     scroll.scrollTo(document.documentElement.clientHeight);
                                 }}>About</a> :
                                 <a href="/#about" onClick={() => {
+                                    document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                 }}>About</a>}
                         </div>
                         <div className="nav-item-mobile">
                             {this.props.home ?
                                 <a onClick={() => {
+                                    document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                     scroll.scrollToBottom();
                                 }}>Contact</a> :
                                 <a href="/#contact" onClick={() => {
+                                    document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                 }}>Contact</a>}
                         </div>
@@ -68,6 +74,7 @@ class NavbarMobile extends Component {
                     </Link>
                 </div>
                 <div className={`nav-toggle ${this.state.expand && 'nav-toggle-cancel'}`} onClick={() => {
+                    document.body.style.overflow = this.state.expand ? 'visible' : 'hidden';
                     this.setState({expand: !this.state.expand});
                 }}>
                     <div className="nav-toggle-line" id="nav-toggle-1"/>
