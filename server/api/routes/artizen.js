@@ -296,6 +296,25 @@ router.delete('/:id', oneOf([
     });
 });
 
+/* GET artizen introduction. */
+router.get('/:id/introduction', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    rds.query('SELECT *, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND type=0 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json(result);
+        }
+    });
+});
+
 /* POST artizen introduction. */
 router.post('/:id/introduction', [
     param('id').isInt().isLength({min: 9, max: 9}),
@@ -325,6 +344,25 @@ router.post('/:id/introduction', [
                     });
                 }
             });
+        }
+    });
+});
+
+/* GET artizen review. */
+router.get('/:id/review', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    rds.query('SELECT *, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND type=1 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json(result);
         }
     });
 });
