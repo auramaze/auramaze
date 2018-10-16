@@ -1258,7 +1258,7 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(res.body.map(item => parseInt(item.id)).includes(text_id));
+                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.art_id)).includes(10000003));
                             })
                             .end(done);
                     });
@@ -1376,7 +1376,7 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(res.body.map(item => parseInt(item.id)).includes(text_id));
+                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.artizen_id)).includes(100000011));
                             })
                             .end(done);
                     });

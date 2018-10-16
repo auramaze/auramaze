@@ -352,7 +352,7 @@ router.get('/:id/introduction', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT *, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND type=0 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND type=0 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -404,7 +404,7 @@ router.get('/:id/review', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT *, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND type=1 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND type=1 AND valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
