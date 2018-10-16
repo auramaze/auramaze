@@ -59,7 +59,7 @@ class TextCard extends Component {
                             <ReactStars
                                 count={5}
                                 value={rating}
-                                size={24}
+                                size={18}
                                 edit={false}
                                 color2={'#ffd700'}
                             />
