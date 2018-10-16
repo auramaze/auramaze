@@ -128,6 +128,7 @@ class Art extends Component {
                     </div>
                     <SectionTitle sectionTitle="Introductions"/>
                     <div className="slider-container">
+                        {this.state.introductions.length > 0 &&
                         <Slider
                             dots
                             infinite
@@ -154,7 +155,7 @@ class Art extends Component {
                                         down={introduction.down}
                                     />
                                 </div>)}
-                        </Slider>
+                        </Slider>}
                     </div>
                 </div>
                 <div className="art-left-section">

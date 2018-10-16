@@ -144,7 +144,9 @@ class Artizen extends Component {
                         type={this.state.artizen.type}
                     />
                     <SectionTitle sectionTitle="Introductions"/>
+
                     <div className="slider-container">
+                        {this.state.introductions.length > 0 &&
                         <Slider
                             dots
                             infinite
@@ -171,7 +173,7 @@ class Artizen extends Component {
                                         down={introduction.down}
                                     />
                                 </div>)}
-                        </Slider>
+                        </Slider>}
                     </div>
                     <SectionTitle sectionTitle="Reviews"/>
                     {this.state.reviews.map(review =>
