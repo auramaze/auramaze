@@ -86,7 +86,7 @@ router.get('/:id', oneOf([
 
 /* Batch GET art data. */
 router.post('/batch', [
-    body('id').isArray().isLength({min: 1}),
+    body('id').isArray(),
     body('id.*').isInt().isLength({min: 8, max: 8})
 ], (req, res, next) => {
     const errors = validationResult(req);
@@ -94,18 +94,22 @@ router.post('/batch', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    common.batchGetItems('art', req.body.id, function (err, data) {
-        /* istanbul ignore if */
-        if (err) {
-            next(err);
-        }
-        else {
-            res.json(data.Responses.art.reduce((result, item) => {
-                result[item.id] = item; //a, b, c
-                return result;
-            }, {}));
-        }
-    });
+    if (req.body.id.length > 0) {
+        common.batchGetItems('art', req.body.id, function (err, data) {
+            /* istanbul ignore if */
+            if (err) {
+                next(err);
+            }
+            else {
+                res.json(data.Responses.art.reduce((result, item) => {
+                    result[item.id] = item; //a, b, c
+                    return result;
+                }, {}));
+            }
+        });
+    } else {
+        res.json({});
+    }
 });
 
 /* GET art relations. */

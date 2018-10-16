@@ -97,6 +97,19 @@ describe('Test api', function () {
                     .end(done);
             });
 
+            it('should return empty object', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': []
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+
             it('should not get empty data', done => {
                 request(app).post('/v1/art/batch')
                     .send({
@@ -296,6 +309,19 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body[100000012].name.en === 'National Gallery of Art, Washington, DC, US');
+                    })
+                    .end(done);
+            });
+
+            it('should return empty object', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': []
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
                     })
                     .end(done);
             });
@@ -1007,7 +1033,7 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/introduction')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
                     })
                     .expect(400)
@@ -1097,7 +1123,7 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/introduction')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
                     })
                     .expect(400)
@@ -1170,11 +1196,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post rate of art', done => {
+            it('should post rating of art', done => {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5
+                        'rating': 5
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1183,11 +1209,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post review of art with rate', done => {
+            it('should post review of art with rating', done => {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': 'Review of Ginevra de\' Benci'
                     })
                     .expect(200)
@@ -1201,7 +1227,7 @@ describe('Test api', function () {
                 request(app).post('/v1/art/artid/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
                     })
                     .expect(400)
@@ -1215,7 +1241,7 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': ''
                     })
                     .expect(400)
@@ -1288,11 +1314,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post rate of artizen', done => {
+            it('should post rating of artizen', done => {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5
+                        'rating': 5
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1301,11 +1327,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post review of artizen with rate', done => {
+            it('should post review of artizen with rating', done => {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': 'Review of Metropolitan Museum of Art'
                     })
                     .expect(200)
@@ -1319,7 +1345,7 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/metmuseum/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
                     })
                     .expect(400)
@@ -1333,7 +1359,7 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
+                        'rating': 5,
                         'content': ''
                     })
                     .expect(400)
@@ -1364,6 +1390,7 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
+                        'rating': 3,
                         'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
                     })
                     .expect(200)
