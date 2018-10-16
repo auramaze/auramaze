@@ -5,6 +5,7 @@
 }
 
 .text-card-title {
+    position: relative;
     height: 60px;
     margin: 0 10px;
     overflow: hidden;
@@ -28,6 +29,30 @@
     line-height: 40px;
     font-size: 15px;
     font-family: 'CenturyGothic', serif;
+}
+
+.text-card-audio {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translate(0, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 15px #ffffff;
+    font-size: 16px;
+    color: #666666;
+}
+
+.text-card-more {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+    width: 30px;
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 15px #ffffff;
+    font-size: 16px;
+    color: #666666;
 }
 
 .text-card-content {

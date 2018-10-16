@@ -83,6 +83,7 @@ class Artizen extends Component {
                     />
                     <SectionTitle sectionTitle="Reviews"/>
                     <TextCard
+                        key="1000000001"
                         style={{margin: 20}}
                         authorId="100000011"
                         authorUsername="metmuseum"
@@ -99,6 +100,7 @@ class Artizen extends Component {
                         status={1}
                     />
                     <TextCard
+                        key="1000000002"
                         style={{margin: 20}}
                         authorId="100000011"
                         authorUsername="metmuseum"
@@ -108,7 +110,7 @@ class Artizen extends Component {
                         itemId="100204915"
                         itemUsername="vincent-van-gogh"
                         textType="review"
-                        textId="1000000001"
+                        textId="1000000002"
                         content="Speaking of it, I really realized that Van Gogh’s greatness was after I had a mental illness. Although I have been to several museums that have included Van Gogh's works before, I have not felt a strong impact. Until I got a serious depression, I needed to take medicine every day to feel it. "
                         likes={666}
                         dislikes={222}
