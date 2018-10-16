@@ -121,41 +121,6 @@ class Art extends Component {
     render() {
         return (
             <div className="art">
-                <div className="art-left-section">
-                    {this.state.artizens.map(section => section.data.length > 0 &&
-                        <div key={section.type}>
-                            <SectionTitle sectionTitle={Art.convertArtizenTypeToSectionTitle(section.type)}/>
-                            {section.data.map(artizen =>
-                                <ArtizenCard
-                                    key={artizen.id}
-                                    id={artizen.id}
-                                    username={artizen.username}
-                                    name={artizen.name && artizen.name.default}
-                                    avatar={artizen.avatar}
-                                    extended={false}
-                                    style={{margin: 20}}
-                                />)}
-                        </div>
-                    )}
-                    <SectionTitle sectionTitle="Reviews"/>
-                    {this.state.reviews.map(review =>
-                        <TextCard
-                            key={review.id}
-                            style={{margin: 20}}
-                            authorId={review.author_id}
-                            authorUsername={review.author_username}
-                            authorName={review.author_name && review.author_name.default}
-                            avatar={review.avatar}
-                            itemType="art"
-                            itemId={review.art_id}
-                            textType="review"
-                            textId={review.id}
-                            rating={review.rating}
-                            content={review.content}
-                            up={review.up}
-                            down={review.down}
-                        />)}
-                </div>
                 <div className="art-right-section" ref={this.artSection}>
                     <div className="art-title">{this.state.art.title && this.state.art.title.default}</div>
                     <div className="art-image-container">
@@ -191,6 +156,41 @@ class Art extends Component {
                                 </div>)}
                         </Slider>
                     </div>
+                </div>
+                <div className="art-left-section">
+                    {this.state.artizens.map(section => section.data.length > 0 &&
+                        <div key={section.type}>
+                            <SectionTitle sectionTitle={Art.convertArtizenTypeToSectionTitle(section.type)}/>
+                            {section.data.map(artizen =>
+                                <ArtizenCard
+                                    key={artizen.id}
+                                    id={artizen.id}
+                                    username={artizen.username}
+                                    name={artizen.name && artizen.name.default}
+                                    avatar={artizen.avatar}
+                                    extended={false}
+                                    style={{margin: 20}}
+                                />)}
+                        </div>
+                    )}
+                    <SectionTitle sectionTitle="Reviews"/>
+                    {this.state.reviews.map(review =>
+                        <TextCard
+                            key={review.id}
+                            style={{margin: 20}}
+                            authorId={review.author_id}
+                            authorUsername={review.author_username}
+                            authorName={review.author_name && review.author_name.default}
+                            avatar={review.avatar}
+                            itemType="art"
+                            itemId={review.art_id}
+                            textType="review"
+                            textId={review.id}
+                            rating={review.rating}
+                            content={review.content}
+                            up={review.up}
+                            down={review.down}
+                        />)}
                 </div>
             </div>
         );
