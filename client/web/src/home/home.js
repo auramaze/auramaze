@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import Lottie from 'react-lottie';
+import * as animationData from './data.json';
+import Fade from 'react-reveal/Fade';
 import Slides from './slides';
 import Pitch from './pitch';
 import Footer from '../components/footer';
@@ -9,7 +12,7 @@ class Home extends Component {
         super(props);
         this.state = {
             windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight,
+            windowHeight: window.innerHeight,
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -26,15 +29,24 @@ class Home extends Component {
     updateWindowDimensions() {
         this.setState({
             windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight
+            windowHeight: window.innerHeight
         });
     }
 
     render() {
         return (
-            <div>
+            <div className="home">
                 <Slides windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
                 <Pitch windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
+                <Fade bottom>
+                    <div className="lottie-container">
+                        <Lottie
+                            options={{
+                                loop: true, autoplay: true, animationData: animationData, renderer: 'svg'
+                            }}
+                        />
+                    </div>
+                </Fade>
                 <Footer windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
             </div>
         );

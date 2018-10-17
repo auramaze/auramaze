@@ -34,7 +34,6 @@ class App extends Component {
         super(props);
         this.state = {
             windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight,
             expand: false
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -52,7 +51,6 @@ class App extends Component {
     updateWindowDimensions() {
         this.setState({
             windowWidth: document.documentElement.clientWidth,
-            windowHeight: document.documentElement.clientHeight
         });
     }
 
@@ -68,7 +66,6 @@ class App extends Component {
                         <Route exact path="/" render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}/>
                         <Route path='/' component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}/>
                     </Switch>
-
                 </div>
             </Router>
         );
