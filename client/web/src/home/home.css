@@ -2,14 +2,37 @@
     background-color: #fafafa;
 }
 
-.lottie-container {
+.backend-architecture {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.library-cards {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 auto 50px auto;
+}
+
+.library-card-item {
+    margin: 10px;
+}
+
+.library-cards .library-card-item {
+    width: 300px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.backend-architecture-mobile {
     width: 90%;
     max-width: 700px;
     margin: auto;
 }
 
-.library-cards {
+.library-cards-mobile {
     width: 90%;
     max-width: 1000px;
-    margin: auto;
+    margin: 0 auto 50px auto;
 }
