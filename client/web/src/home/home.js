@@ -14,8 +14,10 @@ class Home extends Component {
         this.state = {
             windowWidth: document.documentElement.clientWidth,
             windowHeight: window.innerHeight,
-            clickCount: document.documentElement.clientWidth > 768 ? 0 : 5
+            clickCount: document.documentElement.clientWidth > 992 ? 0 : 5,
+            columnHeight: 0
         };
+        this.column = React.createRef();
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
@@ -31,7 +33,8 @@ class Home extends Component {
     updateWindowDimensions() {
         this.setState({
             windowWidth: document.documentElement.clientWidth,
-            windowHeight: window.innerHeight
+            windowHeight: window.innerHeight,
+            columnHeight: this.column.current ? this.column.current.clientHeight + 200 : 0
         });
     }
 
@@ -40,104 +43,221 @@ class Home extends Component {
             <div className="home">
                 <Slides windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
                 <Pitch windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
-                <div className={this.state.windowWidth > 768 ? 'backend-architecture' : 'backend-architecture-mobile'}>
-                    <Fade>
-                        <Lottie
-                            options={{
-                                loop: true, autoplay: true, animationData: animationData, renderer: 'svg'
-                            }}
-                        />
-                    </Fade>
-                </div>
-                <div
-                    className={this.state.windowWidth > 768 ? 'library-cards' : 'library-cards-mobile'}
-                    style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
-                    onClick={() => {
-                        this.setState({clickCount: this.state.clickCount + 1});
-                    }}
-                >
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 0}>
-                            <LibraryCard
-                                name="Nginx"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_21.png"
-                                content="Load balancer to redirect requests to multiple API servers."
+
+                {this.state.windowWidth > 992 &&
+                <div className="backend-architecture" style={{height: this.state.columnHeight}}>
+                    <div
+                        className="library-cards-column-1"
+                        style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
+                        onClick={() => {
+                            this.setState({clickCount: this.state.clickCount + 1});
+                        }}
+                    >
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 0}>
+                                <LibraryCard
+                                    name="Nginx"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_21.png"
+                                    content="Load balancer to redirect requests to multiple API servers."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon Aurora"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_5.png"
+                                    content="Basic information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon DynamoDB"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_4.png"
+                                    content="Supplementary data of items, such as museum address, artist’s date of birth. These data are all key-value pairs fetched from public domain sources (i.e. Wikipedia) by web crawlers."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon S3"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_3.png"
+                                    content="Raw image of artworks and static image content of the website."
+                                />
+                            </Fade>
+                        </div>
+                    </div>
+                    <div className="architecture-demo">
+                        <Fade>
+                            <Lottie
+                                options={{
+                                    loop: true, autoplay: true, animationData: animationData, renderer: 'svg'
+                                }}
                             />
                         </Fade>
                     </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 1}>
-                            <LibraryCard
-                                name="Express.js"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
-                                content="Provide API endpoints for GET, PUT, POST, DELETE actions of artwork information. Connected with Aurora and DynamoDB to update databases."
+                    <div
+                        ref={this.column}
+                        className="library-cards-column-2"
+                        style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
+                        onClick={() => {
+                            this.setState({clickCount: this.state.clickCount + 1});
+                        }}
+                    >
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 1}>
+                                <LibraryCard
+                                    name="Express.js"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
+                                    content="Provide API endpoints for GET, PUT, POST, DELETE actions of artwork information. Connected with Aurora and DynamoDB to update databases."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 3}>
+                                <LibraryCard
+                                    name="Kafka"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_20.png"
+                                    content="Message queue and CDC tool to capture database change and update Microservices in real time."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="ElasticSearch"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
+                                    content="Text Search Engine and Image Signature Search Engine."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="TensorFlow"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_6.png"
+                                    content="Machine learning model for Recommender System."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="Stanford CoreNLP"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_8.png"
+                                    content="Natural Language Processing on user input comments to analyze preference on art."
+                                />
+                            </Fade>
+                        </div>
+                    </div>
+                </div>}
+
+
+                {this.state.windowWidth <= 992 &&
+                <div>
+                    <div className="architecture-demo-mobile">
+                        <Fade>
+                            <Lottie
+                                options={{
+                                    loop: true, autoplay: true, animationData: animationData, renderer: 'svg'
+                                }}
                             />
                         </Fade>
                     </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 2}>
-                            <LibraryCard
-                                name="Amazon Aurora"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_5.png"
-                                content="Basic information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
-                            />
-                        </Fade>
+                    <div
+                        className="library-cards-mobile"
+                        style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
+                        onClick={() => {
+                            this.setState({clickCount: this.state.clickCount + 1});
+                        }}
+                    >
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 0}>
+                                <LibraryCard
+                                    name="Nginx"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_21.png"
+                                    content="Load balancer to redirect requests to multiple API servers."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 1}>
+                                <LibraryCard
+                                    name="Express.js"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
+                                    content="Provide API endpoints for GET, PUT, POST, DELETE actions of artwork information. Connected with Aurora and DynamoDB to update databases."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon Aurora"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_5.png"
+                                    content="Basic information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon DynamoDB"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_4.png"
+                                    content="Supplementary data of items, such as museum address, artist’s date of birth. These data are all key-value pairs fetched from public domain sources (i.e. Wikipedia) by web crawlers."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 2}>
+                                <LibraryCard
+                                    name="Amazon S3"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_3.png"
+                                    content="Raw image of artworks and static image content of the website."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 3}>
+                                <LibraryCard
+                                    name="Kafka"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_20.png"
+                                    content="Message queue and CDC tool to capture database change and update Microservices in real time."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="ElasticSearch"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
+                                    content="Text Search Engine and Image Signature Search Engine."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="TensorFlow"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_6.png"
+                                    content="Machine learning model for Recommender System."
+                                />
+                            </Fade>
+                        </div>
+                        <div className="library-card-item">
+                            <Fade bottom when={this.state.clickCount > 4}>
+                                <LibraryCard
+                                    name="Stanford CoreNLP"
+                                    avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_8.png"
+                                    content="Natural Language Processing on user input comments to analyze preference on art."
+                                />
+                            </Fade>
+                        </div>
                     </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 2}>
-                            <LibraryCard
-                                name="Amazon DynamoDB"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_4.png"
-                                content="Supplementary data of items, such as museum address, artist’s date of birth. These data are all key-value pairs fetched from public domain sources (i.e. Wikipedia) by web crawlers."
-                            />
-                        </Fade>
-                    </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 2}>
-                            <LibraryCard
-                                name="Amazon S3"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_3.png"
-                                content="Raw image of artworks and static image content of the website."
-                            />
-                        </Fade>
-                    </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 3}>
-                            <LibraryCard
-                                name="Kafka"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_20.png"
-                                content="Message queue and CDC tool to capture database change and update Microservices in real time."
-                            />
-                        </Fade>
-                    </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 4}>
-                            <LibraryCard
-                                name="ElasticSearch"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
-                                content="Text Search Engine and Image Signature Search Engine."
-                            />
-                        </Fade>
-                    </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 4}>
-                            <LibraryCard
-                                name="TensorFlow"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_6.png"
-                                content="Machine learning model for Recommender System."
-                            />
-                        </Fade>
-                    </div>
-                    <div className="library-card-item">
-                        <Fade bottom when={this.state.clickCount > 4}>
-                            <LibraryCard
-                                name="Stanford CoreNLP"
-                                avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_8.png"
-                                content="Natural Language Processing on user input comments to analyze preference on art."
-                            />
-                        </Fade>
-                    </div>
-                </div>
+                </div>}
+
                 <Footer windowWidth={this.state.windowWidth} windowHeight={this.state.windowHeight}/>
             </div>
         );

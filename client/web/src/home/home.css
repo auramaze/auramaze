@@ -3,29 +3,39 @@
 }
 
 .backend-architecture {
-    width: 50%;
-    display: inline-block;
-    vertical-align: top;
+    position: relative;
+    height: 100vw;
 }
 
-.library-cards {
-    width: 50%;
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 auto 50px auto;
+.architecture-demo {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.library-cards-column-1 {
+    position: absolute;
+    left: 0;
+    width: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.library-cards-column-2 {
+    position: absolute;
+    right: 0;
+    width: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
 }
 
 .library-card-item {
-    margin: 10px;
+    margin: 10px 20px;
 }
 
-.library-cards .library-card-item {
-    width: 300px;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.backend-architecture-mobile {
+.architecture-demo-mobile {
     width: 90%;
     max-width: 700px;
     margin: auto;
