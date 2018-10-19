@@ -22,9 +22,18 @@ router.get('/', [
     });
 
     for (let index in results) {
-        request.get({
+        request.post({
             url: `${process.env.ESROOT}/${index}/_search`,
-            qs: {q: req.query.q, from: req.query.from || 0, size: 20},
+            body: {
+                'query': {
+                    'multi_match' : {
+                        'query': req.query.q,
+                        'fields':['title.en','artist.en','museum.en','genre.en','style.en','introduction.en'],
+                        'fuzziness' : 'AUTO',
+                        'prefix_length' : 0
+                    }
+                }
+            },
             json: true
         }, (error, response, body) => {
             /* istanbul ignore if */
