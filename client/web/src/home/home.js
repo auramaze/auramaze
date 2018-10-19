@@ -69,17 +69,8 @@ class Home extends Component {
                                 <Fade bottom when={this.state.clickCount > 2}>
                                     <LibraryCard
                                         name="Amazon Aurora"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_5.png"
-                                        content="Basic information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
-                                    />
-                                </Fade>
-                            </div>
-                            <div className="library-card-item">
-                                <Fade bottom when={this.state.clickCount > 2}>
-                                    <LibraryCard
-                                        name="Amazon DynamoDB"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_4.png"
-                                        content="Supplementary data of items, such as museum address, artist’s date of birth. These data are all key-value pairs fetched from public domain sources (i.e. Wikipedia) by web crawlers."
+                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_22.png"
+                                        content="Information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
                                     />
                                 </Fade>
                             </div>
@@ -115,7 +106,7 @@ class Home extends Component {
                                     <LibraryCard
                                         name="Express.js"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
-                                        content="Provide API endpoints for GET, PUT, POST, DELETE actions of artwork information. Connected with Aurora and DynamoDB to update databases."
+                                        content="Provide API endpoints for GET, PUT, POST, DELETE requests of art information. Connected with Aurora and S3 to update databases."
                                     />
                                 </Fade>
                             </div>
@@ -133,7 +124,7 @@ class Home extends Component {
                                     <LibraryCard
                                         name="ElasticSearch"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
-                                        content="Text Search Engine and Image Signature Search Engine."
+                                        content="Multilingual Text Search Engine and Image Signature Search Engine."
                                     />
                                 </Fade>
                             </div>
@@ -143,15 +134,6 @@ class Home extends Component {
                                         name="TensorFlow"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_6.png"
                                         content="Machine learning model for Recommender System."
-                                    />
-                                </Fade>
-                            </div>
-                            <div className="library-card-item">
-                                <Fade bottom when={this.state.clickCount > 4}>
-                                    <LibraryCard
-                                        name="Stanford CoreNLP"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_8.png"
-                                        content="Natural Language Processing on user input comments to analyze preference on art."
                                     />
                                 </Fade>
                             </div>
@@ -189,7 +171,7 @@ class Home extends Component {
                                     <LibraryCard
                                         name="Express.js"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
-                                        content="Provide API endpoints for GET, PUT, POST, DELETE actions of artwork information. Connected with Aurora and DynamoDB to update databases."
+                                        content="Provide API endpoints for GET, PUT, POST, DELETE requests of art information. Connected with Aurora and S3 to update databases."
                                     />
                                 </Fade>
                             </div>
@@ -197,17 +179,8 @@ class Home extends Component {
                                 <Fade bottom when={this.state.clickCount > 2}>
                                     <LibraryCard
                                         name="Amazon Aurora"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_5.png"
-                                        content="Basic information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
-                                    />
-                                </Fade>
-                            </div>
-                            <div className="library-card-item">
-                                <Fade bottom when={this.state.clickCount > 2}>
-                                    <LibraryCard
-                                        name="Amazon DynamoDB"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_4.png"
-                                        content="Supplementary data of items, such as museum address, artist’s date of birth. These data are all key-value pairs fetched from public domain sources (i.e. Wikipedia) by web crawlers."
+                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_22.png"
+                                        content="Information of artworks, artist, museums, genres, etc. and users, as well as relationship between items including painting, collecting, exhibiting, etc."
                                     />
                                 </Fade>
                             </div>
@@ -234,7 +207,7 @@ class Home extends Component {
                                     <LibraryCard
                                         name="ElasticSearch"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
-                                        content="Text Search Engine and Image Signature Search Engine."
+                                        content="Multilingual Text Search Engine and Image Signature Search Engine."
                                     />
                                 </Fade>
                             </div>
@@ -244,15 +217,6 @@ class Home extends Component {
                                         name="TensorFlow"
                                         avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_6.png"
                                         content="Machine learning model for Recommender System."
-                                    />
-                                </Fade>
-                            </div>
-                            <div className="library-card-item">
-                                <Fade bottom when={this.state.clickCount > 4}>
-                                    <LibraryCard
-                                        name="Stanford CoreNLP"
-                                        avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_8.png"
-                                        content="Natural Language Processing on user input comments to analyze preference on art."
                                     />
                                 </Fade>
                             </div>
