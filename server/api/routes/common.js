@@ -51,7 +51,7 @@ Common.prototype.checkExist = (group, id, callback) => {
     });
 };
 
-// Get item data from DynamoDB
+// Get item data
 Common.prototype.getItem = (group, id, callback) => {
     let sql, parameters;
     if (isNaN(parseInt(id))) {
@@ -64,12 +64,12 @@ Common.prototype.getItem = (group, id, callback) => {
     rds.query(sql, parameters, callback);
 };
 
-// Batch get item data from DynamoDB
+// Batch get item data
 Common.prototype.batchGetItems = (group, id, callback) => {
     rds.query(`SELECT * FROM ${group} WHERE id IN (?)`, [id], callback);
 };
 
-// Insert username into Aurora table `art` or `artizen`
+// Insert item data and relations
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;
     if (group === 'art') {
@@ -90,13 +90,17 @@ Common.prototype.putItem = (group, item, callback) => {
     });
 };
 
-// Delete item data from DynamoDB
+// Delete item data and relations
 Common.prototype.deleteItem = (group, id, callback) => {
-    const params = {
-        Key: {id: parseInt(id)},
-        TableName: group
-    };
-    dynamodb.delete(params, callback);
+    let sql, parameters;
+    if (isNaN(parseInt(id))) {
+        sql = `DELETE FROM ${group} WHERE username=?`;
+        parameters = [id.toString()];
+    } else {
+        sql = `DELETE FROM ${group} WHERE id=?`;
+        parameters = [parseInt(id)];
+    }
+    rds.query(sql, parameters, callback);
 };
 
 

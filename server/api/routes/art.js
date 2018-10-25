@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const common = require('./common');
-const dynamodb = common.dynamodb;
 const rds = common.rds;
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 
@@ -253,36 +252,15 @@ router.delete('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.checkExist('art', req.params.id, (err, id) => {
+
+    common.deleteItem('art', req.params.id, (err, data) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (id) {
-                // Delete art id and relations from Aurora table `art` and `archive`
-                rds.query('DELETE FROM art WHERE id=?', [parseInt(id)], (err, result, fields) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        next(err);
-                    } else {
-                        // Delete art data from DynamoDB
-                        common.deleteItem('art', id, (err, data) => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                next(err);
-                            } else {
-                                res.json({
-                                    message: `DELETE art success: ${req.params.id}`
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                res.json({
-                    message: `Art not found: ${req.params.id}`
-                });
-            }
+            res.json({
+                message: `DELETE art success: ${req.params.id}`
+            });
         }
     });
 });
