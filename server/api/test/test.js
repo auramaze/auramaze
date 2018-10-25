@@ -885,6 +885,34 @@ describe('Test api', function () {
                     });
             });
 
+            it('should delete artizen by id', done => {
+                const username = randomUsername();
+                let id;
+                request(app).put(`/v1/artizen/${username}`)
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        'username': username,
+                        'type': ['museum', 'exhibition']
+                    })
+                    .expect(200)
+                    .expect(res => {
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).delete(`/v1/artizen/${id}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .end(() => {
+                                request(app).get(`/v1/artizen/${id}`)
+                                    .expect(404)
+                                    .expect(res => {
+                                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                                    })
+                                    .end(done);
+                            });
+                    });
+            });
+
             it('should delete relations of artizen', done => {
                 const artizenUsername = randomUsername();
                 request(app).put(`/v1/artizen/${artizenUsername}`)

@@ -19,30 +19,6 @@ Common.prototype.rds = rds;
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
-// Check item existence in Aurora and return id if item exists
-Common.prototype.checkExist = (group, id, callback) => {
-    let sql, parameters;
-    if (isNaN(parseInt(id))) {
-        sql = `SELECT * FROM ${group} WHERE username=?`;
-        parameters = [id.toString()];
-    } else {
-        sql = `SELECT * FROM ${group} WHERE id=?`;
-        parameters = [parseInt(id)];
-    }
-    rds.query(sql, parameters, (err, result, fields) => {
-        /* istanbul ignore if */
-        if (err) {
-            callback(err, null);
-        } else {
-            if (result.length) {
-                callback(null, parseInt(result[0].id));
-            } else {
-                callback(null, null);
-            }
-        }
-    });
-};
-
 // Get item data
 Common.prototype.getItem = (group, id, callback) => {
     let sql, parameters;
@@ -61,7 +37,7 @@ Common.prototype.batchGetItems = (group, id, callback) => {
     rds.query(`SELECT * FROM ${group} WHERE id IN (?)`, [id], callback);
 };
 
-// Insert item data and relations
+// Insert item data
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;
     if (group === 'art') {

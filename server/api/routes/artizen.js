@@ -168,7 +168,7 @@ router.put('/:username', [
     });
 });
 
-/* DELETE artizen relations, data, username. */
+/* DELETE artizen data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 9, max: 9}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')

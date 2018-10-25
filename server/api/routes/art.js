@@ -5,7 +5,7 @@ const common = require('./common');
 const rds = common.rds;
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 
-// Check if usernames of all artizens exist in DynamoDB table `artizen`
+// Check if usernames of all artizens exist in table `artizen`
 // Return an object with username as key and id/false as value
 function checkArtizens(usernames, callback) {
     let exists = {};
@@ -26,7 +26,7 @@ function checkArtizens(usernames, callback) {
     });
 }
 
-// Add types to artizens in DynamoDB table `artizen`
+// Add types to artizens in table `artizen`
 function addTypes(relations, callback) {
     relations = relations.reduce((acc, cur) => {
         // cur.artizen must be id
@@ -154,7 +154,7 @@ router.get('/:id/artizen', [
     });
 });
 
-/* PUT art username, data, relations. */
+/* PUT art data and relations. */
 router.put('/:username', [
     oneOf([
         [
@@ -243,7 +243,7 @@ router.put('/:username', [
     });
 });
 
-/* DELETE art relations, data, username. */
+/* DELETE art data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
