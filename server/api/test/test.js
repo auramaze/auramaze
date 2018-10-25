@@ -243,21 +243,11 @@ describe('Test api', function () {
             });
 
             it('should get artizen data by username', done => {
-                request(app).get('/v1/artizen/metmuseum')
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(parseInt(res.body.id) === 100000011);
-                    })
-                    .end(done);
-            });
-
-            it('should get empty data', done => {
                 request(app).get('/v1/artizen/zianke')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                        assert(parseInt(res.body.id) === 100000001);
                     })
                     .end(done);
             });
@@ -340,14 +330,14 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should not get empty data', done => {
+            it('should get empty data', done => {
                 request(app).post('/v1/artizen/batch')
                     .send({
                         'id': [100000000, 100000003]
                     })
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(!res.body.hasOwnProperty(100000000));
+                        assert(res.body.hasOwnProperty(100000000));
                     })
                     .end(done);
             });

@@ -14,29 +14,14 @@ router.get('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.checkExist('artizen', req.params.id, (err, id) => {
+
+    common.getItem('artizen', req.params.id, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (id) {
-                common.getItem('artizen', id, (err, data) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        next(err);
-                    } else {
-                        if (data.Item) {
-                            let artizen = data.Item;
-                            // Convert type set to array
-                            if (artizen.type) {
-                                artizen.type = artizen.type.values;
-                            }
-                            res.json(artizen);
-                        } else {
-                            res.json({});
-                        }
-                    }
-                });
+            if (result.length) {
+                res.json(result[0]);
             } else {
                 res.status(404).json({
                     code: 'ARTIZEN_NOT_FOUND',
@@ -47,7 +32,7 @@ router.get('/:id', oneOf([
     });
 });
 
-/* Batch GET art data. */
+/* Batch GET artizen data. */
 router.post('/batch', [
     body('id').isArray(),
     body('id.*').isInt().isLength({min: 9, max: 9})
@@ -64,17 +49,13 @@ router.post('/batch', [
                 next(err);
             }
             else {
-                res.json(data.Responses.artizen.reduce((result, item) => {
-                    if (item.type) {
-                        item.type = item.type.values;
-                    }
+                res.json(data.reduce((result, item) => {
                     result[item.id] = item; //a, b, c
                     return result;
                 }, {}));
             }
         });
-    }
-    else {
+    } else {
         res.json({});
     }
 });
