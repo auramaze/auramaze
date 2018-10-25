@@ -10,38 +10,55 @@ const {param, query, body, oneOf, validationResult} = require('express-validator
 // Return an object with username as key and id/false as value
 function checkArtizens(usernames, callback) {
     let exists = {};
-    let check = _.after(usernames.length, () => {
-        callback(null, exists);
-    });
-    for (let username of usernames) {
-        common.checkExist('artizen', username, (err, id) => {
-            /* istanbul ignore if */
-            if (err) {
-                callback(err, false);
-            } else {
-                if (id) {
-                    exists[username] = id;
-                } else {
-                    exists[username] = false;
-                }
-                check();
+    rds.query('SELECT * FROM artizen WHERE username IN (?)', [usernames], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            callback(err, false);
+        } else {
+            const artizen_dict = result.reduce((acc, cur) => {
+                acc[cur.username] = cur.id;
+                return acc;
+            }, {});
+            for (let username of usernames) {
+                exists[username] = artizen_dict[username] || false;
             }
-        });
-    }
+            callback(null, exists);
+        }
+    });
 }
 
 // Add types to artizens in DynamoDB table `artizen`
 function addTypes(relations, callback) {
-    let add = _.after(relations.length, () => {
+    relations = relations.reduce((acc, cur) => {
+        // cur.artizen must be id
+        (acc[cur.artizen] = acc[cur.artizen] || []).push(cur.type);
+        return acc;
+    }, {});
+
+    let add = _.after(Object.keys(relations).length, () => {
         callback(null);
     });
-    for (let relation of relations) {
-        common.addType(relation.artizen, relation.type, (err, data) => {
+
+    for (let artizen in relations) {
+        rds.query('SELECT type FROM artizen WHERE id=?', [parseInt(artizen)], (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
                 callback(err);
             } else {
-                add();
+                const prevTypes = result[0] && result[0][0] && result[0][0] || [];
+                const newTypes = Array.from(new Set(relations[artizen].concat(prevTypes)));
+                if (newTypes.length > prevTypes.length) {
+                    rds.query('UPDATE artizen SET type=? WHERE id=?', [JSON.stringify(newTypes), parseInt(artizen)], (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            callback(err);
+                        } else {
+                            add();
+                        }
+                    });
+                } else {
+                    add();
+                }
             }
         });
     }
@@ -56,24 +73,14 @@ router.get('/:id', oneOf([
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    common.checkExist('art', req.params.id, (err, id) => {
+
+    common.getItem('art', req.params.id, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (id) {
-                common.getItem('art', id, (err, data) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        next(err);
-                    } else {
-                        if (data.Item) {
-                            res.json(data.Item);
-                        } else {
-                            res.json({});
-                        }
-                    }
-                });
+            if (result.length) {
+                res.json(result[0]);
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',
@@ -101,7 +108,7 @@ router.post('/batch', [
                 next(err);
             }
             else {
-                res.json(data.Responses.art.reduce((result, item) => {
+                res.json(data.reduce((result, item) => {
                     result[item.id] = item; //a, b, c
                     return result;
                 }, {}));
@@ -124,86 +131,26 @@ router.get('/:id/artizen', [
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    // Check art exists
-    common.checkExist('art', req.params.id, (err, id) => {
+
+    const sql = `SELECT artizen.id, artizen.name, artizen.avatar, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE art.${isNaN(parseInt(req.params.id)) ? 'username' : 'id'}=? ${req.query.type ? 'AND archive.type=? ' : ''}ORDER BY artizen.username`;
+    const parameters = isNaN(parseInt(req.params.id)) ? [req.params.id.toString()] : [parseInt(req.params.id)];
+    if (req.query.type) {
+        parameters.push(req.query.type);
+    }
+    rds.query(sql, parameters, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
-            if (id) {
-                // Get artizen id and type from Aurora table `archive`
-                let sql, parameters;
-                if (req.query.type) {
-                    sql = 'SELECT * FROM archive WHERE art_id=? AND type=? ORDER BY artizen_id DESC';
-                    parameters = [parseInt(id), req.query.type];
-                } else {
-                    sql = 'SELECT * FROM archive WHERE art_id=? ORDER BY artizen_id DESC';
-                    parameters = [parseInt(id)];
-                }
-                rds.query(sql, parameters, (err, result, fields) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        next(err);
-                    } else {
-                        if (result.length) {
-                            // Get artizen ids and remove duplicate
-                            const artizen_ids = result.map(item => item.artizen_id)
-                                .filter((item, index, array) => (!index || item !== array[index - 1]))
-                                .map(item => ({id: parseInt(item)}));
+            // Group by type
+            result = result.reduce((acc, cur) => {
+                (acc[cur.type] = acc[cur.type] || []).push(cur);
+                return acc;
+            }, {});
 
-                            // Get other attributes from DynamoDB table `artizen`
-                            const params = {
-                                RequestItems: {
-                                    'artizen': {
-                                        Keys: artizen_ids,
-                                        ProjectionExpression: '#id, #name, #avatar',
-                                        ExpressionAttributeNames: {
-                                            '#id': 'id',
-                                            '#name': 'name',
-                                            '#avatar': 'avatar'
-                                        }
-                                    }
-                                },
-                            };
-                            dynamodb.batchGet(params, (err, data) => {
-                                /* istanbul ignore if */
-                                if (err) {
-                                    next(err);
-                                } else {
-                                    data = data.Responses.artizen;
-
-                                    // Convert data to dict
-                                    const artizen_dict = data.reduce((acc, cur) => {
-                                        acc[cur.id.toString()] = cur;
-                                        return acc;
-                                    }, {});
-
-                                    // Add DynamoDB data to Aurora results
-                                    result = result.map(item => Object.assign({type: item.type}, {data: artizen_dict[item.artizen_id.toString()]}));
-
-                                    // Group by type
-                                    result = result.reduce((acc, cur) => {
-                                        (acc[cur.type] = acc[cur.type] || []).push(cur.data);
-                                        return acc;
-                                    }, {});
-
-                                    // Convert object to array
-                                    result = Object.keys(result).map(key => ({type: key, data: result[key]}));
-                                    res.json(result);
-                                }
-                            });
-                        } else {
-                            // No relations found
-                            res.json([]);
-                        }
-                    }
-                });
-            } else {
-                res.status(404).json({
-                    code: 'ART_NOT_FOUND',
-                    message: `Art not found: ${req.params.id}`
-                });
-            }
+            // Convert object to array
+            result = Object.keys(result).map(key => ({type: key, data: result[key]}));
+            res.json(result);
         }
     });
 });
@@ -252,7 +199,8 @@ router.put('/:username', [
                     type: relation.type
                 }));
                 // Insert username of art into Aurora table `art`
-                common.insertItem('art', req.params.username, (err, result, fields) => {
+                const art = _.omit(req.body, 'relations');
+                common.putItem('art', art, (err, result, fields) => {
                     if (err) {
                         /* istanbul ignore else */
                         if (err.code === 'ER_DUP_ENTRY') {
@@ -265,38 +213,30 @@ router.put('/:username', [
                         }
                     } else {
                         const id = result[0].id;
-                        const art = Object.assign(_.omit(req.body, 'relations'), {id: parseInt(id)});
-                        // Put art into DynamoDB table `art`
-                        common.putItem('art', art, (err, data) => {
+                        // Add types to artizen data in DynamoDB table `artizen`
+                        addTypes(relations, (err) => {
                             /* istanbul ignore if */
                             if (err) {
                                 next(err);
                             } else {
-                                // Add types to artizen data in DynamoDB table `artizen`
-                                addTypes(relations, (err) => {
-                                    /* istanbul ignore if */
-                                    if (err) {
-                                        next(err);
-                                    } else {
-                                        // Insert art's relations with artizens into Aurora table `archive`
-                                        rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
-                                            [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
-                                            (err, result, fields) => {
-                                                /* istanbul ignore if */
-                                                if (err) {
-                                                    next(err);
-                                                } else {
-                                                    res.json({
-                                                        message: `PUT art success: ${req.params.username}`,
-                                                        id: parseInt(art.id),
-                                                        username: art.username
-                                                    });
-                                                }
+                                // Insert art's relations with artizens into Aurora table `archive`
+                                rds.query('INSERT INTO archive (art_id, artizen_id, type) VALUES ?',
+                                    [relations.map(relation => [parseInt(id), parseInt(relation.artizen), relation.type])],
+                                    (err, result, fields) => {
+                                        /* istanbul ignore if */
+                                        if (err) {
+                                            next(err);
+                                        } else {
+                                            res.json({
+                                                message: `PUT art success: ${req.params.username}`,
+                                                id: parseInt(art.id),
+                                                username: art.username
                                             });
-                                    }
-                                });
+                                        }
+                                    });
                             }
                         });
+
                     }
                 });
             }

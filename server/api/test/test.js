@@ -200,25 +200,26 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should report ART_NOT_FOUND', done => {
+            it('should return empty array for nonexist id', done => {
                 request(app).get('/v1/art/00000000/artizen')
-                    .expect(404)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ART_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
 
-            it('should report ART_NOT_FOUND', done => {
+            it('should return empty array for nonexist username', done => {
                 request(app).get('/v1/art/notexist/artizen')
-                    .expect(404)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ART_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
+
             it('should report invalid type', done => {
                 request(app).get('/v1/art/10000003/artizen?type=123')
                     .expect(400)
