@@ -1,11 +1,4 @@
 require('dotenv').config();
-const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-    apiVersion: '2012-08-10',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
-});
 const mysql = require('mysql');
 const rds = mysql.createConnection({
     host: process.env.AWS_RDS_HOST,
@@ -21,7 +14,6 @@ const convert3To1 = require('iso-639-3-to-1');
 function Common() {
 }
 
-Common.prototype.dynamodb = dynamodb;
 Common.prototype.rds = rds;
 
 // Check if username satisfies variants
@@ -101,22 +93,6 @@ Common.prototype.deleteItem = (group, id, callback) => {
         parameters = [parseInt(id)];
     }
     rds.query(sql, parameters, callback);
-};
-
-
-// Add type to artizen data in DynamoDB table `artizen`
-Common.prototype.addType = (id, type, callback) => {
-    var params = {
-        TableName: 'artizen',
-        Key: {id: parseInt(id)},
-        UpdateExpression: 'ADD #k :v',
-        ExpressionAttributeNames: {'#k': 'type'},
-        ExpressionAttributeValues: {
-            ':v': dynamodb.createSet([type])
-        }
-    };
-
-    dynamodb.update(params, callback);
 };
 
 // Detect language of text and return ISO 639-1 code, undefined if not detected

@@ -131,8 +131,8 @@ router.get('/:id/artizen', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const sql = `SELECT artizen.id, artizen.name, artizen.avatar, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE art.${isNaN(parseInt(req.params.id)) ? 'username' : 'id'}=? ${req.query.type ? 'AND archive.type=? ' : ''}ORDER BY artizen.username`;
-    const parameters = isNaN(parseInt(req.params.id)) ? [req.params.id.toString()] : [parseInt(req.params.id)];
+    const sql = `SELECT artizen.id, artizen.username, artizen.name, artizen.avatar, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE art.${isNaN(parseInt(req.params.id)) ? 'username' : 'id'}=? ${req.query.type ? 'AND archive.type=? ' : ''}ORDER BY artizen.username`;
+    const parameters = [isNaN(parseInt(req.params.id)) ? req.params.id.toString() : parseInt(req.params.id)];
     if (req.query.type) {
         parameters.push(req.query.type);
     }
@@ -228,7 +228,7 @@ router.put('/:username', [
                                         } else {
                                             res.json({
                                                 message: `PUT art success: ${req.params.username}`,
-                                                id: parseInt(art.id),
+                                                id: parseInt(id),
                                                 username: art.username
                                             });
                                         }
@@ -289,7 +289,7 @@ router.post('/:id/introduction', [
     param('id').isInt().isLength({min: 8, max: 8}),
     body('author_id').exists().isInt().isLength({min: 9, max: 9}),
     body('rating').not().exists(),
-    body('content').exists().isLength({min: 1})
+    body('content').exists().isLength({min: 3})
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -299,7 +299,14 @@ router.post('/:id/introduction', [
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 0, null, req.body.content, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
-            next(err);
+            if (err.code === 'ER_INVALID_JSON_TEXT') {
+                res.status(400).json({
+                    code: 'INVALID_JSON',
+                    message: `Content is not valid JSON: ${req.body.content}`
+                });
+            } else {
+                next(err);
+            }
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
                 /* istanbul ignore if */
@@ -340,10 +347,10 @@ router.get('/:id/review', [
 router.post('/:id/review', [
     param('id').isInt().isLength({min: 8, max: 8}),
     body('author_id').exists().isInt().isLength({min: 9, max: 9}),
-    body('content').optional().isLength({min: 1}),
+    body('content').optional().isLength({min: 3}),
     oneOf([
         body('rating').exists().isInt({min: 1, max: 5}),
-        body('content').exists().isLength({min: 1})
+        body('content').exists().isLength({min: 3})
     ])
 ], (req, res, next) => {
     const errors = validationResult(req);
@@ -354,7 +361,14 @@ router.post('/:id/review', [
     rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
-            next(err);
+            if (err.code === 'ER_INVALID_JSON_TEXT') {
+                res.status(400).json({
+                    code: 'INVALID_JSON',
+                    message: `Content is not valid JSON: ${req.body.content}`
+                });
+            } else {
+                next(err);
+            }
         } else {
             rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
                 /* istanbul ignore if */
