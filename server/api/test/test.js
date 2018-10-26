@@ -604,6 +604,7 @@ describe('Test api', function () {
                     .send({
                         'title': {'default': 'This is title A', 'en': 'This is title A'},
                         'username': username,
+                        'completion_year': 'c.1517',
                         'relations': [
                             {'artizen': 'nga', 'type': 'museum'},
                             {'artizen': 'nga', 'type': 'exhibition'},
@@ -613,7 +614,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/) && res.body.completion_year === 'c.1517');
                     })
                     .end(() => {
                         request(app).get(`/v1/art/${username}/artizen`)
