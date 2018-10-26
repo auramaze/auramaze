@@ -19,6 +19,14 @@ def send_post_request(path, data):
     r.raise_for_status()
 
 
+def upsert_art(msg_value):
+    '''
+    Upsert art into ElasticSearch
+    :param dict msg_value: Example: {'before': None, 'after': {'id': 10001036, 'username': 'e54035a3-c70f-4727-800b-d14998accc82', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540586936, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 348708, 'row': 0, 'snapshot': False, 'thread': 2489, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540586936266}
+    '''
+    print(msg_value)
+
+
 def upsert_artizen(msg_value):
     '''
     Upsert artizen into ElasticSearch
@@ -74,9 +82,13 @@ while True:
     # print(msg.value(), flush=True)
     msg_value = msg.value()
     try:
-        if msg_value['source']['table'] == 'artizen':
+        if msg_value['source']['table'] == 'art':
+            if msg_value['op'] in ['c', 'u']:
+                upsert_art(msg_value)
+        elif msg_value['source']['table'] == 'artizen':
             if msg_value['op'] in ['c', 'u']:
                 upsert_artizen(msg_value)
+
     except (TypeError, KeyError) as e:
         print("Invalid message format for {}: {}".format(msg, e), flush=True)
 
