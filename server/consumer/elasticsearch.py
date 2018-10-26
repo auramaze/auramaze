@@ -1,9 +1,22 @@
 import json
+import urllib.parse
+import requests
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 
 ES_HOST = 'https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'
+
+
+def send_post_request(path, data):
+    '''
+    Send post request with requests
+    :param str path: Relative path of ElasticSearch
+    :param dict data: Request data, should be in JSON format
+    :return int: Status code of response
+    '''
+    r = requests.post(urllib.parse.urljoin(ES_HOST, path), json=data)
+    r.raise_for_status()
 
 
 def upsert_artizen(msg_value):
@@ -17,9 +30,20 @@ def upsert_artizen(msg_value):
         name = json.loads(msg_value['after']['name']) if msg_value['after']['name'] else None
         type = json.loads(msg_value['after']['type']) if msg_value['after']['type'] else []
 
-        # TODO: Send upsert request to ElasticSearch
+        data = {
+            'doc': {
+                'id': id,
+                'username': username,
+                'name': name,
+                'type': type
+            },
+            'doc_as_upsert': True
+        }
+        send_post_request('artizen/_doc/{}/_update'.format(id), data)
     except (KeyError, json.decoder.JSONDecodeError) as e:
         print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
 
 
 c = AvroConsumer({
