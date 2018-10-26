@@ -25,6 +25,8 @@ router.get('/', [
         request.post({
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
+                'from':req.query.from,
+                'size':20,
                 'query': {
                     'bool':{
                         'should':
