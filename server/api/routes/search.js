@@ -26,13 +26,29 @@ router.get('/', [
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
                 'query': {
-                    'multi_match' : {
-                        'query': req.query.q,
-                        'fields':['title.en','artist.en','museum.en','genre.en','style.en','introduction.en'],
-                        'fuzziness' : 'AUTO',
-                        'prefix_length' : 0
+                    'bool':{
+                        'should':
+                        [
+                            {
+                                'multi_match' : {
+                                    'query': req.query.q,
+                                    'fields':['title*','artist*','museum*','genre*','style*','name*'],
+                                    'fuzziness' : 'AUTO',
+                                    'prefix_length' : 0,
+                                    'operator':'and'
+                                }
+                            },
+                            {
+                                'multi_match' : 
+                                {
+                                    'query': req.query.q,
+                                    'fields':['introduction*'],
+                                    'operator':'and'
+                                }
+                            }
+                        ]
                     }
-                }
+                },
             },
             json: true
         }, (error, response, body) => {
