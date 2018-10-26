@@ -41,8 +41,8 @@ Common.prototype.batchGetItems = (group, id, callback) => {
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;
     if (group === 'art') {
-        sql = 'INSERT INTO art (username, title, image, attributes) VALUES (?)';
-        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.title ? JSON.stringify(item.title) : null, item.image ? JSON.stringify(item.image) : null, JSON.stringify(_.omit(item, ['id', 'username', 'title', 'image']))]];
+        sql = 'INSERT INTO art (username, title, image, completion_year, attributes) VALUES (?)';
+        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.title ? JSON.stringify(item.title) : null, item.image ? JSON.stringify(item.image) : null, item.completion_year, JSON.stringify(_.omit(item, ['id', 'username', 'title', 'image']))]];
     } else {
         sql = 'INSERT INTO artizen (username, name, type, avatar, attributes) VALUES (?)';
         parameters = [[parseInt(item.username) === 0 ? null : item.username, item.name ? JSON.stringify(item.name) : null, item.type ? JSON.stringify(item.type) : null, item.avatar, JSON.stringify(_.omit(item, ['id', 'username', 'name', 'type', 'avatar']))]];
