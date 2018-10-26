@@ -26,7 +26,7 @@ class FaceDetect:
             return (0, 0, H, W)
         (x, y, w, h) = faces[0]
         center = (x + w/2, y + h/2)
-        r = (1 + self.PADDING) * (w + h) / 2
+        r = (1 + self.PADDING) * (w + h) / 4
         r = int(min([r, center[0], center[1], W - center[1], H - center[0]])) - 1
         anchor = (int(center[0] - r), int(center[1] - r))
         head = np.array([anchor[0], anchor[1], 2*r, 2*r])
@@ -53,7 +53,7 @@ class FaceDetect:
 
 
 def main():
-    driver = FaceDetect(0.1)
+    driver = FaceDetect(padding=0.6)
     for file in tqdm(glob.glob('artists\\*')):
         input_path = 'artists\\' + os.path.basename(file)
         output_path = 'profiles\\' + os.path.basename(file)
