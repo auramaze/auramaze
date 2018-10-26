@@ -6,15 +6,15 @@ from confluent_kafka.avro.serializer import SerializerError
 ES_HOST = 'https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'
 
 
-def insert_artizen(msg_value):
+def upsert_artizen(msg_value):
     '''
-    Insert new artizen into ElasticSearch
+    Upsert artizen into ElasticSearch
     :param dict msg_value: Example: {'before': None, 'after': {'id': 100239445, 'username': 'c5ba-0897-41a8-b8d5-4aea5abb7f65', 'name': '{"en":"This is name B","default":"This is name B"}', 'type': '["museum","exhibition"]', 'avatar': None, 'attributes': '{}'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540581990, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 240894, 'row': 0, 'snapshot': False, 'thread': 2230, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'c', 'ts_ms': 1540581990570}
     '''
     try:
         id = msg_value['after']['id']
         username = msg_value['after']['username']
-        name = json.loads(msg_value['after']['name']) if msg_value['after']['name'] else {}
+        name = json.loads(msg_value['after']['name']) if msg_value['after']['name'] else None
         type = json.loads(msg_value['after']['type']) if msg_value['after']['type'] else []
 
         # TODO: Send upsert request to ElasticSearch
@@ -51,9 +51,9 @@ while True:
     msg_value = msg.value()
     try:
         if msg_value['source']['table'] == 'artizen':
-            if msg_value['op'] == 'c':
-                insert_artizen(msg_value)
-    except KeyError as e:
+            if msg_value['op'] in ['c', 'u']:
+                upsert_artizen(msg_value)
+    except (TypeError, KeyError) as e:
         print("Invalid message format for {}: {}".format(msg, e), flush=True)
 
 c.close()
