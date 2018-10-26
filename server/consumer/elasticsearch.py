@@ -22,7 +22,7 @@ def send_post_request(path, data):
 def upsert_art(msg_value):
     '''
     Upsert art into ElasticSearch
-    :param dict msg_value: Example: {'before': None, 'after': {'id': 10001036, 'username': 'e54035a3-c70f-4727-800b-d14998accc82', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540586936, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 348708, 'row': 0, 'snapshot': False, 'thread': 2489, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540586936266}
+    :param dict msg_value: Example: {'before': None, 'after': {'id': 10001081, 'username': 'e1-a73c-4336-a6f9-dbafe9d79270', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}', 'completion_year': 'c.1517'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540588806, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 462266, 'row': 0, 'snapshot': False, 'thread': 2598, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540588806426}
     '''
     print(msg_value)
 
