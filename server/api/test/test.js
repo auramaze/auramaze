@@ -1478,7 +1478,27 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
+            
+            it('should support artizen fuzzy query', done => {
+                request(app).get('/v1/search?q=marunu')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'marina'));
+                    })
+                    .end(done);
+            });
 
+            it('should support query with multiple word', done => {
+                request(app).get('/v1/search?q=van gogh')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'vincent-van-gogh'));
+                    })
+                    .end(done);
+            });
+            
             it('should get art data', done => {
                 request(app).get('/v1/search?q=met')
                     .expect(200)
@@ -1547,6 +1567,36 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.art && res.body.art.some(e => e.id === 10000004));
+                    })
+                    .end(done);
+            });
+
+            it('should support fuzzy', done => {
+                request(app).get('/v1/search?q=vanitus')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                    })
+                    .end(done);
+            });
+
+            it('should support operator and', done => {
+                request(app).get('/v1/search?q=globe+skull+candle+tazza')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                    })
+                    .end(done);
+            });
+
+            it('should support fuzzy with multiple word', done => {
+                request(app).get('/v1/search?q=glube+skall+ceedle+tazza')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
                     })
                     .end(done);
             });
