@@ -71,7 +71,7 @@ Common.prototype.deleteItem = (group, id, callback) => {
     rds.query(sql, parameters, callback);
 };
 
-Common.prototype.convertContentStateToPlainText = (content) => {
+Common.prototype.convertContentToPlainText = (content) => {
     return content.blocks
         .map(block => {
             return block.text || '';
@@ -82,7 +82,7 @@ Common.prototype.convertContentStateToPlainText = (content) => {
 // Detect language of text and return ISO 639-1 code, undefined if not detected
 Common.prototype.detectLanguage = (content) => {
     if (content.blocks) {
-        content = Common.prototype.convertContentStateToPlainText(content);
+        content = Common.prototype.convertContentToPlainText(content);
     }
     return convert3To1(franc(content, {minLength: 1}));
 };
