@@ -13,9 +13,19 @@ def send_post_request(path, data):
     Send post request with requests
     :param str path: Relative path of ElasticSearch
     :param dict data: Request data, should be in JSON format
-    :return int: Status code of response
+    :return: None
     '''
     r = requests.post(urllib.parse.urljoin(ES_HOST, path), json=data)
+    r.raise_for_status()
+
+
+def send_delete_request(path):
+    '''
+    Send delete request with requests
+    :param str path: Relative path of ElasticSearch
+    :return: None
+    '''
+    r = requests.delete(urllib.parse.urljoin(ES_HOST, path))
     r.raise_for_status()
 
 
@@ -77,6 +87,36 @@ def upsert_artizen(msg_value):
         print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
 
 
+def delete_art(msg_value):
+    '''
+    Delete art from ElasticSearch
+    :param dict msg_value: Example: {'before': {'id': 10001117, 'username': 'b91145f-78f3-4e82-8f56-2f1de477860a', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}', 'completion_year': None}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604393, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 542586, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'd', 'ts_ms': 1540604393737}
+    :return: None
+    '''
+    try:
+        id = msg_value['before']['id']
+        send_delete_request('art/_doc/{}'.format(id))
+    except KeyError as e:
+        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+
+
+def delete_artizen(msg_value):
+    '''
+    Delete artizen from ElasticSearch
+    :param dict msg_value: Example: {'before': {'id': 100239600, 'username': 'deed23-94f4-48c5-84c2-838ac9752e45', 'name': '{"en":"This is name A","default":"This is name A"}', 'type': '["museum","exhibition"]', 'avatar': None, 'attributes': '{}'}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604392, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 537689, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'd', 'ts_ms': 1540604392887}
+    :return: None
+    '''
+    try:
+        id = msg_value['before']['id']
+        send_delete_request('artizen/_doc/{}'.format(id))
+    except KeyError as e:
+        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+
+
 c = AvroConsumer({
     'bootstrap.servers': '18.223.196.223:9092',
     'group.id': '2',
@@ -102,16 +142,23 @@ while True:
             print(msg.error(), flush=True)
             break
 
-    # print(msg.value(), flush=True)
+    print(msg.value(), flush=True)
     msg_value = msg.value()
+    if msg_value is None:
+        # Tombstone message
+        continue
+
     try:
         if msg_value['source']['table'] == 'art':
             if msg_value['op'] in ['c', 'u']:
                 upsert_art(msg_value)
+            elif msg_value['op'] == 'd':
+                delete_art(msg_value)
         elif msg_value['source']['table'] == 'artizen':
             if msg_value['op'] in ['c', 'u']:
                 upsert_artizen(msg_value)
-
+            elif msg_value['op'] == 'd':
+                delete_artizen(msg_value)
     except (TypeError, KeyError) as e:
         print("Invalid message format for {}: {}".format(msg, e), flush=True)
 
