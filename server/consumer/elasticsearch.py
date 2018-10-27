@@ -201,11 +201,11 @@ while True:
             print(msg.error(), flush=True)
             break
 
-    # print(msg.value(), flush=True)
     msg_value = msg.value()
     if msg_value is None:
         # Tombstone message
         continue
+    # print(msg_value, flush=True)
 
     try:
         if msg_value['source']['table'] == 'art':
