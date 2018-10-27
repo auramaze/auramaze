@@ -116,3 +116,4 @@ dmypy.json
 # Misc
 .idea/
 .DS_Store
+nohup.out
