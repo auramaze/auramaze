@@ -57,10 +57,10 @@ class Artizen extends Component {
                         json: true
                     }, (error, response, body) => {
                         if (response && response.statusCode === 200) {
-                            // Filter arts with image
-                            body.forEach(section => {
-                                section.data = section.data.filter(art => art.image);
-                            });
+                            // // Filter arts with image
+                            // body.forEach(section => {
+                            //     section.data = section.data.filter(art => art.image);
+                            // });
                             this.setState({arts: body});
                         }
                     });
