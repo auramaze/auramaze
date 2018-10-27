@@ -1,12 +1,25 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import os
 import json
 import urllib.parse
 import requests
+import MySQLdb
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 
-ES_HOST = 'https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'
-KAFKA_HOST = '18.223.196.223'
+ES_HOST = os.getenv('ES_HOST')
+KAFKA_HOST = os.getenv('KAFKA_HOST')
+AWS_RDS_HOST = os.getenv('AWS_RDS_HOST')
+AWS_RDS_USER = os.getenv('AWS_RDS_USER')
+AWS_RDS_PASSWORD = os.getenv('AWS_RDS_PASSWORD')
+AWS_RDS_DATABASE = os.getenv('AWS_RDS_DATABASE')
 
 
 def send_post_request(path, data):
@@ -52,10 +65,10 @@ def upsert_art(msg_value):
         }
 
         send_post_request('art/_doc/{}/_update'.format(id), data)
-    except (KeyError, json.decoder.JSONDecodeError) as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
+        print('Invalid message format in upsert_art(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def upsert_artizen(msg_value):
@@ -82,10 +95,10 @@ def upsert_artizen(msg_value):
             data['doc']['type'] = type
 
         send_post_request('artizen/_doc/{}/_update'.format(id), data)
-    except (KeyError, json.decoder.JSONDecodeError) as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
+        print('Invalid message format in upsert_artizen(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def delete_art(msg_value):
@@ -97,10 +110,10 @@ def delete_art(msg_value):
     try:
         id = msg_value['before']['id']
         send_delete_request('art/_doc/{}'.format(id))
-    except KeyError as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except (TypeError, KeyError) as e:
+        print('Invalid message format in delete_art(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def delete_artizen(msg_value):
@@ -112,10 +125,107 @@ def delete_artizen(msg_value):
     try:
         id = msg_value['before']['id']
         send_delete_request('artizen/_doc/{}'.format(id))
-    except KeyError as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except (TypeError, KeyError) as e:
+        print('Invalid message format in delete_artizen(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
+
+
+def update_relation(msg_value):
+    '''
+    Get all related artizens of an art regarding some type from Aurora and update ElasticSearch
+    :param dict msg_value: Example: {'before': None, 'after': {'art_id': 10001153, 'artizen_id': 100239657, 'type': 'exhibition'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540606868, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 636255, 'row': 0, 'snapshot': False, 'thread': 3522, 'db': 'auramaze', 'table': 'archive', 'query': None}, 'op': 'c', 'ts_ms': 1540606868839}
+    :return: None
+    '''
+    try:
+        if msg_value['op'] == 'c':
+            art_id = msg_value['after']['art_id']
+            type = msg_value['after']['type']
+        elif msg_value['op'] == 'd':
+            art_id = msg_value['before']['art_id']
+            type = msg_value['before']['type']
+        else:
+            raise KeyError("Should not update archive")
+
+        cur = db.cursor()
+        cur.execute(
+            'SELECT artizen.name FROM archive INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE archive.art_id=%s AND archive.type=%s',
+            [art_id, type])
+        relations = list(map(lambda item: json.loads(item[0]), cur.fetchall()))
+        cur.close()
+
+        data = {
+            'doc': {
+                type: relations,
+            },
+            'doc_as_upsert': True
+        }
+
+        send_post_request('art/_doc/{}/_update'.format(art_id), data)
+    except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
+        print('Invalid message format in update_relation(): {}: {}'.format(msg_value, e), flush=True)
+    except MySQLdb.Error as e:
+        print('Error in MySQL operation: {}: {}'.format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
+
+
+def update_introduction(msg_value):
+    '''
+    Get all related artizens of an art regarding some type from Aurora and update ElasticSearch
+    :param dict msg_value: Example: {'before': {'id': 1000001458, 'author_id': 100000010, 'art_id': 10000003, 'artizen_id': None, 'type': 0, 'rating': None, 'language': 'en', 'valid': 0, 'content': '"Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c.\u20091458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas."'}, 'after': {'id': 1000001458, 'author_id': 100000010, 'art_id': 10000003, 'artizen_id': None, 'type': 0, 'rating': None, 'language': 'en', 'valid': 1, 'content': '"Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c.\u20091458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas."'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540662581, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 685801, 'row': 0, 'snapshot': False, 'thread': 6326, 'db': 'auramaze', 'table': 'text', 'query': None}, 'op': 'u', 'ts_ms': 1540662581734}
+    :return: None
+    '''
+    try:
+        if msg_value['op'] == 'd':
+            art_id = msg_value['before']['art_id']
+            artizen_id = msg_value['before']['artizen_id']
+            type = msg_value['before']['type']
+            valid = msg_value['before']['valid']
+        elif msg_value['op'] == 'c':
+            art_id = msg_value['after']['art_id']
+            artizen_id = msg_value['after']['artizen_id']
+            type = msg_value['after']['type']
+            valid = msg_value['after']['valid']
+        else:
+            art_id = msg_value['after']['art_id']
+            artizen_id = msg_value['after']['artizen_id']
+            type = msg_value['before']['type'] and msg_value['after']['type']  # if before and after are both reviews
+            valid = msg_value['before']['valid'] or msg_value['after']['valid']  # if either before or after is valid
+
+        if not valid or type == 1:
+            # Is always a review or is always invalid
+            return
+
+        column = 'art_id' if art_id else 'artizen_id'
+
+        cur = db.cursor()
+        cur.execute(
+            'SELECT language, content FROM text WHERE {}=%s AND type=0 AND valid AND content IS NOT NULL'.format(
+                column),
+            [art_id if art_id else artizen_id])
+        introductions = list(
+            map(lambda item: dict([(item[0], convert_content_to_plain_text(json.loads(item[1])))]), cur.fetchall()))
+        cur.close()
+
+        data = {
+            'doc': {
+                'introduction': introductions,
+            },
+            'doc_as_upsert': True
+        }
+
+        send_post_request('{}/_doc/{}/_update'.format(column.rstrip('_id'), art_id if art_id else artizen_id), data)
+    except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
+        print('Invalid message format in update_introduction(): {}: {}'.format(msg_value, e), flush=True)
+    except MySQLdb.Error as e:
+        print('Error in MySQL operation: {}: {}'.format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
+
+
+def convert_content_to_plain_text(content):
+    return '\n'.join([block['text'] if 'text' in block else '' for block in content['blocks']])
 
 
 c = AvroConsumer({
@@ -125,12 +235,19 @@ c = AvroConsumer({
 
 c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.archive', 'aurora.auramaze.text'])
 
+db = MySQLdb.connect(host=AWS_RDS_HOST,
+                     user=AWS_RDS_USER,
+                     passwd=AWS_RDS_PASSWORD,
+                     db=AWS_RDS_DATABASE,
+                     charset='utf8')
+db.autocommit(True)
+
 while True:
     try:
         msg = c.poll(10)
 
     except SerializerError as e:
-        print("Message deserialization failed for {}: {}".format(msg, e), flush=True)
+        print('Message deserialization failed: {}: {}'.format(msg, e), flush=True)
         break
 
     if msg is None:
@@ -143,11 +260,11 @@ while True:
             print(msg.error(), flush=True)
             break
 
-    # print(msg.value(), flush=True)
     msg_value = msg.value()
     if msg_value is None:
         # Tombstone message
         continue
+    # print(msg_value, flush=True)
 
     try:
         if msg_value['source']['table'] == 'art':
@@ -160,7 +277,14 @@ while True:
                 upsert_artizen(msg_value)
             elif msg_value['op'] == 'd':
                 delete_artizen(msg_value)
+        elif msg_value['source']['table'] == 'archive':
+            if msg_value['op'] in ['c', 'u', 'd']:
+                update_relation(msg_value)
+        elif msg_value['source']['table'] == 'text':
+            if msg_value['op'] in ['c', 'u', 'd']:
+                update_introduction(msg_value)
     except (TypeError, KeyError) as e:
-        print("Invalid message format for {}: {}".format(msg, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
 
+db.close()
 c.close()
