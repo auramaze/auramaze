@@ -6,6 +6,7 @@ from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 
 ES_HOST = 'https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'
+KAFKA_HOST = '18.223.196.223'
 
 
 def send_post_request(path, data):
@@ -118,9 +119,9 @@ def delete_artizen(msg_value):
 
 
 c = AvroConsumer({
-    'bootstrap.servers': '18.223.196.223:9092',
+    'bootstrap.servers': '{}:9092'.format(KAFKA_HOST),
     'group.id': '2',
-    'schema.registry.url': 'http://18.223.196.223:8081'})
+    'schema.registry.url': 'http://{}:8081'.format(KAFKA_HOST)})
 
 c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.archive', 'aurora.auramaze.text'])
 
