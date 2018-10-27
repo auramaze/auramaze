@@ -24,7 +24,27 @@ def upsert_art(msg_value):
     Upsert art into ElasticSearch
     :param dict msg_value: Example: {'before': None, 'after': {'id': 10001081, 'username': 'e1-a73c-4336-a6f9-dbafe9d79270', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}', 'completion_year': 'c.1517'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540588806, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 462266, 'row': 0, 'snapshot': False, 'thread': 2598, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540588806426}
     '''
-    print(msg_value)
+    try:
+        id = msg_value['after']['id']
+        username = msg_value['after']['username']
+        title = json.loads(msg_value['after']['title']) if msg_value['after']['title'] else None
+        completion_year = msg_value['after']['completion_year']
+
+        data = {
+            'doc': {
+                'id': id,
+                'username': username,
+                'title': title,
+                'completion_year': completion_year
+            },
+            'doc_as_upsert': True
+        }
+        print(data)
+        send_post_request('art/_doc/{}/_update'.format(id), data)
+    except (KeyError, json.decoder.JSONDecodeError) as e:
+        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
 
 
 def upsert_artizen(msg_value):
