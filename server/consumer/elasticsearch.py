@@ -1,12 +1,25 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import os
 import json
 import urllib.parse
 import requests
+import MySQLdb
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 
-ES_HOST = 'https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'
-KAFKA_HOST = '18.223.196.223'
+ES_HOST = os.getenv('ES_HOST')
+KAFKA_HOST = os.getenv('KAFKA_HOST')
+AWS_RDS_HOST = os.getenv('AWS_RDS_HOST')
+AWS_RDS_USER = os.getenv('AWS_RDS_USER')
+AWS_RDS_PASSWORD = os.getenv('AWS_RDS_PASSWORD')
+AWS_RDS_DATABASE = os.getenv('AWS_RDS_DATABASE')
 
 
 def send_post_request(path, data):
@@ -53,9 +66,9 @@ def upsert_art(msg_value):
 
         send_post_request('art/_doc/{}/_update'.format(id), data)
     except (KeyError, json.decoder.JSONDecodeError) as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def upsert_artizen(msg_value):
@@ -83,9 +96,9 @@ def upsert_artizen(msg_value):
 
         send_post_request('artizen/_doc/{}/_update'.format(id), data)
     except (KeyError, json.decoder.JSONDecodeError) as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def delete_art(msg_value):
@@ -98,9 +111,9 @@ def delete_art(msg_value):
         id = msg_value['before']['id']
         send_delete_request('art/_doc/{}'.format(id))
     except KeyError as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 def delete_artizen(msg_value):
@@ -113,9 +126,40 @@ def delete_artizen(msg_value):
         id = msg_value['before']['id']
         send_delete_request('artizen/_doc/{}'.format(id))
     except KeyError as e:
-        print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
-        print("Error in sending request to ElasticSearch for {}: {}".format(msg_value, e), flush=True)
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
+
+
+def update_relation(msg_value):
+    '''
+    Get all related artizens of an art regarding some type
+    :param dict msg_value: Example: {'before': None, 'after': {'art_id': 10001153, 'artizen_id': 100239657, 'type': 'exhibition'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540606868, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 636255, 'row': 0, 'snapshot': False, 'thread': 3522, 'db': 'auramaze', 'table': 'archive', 'query': None}, 'op': 'c', 'ts_ms': 1540606868839}
+    :return: None
+    '''
+    try:
+        if msg_value['op'] == 'c':
+            art_id = msg_value['after']['art_id']
+            type = msg_value['after']['type']
+        elif msg_value['op'] == 'd':
+            art_id = msg_value['before']['art_id']
+            type = msg_value['before']['type']
+        else:
+            raise KeyError("Unable to handle archive update")
+
+        relations = []
+        data = {
+            'doc': {
+                type: relations,
+            },
+            'doc_as_upsert': True
+        }
+
+        send_post_request('art/_doc/{}/_update'.format(art_id), data)
+    except KeyError as e:
+        print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
+    except requests.exceptions.HTTPError as e:
+        print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
 c = AvroConsumer({
@@ -125,12 +169,17 @@ c = AvroConsumer({
 
 c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.archive', 'aurora.auramaze.text'])
 
+db = MySQLdb.connect(host=AWS_RDS_HOST,
+                     user=AWS_RDS_USER,
+                     passwd=AWS_RDS_PASSWORD,
+                     db=AWS_RDS_DATABASE)
+
 while True:
     try:
         msg = c.poll(10)
 
     except SerializerError as e:
-        print("Message deserialization failed for {}: {}".format(msg, e), flush=True)
+        print('Message deserialization failed: {}: {}'.format(msg, e), flush=True)
         break
 
     if msg is None:
@@ -160,7 +209,10 @@ while True:
                 upsert_artizen(msg_value)
             elif msg_value['op'] == 'd':
                 delete_artizen(msg_value)
+        elif msg_value['source']['table'] == 'archive':
+            update_relation(msg_value)
     except (TypeError, KeyError) as e:
-        print("Invalid message format for {}: {}".format(msg, e), flush=True)
+        print('Invalid message format: {}: {}'.format(msg, e), flush=True)
 
+db.close()
 c.close()
