@@ -199,7 +199,7 @@ router.get('/:id/introduction', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.name, artizen.avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -258,7 +258,7 @@ router.get('/:id/review', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.name, artizen.avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
