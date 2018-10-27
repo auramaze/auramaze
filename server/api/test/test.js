@@ -669,6 +669,53 @@ describe('Test api', function () {
                     });
             });
 
+            it('should not add to artizen type', done => {
+                const artizenUsername = randomUsername();
+                request(app).put(`/v1/artizen/${artizenUsername}`)
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        'username': artizenUsername,
+                        'type': ['museum']
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(() => {
+                        request(app).get(`/v1/artizen/${artizenUsername}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.type.length === 1);
+                            })
+                            .end(() => {
+                                const artUsername = randomUsername();
+                                request(app).put(`/v1/art/${artUsername}`)
+                                    .send({
+                                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                        'username': artUsername,
+                                        'relations': [{'artizen': artizenUsername, 'type': 'museum'}]
+                                    })
+                                    .expect(200)
+                                    .expect('Content-Type', /json/)
+                                    .end(() => {
+                                        request(app).get(`/v1/artizen/${artizenUsername}`)
+                                            .expect(200)
+                                            .expect('Content-Type', /json/)
+                                            .expect(res => {
+                                                assert(res.body.type.length === 1);
+                                            })
+                                            .end(() => {
+                                                request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                    .expect(200)
+                                                    .expect(res => {
+                                                        assert(res.body.length === 1);
+                                                    })
+                                                    .end(done);
+                                            });
+                                    });
+                            });
+                    });
+            });
+
             it('should put art data without username', done => {
                 let id;
                 request(app).put('/v1/art/00000000')

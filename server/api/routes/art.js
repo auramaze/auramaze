@@ -44,7 +44,7 @@ function addTypes(relations, callback) {
             if (err) {
                 callback(err);
             } else {
-                const prevTypes = result[0] && result[0][0] && result[0][0] || [];
+                const prevTypes = result[0] && result[0].type || [];
                 const newTypes = Array.from(new Set(relations[artizen].concat(prevTypes)));
                 if (newTypes.length > prevTypes.length) {
                     rds.query('UPDATE artizen SET type=? WHERE id=?', [JSON.stringify(newTypes), parseInt(artizen)], (err, result, fields) => {
