@@ -35,12 +35,12 @@ class TextCard extends Component {
     }
 
     render() {
-        const {authorId, authorUsername, authorName, avatar, itemType, itemId, itemUsername, textType, textId, rating, content, up, down, ...props} = this.props;
+        const {authorId, authorUsername, authorName, authorAvatar, itemType, itemId, itemUsername, textType, textId, rating, content, up, down, ...props} = this.props;
         return (
             <div {...props} className="text-card card-shadow">
                 <div className="text-card-title">
                     <Link to={`/artizen/${authorUsername || authorId}`}>
-                        {avatar ? <img src={avatar} alt="avatar" className="text-card-avatar"/> :
+                        {authorAvatar ? <img src={authorAvatar} alt="avatar" className="text-card-avatar"/> :
                             <div className="text-card-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
                     </Link>
                     <span className="text-card-name">{authorName}</span>
@@ -66,8 +66,8 @@ class TextCard extends Component {
                             />
                         </div>
                         }
-                        {this.props.content && <Editor
-                            editorState={EditorState.createWithContent(convertFromRaw(this.props.content))}
+                        {content && <Editor
+                            editorState={EditorState.createWithContent(convertFromRaw(content))}
                             readOnly
                         />}
                     </div>

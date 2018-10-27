@@ -70,21 +70,7 @@ class Artizen extends Component {
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
-                            request.post({
-                                url: `${API_ENDPOINT}/artizen/batch`,
-                                body: {id: Array.from(new Set(introductions.map(introduction => introduction.author_id)))},
-                                json: true
-                            }, (error, response, body) => {
-                                if (response && response.statusCode === 200) {
-                                    introductions = introductions.map(introduction =>
-                                        Object.assign(introduction, {
-                                            author_username: body[introduction.author_id].username,
-                                            author_name: body[introduction.author_id].name,
-                                            avatar: body[introduction.author_id].avatar
-                                        }));
-                                    this.setState({introductions: introductions});
-                                }
-                            });
+                            this.setState({introductions: introductions});
                         }
                     });
 
@@ -93,21 +79,7 @@ class Artizen extends Component {
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
-                            request.post({
-                                url: `${API_ENDPOINT}/artizen/batch`,
-                                body: {id: Array.from(new Set(reviews.map(review => review.author_id)))},
-                                json: true
-                            }, (error, response, body) => {
-                                if (response && response.statusCode === 200) {
-                                    reviews = reviews.map(review =>
-                                        Object.assign(review, {
-                                            author_username: body[review.author_id].username,
-                                            author_name: body[review.author_id].name,
-                                            avatar: body[review.author_id].avatar
-                                        }));
-                                    this.setState({reviews: reviews});
-                                }
-                            });
+                            this.setState({reviews: reviews});
                         }
                     });
                 }
@@ -162,7 +134,7 @@ class Artizen extends Component {
                                         authorId={introduction.author_id}
                                         authorUsername={introduction.author_username}
                                         authorName={introduction.author_name && introduction.author_name.default}
-                                        avatar={introduction.avatar}
+                                        authorAvatar={introduction.author_avatar}
                                         itemType="artizen"
                                         itemId={introduction.artizen_id}
                                         textType="introduction"
@@ -182,7 +154,7 @@ class Artizen extends Component {
                             authorId={review.author_id}
                             authorUsername={review.author_username}
                             authorName={review.author_name && review.author_name.default}
-                            avatar={review.avatar}
+                            authorAvatar={review.author_avatar}
                             itemType="artizen"
                             itemId={review.artizen_id}
                             textType="review"
