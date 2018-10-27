@@ -133,7 +133,7 @@ def delete_artizen(msg_value):
 
 def update_relation(msg_value):
     '''
-    Get all related artizens of an art regarding some type
+    Get all related artizens of an art regarding some type from Aurora and update ElasticSearch
     :param dict msg_value: Example: {'before': None, 'after': {'art_id': 10001153, 'artizen_id': 100239657, 'type': 'exhibition'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540606868, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 636255, 'row': 0, 'snapshot': False, 'thread': 3522, 'db': 'auramaze', 'table': 'archive', 'query': None}, 'op': 'c', 'ts_ms': 1540606868839}
     :return: None
     '''
@@ -145,9 +145,15 @@ def update_relation(msg_value):
             art_id = msg_value['before']['art_id']
             type = msg_value['before']['type']
         else:
-            raise KeyError("Unable to handle archive update")
+            raise KeyError("Should not update archive")
 
-        relations = []
+        cur = db.cursor()
+        cur.execute(
+            'SELECT artizen.name FROM archive INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE archive.art_id=%s AND archive.type=%s',
+            [art_id, type])
+        relations = list(map(lambda item: json.loads(item[0]), cur.fetchall()))
+        cur.close()
+
         data = {
             'doc': {
                 type: relations,
@@ -158,6 +164,8 @@ def update_relation(msg_value):
         send_post_request('art/_doc/{}/_update'.format(art_id), data)
     except KeyError as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
+    except MySQLdb.Error as e:
+        print('Error in MySQL operation: {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
@@ -172,7 +180,8 @@ c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.
 db = MySQLdb.connect(host=AWS_RDS_HOST,
                      user=AWS_RDS_USER,
                      passwd=AWS_RDS_PASSWORD,
-                     db=AWS_RDS_DATABASE)
+                     db=AWS_RDS_DATABASE,
+                     charset='utf8')
 
 while True:
     try:
