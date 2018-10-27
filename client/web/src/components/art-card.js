@@ -9,7 +9,7 @@ class ArtCard extends Component {
             <div {...props} className="art-card card-shadow">
                 <Link to={`/art/${username || id}`}>
                     {image ? <img src={image} alt="avatar" className="art-card-artwork"/> :
-                        <div className="art-card-artwork" style={{backgroundColor: '#cdcdcd', height: 200}}/>}
+                        <div className="art-card-artwork" style={{backgroundColor: '#cdcdcd', height: 0}}/>}
                     <div className="art-card-title">
                         <div className="art-card-names">
                             <span className="art-card-name">{title}</span><br/>

@@ -24,11 +24,11 @@ class ArtCardLayout extends Component {
     }
 
     static getArtWidth(art) {
-        return art.image.default.width;
+        return art.image ? art.image.default.width : 1;
     }
 
     static getArtHeight(art) {
-        return art.image.default.height;
+        return art.image ? art.image.default.height : 0;
     }
 
     static appendArts(arts, prevState, artCardWidth, extendedHeight) {
