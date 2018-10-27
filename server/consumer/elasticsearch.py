@@ -39,7 +39,7 @@ def upsert_art(msg_value):
             },
             'doc_as_upsert': True
         }
-        print(data)
+
         send_post_request('art/_doc/{}/_update'.format(id), data)
     except (KeyError, json.decoder.JSONDecodeError) as e:
         print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
@@ -62,11 +62,14 @@ def upsert_artizen(msg_value):
             'doc': {
                 'id': id,
                 'username': username,
-                'name': name,
-                'type': type
             },
             'doc_as_upsert': True
         }
+        if len(type) > 0:
+            # Only artizen with some type can be searched by name
+            data['doc']['name'] = name
+            data['doc']['type'] = type
+
         send_post_request('artizen/_doc/{}/_update'.format(id), data)
     except (KeyError, json.decoder.JSONDecodeError) as e:
         print("Invalid message format for {}: {}".format(msg_value, e), flush=True)
