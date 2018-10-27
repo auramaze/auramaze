@@ -1653,7 +1653,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci') && res.body.art && res.body.art.some(e => e.id === 10000003));
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci'));
                     })
                     .end(done);
             });
