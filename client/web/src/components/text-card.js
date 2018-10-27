@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import ReactStars from 'react-stars';
+import {Editor, EditorState, convertFromRaw} from 'draft-js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faThumbsUp as faThumbsUpSolid} from '@fortawesome/free-solid-svg-icons';
 import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-icons';
@@ -65,7 +66,10 @@ class TextCard extends Component {
                             />
                         </div>
                         }
-                        {content}
+                        {this.props.content && <Editor
+                            editorState={EditorState.createWithContent(convertFromRaw(this.props.content))}
+                            readOnly
+                        />}
                     </div>
                     {this.state.contentHeight > 200 && <div className="text-card-mask-bottom"/>}
                 </div>
