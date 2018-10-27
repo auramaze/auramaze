@@ -143,7 +143,7 @@ while True:
             print(msg.error(), flush=True)
             break
 
-    print(msg.value(), flush=True)
+    # print(msg.value(), flush=True)
     msg_value = msg.value()
     if msg_value is None:
         # Tombstone message
