@@ -2,14 +2,17 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
 const Art = () => {
+
     const {bottomLine, headerText, mainContext} = styles;
     return (
         <View>
             <View style={mainContext}>
                 <View style={bottomLine}>
+                    this.state.fontLoaded ? (
                     <Text style={headerText}>
                         Introduction
                     </Text>
+                    ) : null
                 </View>
             </View>
         </View>
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
         color: '#666666',
+        fontFamily: 'century-gothic-regular',
     },
     bottomLine: {
         borderBottomColor: '#666666',
