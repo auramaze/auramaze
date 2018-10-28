@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import compass from './icons/compass.png';
-import journal from './icons/journal.png';
-import camera from './icons/camera.png';
-import recommendation from './icons/recommand.png';
-import lines from './icons/lines.png';
+import {StyleSheet, View, Image} from 'react-native';
+import compass from '../icons/compass.png';
+import journal from '../icons/journal.png';
+import camera from '../icons/camera.png';
+import recommendation from '../icons/recommand.png';
+import lines from '../icons/lines.png';
 
 const BottomNav = () => {
     const {cameraStyle, viewStyle, imageStyle, cameraHolder} = styles;
