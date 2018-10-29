@@ -1,11 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import TopBar from "../components/top-bar";
 
 const Art = () => {
 
-    const {bottomLine, headerText, mainContext} = styles;
+    const {bottomLine, headerText, mainContext, mainStruct} = styles;
     return (
-        <View>
+        <View style={mainStruct}>
+            <TopBar/>
             <View style={mainContext}>
                 <View style={bottomLine}>
                     this.state.fontLoaded ? (
@@ -31,6 +33,9 @@ const styles = StyleSheet.create({
     //     shadowOffset: {width: 0, height: -2},
     //     shadowOpacity: 0.2
     // },
+    mainStruct: {
+        flex: 1, flexDirection: 'column',
+    },
     mainContext: {
         margin: 20
     },
