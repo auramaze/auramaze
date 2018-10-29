@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
-    "description": "This project is really great.",
-    "slug": "mobile",
+    "name": "AuraMaze",
+    "description": "Smart audio guide for Art Museums.",
+    "slug": "AuraMaze",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],
