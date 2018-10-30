@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
-    "description": "This project is really great.",
-    "slug": "mobile",
+    "name": "AuraMaze",
+    "description": "Smart audio guide for Art Museums.",
+    "slug": "auramaze",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],
@@ -10,7 +10,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
