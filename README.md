@@ -97,92 +97,187 @@
 │       │   └── wsgi.py
 │       └── manage.py
 ├── client
-│   ├── README.md
 │   ├── mobile
-│   │   └── README.md
+│   │   ├── App.js
+│   │   ├── README.md
+│   │   ├── app.json
+│   │   ├── art
+│   │   │   └── art.js
+│   │   ├── assets
+│   │   │   ├── fonts
+│   │   │   │   ├── century-gothic.ttf
+│   │   │   │   ├── century_gothic_bold.TTF
+│   │   │   │   ├── century_gothic_italic.TTF
+│   │   │   │   ├── segoeui.ttf
+│   │   │   │   └── segoeuib.ttf
+│   │   │   ├── icon.png
+│   │   │   ├── loading.png
+│   │   │   └── splash.png
+│   │   ├── components
+│   │   │   ├── bottom-nav.js
+│   │   │   └── top-bar.js
+│   │   ├── home.js
+│   │   ├── icons
+│   │   │   ├── camera.png
+│   │   │   ├── camera.svg
+│   │   │   ├── compass-regular.svg
+│   │   │   ├── compass.png
+│   │   │   ├── journal.png
+│   │   │   ├── left.png
+│   │   │   ├── left.svg
+│   │   │   ├── lines.png
+│   │   │   ├── noun_journal_1069823.svg
+│   │   │   ├── noun_lines_445260.svg
+│   │   │   ├── noun_recommend_1966408.svg
+│   │   │   ├── recommand.png
+│   │   │   ├── share.png
+│   │   │   └── share.svg
+│   │   ├── package-lock.json
+│   │   └── package.json
 │   └── web
 │       ├── README.md
+│       ├── npm-debug.log
 │       ├── package-lock.json
 │       ├── package.json
 │       ├── public
 │       │   ├── favicon.ico
+│       │   ├── images
+│       │   │   ├── img_0.png
+│       │   │   ├── img_1.png
+│       │   │   ├── img_10.png
+│       │   │   ├── img_11.png
+│       │   │   ├── img_12.png
+│       │   │   ├── img_13.png
+│       │   │   ├── img_14.png
+│       │   │   ├── img_15.png
+│       │   │   ├── img_16.png
+│       │   │   ├── img_17.png
+│       │   │   ├── img_18.png
+│       │   │   ├── img_2.png
+│       │   │   ├── img_3.png
+│       │   │   ├── img_4.png
+│       │   │   ├── img_5.png
+│       │   │   ├── img_6.png
+│       │   │   ├── img_7.png
+│       │   │   ├── img_8.png
+│       │   │   └── img_9.png
 │       │   ├── index.html
 │       │   └── manifest.json
 │       ├── src
 │       │   ├── app.js
 │       │   ├── app.test.js
-│       │   ├── art.css
-│       │   ├── art.js
-│       │   ├── artizen.css
-│       │   ├── artizen.js
-│       │   ├── auramaze-demo.png
+│       │   ├── art
+│       │   │   ├── art.css
+│       │   │   └── art.js
+│       │   ├── artizen
+│       │   │   ├── artizen-header.css
+│       │   │   ├── artizen-header.js
+│       │   │   ├── artizen.css
+│       │   │   └── artizen.js
+│       │   ├── common.css
 │       │   ├── common.js
+│       │   ├── components
+│       │   │   ├── art-card-layout.css
+│       │   │   ├── art-card-layout.js
+│       │   │   ├── art-card.css
+│       │   │   ├── art-card.js
+│       │   │   ├── artizen-card-layout.css
+│       │   │   ├── artizen-card-layout.js
+│       │   │   ├── artizen-card.css
+│       │   │   ├── artizen-card.js
+│       │   │   ├── footer.css
+│       │   │   ├── footer.js
+│       │   │   ├── item-list.css
+│       │   │   ├── item-list.js
+│       │   │   ├── map-with-marker.js
+│       │   │   ├── navbar-mobile.css
+│       │   │   ├── navbar-mobile.js
+│       │   │   ├── navbar.css
+│       │   │   ├── navbar.js
+│       │   │   ├── searchbox.css
+│       │   │   ├── searchbox.js
+│       │   │   ├── section-title.css
+│       │   │   ├── section-title.js
+│       │   │   ├── slick-next-arrow.js
+│       │   │   ├── slick-prev-arrow.js
+│       │   │   ├── text-card.css
+│       │   │   └── text-card.js
 │       │   ├── fonts
-│       │   │   ├── century_gothic_bold.TTF
-│       │   │   ├── century_gothic_bold_italic.TTF
-│       │   │   ├── century_gothic_italic.TTF
-│       │   │   └── century_gothic_regular.TTF
-│       │   ├── fonts.css
-│       │   ├── footer.css
-│       │   ├── footer.js
-│       │   ├── home.css
-│       │   ├── home.js
+│       │   │   └── fonts.css
+│       │   ├── home
+│       │   │   ├── data.json
+│       │   │   ├── home.css
+│       │   │   ├── home.js
+│       │   │   ├── library-card.css
+│       │   │   ├── library-card.js
+│       │   │   ├── pitch-card.css
+│       │   │   ├── pitch-card.js
+│       │   │   ├── pitch.css
+│       │   │   ├── pitch.js
+│       │   │   ├── slide.js
+│       │   │   ├── slides.css
+│       │   │   └── slides.js
 │       │   ├── icons
+│       │   │   ├── artist.png
+│       │   │   ├── artist.svg
 │       │   │   ├── camera-solid.svg
+│       │   │   ├── critic.png
+│       │   │   ├── critic.svg
+│       │   │   ├── genre.png
+│       │   │   ├── genre.svg
 │       │   │   ├── headphones-alt-solid.svg
-│       │   │   └── share-alt-solid.svg
+│       │   │   ├── museum.png
+│       │   │   ├── museum.svg
+│       │   │   ├── share-alt-solid.svg
+│       │   │   ├── style.png
+│       │   │   └── style.svg
 │       │   ├── index.css
 │       │   ├── index.js
-│       │   ├── logo-white-frame.png
-│       │   ├── logo-white-frame.svg
-│       │   ├── map-with-marker.js
-│       │   ├── navbar-mobile.css
-│       │   ├── navbar-mobile.js
-│       │   ├── navbar.css
-│       │   ├── navbar.js
-│       │   ├── pitch-card.css
-│       │   ├── pitch-card.js
-│       │   ├── pitch.css
-│       │   ├── pitch.js
 │       │   ├── registerServiceWorker.js
-│       │   ├── search.css
-│       │   ├── search.js
-│       │   ├── searchbox.css
-│       │   ├── searchbox.js
-│       │   ├── slide.js
-│       │   ├── slides.css
-│       │   └── slides.js
+│       │   ├── search
+│       │   │   ├── search.css
+│       │   │   └── search.js
+│       │   └── static
+│       │       ├── auramaze-demo.png
+│       │       ├── logo-white-frame.png
+│       │       └── logo-white-frame.svg
 │       └── yarn.lock
-└── server
-    ├── README.md
-    └── api
-        ├── README.md
-        ├── app.js
-        ├── bin
-        │   └── www
-        ├── npm-debug.log
-        ├── package-lock.json
-        ├── package.json
-        ├── public
-        │   └── stylesheets
-        │       └── style.css
-        ├── routes
-        │   ├── art.js
-        │   ├── artizen.js
-        │   ├── common.js
-        │   ├── index.js
-        │   ├── search.js
-        │   └── slide.js
-        ├── scripts
-        │   └── before_install.sh.enc
-        ├── test
-        │   └── test.js
-        └── views
-            ├── error.pug
-            ├── index.pug
-            └── layout.pug
+├── server
+│   ├── README.md
+│   ├── api
+│   │   ├── README.md
+│   │   ├── app.js
+│   │   ├── bin
+│   │   │   └── www
+│   │   ├── npm-debug.log
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── public
+│   │   │   └── stylesheets
+│   │   │       └── style.css
+│   │   ├── routes
+│   │   │   ├── art.js
+│   │   │   ├── artizen.js
+│   │   │   ├── common.js
+│   │   │   ├── index.js
+│   │   │   ├── search.js
+│   │   │   └── slide.js
+│   │   ├── test
+│   │   │   └── test.js
+│   │   └── views
+│   │       ├── error.pug
+│   │       ├── index.pug
+│   │       └── layout.pug
+│   ├── broker
+│   │   └── docker-compose-mysql-avro.yaml
+│   └── consumer
+│       └── elasticsearch
+│           ├── Dockerfile
+│           ├── elasticsearch.py
+│           └── requirements.txt
+└── tree.txt
 
-52 directories, 121 files
+66 directories, 202 files
 ```
 
 
@@ -216,6 +311,16 @@ npm install
 npm start
 ```
 
+### Mobile Client
+
+* Run the mobile client for AuraMaze with localhost.
+* We use Expo client to run simulations of smart phones. Click [here](https://expo.io/tools#client) to download Expo client in your iOS or Android mobile.
+```
+cd auramaze/client/monile/
+npm install
+npm start
+```
+
 ### Server
 
 * Run the server for AuraMaze with localhost.
@@ -224,5 +329,3 @@ cd auramaze/server/api/
 npm install
 npm start
 ```
-
-
