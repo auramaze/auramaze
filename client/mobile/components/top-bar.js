@@ -7,8 +7,8 @@ const TopBar = () => {
     const {viewStyle, imageStyle} = styles;
     return (
         <View style={viewStyle}>
-            <Image source={left} style={imageStyle} />
-            <Image source={share} style={imageStyle} />
+            <Image source={left} style={imageStyle}/>
+            <Image source={share} style={imageStyle}/>
         </View>
     );
 };

@@ -2,7 +2,7 @@
   "expo": {
     "name": "AuraMaze",
     "description": "Smart audio guide for Art Museums.",
-    "slug": "AuraMaze",
+    "slug": "auramaze",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],

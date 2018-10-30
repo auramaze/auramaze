@@ -1,7 +1,7 @@
 import React from 'react';
 import BottomNav from "./components/bottom-nav";
 import Art from "./art/art"
-import { Font } from 'expo';
+import {Font} from 'expo';
 
 export default class App extends React.Component {
 
@@ -16,14 +16,12 @@ export default class App extends React.Component {
             'segoeui-bold': require('./assets/fonts/segoeuib.ttf'),
         });
 
-        this.setState({ fontLoaded: true });
+        this.setState({fontLoaded: true});
     }
 
-  render() {
-    return (
-        this.state.fontLoaded ? (
-            <Art />
-        ) : null
-    );
-  }
+    render() {
+        return (
+            <Art fontLoaded={this.state.fontLoaded}/>
+        );
+    }
 }
