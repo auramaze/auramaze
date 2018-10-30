@@ -34,7 +34,7 @@ router.get('/', [
                             {
                                 'multi_match' : {
                                     'query': req.query.q,
-                                    'fields':['title*','artist*','museum*','genre*','style*','name*'],
+                                    'fields':['title.*','artist.*','museum.*','genre.*','style.*','name.*'],
                                     'fuzziness' : 'AUTO',
                                     'prefix_length' : 0,
                                     'operator':'and'
@@ -44,7 +44,7 @@ router.get('/', [
                                 'multi_match' : 
                                 {
                                     'query': req.query.q,
-                                    'fields':['introduction*'],
+                                    'fields':['introduction.*'],
                                     'operator':'and'
                                 }
                             }
