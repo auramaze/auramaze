@@ -344,11 +344,22 @@ npm install
 npm start
 ```
 
-### Server
+### API Server
 
 * Run the server for AuraMaze with localhost.
 ```
 cd auramaze/server/api/
 npm install
 npm start
+```
+
+### Kafka Broker
+
+* Run Kafka broker for AuraMaze with localhost.
+```
+sudo docker pull debezium/zookeeper:0.8
+sudo docker pull debezium/kafka:0.8
+sudo docker pull confluentinc/cp-schema-registry
+sudo docker pull debezium/connect:0.8
+sudo docker-compose -f auramaze/server/broker/docker-compose-mysql-avro.yaml up -d
 ```
