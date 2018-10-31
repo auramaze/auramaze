@@ -9,7 +9,7 @@
 ```
 .
 ├── README.md
-├── Starter App
+├── Starter\ App
 │   ├── README.md
 │   ├── android_project
 │   │   ├── app
@@ -77,7 +77,6 @@
 │   │   ├── gradle.properties
 │   │   ├── gradlew
 │   │   ├── gradlew.bat
-│   │   ├── local.properties
 │   │   └── settings.gradle
 │   └── django_project
 │       ├── chatter
@@ -136,7 +135,6 @@
 │   │   └── package.json
 │   └── web
 │       ├── README.md
-│       ├── npm-debug.log
 │       ├── package-lock.json
 │       ├── package.json
 │       ├── public
@@ -242,42 +240,40 @@
 │       │       ├── logo-white-frame.png
 │       │       └── logo-white-frame.svg
 │       └── yarn.lock
-├── server
-│   ├── README.md
-│   ├── api
-│   │   ├── README.md
-│   │   ├── app.js
-│   │   ├── bin
-│   │   │   └── www
-│   │   ├── npm-debug.log
-│   │   ├── package-lock.json
-│   │   ├── package.json
-│   │   ├── public
-│   │   │   └── stylesheets
-│   │   │       └── style.css
-│   │   ├── routes
-│   │   │   ├── art.js
-│   │   │   ├── artizen.js
-│   │   │   ├── common.js
-│   │   │   ├── index.js
-│   │   │   ├── search.js
-│   │   │   └── slide.js
-│   │   ├── test
-│   │   │   └── test.js
-│   │   └── views
-│   │       ├── error.pug
-│   │       ├── index.pug
-│   │       └── layout.pug
-│   ├── broker
-│   │   └── docker-compose-mysql-avro.yaml
-│   └── consumer
-│       └── elasticsearch
-│           ├── Dockerfile
-│           ├── elasticsearch.py
-│           └── requirements.txt
-└── tree.txt
+└── server
+    ├── README.md
+    ├── api
+    │   ├── README.md
+    │   ├── app.js
+    │   ├── bin
+    │   │   └── www
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── public
+    │   │   └── stylesheets
+    │   │       └── style.css
+    │   ├── routes
+    │   │   ├── art.js
+    │   │   ├── artizen.js
+    │   │   ├── common.js
+    │   │   ├── index.js
+    │   │   ├── search.js
+    │   │   └── slide.js
+    │   ├── test
+    │   │   └── test.js
+    │   └── views
+    │       ├── error.pug
+    │       ├── index.pug
+    │       └── layout.pug
+    ├── broker
+    │   └── docker-compose-mysql-avro.yaml
+    └── consumer
+        └── elasticsearch
+            ├── Dockerfile
+            ├── elasticsearch.py
+            └── requirements.txt
 
-66 directories, 202 files
+66 directories, 198 files
 ```
 
 
