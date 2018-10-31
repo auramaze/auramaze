@@ -363,3 +363,12 @@ sudo docker pull confluentinc/cp-schema-registry
 sudo docker pull debezium/connect:0.8
 sudo docker-compose -f auramaze/server/broker/docker-compose-mysql-avro.yaml up -d
 ```
+
+### Kafka Consumer
+
+* Run Kafka consumer for AuraMaze with localhost.
+```
+cd auramaze/server/consumer/elasticsearch
+sudo docker build -t consumer-elasticsearch .
+sudo docker run --rm --name=consumer-elasticsearch -d consumer-elasticsearch
+```
