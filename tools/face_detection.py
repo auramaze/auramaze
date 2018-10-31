@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+import argparse
 import glob
 from tqdm import tqdm
 
@@ -53,10 +54,15 @@ class FaceDetect:
 
 
 def main():
+    parser = argparse.ArgumentParser(description='artist profile photo processor')
+    parser.add_argument('-in', '--input_path', action='store', required=True, type=str, help='specify input path')
+    parser.add_argument('-out', '--output_path', action='store', required=True, type=str, help='specify output path')
+    args = parser.parse_args()
+
     driver = FaceDetect(padding=0.6)
-    for file in tqdm(glob.glob('artists\\*')):
-        input_path = 'artists\\' + os.path.basename(file)
-        output_path = 'profiles\\' + os.path.basename(file)
+    for file in tqdm(glob.glob(os.path.join(args.input_path, '*'))):
+        input_path = os.path.join(args.input_path, os.path.basename(file))
+        output_path = os.path.join(args.output_path, os.path.basename(file))
         driver.process(input_path, output_path)
 
 
