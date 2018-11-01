@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import TopBar from "../components/top-bar";
 import BottomNav from "../components/bottom-nav";
+import TextCard from "../components/text-card";
 
 class Art extends React.Component {
 
@@ -18,7 +19,6 @@ class Art extends React.Component {
             mainContext: {
                 margin: 20,
                 flex: 1, flexDirection: 'column',
-                backgroundColor: '#c4def3',
             },
             headerText: {
                 fontSize: 20,
@@ -42,6 +42,9 @@ class Art extends React.Component {
                                 Introduction
                             </Text>
                         </View>
+                        <TextCard fontLoaded={this.props.fontLoaded}/>
+                        <TextCard fontLoaded={this.props.fontLoaded}/>
+                        <TextCard fontLoaded={this.props.fontLoaded}/>
                     </View>
                 </ScrollView>
                 <BottomNav/>
