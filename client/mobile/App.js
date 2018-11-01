@@ -1,5 +1,6 @@
 import React from 'react';
 import BottomNav from "./components/bottom-nav";
+import {View} from 'react-native';
 import Art from "./art/art"
 import {Font} from 'expo';
 

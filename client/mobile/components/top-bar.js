@@ -15,13 +15,12 @@ const TopBar = () => {
 
 const styles = StyleSheet.create({
     viewStyle: {
-        flex: 1, flexDirection: 'row',
-        position: 'absolute', left: 0, right: 0, top: 0,
-        height: 60,
-        backgroundColor: '#ffffff',
+        flexDirection: 'row',
+        height: 50,
+        backgroundColor: '#f2a6c3',
         alignItems: 'center',
         justifyContent: 'space-between',
-        margin: 15
+        marginTop: 15, marginHorizontal: 15,
     },
     imageStyle: {
         width: 30,
