@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
 
 import AutoHeightImage from 'react-native-auto-height-image';
+import heart from '../icons/heart-regular.png';
 
 class ArtInfo extends React.Component {
 
@@ -21,7 +22,13 @@ class ArtInfo extends React.Component {
                 fontSize: 30,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
-
+                marginTop: 15,
+            },
+            loveStyle: {
+                width: 30,
+                height: 30,
+                tintColor: '#ff7d7d',
+                marginTop: 15,
             }
         });
 
@@ -32,6 +39,7 @@ class ArtInfo extends React.Component {
                 <Text style={styles.textStyle}>
                     The Starry Night
                 </Text>
+                <Image source={heart} style={styles.loveStyle}/>
             </View>
         )
     }

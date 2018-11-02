@@ -8,7 +8,6 @@ import lines from '../icons/lines.png';
 
 class BottomNav extends React.Component {
 
-
     render() {
         const styles = StyleSheet.create({
             viewStyle: {
