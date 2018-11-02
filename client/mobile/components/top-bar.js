@@ -17,15 +17,15 @@ const styles = StyleSheet.create({
     viewStyle: {
         flexDirection: 'row',
         height: 50,
-        backgroundColor: '#f2a6c3',
+        // backgroundColor: '#f2a6c3',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 15, marginHorizontal: 15,
+        marginTop: 20, marginHorizontal: 15, marginBottom: 10,
     },
     imageStyle: {
         width: 30,
         height: 30,
-        margin: 15,
+        margin: 10,
         tintColor: '#666666'
     }
 });

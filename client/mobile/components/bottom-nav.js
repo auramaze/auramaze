@@ -8,8 +8,7 @@ import lines from '../icons/lines.png';
 
 class BottomNav extends React.Component {
 
-
-    render () {
+    render() {
         const styles = StyleSheet.create({
             viewStyle: {
                 flex: 1, flexDirection: 'row',
@@ -52,13 +51,13 @@ class BottomNav extends React.Component {
 
         return (
             <View style={styles.viewStyle}>
-                <Image source={compass} style={styles.imageStyle} />
-                <Image source={journal} style={styles.imageStyle} />
+                <Image source={compass} style={styles.imageStyle}/>
+                <Image source={journal} style={styles.imageStyle}/>
                 <View style={styles.cameraHolder}>
-                    <Image source={camera} style={styles.cameraStyle} />
+                    <Image source={camera} style={styles.cameraStyle}/>
                 </View>
-                <Image source={recommendation} style={styles.imageStyle} />
-                <Image source={lines} style={styles.imageStyle} />
+                <Image source={recommendation} style={styles.imageStyle}/>
+                <Image source={lines} style={styles.imageStyle}/>
             </View>
         )
     }
