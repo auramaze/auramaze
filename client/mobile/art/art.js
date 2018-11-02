@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Dimensions, Image} from 'react-native';
 import TopBar from "../components/top-bar";
 import BottomNav from "../components/bottom-nav";
 import ReviewCard from "../components/review-card";
@@ -32,10 +32,16 @@ class Art extends React.Component {
             }
         });
 
+        const deviceWidth = Dimensions.get('window').width;
+
         return (
             <View style={styles.mainStruct}>
-                <ScrollView>
-                    <TopBar />
+                <ScrollView style={{backgroundColor: '#cdcdcd'}}>
+                    <TopBar/>
+                    <Image resizeMode="contain" style={{
+                        flex: 1, width: deviceWidth, height: 50,
+                    }}
+                           source={{uri: 'https://s3.us-east-2.amazonaws.com/auramaze-test/images/jacques-louis-david/1787/197945.jpg'}}/>
                     <View style={styles.mainContext}>
                         <View style={styles.bottomLine}>
                             <Text style={styles.headerText}>
@@ -46,14 +52,13 @@ class Art extends React.Component {
                         <ReviewCard fontLoaded={this.props.fontLoaded}/>
                         <ReviewCard fontLoaded={this.props.fontLoaded}/>
                     </View>
+                    <View style={{height: 80}}/>
                 </ScrollView>
                 <BottomNav/>
             </View>
         );
     }
 }
-
-
 
 
 export default Art;

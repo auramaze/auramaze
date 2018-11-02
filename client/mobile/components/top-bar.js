@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#f2a6c3',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 25, marginHorizontal: 15,
+        marginVertical: 25, marginHorizontal: 15,
     },
     imageStyle: {
         width: 30,

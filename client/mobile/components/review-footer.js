@@ -5,7 +5,7 @@ import thumbs_up from '../icons/thumbs-up.png';
 
 class ReviewFooter extends React.Component {
 
-    render () {
+    render() {
         const styles = StyleSheet.create({
             viewStyle: {
                 flex: 1, flexDirection: 'row',
@@ -30,9 +30,9 @@ class ReviewFooter extends React.Component {
 
         return (
             <View style={styles.viewStyle}>
-                <Image source={thumbs_up} style={styles.imageStyle} />
+                <Image source={thumbs_up} style={styles.imageStyle}/>
                 <Text style={styles.textStyle}>876</Text>
-                <Image source={thumbs_down} style={styles.imageStyle} />
+                <Image source={thumbs_down} style={styles.imageStyle}/>
                 <Text style={styles.textStyle}>12</Text>
             </View>
         )
