@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
+import ReviewFooter from "./review-footer";
 
-class TextCard extends React.Component {
+class ReviewCard extends React.Component {
 
     constructor(props) {
         super(props);
@@ -38,6 +39,7 @@ class TextCard extends React.Component {
             },
             bodyText: {
                 fontSize: 18,
+                lineHeight: 28,
                 paddingHorizontal: 10,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
@@ -52,14 +54,12 @@ class TextCard extends React.Component {
                         AuraMaze
                     </Text>
                 </View>
-                <Text style={styles.bodyText}>{`
-                The Starry Night is an oil on canvas by the Dutch post-impressionist painter Vincent van Gogh.
-                Painted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an idealized village. It has been in the permanent collection of the Museum of Modern Art in New York City since 1941, acquired through the Lillie P. Bliss Bequest. Regarded as among Van Gogh's finest works, The Starry Night is one of the most  recognized  paintings in the history of Western culture.
-                `}</Text>
+                <Text style={styles.bodyText}>{`\n\tThe Starry Night is an oil on canvas by the Dutch post-impressionist painter Vincent van Gogh.\n\tPainted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an idealized village. It has been in the permanent collection of the Museum of Modern Art in New York City since 1941, acquired through the Lillie P. Bliss Bequest. Regarded as among Van Gogh's finest works, The Starry Night is one of the most  recognized  paintings in the history of Western culture.\n`}</Text>
+                <ReviewFooter/>
             </View>
         )
     }
 
 }
 
-export default TextCard;
+export default ReviewCard;

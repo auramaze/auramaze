@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import TopBar from "../components/top-bar";
 import BottomNav from "../components/bottom-nav";
-import TextCard from "../components/text-card";
+import ReviewCard from "../components/review-card";
 
 class Art extends React.Component {
 
@@ -42,9 +42,9 @@ class Art extends React.Component {
                                 Introduction
                             </Text>
                         </View>
-                        <TextCard fontLoaded={this.props.fontLoaded}/>
-                        <TextCard fontLoaded={this.props.fontLoaded}/>
-                        <TextCard fontLoaded={this.props.fontLoaded}/>
+                        <ReviewCard fontLoaded={this.props.fontLoaded}/>
+                        <ReviewCard fontLoaded={this.props.fontLoaded}/>
+                        <ReviewCard fontLoaded={this.props.fontLoaded}/>
                     </View>
                 </ScrollView>
                 <BottomNav/>
