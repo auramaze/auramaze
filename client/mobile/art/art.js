@@ -4,6 +4,8 @@ import TopBar from "../components/top-bar";
 import BottomNav from "../components/bottom-nav";
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
+import TitleBar from "../components/title-bar";
+import ArtizenCard from "../components/artizen-card";
 
 class Art extends React.Component {
 
@@ -39,14 +41,35 @@ class Art extends React.Component {
                     <TopBar/>
                     <ArtInfo fontLoaded={this.props.fontLoaded}/>
                     <View style={styles.mainContext}>
-                        <View style={styles.bottomLine}>
-                            <Text style={styles.headerText}>
-                                Introduction
-                            </Text>
-                        </View>
+
+                        <TitleBar titleText={"Introduction"} fontLoaded={this.props.fontLoaded}/>
+                        <ReviewCard fontLoaded={this.props.fontLoaded}/>
+
+                        <TitleBar titleText={"Artist"} fontLoaded={this.props.fontLoaded}/>
+                        <ArtizenCard name={"Vincent van Gogh"}
+                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/vincent-van-gogh.jpg'}
+                                     fontLoaded={this.props.fontLoaded}/>
+
+                        <TitleBar titleText={"Museum"} fontLoaded={this.props.fontLoaded}/>
+                        <ArtizenCard name={"Museum of Modern Art"}
+                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/artic.png'}
+                                     fontLoaded={this.props.fontLoaded}/>
+
+                        <TitleBar titleText={"Genre"} fontLoaded={this.props.fontLoaded}/>
+                        <ArtizenCard name={"Cloudscapes"}
+                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/auramaze-logo-square.png'}
+                                     fontLoaded={this.props.fontLoaded}/>
+
+                        <TitleBar titleText={"Style"} fontLoaded={this.props.fontLoaded}/>
+                        <ArtizenCard name={"Post-Impressionism"}
+                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/auramaze-logo-square.png'}
+                                     fontLoaded={this.props.fontLoaded}/>
+                        <View style={{height: 30}}/>
+                        <TitleBar titleText={"Reviews"} fontLoaded={this.props.fontLoaded}/>
                         <ReviewCard fontLoaded={this.props.fontLoaded}/>
                         <ReviewCard fontLoaded={this.props.fontLoaded}/>
                         <ReviewCard fontLoaded={this.props.fontLoaded}/>
+
                     </View>
                     <View style={{height: 80}}/>
                 </ScrollView>

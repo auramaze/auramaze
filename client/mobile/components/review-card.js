@@ -21,11 +21,12 @@ class ReviewCard extends React.Component {
             },
             imageStyle: {
                 width: 50,
-                height: 50
+                height: 50,
+                borderRadius: 25,
+                borderColor: '#666666', borderWidth: 1,
             },
             avatarHolder: {
-                borderRadius: 50, height: 50, width: 50,
-                borderColor: '#666666', borderWidth: 1,
+                height: 50, width: 50,
                 alignItems: 'center',
             },
             header: {
