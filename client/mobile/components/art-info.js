@@ -1,6 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
 
+import AutoHeightImage from 'react-native-auto-height-image';
+
 class ArtInfo extends React.Component {
 
     constructor(props) {
@@ -20,16 +22,12 @@ class ArtInfo extends React.Component {
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
 
-            },
-            imageStyle: {
-                width: Dimensions.get('window').width,
-                height: 300,
             }
         });
 
         return (
             <View style={styles.viewStyle}>
-                <Image resizeMode="contain" style={styles.imageStyle}
+                <AutoHeightImage width={Dimensions.get('window').width}
                        source={{uri: 'https://s3.us-east-2.amazonaws.com/auramaze-test/images/jacques-louis-david/1787/197945.jpg'}}/>
                 <Text style={styles.textStyle}>
                     The Starry Night
