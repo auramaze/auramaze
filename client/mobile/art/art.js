@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, ScrollView, Dimensions, Image} from 'react-nativ
 import TopBar from "../components/top-bar";
 import BottomNav from "../components/bottom-nav";
 import ReviewCard from "../components/review-card";
+import ArtInfo from "../components/art-info";
 
 class Art extends React.Component {
 
@@ -29,19 +30,14 @@ class Art extends React.Component {
                 borderBottomColor: '#666666',
                 borderBottomWidth: 1,
                 padding: 5,
-            }
+            },
         });
-
-        const deviceWidth = Dimensions.get('window').width;
 
         return (
             <View style={styles.mainStruct}>
-                <ScrollView style={{backgroundColor: '#cdcdcd'}}>
+                <ScrollView>
                     <TopBar/>
-                    <Image resizeMode="contain" style={{
-                        flex: 1, width: deviceWidth, height: 50,
-                    }}
-                           source={{uri: 'https://s3.us-east-2.amazonaws.com/auramaze-test/images/jacques-louis-david/1787/197945.jpg'}}/>
+                    <ArtInfo fontLoaded={this.props.fontLoaded}/>
                     <View style={styles.mainContext}>
                         <View style={styles.bottomLine}>
                             <Text style={styles.headerText}>
