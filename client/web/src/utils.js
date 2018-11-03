@@ -4,12 +4,12 @@ export function generateHighlightContent(highlight) {
     if (highlight) {
         let content = '';
 
-        content += 'name.default' in highlight ? `[name] ${highlight['name.default']}<br />` : '';
-        content += 'title.default' in highlight ? `[title] ${highlight['title.default']}<br />` : '';
-        content += 'artist.default' in highlight ? `[artist] ${highlight['artist.default']}<br />` : '';
-        content += 'museum.default' in highlight ? `[museum] ${highlight['museum.default']}<br />` : '';
-        content += 'style.default' in highlight ? `[style] ${highlight['style.default']}<br />` : '';
-        content += 'genre.default' in highlight ? `[genre] ${highlight['genre.default']}<br />` : '';
+        content += 'name.default' in highlight ? `[name] <u>${highlight['name.default']}</u><br />` : '';
+        content += 'title.default' in highlight ? `[title] <u>${highlight['title.default']}</u><br />` : '';
+        content += 'artist.default' in highlight ? `[artist] <u>${highlight['artist.default']}</u><br />` : '';
+        content += 'museum.default' in highlight ? `[museum] <u>${highlight['museum.default']}</u><br />` : '';
+        content += 'style.default' in highlight ? `[style] <u>${highlight['style.default']}</u><br />` : '';
+        content += 'genre.default' in highlight ? `[genre] <u>${highlight['genre.default']}</u><br />` : '';
 
         const introductions = Object.keys(highlight)
             .filter(key => key.startsWith('introduction'))
