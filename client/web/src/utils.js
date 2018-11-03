@@ -3,13 +3,25 @@ import {ContentState, convertFromHTML, EditorState} from 'draft-js';
 export function generateHighlightContent(highlight) {
     if (highlight) {
         let content = '';
+        let keys;
 
-        content += 'name.default' in highlight ? `[name] <u>${highlight['name.default']}</u><br />` : '';
-        content += 'title.default' in highlight ? `[title] <u>${highlight['title.default']}</u><br />` : '';
-        content += 'artist.default' in highlight ? `[artist] <u>${highlight['artist.default']}</u><br />` : '';
-        content += 'museum.default' in highlight ? `[museum] <u>${highlight['museum.default']}</u><br />` : '';
-        content += 'style.default' in highlight ? `[style] <u>${highlight['style.default']}</u><br />` : '';
-        content += 'genre.default' in highlight ? `[genre] <u>${highlight['genre.default']}</u><br />` : '';
+        keys = Object.keys(highlight).filter(key => key.startsWith('name'));
+        content += keys.length ? `[name] <u>${highlight[keys[0]]}</u><br />` : '';
+
+        keys = Object.keys(highlight).filter(key => key.startsWith('title'));
+        content += keys.length ? `[title] <u>${highlight[keys[0]]}</u><br />` : '';
+
+        keys = Object.keys(highlight).filter(key => key.startsWith('artist'));
+        content += keys.length ? `[artist] <u>${highlight[keys[0]]}</u><br />` : '';
+
+        keys = Object.keys(highlight).filter(key => key.startsWith('museum'));
+        content += keys.length ? `[museum] <u>${highlight[keys[0]]}</u><br />` : '';
+
+        keys = Object.keys(highlight).filter(key => key.startsWith('style'));
+        content += keys.length ? `[style] <u>${highlight[keys[0]]}</u><br />` : '';
+
+        keys = Object.keys(highlight).filter(key => key.startsWith('genre'));
+        content += keys.length ? `[genre] <u>${highlight[keys[0]]}</u><br />` : '';
 
         const introductions = Object.keys(highlight)
             .filter(key => key.startsWith('introduction'))
