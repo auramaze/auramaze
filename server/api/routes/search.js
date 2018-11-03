@@ -25,34 +25,36 @@ router.get('/', [
         request.post({
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
-                'from':req.query.from,
-                'size':20,
+                'from': req.query.from,
+                'size': 20,
                 'query': {
-                    'bool':{
+                    'bool': {
                         'should':
-                        [
-                            {
-                                'multi_match' : {
-                                    'query': req.query.q,
-                                    'fields':['title.*','artist.*','museum.*','genre.*','style.*','name.*'],
-                                    'fuzziness' : 'AUTO',
-                                    'prefix_length' : 0,
-                                    'operator':'and'
-                                }
-                            },
-                            {
-                                'multi_match' : 
+                            [
                                 {
-                                    'query': req.query.q,
-                                    'fields':['introduction.*'],
-                                    'operator':'and'
+                                    'multi_match': {
+                                        'query': req.query.q,
+                                        'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
+                                        'fuzziness': 'AUTO',
+                                        'prefix_length': 0,
+                                        'operator': 'and'
+                                    }
+                                },
+                                {
+                                    'multi_match':
+                                        {
+                                            'query': req.query.q,
+                                            'fields': ['introduction.*'],
+                                            'operator': 'and'
+                                        }
                                 }
-                            }
-                        ]
+                            ]
                     }
                 },
-                'highlight' : {
-                    'fields' : {
+                'highlight': {
+                    'pre_tags': ['<b>'],
+                    'post_tags': ['</b>'],
+                    'fields': {
                         'title.*': {'number_of_fragments': 0},
                         'artist.*': {'number_of_fragments': 0},
                         'museum.*': {'number_of_fragments': 0},
