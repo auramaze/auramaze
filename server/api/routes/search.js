@@ -61,7 +61,7 @@ router.get('/', [
                         'genre.*': {'number_of_fragments': 0},
                         'style.*': {'number_of_fragments': 0},
                         'name.*': {'number_of_fragments': 0},
-                        'introduction.*': {'number_of_fragments': 3}
+                        'introduction.*': {'number_of_fragments': 3, 'fragment_size': 150}
                     }
                 }
             },
