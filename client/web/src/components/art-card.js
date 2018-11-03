@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import {Editor} from 'draft-js';
+import {convertHTMLToEditorState} from "../utils";
 import './art-card.css';
 
 class ArtCard extends Component {
     render() {
         const {id, username, image, title, artist, avatar, completionYear, abstract, extended, ...props} = this.props;
+        const editorState = convertHTMLToEditorState(abstract);
+
         return (
             <div {...props} className="art-card card-shadow">
                 <Link to={`/art/${username || id}`}>
@@ -18,7 +22,10 @@ class ArtCard extends Component {
                         {avatar && <img src={avatar} alt="avatar" className="art-card-avatar"/>}
                     </div>
                     {extended && <div className="art-card-abstract">
-                        {abstract}
+                        {editorState && <Editor
+                            editorState={editorState}
+                            readOnly
+                        />}
                         <div className="art-card-mask-bottom"/>
                     </div>}
                 </Link>

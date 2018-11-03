@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {generateHighlightContent} from '../utils';
 import ArtCard from './art-card';
 import './art-card-layout.css';
 
@@ -92,7 +93,7 @@ class ArtCardLayout extends Component {
                                     completionYear={art.completion_year}
                                     title={art.title && art.title.default}
                                     avatar={art.avatar}
-                                    abstract={JSON.stringify(art._highlight) || ''}
+                                    abstract={generateHighlightContent(art._highlight)}
                                     extended={this.props.extended}
                                 />
                             )

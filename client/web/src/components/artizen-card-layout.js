@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Scrollbars} from 'react-custom-scrollbars';
+import {generateHighlightContent} from '../utils';
 import ArtizenCard from './artizen-card';
 import './artizen-card-layout.css';
 
@@ -23,7 +24,7 @@ class ArtizenCardLayout extends Component {
                                 username={artizen.username}
                                 name={artizen.name.default}
                                 avatar={artizen.avatar}
-                                abstract={JSON.stringify(artizen._highlight) || ''}
+                                abstract={generateHighlightContent(artizen._highlight)}
                                 extended={this.props.extended}
                             />)}
                     </div>
