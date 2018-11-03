@@ -51,6 +51,17 @@ router.get('/', [
                         ]
                     }
                 },
+                'highlight' : {
+                    'fields' : {
+                        'title.*': {'number_of_fragments': 0},
+                        'artist.*': {'number_of_fragments': 0},
+                        'museum.*': {'number_of_fragments': 0},
+                        'genre.*': {'number_of_fragments': 0},
+                        'style.*': {'number_of_fragments': 0},
+                        'name.*': {'number_of_fragments': 0},
+                        'introduction.*': {'number_of_fragments': 3}
+                    }
+                }
             },
             json: true
         }, (error, response, body) => {
