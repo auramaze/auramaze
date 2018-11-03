@@ -3,25 +3,12 @@ import {ContentState, convertFromHTML, EditorState} from 'draft-js';
 export function generateHighlightContent(highlight) {
     if (highlight) {
         let content = '';
-        let keys;
+        const properties = ['name', 'title', 'artist', 'museum', 'style', 'genre'];
 
-        keys = Object.keys(highlight).filter(key => key.startsWith('name'));
-        content += keys.length ? `[name] <u>${highlight[keys[0]]}</u><br />` : '';
-
-        keys = Object.keys(highlight).filter(key => key.startsWith('title'));
-        content += keys.length ? `[title] <u>${highlight[keys[0]]}</u><br />` : '';
-
-        keys = Object.keys(highlight).filter(key => key.startsWith('artist'));
-        content += keys.length ? `[artist] <u>${highlight[keys[0]]}</u><br />` : '';
-
-        keys = Object.keys(highlight).filter(key => key.startsWith('museum'));
-        content += keys.length ? `[museum] <u>${highlight[keys[0]]}</u><br />` : '';
-
-        keys = Object.keys(highlight).filter(key => key.startsWith('style'));
-        content += keys.length ? `[style] <u>${highlight[keys[0]]}</u><br />` : '';
-
-        keys = Object.keys(highlight).filter(key => key.startsWith('genre'));
-        content += keys.length ? `[genre] <u>${highlight[keys[0]]}</u><br />` : '';
+        for (let property of properties) {
+            const keys = Object.keys(highlight).filter(key => key.startsWith(property));
+            content += keys.length ? `[${property}] <u>${highlight[keys[0]]}</u><br />` : '';
+        }
 
         const introductions = Object.keys(highlight)
             .filter(key => key.startsWith('introduction'))
