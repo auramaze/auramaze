@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {Editor} from "draft-js";
+import {Editor} from 'draft-js';
 import {convertHTMLToEditorState} from '../utils';
 import './artizen-card.css';
 

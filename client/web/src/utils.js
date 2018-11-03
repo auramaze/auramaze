@@ -1,4 +1,4 @@
-import {ContentState, convertFromHTML, EditorState} from "draft-js";
+import {ContentState, convertFromHTML, EditorState} from 'draft-js';
 
 export function generateHighlightContent(highlight) {
     if (highlight) {

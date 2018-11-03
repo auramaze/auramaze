@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faAngleLeft} from '@fortawesome/free-solid-svg-icons';
 
@@ -19,6 +20,10 @@ const SlickPrevArror = (props) => {
         }}>
         <FontAwesomeIcon icon={faAngleLeft} size="lg"/>
     </div>;
+};
+
+SlickPrevArror.propTypes = {
+    onClick: PropTypes.func,
 };
 
 export default SlickPrevArror;

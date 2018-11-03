@@ -4,8 +4,6 @@ import museum from '../icons/museum.svg';
 import genre from '../icons/genre.svg';
 import style from '../icons/style.svg';
 import critic from '../icons/critic.svg';
-import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
 
 import './artizen-header.css';
 
