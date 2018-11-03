@@ -14,7 +14,7 @@ export function generateHighlightContent(highlight) {
         const introductions = Object.keys(highlight)
             .filter(key => key.startsWith('introduction'))
             .reduce((arr, key) => arr.concat(highlight[key]), []);
-        content += introductions.join(' ...<br />');
+        content += introductions.join(' ... ');
 
         return content;
     } else {
