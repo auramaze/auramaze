@@ -74,7 +74,10 @@ router.get('/', [
                     message: 'Error in ElasticSearch service'
                 });
             } else {
-                results[index] = body.hits.hits.map(item => item._source);
+                results[index] = body.hits.hits.map(item => Object.assign(item._source, {
+                    _score: item._score,
+                    _highlight: item.highlight
+                }));
                 search();
             }
         });
