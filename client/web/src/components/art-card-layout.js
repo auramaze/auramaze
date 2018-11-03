@@ -92,7 +92,7 @@ class ArtCardLayout extends Component {
                                     completionYear={art.completion_year}
                                     title={art.title && art.title.default}
                                     avatar={art.avatar}
-                                    abstract={art.introduction && art.introduction.length > 0 && art.introduction[0].en}
+                                    abstract={JSON.stringify(art._highlight) || ''}
                                     extended={this.props.extended}
                                 />
                             )

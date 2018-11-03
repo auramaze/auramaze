@@ -23,7 +23,7 @@ class ArtizenCardLayout extends Component {
                                 username={artizen.username}
                                 name={artizen.name.default}
                                 avatar={artizen.avatar}
-                                abstract={artizen.introduction && artizen.introduction.length > 0 && artizen.introduction[0].en}
+                                abstract={JSON.stringify(artizen._highlight) || ''}
                                 extended={this.props.extended}
                             />)}
                     </div>
