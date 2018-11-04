@@ -8,17 +8,7 @@ import journal from './icons/journal.png';
 import camera from './icons/camera.png';
 import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
-
-
-class TimeLineScreen extends React.Component {
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>TimeLine Screen</Text>
-            </View>
-        );
-    }
-}
+import TimeLine from "./timeline/timeline";
 
 class RecommendScreen extends React.Component {
     render() {
@@ -71,7 +61,7 @@ export default class App extends React.Component {
 
         const MyNavi = createBottomTabNavigator(
             {
-                TimeLine: {screen: TimeLineScreen},
+                TimeLine: {screen: TimeLine},
                 Artventure: {screen: Art},
                 CameraLeft: {screen: CameraScreen},
                 CameraRight: {screen: CameraScreen},
