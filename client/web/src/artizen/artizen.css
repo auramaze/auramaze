@@ -1,0 +1,60 @@
+.artizen {
+    position: relative;
+    background-color: #ffffff;
+    margin: 70px auto;
+}
+
+@media screen and (max-width: 768px) {
+    .artizen {
+        margin: 60px auto;
+    }
+}
+
+.artizen-left-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 38%;
+    min-width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.artizen-right-section {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 62%;
+    max-width: calc(100% - 400px);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+@media screen and (max-width: 992px) {
+    .artizen-left-section {
+        position: relative;
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .artizen-right-section {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+.slider-container {
+    margin-bottom: 50px;
+}
+
+.slider-container * {
+    outline: none;
+}
+
+.slide-container {
+    padding: 20px;
+    box-sizing: border-box;
+}

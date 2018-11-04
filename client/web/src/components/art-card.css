@@ -1,0 +1,68 @@
+@import '../fonts/fonts.css';
+
+.art-card {
+    background-color: #ffffff;
+}
+
+.art-card-title {
+    position: relative;
+    height: 80px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.art-card-table {
+    border-spacing: 5px;
+}
+
+.art-card-avatar {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translate(0, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 15px #ffffff;
+}
+
+.art-card-artwork {
+    width: 100%;
+}
+
+.art-card-names {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translate(0, -50%);
+}
+
+.art-card-name {
+    font-size: 18px;
+    font-family: 'CenturyGothic', serif;
+}
+
+.art-card-subname {
+    font-size: 14px;
+    font-family: 'CenturyGothic', serif;
+}
+
+.art-card-abstract {
+    position: relative;
+    height: 150px;
+    margin: 0 10px;
+    padding: 10px;
+    border-top: 1px solid #666666;
+    overflow: hidden;
+    white-space: normal;
+    font-size: 14px;
+    font-family: 'SegoeUI', serif;
+}
+
+.art-card-mask-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 40px 30px #ffffff;
+}

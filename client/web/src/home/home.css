@@ -1,0 +1,48 @@
+.home {
+    background-color: #fafafa;
+}
+
+.backend-architecture {
+    position: relative;
+    height: 100vw;
+}
+
+.architecture-demo {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.library-cards-column-1 {
+    position: absolute;
+    left: 0;
+    width: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.library-cards-column-2 {
+    position: absolute;
+    right: 0;
+    width: 25%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.library-card-item {
+    margin: 10px 20px;
+}
+
+.architecture-demo-mobile {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+}
+
+.library-cards-mobile {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto 50px auto;
+}

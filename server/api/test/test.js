@@ -32,12 +32,12 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should get empty data', done => {
+            it('should not get empty data', done => {
                 request(app).get('/v1/art/dummy')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                        assert(res.body.username === 'dummy');
                     })
                     .end(done);
             });
@@ -78,6 +78,72 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.code === 'ART_NOT_FOUND');
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('Batch GET art data', () => {
+            it('should batch get art data', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': [10000002, 10000003]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[10000002].title.en === 'Aristotle with a Bust of Homer');
+                    })
+                    .end(done);
+            });
+
+            it('should return empty object', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': []
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+
+            it('should get empty data', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': [10000000, 10000003]
+                    })
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.hasOwnProperty(10000000));
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid id', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': [100000001]
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should not report ART_NOT_FOUND', done => {
+                request(app).post('/v1/art/batch')
+                    .send({
+                        'id': [90000000]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
                     })
                     .end(done);
             });
@@ -134,25 +200,26 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should report ART_NOT_FOUND', done => {
+            it('should return empty array for nonexist id', done => {
                 request(app).get('/v1/art/00000000/artizen')
-                    .expect(404)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ART_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
 
-            it('should report ART_NOT_FOUND', done => {
+            it('should return empty array for nonexist username', done => {
                 request(app).get('/v1/art/notexist/artizen')
-                    .expect(404)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ART_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
+
             it('should report invalid type', done => {
                 request(app).get('/v1/art/10000003/artizen?type=123')
                     .expect(400)
@@ -176,21 +243,11 @@ describe('Test api', function () {
             });
 
             it('should get artizen data by username', done => {
-                request(app).get('/v1/artizen/metmuseum')
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(parseInt(res.body.id) === 100000011);
-                    })
-                    .end(done);
-            });
-
-            it('should get empty data', done => {
                 request(app).get('/v1/artizen/zianke')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                        assert(parseInt(res.body.id) === 100000001);
                     })
                     .end(done);
             });
@@ -227,6 +284,86 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                    })
+                    .end(done);
+            });
+        });
+
+
+        describe('Batch GET artizen data', () => {
+            it('should batch get artizen data', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000012, 100000013]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[100000012].name.en === 'National Gallery of Art, Washington, DC, US');
+                    })
+                    .end(done);
+            });
+
+            it('should return empty object', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': []
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
+                    })
+                    .end(done);
+            });
+
+            it('should convert types to array', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000012, 100000013]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body[100000012].type.length === 2);
+                    })
+                    .end(done);
+            });
+
+            it('should get empty data', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [100000000, 100000003]
+                    })
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.hasOwnProperty(100000000));
+                    })
+                    .end(done);
+            });
+
+            it('should report invalid id', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [10000001]
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+
+            it('should not report ART_NOT_FOUND', done => {
+                request(app).post('/v1/artizen/batch')
+                    .send({
+                        'id': [900000000]
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(JSON.stringify(res.body) === JSON.stringify({}));
                     })
                     .end(done);
             });
@@ -278,20 +415,20 @@ describe('Test api', function () {
                     .end(done);
             });
 
-            it('should report ARTIZEN_NOT_FOUND', done => {
-                request(app).get('/v1/artizen/000000000/art').expect(404)
+            it('should not report ARTIZEN_NOT_FOUND', done => {
+                request(app).get('/v1/artizen/000000000/art').expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
 
-            it('should report ARTIZEN_NOT_FOUND', done => {
-                request(app).get('/v1/artizen/notexist/art').expect(404)
+            it('should not report ARTIZEN_NOT_FOUND', done => {
+                request(app).get('/v1/artizen/notexist/art').expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                        assert(JSON.stringify(res.body) === JSON.stringify([]));
                     })
                     .end(done);
             });
@@ -467,6 +604,7 @@ describe('Test api', function () {
                     .send({
                         'title': {'default': 'This is title A', 'en': 'This is title A'},
                         'username': username,
+                        'completion_year': 'c.1517',
                         'relations': [
                             {'artizen': 'nga', 'type': 'museum'},
                             {'artizen': 'nga', 'type': 'exhibition'},
@@ -476,7 +614,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/) && res.body.completion_year === 'c.1517');
                     })
                     .end(() => {
                         request(app).get(`/v1/art/${username}/artizen`)
@@ -526,6 +664,53 @@ describe('Test api', function () {
                                                 assert(res.body.length === 1);
                                             })
                                             .end(done);
+                                    });
+                            });
+                    });
+            });
+
+            it('should not add to artizen type', done => {
+                const artizenUsername = randomUsername();
+                request(app).put(`/v1/artizen/${artizenUsername}`)
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        'username': artizenUsername,
+                        'type': ['museum']
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(() => {
+                        request(app).get(`/v1/artizen/${artizenUsername}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.type.length === 1);
+                            })
+                            .end(() => {
+                                const artUsername = randomUsername();
+                                request(app).put(`/v1/art/${artUsername}`)
+                                    .send({
+                                        'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                        'username': artUsername,
+                                        'relations': [{'artizen': artizenUsername, 'type': 'museum'}]
+                                    })
+                                    .expect(200)
+                                    .expect('Content-Type', /json/)
+                                    .end(() => {
+                                        request(app).get(`/v1/artizen/${artizenUsername}`)
+                                            .expect(200)
+                                            .expect('Content-Type', /json/)
+                                            .expect(res => {
+                                                assert(res.body.type.length === 1);
+                                            })
+                                            .end(() => {
+                                                request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                    .expect(200)
+                                                    .expect(res => {
+                                                        assert(res.body.length === 1);
+                                                    })
+                                                    .end(done);
+                                            });
                                     });
                             });
                     });
@@ -748,6 +933,34 @@ describe('Test api', function () {
                     });
             });
 
+            it('should delete artizen by id', done => {
+                const username = randomUsername();
+                let id;
+                request(app).put(`/v1/artizen/${username}`)
+                    .send({
+                        'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        'username': username,
+                        'type': ['museum', 'exhibition']
+                    })
+                    .expect(200)
+                    .expect(res => {
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).delete(`/v1/artizen/${id}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .end(() => {
+                                request(app).get(`/v1/artizen/${id}`)
+                                    .expect(404)
+                                    .expect(res => {
+                                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                                    })
+                                    .end(done);
+                            });
+                    });
+            });
+
             it('should delete relations of artizen', done => {
                 const artizenUsername = randomUsername();
                 request(app).put(`/v1/artizen/${artizenUsername}`)
@@ -861,7 +1074,19 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -874,7 +1099,19 @@ describe('Test api', function () {
                 request(app).post('/v1/art/artid/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -887,8 +1124,32 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/introduction')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                    depth: 0
+                                }]
+                        }
+                    })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+            it('should report no content', done => {
+                request(app).post('/v1/art/10000003/introduction')
+                    .send({
+                        'author_id': '100000010',
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -901,8 +1162,54 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': ''
+                        'content': 'this is not a json'
                     })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('GET introduction to art', () => {
+            it('should not get invalid introdcution to art', done => {
+                let text_id;
+                request(app).post('/v1/art/10000003/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                    depth: 0
+                                }]
+                        }
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        text_id = parseInt(res.body.id);
+                    })
+                    .end(() => {
+                        request(app).get('/v1/art/10000003/introduction')
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(!res.body.map(item => parseInt(item.id)).includes(text_id));
+                            })
+                            .end(done);
+                    });
+            });
+            it('should report invalid id', done => {
+                request(app).get('/v1/art/artid/introduction')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -917,7 +1224,19 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -930,7 +1249,19 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/metmuseum/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -943,8 +1274,20 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/introduction')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。'
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -957,8 +1300,42 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/introduction')
                     .send({
                         'author_id': '100000010',
-                        'content': ''
+                        'content': 'this is not a json'
                     })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('GET introduction to artizen', () => {
+            it('should not get invalid introdcution to artizen', done => {
+                let text_id;
+                request(app).post('/v1/artizen/100000011/introduction')
+                    .send({
+                        'author_id': '100000010',
+                        'content': JSON.stringify('大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。')
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        text_id = parseInt(res.body.id);
+                    })
+                    .end(() => {
+                        request(app).get('/v1/artizen/100000011/introduction')
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(!res.body.map(item => parseInt(item.id)).includes(text_id));
+                            })
+                            .end(done);
+                    });
+            });
+            it('should report invalid id', done => {
+                request(app).get('/v1/artizen/artizenid/introduction')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -973,7 +1350,19 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'content': 'Review of Ginevra de\' Benci'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Ginevra de\' Benci',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -982,11 +1371,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post rate of art', done => {
+            it('should post rating of art', done => {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5
+                        'rating': 5
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -995,12 +1384,24 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post review of art with rate', done => {
+            it('should post review of art with rating', done => {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': 'Review of Ginevra de\' Benci'
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Ginevra de\' Benci',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1013,22 +1414,20 @@ describe('Test api', function () {
                 request(app).post('/v1/art/artid/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
-            });
-            it('should report invalid review body', done => {
-                request(app).post('/v1/art/10000003/review')
-                    .send({
-                        'author_id': '100000010',
-                        'rate': 5,
-                        'content': ''
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Ginevra de\' Benci',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -1041,8 +1440,55 @@ describe('Test api', function () {
                 request(app).post('/v1/art/10000003/review')
                     .send({
                         'author_id': '100000010',
-                        'content': ''
+                        'rating': 5,
+                        'content': 'this is not a json'
                     })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('GET review of art', () => {
+            it('should get review of art', done => {
+                let text_id;
+                request(app).post('/v1/art/10000003/review')
+                    .send({
+                        'author_id': '100000010',
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Ginevra de\' Benci',
+                                    depth: 0
+                                }]
+                        }
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        text_id = parseInt(res.body.id);
+                    })
+                    .end(() => {
+                        request(app).get('/v1/art/10000003/review')
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.art_id)).includes(10000003));
+                            })
+                            .end(done);
+                    });
+            });
+            it('should report invalid id', done => {
+                request(app).get('/v1/art/artid/review')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -1057,7 +1503,19 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'content': 'Review of Metropolitan Museum of Art'
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Metropolitan Museum of Art',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1066,11 +1524,11 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post rate of artizen', done => {
+            it('should post rating of artizen', done => {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5
+                        'rating': 5
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1079,12 +1537,24 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            it('should post review of artizen with rate', done => {
+            it('should post review of artizen with rating', done => {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': 'Review of Metropolitan Museum of Art'
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Metropolitan Museum of Art',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -1097,22 +1567,20 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/metmuseum/review')
                     .send({
                         'author_id': '100000010',
-                        'rate': 5,
-                        'content': 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
-            });
-            it('should report invalid review body', done => {
-                request(app).post('/v1/artizen/100000011/review')
-                    .send({
-                        'author_id': '100000010',
-                        'rate': 5,
-                        'content': ''
+                        'rating': 5,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Metropolitan Museum of Art',
+                                    depth: 0
+                                }]
+                        }
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -1125,8 +1593,56 @@ describe('Test api', function () {
                 request(app).post('/v1/artizen/100000011/review')
                     .send({
                         'author_id': '100000010',
-                        'content': ''
+                        'rating': 5,
+                        'content': 'this is not a json'
                     })
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.errors);
+                    })
+                    .end(done);
+            });
+        });
+
+        describe('GET review of artizen', () => {
+            it('should get review of artizen', done => {
+                let text_id;
+                request(app).post('/v1/artizen/100000011/review')
+                    .send({
+                        'author_id': '100000010',
+                        'rating': 3,
+                        'content': {
+                            entityMap: {},
+                            blocks:
+                                [{
+                                    key: '9dib2',
+                                    inlineStyleRanges: [],
+                                    entityRanges: [],
+                                    data: {},
+                                    type: 'unstyled',
+                                    text: 'Review of Metropolitan Museum of Art',
+                                    depth: 0
+                                }]
+                        }
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        text_id = parseInt(res.body.id);
+                    })
+                    .end(() => {
+                        request(app).get('/v1/artizen/100000011/review')
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.artizen_id)).includes(100000011));
+                            })
+                            .end(done);
+                    });
+            });
+            it('should report invalid id', done => {
+                request(app).get('/v1/artizen/artizenid/review')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -1149,6 +1665,26 @@ describe('Test api', function () {
                     .end(done);
             });
 
+            it('should support artizen fuzzy query', done => {
+                request(app).get('/v1/search?q=marunu')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'marina'));
+                    })
+                    .end(done);
+            });
+
+            it('should support query with multiple word', done => {
+                request(app).get('/v1/search?q=van gogh')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'vincent-van-gogh'));
+                    })
+                    .end(done);
+            });
+
             it('should get art data', done => {
                 request(app).get('/v1/search?q=met')
                     .expect(200)
@@ -1164,7 +1700,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci') && res.body.art && res.body.art.some(e => e.id === 10000003));
+                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci'));
                     })
                     .end(done);
             });
@@ -1217,6 +1753,36 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.art && res.body.art.some(e => e.id === 10000004));
+                    })
+                    .end(done);
+            });
+
+            it('should support fuzzy', done => {
+                request(app).get('/v1/search?q=vanitus')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                    })
+                    .end(done);
+            });
+
+            it('should support operator and', done => {
+                request(app).get('/v1/search?q=globe+skull+candle+tazza')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                    })
+                    .end(done);
+            });
+
+            it('should support fuzzy with multiple word', done => {
+                request(app).get('/v1/search?q=glube+skall+ceedle+tazza')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
                     })
                     .end(done);
             });

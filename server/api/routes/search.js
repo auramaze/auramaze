@@ -22,9 +22,49 @@ router.get('/', [
     });
 
     for (let index in results) {
-        request.get({
+        request.post({
             url: `${process.env.ESROOT}/${index}/_search`,
-            qs: {q: req.query.q, from: req.query.from || 0, size: 20},
+            body: {
+                'from': req.query.from,
+                'size': 20,
+                'query': {
+                    'bool': {
+                        'should':
+                            [
+                                {
+                                    'multi_match': {
+                                        'query': req.query.q,
+                                        'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
+                                        'fuzziness': 'AUTO',
+                                        'prefix_length': 0,
+                                        'operator': 'and'
+                                    }
+                                },
+                                {
+                                    'multi_match':
+                                        {
+                                            'query': req.query.q,
+                                            'fields': ['introduction.*'],
+                                            'operator': 'and'
+                                        }
+                                }
+                            ]
+                    }
+                },
+                'highlight': {
+                    'pre_tags': ['<b>'],
+                    'post_tags': ['</b>'],
+                    'fields': {
+                        'title.*': {'number_of_fragments': 0},
+                        'artist.*': {'number_of_fragments': 0},
+                        'museum.*': {'number_of_fragments': 0},
+                        'genre.*': {'number_of_fragments': 0},
+                        'style.*': {'number_of_fragments': 0},
+                        'name.*': {'number_of_fragments': 0},
+                        'introduction.*': {'number_of_fragments': 3, 'fragment_size': 150}
+                    }
+                }
+            },
             json: true
         }, (error, response, body) => {
             /* istanbul ignore if */
@@ -34,7 +74,10 @@ router.get('/', [
                     message: 'Error in ElasticSearch service'
                 });
             } else {
-                results[index] = body.hits.hits.map(item => item._source);
+                results[index] = body.hits.hits.map(item => Object.assign(item._source, {
+                    _score: item._score,
+                    _highlight: item.highlight
+                }));
                 search();
             }
         });

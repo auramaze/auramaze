@@ -1,0 +1,51 @@
+@import '../fonts/fonts.css';
+
+.artizen-card {
+    background-color: #ffffff;
+}
+
+.artizen-card-title {
+    height: 80px;
+    margin: 0 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.artizen-card-avatar {
+    display: inline-block;
+    vertical-align: top;
+    margin: 8px;
+    width: 60px;
+    height: 60px;
+    border: #cdcdcd 2px solid;
+    border-radius: 50%;
+}
+
+.artizen-card-name {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px 0;
+    line-height: 60px;
+    font-size: 18px;
+    font-family: 'CenturyGothic', serif;
+}
+
+.artizen-card-abstract {
+    position: relative;
+    height: 150px;
+    margin: 0 10px;
+    padding: 10px;
+    border-top: 1px solid #666666;
+    overflow: hidden;
+    white-space: normal;
+    font-size: 14px;
+    font-family: 'SegoeUI', serif;
+}
+
+.artizen-card-mask-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 40px 30px #ffffff;
+}

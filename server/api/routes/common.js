@@ -1,40 +1,53 @@
 require('dotenv').config();
-const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-    apiVersion: '2012-08-10',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
-});
 const mysql = require('mysql');
 const rds = mysql.createConnection({
-    'host': process.env.AWS_RDS_HOST,
-    'user': process.env.AWS_RDS_USER,
-    'password': process.env.AWS_RDS_PASSWORD,
-    'database': process.env.AWS_RDS_DATABASE
+    host: process.env.AWS_RDS_HOST,
+    user: process.env.AWS_RDS_USER,
+    password: process.env.AWS_RDS_PASSWORD,
+    database: process.env.AWS_RDS_DATABASE,
+    typeCast: (field, next) => field.type === 'JSON' ? JSON.parse(field.string()) : next()
 });
+const _ = require('lodash');
 const franc = require('franc-min');
 const convert3To1 = require('iso-639-3-to-1');
 
 function Common() {
 }
 
-Common.prototype.dynamodb = dynamodb;
 Common.prototype.rds = rds;
 
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
-// Insert username into Aurora table `art` or `artizen`
-Common.prototype.insertItem = (group, username, callback) => {
+// Get item data
+Common.prototype.getItem = (group, id, callback) => {
     let sql, parameters;
-    if (parseInt(username) === 0) {
-        sql = `INSERT INTO ${group} VALUES ()`;
-        parameters = null;
+    if (isNaN(parseInt(id))) {
+        sql = `SELECT * FROM ${group} WHERE username=?`;
+        parameters = [id.toString()];
     } else {
-        sql = `INSERT INTO ${group} (username) VALUES (?)`;
-        parameters = [username];
+        sql = `SELECT * FROM ${group} WHERE id=?`;
+        parameters = [parseInt(id)];
     }
+    rds.query(sql, parameters, callback);
+};
+
+// Batch get item data
+Common.prototype.batchGetItems = (group, id, callback) => {
+    rds.query(`SELECT * FROM ${group} WHERE id IN (?)`, [id], callback);
+};
+
+// Insert item data
+Common.prototype.putItem = (group, item, callback) => {
+    let sql, parameters;
+    if (group === 'art') {
+        sql = 'INSERT INTO art (username, title, image, completion_year, attributes) VALUES (?)';
+        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.title ? JSON.stringify(item.title) : null, item.image ? JSON.stringify(item.image) : null, item.completion_year, JSON.stringify(_.omit(item, ['id', 'username', 'title', 'image', 'completion_year']))]];
+    } else {
+        sql = 'INSERT INTO artizen (username, name, type, avatar, attributes) VALUES (?)';
+        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.name ? JSON.stringify(item.name) : null, item.type ? JSON.stringify(item.type) : null, item.avatar, JSON.stringify(_.omit(item, ['id', 'username', 'name', 'type', 'avatar']))]];
+    }
+
     rds.query(sql, parameters, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
@@ -45,76 +58,33 @@ Common.prototype.insertItem = (group, username, callback) => {
     });
 };
 
-// Check item existence in Aurora and return id if item exists
-Common.prototype.checkExist = (group, id, callback) => {
+// Delete item data and relations
+Common.prototype.deleteItem = (group, id, callback) => {
     let sql, parameters;
     if (isNaN(parseInt(id))) {
-        sql = `SELECT * FROM ${group} WHERE username=?`;
+        sql = `DELETE FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
     } else {
-        sql = `SELECT * FROM ${group} WHERE id=?`;
+        sql = `DELETE FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
     }
-    rds.query(sql, parameters, (err, result, fields) => {
-        /* istanbul ignore if */
-        if (err) {
-            callback(err, null);
-        } else {
-            if (result.length) {
-                callback(null, parseInt(result[0].id));
-            } else {
-                callback(null, null);
-            }
-        }
-    });
+    rds.query(sql, parameters, callback);
 };
 
-// Get item data from DynamoDB
-Common.prototype.getItem = (group, id, callback) => {
-    const params = {
-        Key: {id: parseInt(id)},
-        TableName: group
-    };
-    dynamodb.get(params, callback);
-};
-
-// Put item data into DynamoDB
-Common.prototype.putItem = (group, item, callback) => {
-    const params = {
-        Item: item,
-        TableName: group
-    };
-    dynamodb.put(params, callback);
-};
-
-// Delete item data from DynamoDB
-Common.prototype.deleteItem = (group, id, callback) => {
-    const params = {
-        Key: {id: parseInt(id)},
-        TableName: group
-    };
-    dynamodb.delete(params, callback);
-};
-
-
-// Add type to artizen data in DynamoDB table `artizen`
-Common.prototype.addType = (id, type, callback) => {
-    var params = {
-        TableName: 'artizen',
-        Key: {id: parseInt(id)},
-        UpdateExpression: 'ADD #k :v',
-        ExpressionAttributeNames: {'#k': 'type'},
-        ExpressionAttributeValues: {
-            ':v': dynamodb.createSet([type])
-        }
-    };
-
-    dynamodb.update(params, callback);
+Common.prototype.convertContentToPlainText = (content) => {
+    return content.blocks
+        .map(block => {
+            return block.text || '';
+        })
+        .join('\n');
 };
 
 // Detect language of text and return ISO 639-1 code, undefined if not detected
-Common.prototype.detectLanguage = (text) => {
-    return convert3To1(franc(text, {minLength: 1}));
+Common.prototype.detectLanguage = (content) => {
+    if (content.blocks) {
+        content = Common.prototype.convertContentToPlainText(content);
+    }
+    return convert3To1(franc(content, {minLength: 1}));
 };
 
 
