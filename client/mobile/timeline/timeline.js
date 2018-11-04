@@ -1,6 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import { SearchBar } from 'react-native-elements'
+import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
+import { SearchBar } from 'react-native-elements';
+import { Constants } from 'expo';
 
 class TimeLine extends React.Component {
 
@@ -14,7 +15,9 @@ class TimeLine extends React.Component {
 
         const styles = StyleSheet.create({
             mainStruct: {
-                flex: 1, flexDirection: 'column',
+                flex: 1,
+                alignItems: 'center',
+                paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 margin: 20,
@@ -29,17 +32,19 @@ class TimeLine extends React.Component {
                 borderBottomColor: '#666666',
                 borderBottomWidth: 1,
                 padding: 5,
-            },
+            }
         });
 
-
-
         return (
-            <SearchBar
-                showLoading
-                platform="ios"
-                cancelButtonTitle="Cancel"
-                placeholder='Search' />
+            <View style={styles.mainStruct}>
+                <SearchBar
+                    // lightTheme
+                    containerStyle={{backgroundColor: '#fff'}}
+                    inputContainerStyle={{backgroundColor: '#eeeeee'}}
+                    platform="ios"
+                    cancelButtonTitle="Cancel"
+                    placeholder='Search' />
+            </View>
         );
     }
 }

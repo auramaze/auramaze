@@ -1,10 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
 import TopBar from "../components/top-bar";
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
+import {Constants} from "expo";
 
 class Art extends React.Component {
 
@@ -19,6 +20,7 @@ class Art extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
+                paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 margin: 20,
