@@ -1,96 +1,51 @@
 "mappings": {
-    "_doc": {
+  "_doc": {
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "image": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "introduction": {
         "properties": {
-            "title": {
-                "properties": {
-                    "default": {
-                        "type": "text"
-                    },
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }
-                }
-            },
-            "artist": {
-                "properties": {
-                    "default": {
-                        "type": "text"
-                    },
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }
-                }
-            },
-            "museum": {
-                "properties": {
-                    "default": {
-                        "type": "text"
-                    },                        
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }
-                }
-            },
-            "completion_year": {
+            "default": {
                 "type": "text"
+            },                        
+            "en": {
+                "type": "text",
+                "analyzer": "english"
             },
-            "genre": {
-                "properties": {
-                    "default": {
-                        "type": "text"
-                    },                        
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }
-                }
-            },
-            "style": {
-                "properties": {
-                    "default": {
-                        "type": "text"
-                    },                        
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }
-                }
-            },
-            "introduction": {
-                "properties": {
-                    "en": {
-                        "type": "text",
-                        "analyzer": "english"
-                    },
-                    "zh":{
-                        "type": "text",
-                        "analyzer": "smartcn"
-                    }   
-                }                 
+            "zh":{
+                "type": "text",
+                "analyzer": "smartcn"
             }
         }
+      },
+      "name": {
+        "properties": {
+            "default": {
+                "type": "text"
+            },
+            "en": {
+                "type": "text",
+                "analyzer": "english"
+            },
+            "zh":{
+                "type": "text",
+                "analyzer": "smartcn"
+            }
+        }
+      },
+      "username": {
+        "type": "keyword"
+      }
     }
+  }
 }
