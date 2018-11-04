@@ -1,13 +1,19 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
-import { SearchBar } from 'react-native-elements';
-import { Constants } from 'expo';
+import {SearchBar} from 'react-native-elements';
+import {Constants} from 'expo';
 
 class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
     }
+
+    state = {term: ''};
+
+    onEnd = () => {
+        alert(this.state.term);
+    };
 
     render() {
 
@@ -42,8 +48,11 @@ class TimeLine extends React.Component {
                     containerStyle={{backgroundColor: '#fff'}}
                     inputContainerStyle={{backgroundColor: '#eeeeee'}}
                     platform="ios"
+                    value={this.state.term}
+                    onChangeText={term => this.setState({term})}
+                    onEndEditing={this.onEnd}
                     cancelButtonTitle="Cancel"
-                    placeholder='Search' />
+                    placeholder='Search'/>
             </View>
         );
     }
