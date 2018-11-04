@@ -6,6 +6,8 @@ import {Image, StyleSheet, Text, View} from "react-native";
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
+import camera_left from './icons/camera-left.png';
+import camera_right from './icons/camera-right.png';
 import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
 
@@ -13,7 +15,7 @@ import lines from './icons/lines.png';
 class TimeLineScreen extends React.Component {
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text>TimeLine Screen</Text>
             </View>
         );
@@ -23,7 +25,7 @@ class TimeLineScreen extends React.Component {
 class RecommendScreen extends React.Component {
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text>Recommend Screen</Text>
             </View>
         );
@@ -33,7 +35,7 @@ class RecommendScreen extends React.Component {
 class CameraScreen extends React.Component {
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text>Camera Screen</Text>
             </View>
         );
@@ -43,7 +45,7 @@ class CameraScreen extends React.Component {
 class SettingScreen extends React.Component {
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text>Setting Screen</Text>
             </View>
         );
@@ -71,16 +73,16 @@ export default class App extends React.Component {
 
         const MyNavi = createBottomTabNavigator(
             {
-                TimeLine: { screen: TimeLineScreen },
-                Artventure: { screen: Art },
-                CameraLeft: { screen: CameraScreen },
-                CameraRight: { screen: CameraScreen },
-                Recommend: { screen: RecommendScreen },
-                Settings: { screen: SettingScreen },
+                TimeLine: {screen: TimeLineScreen},
+                Artventure: {screen: Art},
+                CameraLeft: {screen: CameraScreen},
+                CameraRight: {screen: CameraScreen},
+                Recommend: {screen: RecommendScreen},
+                Settings: {screen: SettingScreen},
             },
             {
-                navigationOptions: ({ navigation }) => ({
-                    tabBarIcon: ({ focused, tintColor }) => {
+                navigationOptions: ({navigation}) => ({
+                    tabBarIcon: ({focused, tintColor}) => {
                         const styles = StyleSheet.create({
                             imageStyle: {
                                 width: 30,
@@ -89,13 +91,14 @@ export default class App extends React.Component {
                                 margin: 10
                             },
                             cameraStyle: {
-                                width: 30,
-                                height: 30,
                                 tintColor: '#fff',
+                            },
+                            cameraLeftStyle: {
+                                marginRight: -25,
                             },
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
-                                width: 60,
+                                width: 65,
                                 height: 40,
                                 backgroundColor: '#909090',
                                 alignItems: 'center',
@@ -103,42 +106,38 @@ export default class App extends React.Component {
                                 marginVertical: 10
                             },
                             cameraHolderLeft: {
-                                // justifyContent: 'right',
                                 borderBottomLeftRadius: 15,
                                 borderTopLeftRadius: 15,
-                                marginLeft: 30,
+                                marginLeft: 25,
                             },
                             cameraHolderRight: {
-                                // justifyContent: 'left',
+                                width: 35,
                                 borderBottomRightRadius: 15,
                                 borderTopRightRadius: 15,
-                                marginRight: 30,
+                                marginRight: 0,
                             }
                         });
 
-                        const { routeName } = navigation.state;
+                        const {routeName} = navigation.state;
                         let iconName = '';
-                        if (routeName === 'TimeLine') {
-                            iconName = compass;
-                        } else if (routeName === 'Artventure') {
-                            iconName = journal;
-                        } else if (routeName === 'CameraLeft') {
-                            // iconName = camera;
+
+                        (routeName === 'TimeLine') && (iconName = compass);
+                        (routeName === 'Artventure') && (iconName = journal);
+
+                        if (routeName === 'CameraLeft') {
                             return <View style={[styles.cameraHolder, styles.cameraHolderLeft]}>
-                                {/*<Image source={camera} style={styles.cameraStyle}/>*/}
+                                <Image source={camera}
+                                       style={[styles.imageStyle, styles.cameraStyle, styles.cameraLeftStyle]}/>
                             </View>
                         } else if (routeName === 'CameraRight') {
-                            // iconName = camera;
-                            return <View style={[styles.cameraHolder, styles.cameraHolderRight]}>
-                                {/*<Image source={camera} style={styles.cameraStyle}/>*/}
-                            </View>
+                            return <View style={[styles.cameraHolder, styles.cameraHolderRight]}/>
                         } else if (routeName === 'Recommend') {
                             iconName = recommendation;
                         } else if (routeName === 'Settings') {
                             iconName = lines;
                         }
 
-                        return  <Image source={iconName} style={styles.imageStyle}/>;
+                        return <Image source={iconName} style={styles.imageStyle}/>;
                     },
                 }),
                 tabBarPosition: 'bottom',
@@ -147,11 +146,10 @@ export default class App extends React.Component {
                     inactiveTintColor: '#666666',
                     showLabel: false,
                     tabStyle: {
-                        width: 10,
                         // borderColor: 'black',
                         // borderWidth: 1
                     },
-                    style:{
+                    style: {
                         height: 60,
                         backgroundColor: '#ffffff',
                         alignItems: 'center',
@@ -167,7 +165,7 @@ export default class App extends React.Component {
         );
 
         return (
-            <MyNavi screenProps={{fontLoaded :this.state.fontLoaded}}/>
+            <MyNavi screenProps={{fontLoaded: this.state.fontLoaded}}/>
         );
     }
 }
