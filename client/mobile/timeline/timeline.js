@@ -36,9 +36,10 @@ class TimeLine extends React.Component {
 
         return (
             <SearchBar
-                // onChangeText={someMethod}
-                // onClear={someMethod}
-                placeholder='Type Here...' />
+                showLoading
+                platform="ios"
+                cancelButtonTitle="Cancel"
+                placeholder='Search' />
         );
     }
 }
