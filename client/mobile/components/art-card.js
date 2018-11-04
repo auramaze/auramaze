@@ -18,6 +18,7 @@ class ArtCard extends React.Component {
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
                 marginHorizontal: 15,
+                marginVertical: 20,
             },
             avatarHolder: {
                 height: 50, width: 50,
