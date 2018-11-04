@@ -20,12 +20,12 @@ class ReviewCard extends React.Component {
                 padding: 10,
             },
             imageStyle: {
-                width: 50,
-                height: 50
+                width: 50, height: 50,
+                borderRadius: 25,
+                borderColor: '#666666', borderWidth: 1,
             },
             avatarHolder: {
-                borderRadius: 50, height: 50, width: 50,
-                borderColor: '#666666', borderWidth: 1,
+                height: 50, width: 50,
                 alignItems: 'center',
             },
             header: {
@@ -57,15 +57,13 @@ class ReviewCard extends React.Component {
                 <View style={styles.header}>
                     <View style={styles.avatarHolder}>
                         <Image
-                            source={{uri: 'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/auramaze-logo-square.png'}}
+                            source={{uri: this.props.source}}
                             style={styles.imageStyle}/>
                     </View>
-                    <Text style={styles.headerText}>
-                        AuraMaze
-                    </Text>
+                    <Text style={styles.headerText}>{this.props.name}</Text>
                 </View>
                 <Text
-                    style={styles.bodyText}>{`\n\tThe Starry Night is an oil on canvas by the Dutch post-impressionist painter Vincent van Gogh.\n\tPainted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an idealized village. It has been in the permanent collection of the Museum of Modern Art in New York City since 1941, acquired through the Lillie P. Bliss Bequest. Regarded as among Van Gogh's finest works, The Starry Night is one of the most  recognized  paintings in the history of Western culture.\n`}</Text>
+                    style={styles.bodyText}>{this.props.text}</Text>
                 <ReviewFooter/>
             </View>
         )

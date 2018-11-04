@@ -10,7 +10,6 @@ class ArtInfo extends React.Component {
         super(props);
     }
 
-
     render() {
 
         const styles = StyleSheet.create({

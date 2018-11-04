@@ -21,9 +21,7 @@ class ReviewFooter extends React.Component {
                 marginRight: 20,
             },
             imageStyle: {
-                width: 20,
-                height: 20,
-                margin: 10,
+                width: 20, height: 20, margin: 10,
                 tintColor: '#cdcdcd'
             }
         });
