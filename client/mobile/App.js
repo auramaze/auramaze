@@ -119,10 +119,6 @@ export default class App extends React.Component {
                         });
 
                         const {routeName} = navigation.state;
-                        let iconName = '';
-
-                        (routeName === 'TimeLine') && (iconName = compass);
-                        (routeName === 'Artventure') && (iconName = journal);
 
                         if (routeName === 'CameraLeft') {
                             return <View style={[styles.cameraHolder, styles.cameraHolderLeft]}>
@@ -131,11 +127,14 @@ export default class App extends React.Component {
                             </View>
                         } else if (routeName === 'CameraRight') {
                             return <View style={[styles.cameraHolder, styles.cameraHolderRight]}/>
-                        } else if (routeName === 'Recommend') {
-                            iconName = recommendation;
-                        } else if (routeName === 'Settings') {
-                            iconName = lines;
                         }
+
+                        let iconName;
+
+                        (routeName === 'TimeLine') && (iconName = compass);
+                        (routeName === 'Artventure') && (iconName = journal);
+                        (routeName === 'Recommend') && (iconName = recommendation);
+                        (routeName === 'Settings') && (iconName = lines);
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
                     },
