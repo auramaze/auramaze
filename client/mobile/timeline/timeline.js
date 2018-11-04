@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
+import ArtCard from "../components/art-card";
+import ReviewCard from "../components/review-card";
 
 class TimeLine extends React.Component {
 
@@ -52,6 +54,11 @@ class TimeLine extends React.Component {
                     onEndEditing={this.onEnd}
                     cancelButtonTitle="Cancel"
                     placeholder='Search'/>
+                <ArtCard artName={"The Slave Ship"}
+                         artistName={"William Turner"}
+                         source={'https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg'}
+                         compYear={1840}
+                         fontLoaded={fontLoadStatus}/>
             </View>
         );
     }
