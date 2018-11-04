@@ -1,7 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, ScrollView, Dimensions, Image} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import TopBar from "../components/top-bar";
-import BottomNav from "../components/bottom-nav";
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -80,7 +79,6 @@ class Art extends React.Component {
 
                     </View>
                 </ScrollView>
-                {/*<BottomNav/>*/}
             </View>
         );
     }

@@ -8,7 +8,6 @@ class TitleBar extends React.Component {
     }
 
     render() {
-
         const styles = StyleSheet.create({
             headerText: {
                 fontSize: 20,
@@ -32,6 +31,5 @@ class TitleBar extends React.Component {
         );
     }
 }
-
 
 export default TitleBar;

@@ -20,8 +20,7 @@ class ReviewCard extends React.Component {
                 padding: 10,
             },
             imageStyle: {
-                width: 50,
-                height: 50,
+                width: 50, height: 50,
                 borderRadius: 25,
                 borderColor: '#666666', borderWidth: 1,
             },
