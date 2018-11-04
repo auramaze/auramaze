@@ -13,6 +13,36 @@ class Art extends React.Component {
         super(props);
     }
 
+    state = {
+        artizen: {
+            "type": "artist",
+            "data": [
+                {
+                    "id": 100186532,
+                    "username": "caravaggio",
+                    "name": {
+                        "en": "Caravaggio",
+                        "zh": "卡拉瓦乔",
+                        "default": "Caravaggio"
+                    },
+                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg",
+                    "type": "artist"
+                },
+                {
+                    "id": 100225091,
+                    "username": "leonardo-da-vinci",
+                    "name": {
+                        "en": "Leonardo da Vinci",
+                        "zh": "列奥纳多·达·芬奇",
+                        "default": "Leonardo da Vinci"
+                    },
+                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/leonardo-da-vinci.jpg",
+                    "type": "artist"
+                }
+            ]
+        }
+    };
+
     render() {
 
         let fontLoadStatus = this.props.screenProps.fontLoaded;
@@ -38,7 +68,14 @@ class Art extends React.Component {
             },
         });
 
-
+        let artistContents = this.state.artizen.data.map((item, key) => {
+            return (
+                <ArtizenCard key={key}
+                             name={item.name.en}
+                             source={item.avatar}
+                             fontLoaded={fontLoadStatus}/>
+            );
+        });
 
         return (
             <View style={styles.mainStruct}>
@@ -54,9 +91,7 @@ class Art extends React.Component {
                                     fontLoaded={fontLoadStatus}/>
 
                         <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Vincent van Gogh"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/vincent-van-gogh.jpg'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {artistContents}
 
                         <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/>
                         <ArtizenCard name={"Museum of Modern Art"}

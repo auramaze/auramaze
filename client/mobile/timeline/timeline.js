@@ -44,7 +44,6 @@ class TimeLine extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <SearchBar
-                    // lightTheme
                     containerStyle={{backgroundColor: '#fff'}}
                     inputContainerStyle={{backgroundColor: '#eeeeee'}}
                     platform="ios"
