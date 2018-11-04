@@ -3,18 +3,6 @@ import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
 import ArtCard from "../components/art-card";
-import ReviewCard from "../components/review-card";
-import ArtizenCard from "../components/artizen-card";
-
-async function searchAuraMaze(url) {
-    try {
-        let response = await fetch(url);
-        let responseJson = await response.json();
-        return responseJson.movies;
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 class TimeLine extends React.Component {
 
