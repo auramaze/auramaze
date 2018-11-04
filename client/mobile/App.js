@@ -1,13 +1,11 @@
 import React from 'react';
 import Art from "./art/art"
 import {Font} from 'expo';
-import {createBottomTabNavigator, TabBarBottom, TabNavigator} from "react-navigation";
+import {createBottomTabNavigator} from "react-navigation";
 import {Image, StyleSheet, Text, View} from "react-native";
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
-import camera_left from './icons/camera-left.png';
-import camera_right from './icons/camera-right.png';
 import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
 
