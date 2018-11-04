@@ -98,14 +98,14 @@ export default class App extends React.Component {
                                 marginVertical: 10
                             },
                             cameraHolderLeft: {
-                                borderBottomLeftRadius: 15,
-                                borderTopLeftRadius: 15,
+                                borderBottomLeftRadius: 19,
+                                borderTopLeftRadius: 19,
                                 marginLeft: 25,
                             },
                             cameraHolderRight: {
                                 width: 35,
-                                borderBottomRightRadius: 15,
-                                borderTopRightRadius: 15,
+                                borderBottomRightRadius: 19,
+                                borderTopRightRadius: 19,
                                 marginRight: 0,
                             }
                         });
