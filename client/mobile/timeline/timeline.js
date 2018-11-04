@@ -1,13 +1,63 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
-import { SearchBar } from 'react-native-elements';
-import { Constants } from 'expo';
+import {SearchBar} from 'react-native-elements';
+import {Constants} from 'expo';
+import ArtCard from "../components/art-card";
 
 class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
     }
+
+    state = {term: '', searchArt: '', searchArtizen: ''};
+
+    // searchAuraMaze(url) {
+    //     return fetch('https://apidev.auramaze.org/v1/search?q=' + url)
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             this.state.searchArt = responseJson.art.map((item, key) => {
+    //                 alert(item.title.default + item.artist.default + item.completionYear + item.id);
+    //                 return (
+    //                     <ArtCard key={key}
+    //                              artName={item.title.default}
+    //                              artistName={item.artist.default}
+    //                              source={'https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg'}
+    //                              compYear={item.completionYear}
+    //                              id={item.id}
+    //                              fontLoaded={this.props.screenProps.fontLoaded}/>
+    //                 );
+    //             });
+    //         })
+    //         .catch((error) => {
+    //             alert(error);
+    //         });
+    // }
+
+    async searchAuraMaze(url) {
+        try {
+            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
+            let responseJson = await response.json();
+            alert(response.json());
+            this.state.searchArt = responseJson.art.map((item, key) => {
+                return (
+                    <ArtCard key={key}
+                             artName={item.title.default}
+                             artistName={item.artist.default}
+                             source={'https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg'}
+                             compYear={item.completionYear}
+                             id={item.id}
+                             fontLoaded={this.props.screenProps.fontLoaded}/>
+                );
+            });
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    onEnd = () => {
+        this.searchAuraMaze(this.state.term);
+    };
 
     render() {
 
@@ -38,13 +88,26 @@ class TimeLine extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <SearchBar
-                    // lightTheme
                     containerStyle={{backgroundColor: '#fff'}}
                     inputContainerStyle={{backgroundColor: '#eeeeee'}}
                     platform="ios"
+                    value={this.state.term}
+                    onChangeText={(term) => (
+                        this.setState(previousState => (
+                            { term: term }
+                        )))}
+                    onSubmitEditing={this.onEnd}
                     cancelButtonTitle="Cancel"
-                    placeholder='Search' />
+                    onCancel={() => (
+                        this.setState(previousState => (
+                            { term: '' }
+                        )))}
+                    placeholder='Search'/>
+                <ScrollView>
+                    {this.state.searchArt}
+                </ScrollView>
             </View>
+
         );
     }
 }
