@@ -1,51 +1,44 @@
-"mappings": {
-  "_doc": {
-    "properties": {
-      "id": {
-        "type": "long"
-      },
-      "image": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "introduction": {
-        "properties": {
-            "default": {
-                "type": "text"
-            },                        
-            "en": {
-                "type": "text",
-                "analyzer": "english"
-            },
-            "zh":{
-                "type": "text",
-                "analyzer": "smartcn"
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "username": {
+                    "type": "keyword"
+                },
+                "name": {
+                    "properties": {
+                        "default": {
+                            "type": "text"
+                        },
+                        "en": {
+                            "type": "text",
+                            "analyzer": "english"
+                        },
+                        "zh": {
+                            "type": "text",
+                            "analyzer": "smartcn"
+                        }
+                    }
+                },
+                "type": {
+                    "type": "keyword"
+                },
+                "introduction": {
+                    "properties": {
+                        "default": {
+                            "type": "text"
+                        },
+                        "en": {
+                            "type": "text",
+                            "analyzer": "english"
+                        },
+                        "zh": {
+                            "type": "text",
+                            "analyzer": "smartcn"
+                        }
+                    }
+                }
             }
         }
-      },
-      "name": {
-        "properties": {
-            "default": {
-                "type": "text"
-            },
-            "en": {
-                "type": "text",
-                "analyzer": "english"
-            },
-            "zh":{
-                "type": "text",
-                "analyzer": "smartcn"
-            }
-        }
-      },
-      "username": {
-        "type": "keyword"
-      }
     }
-  }
 }
