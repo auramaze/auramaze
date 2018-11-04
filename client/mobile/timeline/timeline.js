@@ -35,10 +35,45 @@ class TimeLine extends React.Component {
 
 
         return (
-            <SearchBar
-                // onChangeText={someMethod}
-                // onClear={someMethod}
-                placeholder='Type Here...' />
+            <View>
+                <SearchBar
+                    placeholder='Type Here...' />
+
+                <SearchBar
+                    clearIcon={{ color: 'red' }}
+                    searchIcon={false} // You could have passed `null` too
+                    placeholder='Type Here...' />
+
+                <SearchBar
+                    round
+                    searchIcon={{ size: 24 }}
+                    placeholder='Type Here...' />
+
+                <SearchBar
+                    lightTheme
+                    placeholder='Type Here...' />
+
+                <SearchBar
+                    lightTheme
+                    placeholder='Type Here...' />
+
+                <SearchBar
+                    showLoading
+                    platform="ios"
+                    cancelButtonTitle="Cancel"
+                    placeholder='Search' />
+
+                <SearchBar
+                    showLoading
+                    platform="android"
+                    placeholder='Search' />
+
+                <SearchBar
+                    showLoading
+                    platform="android"
+                    cancelIcon={{ type: 'font-awesome', name: 'chevron-left' }}
+                    placeholder='Search' />
+            </View>
         );
     }
 }
