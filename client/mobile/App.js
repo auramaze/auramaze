@@ -85,17 +85,11 @@ export default class App extends React.Component {
                     tabBarIcon: ({focused, tintColor}) => {
                         const styles = StyleSheet.create({
                             imageStyle: {
-                                width: 30,
-                                height: 30,
-                                tintColor: tintColor,
-                                margin: 10
+                                width: 30, height: 30, margin: 10,
+                                tintColor: tintColor
                             },
-                            cameraStyle: {
-                                tintColor: '#fff',
-                            },
-                            cameraLeftStyle: {
-                                marginRight: -25,
-                            },
+                            cameraStyle: {tintColor: '#fff'},
+                            cameraLeftStyle: {marginRight: -25},
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
                                 width: 65,
@@ -129,12 +123,11 @@ export default class App extends React.Component {
                             return <View style={[styles.cameraHolder, styles.cameraHolderRight]}/>
                         }
 
-                        let iconName;
-
-                        (routeName === 'TimeLine') && (iconName = compass);
-                        (routeName === 'Artventure') && (iconName = journal);
-                        (routeName === 'Recommend') && (iconName = recommendation);
-                        (routeName === 'Settings') && (iconName = lines);
+                        let iconName = '';
+                        if (routeName === 'TimeLine') iconName = compass;
+                        else if (routeName === 'Artventure') iconName = journal;
+                        else if (routeName === 'Recommend') iconName = recommendation;
+                        else if (routeName === 'Settings') iconName = lines;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
                     },
