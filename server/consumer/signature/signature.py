@@ -9,7 +9,6 @@ import os
 import json
 import urllib.parse
 import requests
-import MySQLdb
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
@@ -57,13 +56,6 @@ c = AvroConsumer({
     'schema.registry.url': 'http://{}:8081'.format(KAFKA_HOST)})
 
 c.subscribe(['aurora.auramaze.art'])
-
-db = MySQLdb.connect(host=AWS_RDS_HOST,
-                     user=AWS_RDS_USER,
-                     passwd=AWS_RDS_PASSWORD,
-                     db=AWS_RDS_DATABASE,
-                     charset='utf8')
-db.autocommit(True)
 
 while True:
     try:
