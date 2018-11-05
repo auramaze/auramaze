@@ -27,17 +27,20 @@ class TimeLine extends React.Component {
         return fetch('https://apidev.auramaze.org/v1/search?q=' + url)
             .then((response) => response.json())
             .then((responseJson) => {
-                this.state.searchArt = responseJson.art.map((item, key) => {
-                    return (
-                        <ArtCard key={key}
-                                 artName={item.title.default}
-                                 artistName={item.artist ?  item.artist.default : ""}
-                                 source={"https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg"}
-                                 compYear={item.completionYear ? item.completionYear : ""}
-                                 id={item.id}
-                                 fontLoaded={this.props.screenProps.fontLoaded}/>
-                    );
-                });
+
+                this.setState(previousState => (
+                    {searchArt: responseJson.art.map((item, key) => {
+                            return (
+                                <ArtCard key={key}
+                                         artName={item.title.default}
+                                         artistName={item.artist ?  item.artist.default : ""}
+                                         source={"https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg"}
+                                         compYear={item.completionYear ? item.completionYear : ""}
+                                         id={item.id}
+                                         fontLoaded={this.props.screenProps.fontLoaded}/>
+                            );
+                        })}
+                ));
             })
             .catch((error) => {
                 alert(error);
