@@ -100,6 +100,11 @@ router.post('/login', [
     ]),
     body('password').custom(common.validatePassword).withMessage('Invalid password')
 ], auth.optional, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
     return passport.authenticate('local', {session: false}, (err, artizen) => {
         /* istanbul ignore if */
         if (err) {
