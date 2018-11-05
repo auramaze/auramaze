@@ -29,17 +29,19 @@ class TimeLine extends React.Component {
             .then((responseJson) => {
 
                 this.setState(previousState => (
-                    {searchArt: responseJson.art.map((item, key) => {
+                    {
+                        searchArt: responseJson.art.map((item, key) => {
                             return (
                                 <ArtCard key={key}
                                          artName={item.title.default}
-                                         artistName={item.artist ?  item.artist.default : ""}
+                                         artistName={item.artist ? item.artist.default : ""}
                                          source={"https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg"}
                                          compYear={item.completionYear ? item.completionYear : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
                             );
-                        })}
+                        })
+                    }
                 ));
             })
             .catch((error) => {
@@ -108,6 +110,10 @@ class TimeLine extends React.Component {
                     onChangeText={(term) => (
                         this.setState(previousState => (
                             {term: term}
+                        )))}
+                    onClear={() => (
+                        this.setState(previousState => (
+                            {searchArt: '', term: ''}
                         )))}
                     onSubmitEditing={this.onEnd}
                     cancelButtonTitle="Cancel"
