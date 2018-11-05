@@ -25,7 +25,7 @@ class ArtCard extends React.Component {
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
             },
             headerText: {
-                fontSize: 20, marginTop: 10
+                fontSize: 20, marginTop: 10, marginBottom: 5
             },
             infoText: {
                 fontSize: 15, marginBottom: 10
@@ -38,9 +38,9 @@ class ArtCard extends React.Component {
                 <AutoHeightImage width={Dimensions.get('window').width * 5 / 6}
                                  source={{uri: this.props.source}}/>
                 <Text style={[styles.generalText, styles.headerText]}>{this.props.artName}</Text>
-                <Text style={[styles.generalText, styles.infoText]}>
-                    {this.props.artistName}, {this.props.compYear}
-                </Text>
+                {this.props.artistName? <Text style={[styles.generalText, styles.infoText]}>
+                    {this.props.artistName} {this.props.compYear ? "," + this.props.compYear : ""}
+                </Text> : <View style={{height: 10}}/>}
             </View>
         )
     }
