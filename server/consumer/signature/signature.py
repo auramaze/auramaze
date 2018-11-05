@@ -12,6 +12,8 @@ import requests
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
+from elasticsearch import Elasticsearch
+from elasticsearch_driver import AuraMazeSignatureES
 
 ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
@@ -86,5 +88,4 @@ while True:
     except (TypeError, KeyError) as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
 
-db.close()
 c.close()
