@@ -10,8 +10,6 @@ exports.twitter = (req, res) => {
 
 exports.google = (req, res) => {
     const io = req.app.get('io');
-    console.log('google');
-    console.log(req.user);
     const user = {
         name: req.user.displayName,
         photo: req.user.photos[0].value.replace(/sz=50/gi, 'sz=250')
@@ -22,8 +20,6 @@ exports.google = (req, res) => {
 
 exports.facebook = (req, res) => {
     const io = req.app.get('io');
-    console.log('facebook');
-    console.log(req.user);
     const {givenName, familyName} = req.user.name;
     const user = {
         name: `${givenName} ${familyName}`,
@@ -35,8 +31,6 @@ exports.facebook = (req, res) => {
 
 exports.github = (req, res) => {
     const io = req.app.get('io');
-    console.log('github');
-    console.log(req.user);
     const user = {
         name: req.user.username,
         photo: req.user.photos[0].value

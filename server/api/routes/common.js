@@ -19,6 +19,9 @@ Common.prototype.rds = rds;
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
 
+// Check if password satisfies variants
+Common.prototype.validatePassword = password => Boolean(password.match(/^[A-Za-z0-9#?!@$%^&*-]{4,}$/));
+
 // Get item data
 Common.prototype.getItem = (group, id, callback) => {
     let sql, parameters;
@@ -44,8 +47,8 @@ Common.prototype.putItem = (group, item, callback) => {
         sql = 'INSERT INTO art (username, title, image, completion_year, attributes) VALUES (?)';
         parameters = [[parseInt(item.username) === 0 ? null : item.username, item.title ? JSON.stringify(item.title) : null, item.image ? JSON.stringify(item.image) : null, item.completion_year, JSON.stringify(_.omit(item, ['id', 'username', 'title', 'image', 'completion_year']))]];
     } else {
-        sql = 'INSERT INTO artizen (username, name, type, avatar, attributes) VALUES (?)';
-        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.name ? JSON.stringify(item.name) : null, item.type ? JSON.stringify(item.type) : null, item.avatar, JSON.stringify(_.omit(item, ['id', 'username', 'name', 'type', 'avatar']))]];
+        sql = 'INSERT INTO artizen (username, name, type, avatar, attributes, email, salt, hash) VALUES (?)';
+        parameters = [[parseInt(item.username) === 0 ? null : item.username, item.name ? JSON.stringify(item.name) : null, item.type ? JSON.stringify(item.type) : null, item.avatar, JSON.stringify(_.omit(item, ['id', 'username', 'name', 'type', 'avatar', 'email', 'salt', 'hash', 'password'])), item.email, item.salt, item.hash]];
     }
 
     rds.query(sql, parameters, (err, result, fields) => {

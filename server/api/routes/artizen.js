@@ -147,8 +147,8 @@ router.put('/:username', [
     }
 
     common.putItem('artizen', req.body, (err, result, fields) => {
-        /* istanbul ignore if */
         if (err) {
+            /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {
                 res.status(400).json({
                     code: 'USERNAME_EXIST',
