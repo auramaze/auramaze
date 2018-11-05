@@ -1,5 +1,6 @@
 from image_match.signature_database_base import SignatureDatabaseBase
 from image_match.signature_database_base import normalized_distance
+from image_match.signature_database_base import make_record
 from datetime import datetime
 import numpy as np
 from collections import deque
@@ -10,14 +11,14 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
     """
 
-    def __init__(self, es, index='images', doc_type='image', timeout='10s', size=100,
+    def __init__(self, es, index='art', doc_type='_doc', timeout='10s', size=100,
                  *args, **kwargs):
         """Extra setup for Elasticsearch
 
         Args:
             es (elasticsearch): an instance of the elasticsearch python driver
-            index (Optional[string]): a name for the Elasticsearch index (default 'images')
-            doc_type (Optional[string]): a name for the document time (default 'image')
+            index (Optional[string]): a name for the Elasticsearch index (default 'art')
+            doc_type (Optional[string]): a name for the document time (default '_doc')
             timeout (Optional[int]): how long to wait on an Elasticsearch query, in seconds (default 10)
             size (Optional[int]): maximum number of Elasticsearch results (default 100)
             *args (Optional): Variable length argument list to pass to base constructor
@@ -56,7 +57,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         should = [{'term': {word: rec[word]}} for word in rec]
         body = {
             'query': {
-                   'bool': {'should': should}
+                'bool': {'should': should}
             },
             '_source': {'excludes': ['simple_word_*']}
         }
@@ -65,10 +66,10 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             body['query']['bool']['filter'] = pre_filter
 
         res = self.es.search(index=self.index,
-                              doc_type=self.doc_type,
-                              body=body,
-                              size=self.size,
-                              timeout=self.timeout)['hits']['hits']
+                             doc_type=self.doc_type,
+                             body=body,
+                             size=self.size,
+                             timeout=self.timeout)['hits']['hits']
 
         sigs = np.array([x['_source']['signature'] for x in res])
 
@@ -89,6 +90,24 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         return formatted_res
 
+    def update_image(self, id, image_dict, refresh_after=False):
+        """Update image property in Elasticsearch
+
+        Args:
+            id (int): id of Elasticsearch art document
+            image_dict (dict): value of `image` column from Aurora `art` table
+        """
+        if not image_dict:
+            return
+        for key in image_dict:
+            path = image_dict[key]['url']
+            rec = make_record(path, self.gis, self.k, self.N, img=None, bytestream=False, metadata=None)
+            rec = dict(sorted(filter(lambda item: item[0] == 'signature' or item[0].startswith('simple_word_'), rec.items())))
+            image_dict[key] = {**image_dict[key], **rec}
+        self.es.update(index=self.index, doc_type=self.doc_type, id=id,
+                       body={'doc': {'image': image_dict}, 'doc_as_upsert': True},
+                       refresh=refresh_after)
+
     def insert_single_record(self, rec, refresh_after=False):
         rec['timestamp'] = datetime.now()
         self.es.index(index=self.index, doc_type=self.doc_type, body=rec, refresh=refresh_after)
@@ -100,10 +119,10 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         """
         matching_paths = [item['_id'] for item in
                           self.es.search(body={'query':
-                                               {'match':
-                                                {'path': path}
-                                               }
-                                              },
+                                                   {'match':
+                                                        {'path': path}
+                                                    }
+                                               },
                                          index=self.index)['hits']['hits']
                           if item['_source']['path'] == path]
         if len(matching_paths) > 0:
