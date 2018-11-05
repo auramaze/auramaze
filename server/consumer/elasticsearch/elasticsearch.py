@@ -46,7 +46,7 @@ def send_delete_request(path):
 def upsert_art(msg_value):
     '''
     Upsert art into ElasticSearch
-    :param dict msg_value: Example: {'before': None, 'after': {'id': 10001081, 'username': 'e1-a73c-4336-a6f9-dbafe9d79270', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}', 'completion_year': 'c.1517'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540588806, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 462266, 'row': 0, 'snapshot': False, 'thread': 2598, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540588806426}
+    :param dict msg_value: Example: {'before': None, 'after': {'id': 10001081, 'username': 'e1-a73c-4336-a6f9-dbafe9d79270', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'metadata': '{}', 'completion_year': 'c.1517'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540588806, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 462266, 'row': 0, 'snapshot': False, 'thread': 2598, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'c', 'ts_ms': 1540588806426}
     '''
     try:
         id = msg_value['after']['id']
@@ -74,7 +74,7 @@ def upsert_art(msg_value):
 def upsert_artizen(msg_value):
     '''
     Upsert artizen into ElasticSearch
-    :param dict msg_value: Example: {'before': None, 'after': {'id': 100239445, 'username': 'c5ba-0897-41a8-b8d5-4aea5abb7f65', 'name': '{"en":"This is name B","default":"This is name B"}', 'type': '["museum","exhibition"]', 'avatar': None, 'attributes': '{}'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540581990, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 240894, 'row': 0, 'snapshot': False, 'thread': 2230, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'c', 'ts_ms': 1540581990570}
+    :param dict msg_value: Example: {'before': None, 'after': {'id': 100239445, 'username': 'c5ba-0897-41a8-b8d5-4aea5abb7f65', 'name': '{"en":"This is name B","default":"This is name B"}', 'type': '["museum","exhibition"]', 'avatar': None, 'metadata': '{}'}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540581990, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 240894, 'row': 0, 'snapshot': False, 'thread': 2230, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'c', 'ts_ms': 1540581990570}
     '''
     try:
         id = msg_value['after']['id']
@@ -104,7 +104,7 @@ def upsert_artizen(msg_value):
 def delete_art(msg_value):
     '''
     Delete art from ElasticSearch
-    :param dict msg_value: Example: {'before': {'id': 10001117, 'username': 'b91145f-78f3-4e82-8f56-2f1de477860a', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'attributes': '{}', 'completion_year': None}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604393, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 542586, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'd', 'ts_ms': 1540604393737}
+    :param dict msg_value: Example: {'before': {'id': 10001117, 'username': 'b91145f-78f3-4e82-8f56-2f1de477860a', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'metadata': '{}', 'completion_year': None}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604393, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 542586, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'd', 'ts_ms': 1540604393737}
     :return: None
     '''
     try:
@@ -119,7 +119,7 @@ def delete_art(msg_value):
 def delete_artizen(msg_value):
     '''
     Delete artizen from ElasticSearch
-    :param dict msg_value: Example: {'before': {'id': 100239600, 'username': 'deed23-94f4-48c5-84c2-838ac9752e45', 'name': '{"en":"This is name A","default":"This is name A"}', 'type': '["museum","exhibition"]', 'avatar': None, 'attributes': '{}'}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604392, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 537689, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'd', 'ts_ms': 1540604392887}
+    :param dict msg_value: Example: {'before': {'id': 100239600, 'username': 'deed23-94f4-48c5-84c2-838ac9752e45', 'name': '{"en":"This is name A","default":"This is name A"}', 'type': '["museum","exhibition"]', 'avatar': None, 'metadata': '{}'}, 'after': None, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1540604392, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 537689, 'row': 0, 'snapshot': False, 'thread': 3381, 'db': 'auramaze', 'table': 'artizen', 'query': None}, 'op': 'd', 'ts_ms': 1540604392887}
     :return: None
     '''
     try:
