@@ -70,10 +70,6 @@ class TimeLine extends React.Component {
     //     }
     // }
 
-    onEnd = () => {
-        this.searchAuraMaze(this.state.term);
-    };
-
     render() {
 
         let fontLoadStatus = this.props.screenProps.fontLoaded;
@@ -100,28 +96,44 @@ class TimeLine extends React.Component {
             }
         });
 
+        let onClear = () => {
+            this.setState(previousState => (
+                {searchArt: '', term: ''}
+            ));
+            this.search.focus();
+        };
+
+        let onCancel = () => {
+            this.setState(previousState => (
+                {term: ''}
+            ));
+        };
+
+        let onEnd = () => {
+            if (this.state.term === "") {
+                this.search.clear();
+                return
+            }
+            this.searchAuraMaze(this.state.term);
+        };
+
         return (
             <View style={styles.mainStruct}>
                 <SearchBar
+                    ref={search => this.search = search}
                     containerStyle={{backgroundColor: '#fff'}}
                     inputContainerStyle={{backgroundColor: '#eeeeee'}}
                     platform="ios"
+                    placeholder='Search'
+                    cancelButtonTitle="Cancel"
                     value={this.state.term}
                     onChangeText={(term) => (
                         this.setState(previousState => (
                             {term: term}
                         )))}
-                    onClear={() => (
-                        this.setState(previousState => (
-                            {searchArt: '', term: ''}
-                        )))}
-                    onSubmitEditing={this.onEnd}
-                    cancelButtonTitle="Cancel"
-                    onCancel={() => (
-                        this.setState(previousState => (
-                            {term: ''}
-                        )))}
-                    placeholder='Search'/>
+                    onClear={onClear}
+                    onSubmitEditing={onEnd}
+                    onCancel={onCancel}/>
                 <ScrollView>
                     {this.state.searchArt}
                 </ScrollView>
@@ -130,6 +142,5 @@ class TimeLine extends React.Component {
         );
     }
 }
-
 
 export default TimeLine;
