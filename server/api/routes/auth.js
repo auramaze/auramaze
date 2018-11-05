@@ -70,12 +70,11 @@ router.post('/signup', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const artizen = {email: req.body.email};
     const {salt, hash} = generateSaltHash(req.body.password);
-    artizen.salt = salt;
-    artizen.hash = hash;
+    req.body.salt = salt;
+    req.body.hash = hash;
 
-    common.putItem('artizen', artizen, (err, result, fields) => {
+    common.putItem('artizen', req.body, (err, result, fields) => {
         if (err) {
             /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {
