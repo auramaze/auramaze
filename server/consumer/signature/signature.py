@@ -52,6 +52,11 @@ def update_signature(msg_value):
     print(msg_value)
 
 
+es = Elasticsearch(['https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'])
+ses = AuraMazeSignatureES(es)
+# ses.add_image(
+#     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg/687px-Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg')
+
 c = AvroConsumer({
     'bootstrap.servers': '{}:9092'.format(KAFKA_HOST),
     'group.id': '3',
