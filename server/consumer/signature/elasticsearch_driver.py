@@ -97,8 +97,6 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             id (int): id of Elasticsearch art document
             image_dict (dict): value of `image` column from Aurora `art` table
         """
-        if not image_dict:
-            return
         for key in image_dict:
             path = image_dict[key]['url']
             rec = make_record(path, self.gis, self.k, self.N, img=None, bytestream=False, metadata=None)
