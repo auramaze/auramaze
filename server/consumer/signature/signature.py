@@ -17,10 +17,6 @@ from elasticsearch_driver import AuraMazeSignatureES
 
 ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
-AWS_RDS_HOST = os.getenv('AWS_RDS_HOST')
-AWS_RDS_USER = os.getenv('AWS_RDS_USER')
-AWS_RDS_PASSWORD = os.getenv('AWS_RDS_PASSWORD')
-AWS_RDS_DATABASE = os.getenv('AWS_RDS_DATABASE')
 
 
 def send_post_request(path, data):
@@ -54,7 +50,7 @@ def update_signature(msg_value):
     ses.update_image(id, image_dict)
 
 
-es = Elasticsearch(['https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'])
+es = Elasticsearch([ES_HOST])
 ses = AuraMazeSignatureES(es)
 
 c = AvroConsumer({
