@@ -9,6 +9,7 @@ import camera from './icons/camera.png';
 import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
+import { Input } from 'react-native-elements';
 
 class RecommendScreen extends React.Component {
     render() {
@@ -34,7 +35,21 @@ class SettingScreen extends React.Component {
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Setting Screen</Text>
+                <Input
+                    placeholder='BASIC INPUT'
+                />
+
+
+                <Input
+                    placeholder='INPUT WITH SHAKING EFFECT'
+                    shake={true}
+                />
+
+                <Input
+                    placeholder='INPUT WITH ERROR MESSAGE'
+                    errorStyle={{ color: 'red' }}
+                    errorMessage='ENTER A VALID ERROR HERE'
+                />
             </View>
         );
     }
