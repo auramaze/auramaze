@@ -25,7 +25,7 @@ def update_signature(msg_value):
     :param dict msg_value: Example: {'before': {'id': 10001807, 'username': 'e7b4f-f091-401d-b1a0-4f35015b9af1', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': None, 'metadata': None, 'completion_year': None}, 'after': {'id': 10001807, 'username': 'e7b4f-f091-401d-b1a0-4f35015b9af1', 'title': '{"en":"This is title A","default":"This is title A"}', 'image': '{"default":{"url":"https://s3.us-east-2.amazonaws.com/auramaze-test/images/rembrandt/1653/9223372032559808999.jpg","width":2500,"height":2641}}', 'metadata': None, 'completion_year': None}, 'source': {'version': '0.8.3.Final', 'name': 'aurora', 'server_id': 1507882181, 'ts_sec': 1541446293, 'gtid': None, 'file': 'mysql-bin-changelog.000004', 'pos': 6125418, 'row': 0, 'snapshot': False, 'thread': 49535, 'db': 'auramaze', 'table': 'art', 'query': None}, 'op': 'u', 'ts_ms': 1541446293054}
     '''
     id = msg_value['after']['id']
-    image_dict = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else {}
+    image_dict = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else None
     ses.update_image(id, image_dict)
 
 

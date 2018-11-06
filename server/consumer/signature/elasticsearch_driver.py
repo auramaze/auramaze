@@ -97,11 +97,12 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             id (int): id of Elasticsearch art document
             image_dict (dict): value of `image` column from Aurora `art` table
         """
-        for key in image_dict:
-            path = image_dict[key]['url']
-            rec = make_record(path, self.gis, self.k, self.N, img=None, bytestream=False, metadata=None)
-            rec = dict(sorted(filter(lambda item: item[0] == 'signature' or item[0].startswith('simple_word_'), rec.items())))
-            image_dict[key] = {**image_dict[key], **rec}
+        if image_dict:
+            for key in image_dict:
+                path = image_dict[key]['url']
+                rec = make_record(path, self.gis, self.k, self.N, img=None, bytestream=False, metadata=None)
+                rec = dict(filter(lambda item: item[0] == 'signature' or item[0].startswith('simple_word_'), rec.items()))
+                image_dict[key] = {**image_dict[key], **rec}
         self.es.update(index=self.index, doc_type=self.doc_type, id=id,
                        body={'doc': {'image': image_dict}, 'doc_as_upsert': True},
                        refresh=refresh_after)
