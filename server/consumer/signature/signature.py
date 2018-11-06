@@ -19,27 +19,6 @@ ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
 
 
-def send_post_request(path, data):
-    '''
-    Send post request with requests
-    :param str path: Relative path of ElasticSearch
-    :param dict data: Request data, should be in JSON format
-    :return: None
-    '''
-    r = requests.post(urllib.parse.urljoin(ES_HOST, path), json=data)
-    r.raise_for_status()
-
-
-def send_delete_request(path):
-    '''
-    Send delete request with requests
-    :param str path: Relative path of ElasticSearch
-    :return: None
-    '''
-    r = requests.delete(urllib.parse.urljoin(ES_HOST, path))
-    r.raise_for_status()
-
-
 def update_signature(msg_value):
     '''
     Updata image signature in ElasticSearch
