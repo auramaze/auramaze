@@ -78,23 +78,31 @@ def upsert_artizen(msg_value):
     '''
     try:
         id = msg_value['after']['id']
-        username = msg_value['after']['username']
-        name = json.loads(msg_value['after']['name']) if msg_value['after']['name'] else None
         type = json.loads(msg_value['after']['type']) if msg_value['after']['type'] else []
 
-        data = {
-            'doc': {
-                'id': id,
-                'username': username,
-            },
-            'doc_as_upsert': True
-        }
         if len(type) > 0:
             # Only artizen with some type can be searched by name
-            data['doc']['name'] = name
-            data['doc']['type'] = type
+            username = msg_value['after']['username']
+            name = json.loads(msg_value['after']['name']) if msg_value['after']['name'] else None
+            avatar = msg_value['after']['avatar']
 
-        send_post_request('artizen/_doc/{}/_update'.format(id), data)
+            data = {
+                'doc': {
+                    'id': id,
+                    'username': username,
+                    'name': name,
+                    'avatar': avatar,
+                    'type': type,
+                },
+                'doc_as_upsert': True
+            }
+
+            send_post_request('artizen/_doc/{}/_update'.format(id), data)
+        elif msg_value['before']:
+            old_type = json.loads(msg_value['before']['type']) if msg_value['before']['type'] else []
+            if len(old_type) > 0:
+                # Delete artizen from Elasticsearch if type is deleted
+                send_delete_request('artizen/_doc/{}'.format(id))
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in upsert_artizen(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
