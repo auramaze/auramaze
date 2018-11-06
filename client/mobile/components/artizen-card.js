@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import ReviewFooter from "./review-footer";
 
 class ArtizenCard extends React.Component {
 
@@ -13,6 +12,7 @@ class ArtizenCard extends React.Component {
             cardStyle: {
                 flexDirection: 'row',
                 height: 65,
+                width: Dimensions.get('window').width * 5 / 6,
                 padding: 5,
                 paddingHorizontal: 15,
                 alignItems: 'center',
@@ -20,7 +20,7 @@ class ArtizenCard extends React.Component {
                 shadowColor: '#000',
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
-                marginTop: 15,
+                marginTop: 15, marginHorizontal: 15
             },
             imageStyle: {
                 width: 50,
@@ -33,7 +33,7 @@ class ArtizenCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20,
+                fontSize: 20, width: 225,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -48,7 +48,7 @@ class ArtizenCard extends React.Component {
                         source={{uri: this.props.source}}
                         style={styles.imageStyle}/>
                 </View>
-                <Text style={styles.headerText}>{this.props.name}</Text>
+                <Text numberOfLines={1} style={styles.headerText}>{this.props.name}</Text>
             </View>
         )
     }

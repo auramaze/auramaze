@@ -3,6 +3,8 @@ import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
 import ArtCard from "../components/art-card";
+import TitleBar from "../components/title-bar";
+import ArtizenCard from "../components/artizen-card";
 
 class TimeLine extends React.Component {
 
@@ -12,30 +14,33 @@ class TimeLine extends React.Component {
 
     state = {term: '', searchArt: '', searchArtizen: ''};
 
-    // fetchImage(id){
-    //     return fetch('https://apidev.auramaze.org/v1/art/' + id)
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //             return responseJson.image.default.url;
-    //         })
-    //         .catch((error) => {
-    //             alert(error);
-    //         });
-    // }
-
     searchAuraMaze(url) {
         return fetch('https://apidev.auramaze.org/v1/search?q=' + url)
             .then((response) => response.json())
             .then((responseJson) => {
 
+                let returnArtizen = responseJson.artizen.length >= 1;
+                let returnArt = responseJson.art.length >=1;
+
                 this.setState(previousState => (
                     {
+                        haveArtizen: returnArtizen,
+                        searchArtizen: responseJson.artizen.map((item, key) => {
+                            return (
+                                <ArtizenCard key={key}
+                                         name={item.name.default ? item.name.default : ""}
+                                         source={"https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg"}
+                                         id={item.id}
+                                         fontLoaded={this.props.screenProps.fontLoaded}/>
+                            );
+                        }),
+                        haveArt: returnArt,
                         searchArt: responseJson.art.map((item, key) => {
                             return (
                                 <ArtCard key={key}
                                          artName={item.title.default}
                                          artistName={item.artist ? item.artist.default : ""}
-                                         source={"https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg"}
+                                         source={item.image.default.url}
                                          compYear={item.completionYear ? item.completionYear : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
@@ -98,7 +103,7 @@ class TimeLine extends React.Component {
 
         let onClear = () => {
             this.setState(previousState => (
-                {searchArt: '', term: ''}
+                {term: '', searchArt: '', searchArtizen: '', haveArtizen: false, haveArt: false}
             ));
             this.search.focus();
         };
@@ -135,6 +140,12 @@ class TimeLine extends React.Component {
                     onSubmitEditing={onEnd}
                     onCancel={onCancel}/>
                 <ScrollView>
+                    {this.state.haveArtizen ?
+                        <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : ""}
+                    {this.state.searchArtizen}
+                    {this.state.haveArtizen ? <View style={{height: 20}}/> : ""}
+                    {this.state.haveArt ?
+                        <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/> : ""}
                     {this.state.searchArt}
                 </ScrollView>
             </View>
