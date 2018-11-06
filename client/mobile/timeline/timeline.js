@@ -29,18 +29,19 @@ class TimeLine extends React.Component {
                             return (
                                 <ArtizenCard key={key}
                                          name={item.name.default ? item.name.default : ""}
-                                         source={"https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg"}
+                                         source={item.avatar ? item.avatar : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
                             );
                         }),
                         haveArt: returnArt,
                         searchArt: responseJson.art.map((item, key) => {
+                            item.image ? alert(item.image) : alert("nope");
                             return (
                                 <ArtCard key={key}
                                          artName={item.title.default}
                                          artistName={item.artist ? item.artist.default : ""}
-                                         source={item.image.default.url}
+                                         source={(item.image && item.image !== null && item.image !== {}) ? item.image.default.url : ""}
                                          compYear={item.completionYear ? item.completionYear : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
