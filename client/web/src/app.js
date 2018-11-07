@@ -36,7 +36,7 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.login = (id, username, token) => {
+        this.createAuth = (id, username, token) => {
             this.setState({
                 auth: {id, username, token},
             });
@@ -50,7 +50,7 @@ class App extends Component {
                 username: null,
                 token: null
             },
-            login: this.login
+            createAuth: this.createAuth
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }

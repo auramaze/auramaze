@@ -6,7 +6,7 @@ import Buttonbox from './buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
 import google from '../icons/google.svg';
 import facebook from '../icons/facebook.svg';
-import './signup-modal.css';
+import './login-modal.css';
 import {AuthContext} from "../app";
 import {API_ENDPOINT} from "../common";
 
@@ -26,18 +26,18 @@ const facebookButtonboxStyle = Object.assign({
     color: '#ffffff'
 }, buttonboxStyle);
 
-class SignupModal extends Component {
+class LoginModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {name: '', email: '', password: '', auramazeDisabled: false};
-        this.signup = this.signup.bind(this);
+        this.state = {name: '', id: '', password: '', auramazeDisabled: false};
+        this.login = this.login.bind(this);
     }
 
-    signup(createAuth) {
+    login(createAuth) {
         this.setState({auramazeDisabled: true});
         request.post({
-            url: `${API_ENDPOINT}/auth/signup`,
-            body: {name: {default: this.state.name}, email: this.state.email, password: this.state.password},
+            url: `${API_ENDPOINT}/auth/login`,
+            body: {id: this.state.id, password: this.state.password},
             json: true
         }, (error, response, body) => {
             if (response && response.statusCode === 200) {
@@ -51,26 +51,16 @@ class SignupModal extends Component {
             <AuthContext.Consumer>
                 {({auth, createAuth}) => (
                     <Modal {...this.props}>
-                        <div className="signup-modal-content">
-                            <p>Sign up</p>
+                        <div className="login-modal-content">
+                            <p>Log in</p>
                             <Inputbox
                                 style={inputboxStyle}
-                                value={this.state.name}
+                                value={this.state.id}
                                 type="text"
-                                name="name"
-                                placeholder="Name"
+                                name="id"
+                                placeholder="Email or username"
                                 onChange={(value) => {
-                                    this.setState({name: value})
-                                }}
-                            />
-                            <Inputbox
-                                style={inputboxStyle}
-                                value={this.state.email}
-                                type="text"
-                                name="email"
-                                placeholder="Email"
-                                onChange={(value) => {
-                                    this.setState({email: value})
+                                    this.setState({id: value})
                                 }}
                             />
                             <Inputbox
@@ -88,7 +78,7 @@ class SignupModal extends Component {
                                 style={auramazeButtonboxStyle}
                                 disabled={this.state.auramazeDisabled}
                                 onClick={() => {
-                                    this.signup(createAuth);
+                                    this.login(createAuth);
                                 }}
                             >
                                 <div style={{color: '#666666', display: 'inlineBlock'}}>
@@ -98,7 +88,7 @@ class SignupModal extends Component {
                                         style={{
                                             display: 'inlineBlock',
                                             verticalAlign: 'middle'
-                                        }}>Create AuraMaze account</span>
+                                        }}>Log in with AuraMaze</span>
                                 </div>
                             </Buttonbox>
                             <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
@@ -111,7 +101,7 @@ class SignupModal extends Component {
                                     <span style={{
                                         display: 'inlineBlock',
                                         verticalAlign: 'middle'
-                                    }}>Sign up with Google</span>
+                                    }}>Log in with Google</span>
                                 </div>
                             </Buttonbox>
                             <Buttonbox
@@ -123,7 +113,7 @@ class SignupModal extends Component {
                                     <span style={{
                                         display: 'inlineBlock',
                                         verticalAlign: 'middle'
-                                    }}>Sign up with Facebook</span>
+                                    }}>Log in with Facebook</span>
                                 </div>
                             </Buttonbox>
                         </div>
@@ -134,4 +124,4 @@ class SignupModal extends Component {
     }
 }
 
-export default SignupModal;
+export default LoginModal;
