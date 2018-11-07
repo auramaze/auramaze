@@ -10,6 +10,7 @@ import Home from './home/home';
 import Search from './search/search';
 import Art from './art/art';
 import Artizen from './artizen/artizen';
+import Modal from './components/modal';
 
 export const AuthContext = React.createContext();
 
@@ -35,9 +36,9 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.login = (id, token) => {
+        this.login = (id, username, token) => {
             this.setState({
-                auth: {id, token},
+                auth: {id, username, token},
             });
         };
 
@@ -45,8 +46,9 @@ class App extends Component {
             windowWidth: document.documentElement.clientWidth,
             expand: false,
             auth: {
-                id: undefined,
-                token: undefined
+                id: null,
+                username: null,
+                token: null
             },
             login: this.login
         };

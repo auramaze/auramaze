@@ -1,0 +1,8 @@
+.signup-modal-content {
+    padding: 10%;
+    box-sizing: border-box;
+}
+
+.signup-modal-content p {
+    text-align: center;
+}
