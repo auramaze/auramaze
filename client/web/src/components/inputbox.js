@@ -8,11 +8,11 @@ class Inputbox extends Component {
     }
 
     handleChange(event) {
-        this.props.handleValueChange(event.target.value);
+        this.props.onChange(event.target.value);
     }
 
     render() {
-        const {handleValueChange, ...props} = this.props;
+        const {onChange, ...props} = this.props;
         return (
             <div className="inputbox">
                 <input {...props} onChange={this.handleChange}/>

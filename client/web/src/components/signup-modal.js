@@ -19,7 +19,7 @@ class SignupModal extends Component {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        handleValueChange={(value) => {
+                        onChange={(value) => {
                             this.setState({name: value})
                         }}
                     />
@@ -28,7 +28,7 @@ class SignupModal extends Component {
                         type="text"
                         name="email"
                         placeholder="Email"
-                        handleValueChange={(value) => {
+                        onChange={(value) => {
                             this.setState({email: value})
                         }}
                     />
@@ -37,7 +37,7 @@ class SignupModal extends Component {
                         type="password"
                         name="password"
                         placeholder="Password"
-                        handleValueChange={(value) => {
+                        onChange={(value) => {
                             this.setState({password: value})
                         }}
                     />
