@@ -56,7 +56,7 @@ Common.prototype.putItem = (group, item, callback) => {
         if (err) {
             callback(err, result, fields);
         } else {
-            rds.query('SELECT LAST_INSERT_ID() AS id', callback);
+            rds.query(`SELECT id, username from ${group} where id=LAST_INSERT_ID()`, callback);
         }
     });
 };

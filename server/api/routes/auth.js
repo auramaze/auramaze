@@ -50,6 +50,7 @@ function generateJWT(user) {
 function toAuthJSON(user) {
     return {
         id: user.id,
+        username: user.username,
         token: generateJWT(user),
     };
 }
@@ -86,7 +87,7 @@ router.post('/signup', [
                 next(err);
             }
         } else {
-            res.json(toAuthJSON({id: result[0].id}));
+            res.json(toAuthJSON(result[0]));
         }
     });
 });
