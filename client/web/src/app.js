@@ -11,6 +11,8 @@ import Search from './search/search';
 import Art from './art/art';
 import Artizen from './artizen/artizen';
 
+export const AuthContext = React.createContext();
+
 const HomeNavbar = (props) => {
     return (
         <Navbar
@@ -32,9 +34,21 @@ const HomeNavbarMobile = (props) => {
 class App extends Component {
     constructor(props) {
         super(props);
+
+        this.login = (id, token) => {
+            this.setState({
+                auth: {id, token},
+            });
+        };
+
         this.state = {
             windowWidth: document.documentElement.clientWidth,
-            expand: false
+            expand: false,
+            auth: {
+                id: undefined,
+                token: undefined
+            },
+            login: this.login
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -56,18 +70,27 @@ class App extends Component {
 
     render() {
         return (
-            <Router>
-                <div>
-                    <Route exact path="/" component={Home}/>
-                    <Route path="/search" component={Search}/>
-                    <Route path="/art/:artId" component={Art}/>
-                    <Route path="/artizen/:artizenId" component={Artizen}/>
-                    <Switch>
-                        <Route exact path="/" render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}/>
-                        <Route path='/' component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}/>
-                    </Switch>
-                </div>
-            </Router>
+            <AuthContext.Provider value={this.state}>
+                <Router>
+                    <div>
+                        <Route exact path="/" component={Home}/>
+                        <Route path="/search" component={Search}/>
+                        <Route path="/art/:artId" component={Art}/>
+                        <Route path="/artizen/:artizenId" component={Artizen}/>
+                        <Switch>
+                            <Route
+                                exact
+                                path="/"
+                                render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
+                            />
+                            <Route
+                                path='/'
+                                component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
+                            />
+                        </Switch>
+                    </div>
+                </Router>
+            </AuthContext.Provider>
         );
     }
 }

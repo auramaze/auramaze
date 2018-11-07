@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
+import {HashLink} from 'react-router-hash-link';
 import * as Scroll from 'react-scroll';
 import logo from '../static/logo-white-frame.svg';
 import './navbar-mobile.css';
@@ -44,27 +45,36 @@ class NavbarMobile extends Component {
                     <div className="nav-items-wrapper-mobile">
                         <div className="nav-item-mobile">
                             {this.props.home ?
-                                <a onClick={() => {
+                                <Link to="#" onClick={(e) => {
+                                    e.preventDefault();
                                     document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                     scroll.scrollTo(document.documentElement.clientHeight);
-                                }}>About</a> :
-                                <a href="/#about" onClick={() => {
+                                }}>About</Link> :
+                                <HashLink to="/#about" onClick={() => {
                                     document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
-                                }}>About</a>}
+                                }}>About</HashLink>}
                         </div>
                         <div className="nav-item-mobile">
                             {this.props.home ?
-                                <a onClick={() => {
+                                <Link to="#" onClick={(e) => {
+                                    e.preventDefault();
                                     document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
                                     scroll.scrollToBottom();
-                                }}>Contact</a> :
-                                <a href="/#contact" onClick={() => {
+                                }}>Contact</Link> :
+                                <HashLink to="/#contact" onClick={() => {
                                     document.body.style.overflow = 'visible';
                                     this.setState({expand: false});
-                                }}>Contact</a>}
+                                }}>Contact</HashLink>}
+                        </div>
+                        <div className="nav-item-mobile">
+                            <Link to="#" onClick={(e) => {
+                                e.preventDefault();
+                                document.body.style.overflow = 'visible';
+                                this.setState({expand: false});
+                            }}>Log in</Link>
                         </div>
                     </div>
                 </div>
