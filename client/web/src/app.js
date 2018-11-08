@@ -4,6 +4,7 @@ import {
     Route,
     Switch
 } from 'react-router-dom';
+import {withCookies, Cookies} from 'react-cookie';
 import Navbar from './components/navbar';
 import NavbarMobile from './components/navbar-mobile';
 import Home from './home/home';
@@ -13,7 +14,6 @@ import Artizen from './artizen/artizen';
 import SignupModal from "./components/signup-modal";
 import LoginModal from "./components/login-modal";
 
-export const AuthContext = React.createContext();
 export const ModalContext = React.createContext();
 
 const HomeNavbar = (props) => {
@@ -37,12 +37,6 @@ const HomeNavbarMobile = (props) => {
 class App extends Component {
     constructor(props) {
         super(props);
-
-        this.createAuth = (id, username, token) => {
-            this.setState({
-                auth: {id, username, token},
-            });
-        };
 
         this.showSignupModal = () => {
             this.setState({
@@ -71,12 +65,6 @@ class App extends Component {
         this.state = {
             windowWidth: document.documentElement.clientWidth,
             expand: false,
-            auth: {
-                id: null,
-                username: null,
-                token: null
-            },
-            createAuth: this.createAuth,
             signupModalShow: false,
             loginModalShow: false,
             showSignupModal: this.showSignupModal,
@@ -93,8 +81,14 @@ class App extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.auth.id && !prevState.auth.id) {
-            this.setState({signupModalShow: false, loginModalShow: false});
+        const id = this.props.cookies.get('id');
+
+        if (id && prevState.signupModalShow) {
+            this.setState({signupModalShow: false});
+        }
+
+        if (id && prevState.loginModalShow) {
+            this.setState({loginModalShow: false});
         }
     }
 
@@ -118,32 +112,30 @@ class App extends Component {
                 showLoginModal: this.state.showLoginModal,
                 hideLoginModal: this.state.hideLoginModal
             }}>
-                <AuthContext.Provider value={{auth: this.state.auth, createAuth: this.state.createAuth}}>
-                    <Router>
-                        <div>
-                            <Route exact path="/" component={Home}/>
-                            <Route path="/search" component={Search}/>
-                            <Route path="/art/:artId" component={Art}/>
-                            <Route path="/artizen/:artizenId" component={Artizen}/>
-                            <Switch>
-                                <Route
-                                    exact
-                                    path="/"
-                                    render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
-                                />
-                                <Route
-                                    path='/'
-                                    component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
-                                />
-                            </Switch>
-                        </div>
-                    </Router>
-                    <SignupModal show={this.state.signupModalShow} handleClose={this.state.hideSignupModal}/>
-                    <LoginModal show={this.state.loginModalShow} handleClose={this.state.hideLoginModal}/>
-                </AuthContext.Provider>
+                <Router>
+                    <div>
+                        <Route exact path="/" component={Home}/>
+                        <Route path="/search" component={Search}/>
+                        <Route path="/art/:artId" component={Art}/>
+                        <Route path="/artizen/:artizenId" component={Artizen}/>
+                        <Switch>
+                            <Route
+                                exact
+                                path="/"
+                                render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
+                            />
+                            <Route
+                                path='/'
+                                component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
+                            />
+                        </Switch>
+                    </div>
+                </Router>
+                <SignupModal show={this.state.signupModalShow} handleClose={this.state.hideSignupModal}/>
+                <LoginModal show={this.state.loginModalShow} handleClose={this.state.hideLoginModal}/>
             </ModalContext.Provider>
         );
     }
 }
 
-export default App;
+export default withCookies(App);
