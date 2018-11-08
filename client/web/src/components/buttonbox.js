@@ -8,24 +8,25 @@ class Buttonbox extends Component {
     }
 
     render() {
-        const {children, disabled, onClick, ...props} = this.props;
+        const {children, processing, onClick, ...props} = this.props;
         return (
             <div className="buttonbox font-size-s" {...props}
                  onClick={(e) => {
-                     if (disabled) {
+                     if (processing) {
                          e.preventDefault();
                      } else {
                          onClick && onClick(e);
                      }
                  }}
                  onMouseEnter={() => {
-                     this.setState({hover: !disabled});
+                     this.setState({hover: true});
                  }}
                  onMouseLeave={() => {
                      this.setState({hover: false});
                  }}>
-                <div className={this.state.hover ? 'buttonbox-content-hover' : 'buttonbox-content'}
-                     style={{borderColor: props.style.color}}>
+                <div
+                    className={processing ? 'buttonbox-content-processing' : this.state.hover ? 'buttonbox-content-hover' : 'buttonbox-content'}
+                    style={{borderColor: props.style.color}}>
                     {children}
                 </div>
             </div>

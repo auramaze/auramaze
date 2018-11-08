@@ -37,12 +37,12 @@ const facebookButtonboxStyle = Object.assign({
 class LoginModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {name: '', id: '', password: '', auramazeDisabled: false};
+        this.state = {id: '', password: '', auramazeProcessing: false};
         this.login = this.login.bind(this);
     }
 
     login() {
-        this.setState({auramazeDisabled: true});
+        this.setState({auramazeProcessing: true});
         request.post({
             url: `${API_ENDPOINT}/auth/login`,
             body: {id: this.state.id, password: this.state.password},
@@ -65,7 +65,9 @@ class LoginModal extends Component {
                 } else {
                     cookies.remove('token', {path: '/'});
                 }
+                this.setState({id: '', password: ''})
             }
+            this.setState({auramazeProcessing: false});
         });
     }
 
@@ -101,7 +103,7 @@ class LoginModal extends Component {
                     <div style={{width: '100%', height: 5}}/>
                     <Buttonbox
                         style={auramazeButtonboxStyle}
-                        disabled={this.state.auramazeDisabled}
+                        processing={this.state.auramazeProcessing}
                         onClick={() => {
                             this.login();
                         }}
