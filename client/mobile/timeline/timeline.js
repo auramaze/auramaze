@@ -36,12 +36,11 @@ class TimeLine extends React.Component {
                         }),
                         haveArt: returnArt,
                         searchArt: responseJson.art.map((item, key) => {
-                            item.image ? alert(item.image) : alert("nope");
                             return (
                                 <ArtCard key={key}
                                          artName={item.title.default}
                                          artistName={item.artist ? item.artist.default : ""}
-                                         source={(item.image && item.image !== null && item.image !== {}) ? item.image.default.url : ""}
+                                         source={item.image && item.image.default ? item.image.default.url : ""}
                                          compYear={item.completionYear ? item.completionYear : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
