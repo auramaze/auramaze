@@ -10,9 +10,11 @@ import Home from './home/home';
 import Search from './search/search';
 import Art from './art/art';
 import Artizen from './artizen/artizen';
-import Modal from './components/modal';
+import SignupModal from "./components/signup-modal";
+import LoginModal from "./components/login-modal";
 
 export const AuthContext = React.createContext();
+export const ModalContext = React.createContext();
 
 const HomeNavbar = (props) => {
     return (
@@ -42,6 +44,30 @@ class App extends Component {
             });
         };
 
+        this.showSignupModal = () => {
+            this.setState({
+                signupModalShow: true,
+            });
+        };
+
+        this.hideSignupModal = () => {
+            this.setState({
+                signupModalShow: false,
+            });
+        };
+
+        this.showLoginModal = () => {
+            this.setState({
+                loginModalShow: true,
+            });
+        };
+
+        this.hideLoginModal = () => {
+            this.setState({
+                loginModalShow: false,
+            });
+        };
+
         this.state = {
             windowWidth: document.documentElement.clientWidth,
             expand: false,
@@ -50,7 +76,13 @@ class App extends Component {
                 username: null,
                 token: null
             },
-            createAuth: this.createAuth
+            createAuth: this.createAuth,
+            signupModalShow: false,
+            loginModalShow: false,
+            showSignupModal: this.showSignupModal,
+            hideSignupModal: this.hideSignupModal,
+            showLoginModal: this.showLoginModal,
+            hideLoginModal: this.hideLoginModal
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -58,6 +90,12 @@ class App extends Component {
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.auth.id && !prevState.auth.id) {
+            this.setState({signupModalShow: false, loginModalShow: false});
+        }
     }
 
     componentWillUnmount() {
@@ -72,27 +110,38 @@ class App extends Component {
 
     render() {
         return (
-            <AuthContext.Provider value={this.state}>
-                <Router>
-                    <div>
-                        <Route exact path="/" component={Home}/>
-                        <Route path="/search" component={Search}/>
-                        <Route path="/art/:artId" component={Art}/>
-                        <Route path="/artizen/:artizenId" component={Artizen}/>
-                        <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
-                            />
-                            <Route
-                                path='/'
-                                component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
-                            />
-                        </Switch>
-                    </div>
-                </Router>
-            </AuthContext.Provider>
+            <ModalContext.Provider value={{
+                signupModalShow: this.state.signupModalShow,
+                loginModalShow: this.state.loginModalShow,
+                showSignupModal: this.state.showSignupModal,
+                hideSignupModal: this.state.hideSignupModal,
+                showLoginModal: this.state.showLoginModal,
+                hideLoginModal: this.state.hideLoginModal
+            }}>
+                <AuthContext.Provider value={{auth: this.state.auth, createAuth: this.state.createAuth}}>
+                    <Router>
+                        <div>
+                            <Route exact path="/" component={Home}/>
+                            <Route path="/search" component={Search}/>
+                            <Route path="/art/:artId" component={Art}/>
+                            <Route path="/artizen/:artizenId" component={Artizen}/>
+                            <Switch>
+                                <Route
+                                    exact
+                                    path="/"
+                                    render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
+                                />
+                                <Route
+                                    path='/'
+                                    component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
+                                />
+                            </Switch>
+                        </div>
+                    </Router>
+                    <SignupModal show={this.state.signupModalShow} handleClose={this.state.hideSignupModal}/>
+                    <LoginModal show={this.state.loginModalShow} handleClose={this.state.hideLoginModal}/>
+                </AuthContext.Provider>
+            </ModalContext.Provider>
         );
     }
 }
