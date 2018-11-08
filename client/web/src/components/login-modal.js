@@ -11,7 +11,14 @@ import {AuthContext} from "../app";
 import {API_ENDPOINT} from "../common";
 
 const inputboxStyle = {margin: '20px 0', width: '100%'};
-const buttonboxStyle = {margin: '20px 0', width: '100%', height: 50, borderRadius: 5, cursor: 'pointer', fontSize: 18};
+const buttonboxStyle = {
+    margin: '20px 0',
+    width: '100%',
+    height: 50,
+    borderRadius: 5,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap'
+};
 const auramazeButtonboxStyle = Object.assign({
     backgroundColor: '#cdcdcd',
     color: '#666666'
@@ -50,9 +57,12 @@ class LoginModal extends Component {
         return (
             <AuthContext.Consumer>
                 {({auth, createAuth}) => (
-                    <Modal {...this.props}>
+                    <Modal {...this.props} style={{
+                        width: '95%',
+                        maxWidth: 800
+                    }}>
                         <div className="login-modal-content">
-                            <p>Log in</p>
+                            <p className="font-size-xl">Log in</p>
                             <Inputbox
                                 style={inputboxStyle}
                                 value={this.state.id}

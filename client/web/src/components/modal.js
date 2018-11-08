@@ -7,13 +7,13 @@ class Modal extends Component {
     }
 
     render() {
-        const {handleClose, show, children} = this.props;
+        const {handleClose, show, style, children} = this.props;
         const showHideClassName = show ? 'modal modal-show' : 'modal modal-hidden';
 
         return (
             <div className={showHideClassName}>
                 <div className="modal-background" onClick={handleClose}/>
-                <section className="modal-main card-shadow">
+                <section className="modal-main card-shadow" style={style}>
                     {children}
                     <div
                         className="modal-close-button"

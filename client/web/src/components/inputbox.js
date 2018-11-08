@@ -10,7 +10,7 @@ class Inputbox extends Component {
         const {onChange, style, ...props} = this.props;
         return (
             <div className="inputbox" style={style}>
-                <input {...props} onChange={(e) => {
+                <input className="font-size-m" {...props} onChange={(e) => {
                     onChange && onChange(e.target.value);
                 }}/>
             </div>

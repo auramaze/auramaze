@@ -10,7 +10,7 @@ class Buttonbox extends Component {
     render() {
         const {children, disabled, onClick, ...props} = this.props;
         return (
-            <div className="buttonbox" {...props}
+            <div className="buttonbox font-size-s" {...props}
                  onClick={(e) => {
                      if (disabled) {
                          e.preventDefault();
