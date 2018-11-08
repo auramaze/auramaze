@@ -29,3 +29,15 @@ export function convertHTMLToEditorState(html) {
     );
     return contentState && EditorState.createWithContent(contentState);
 }
+
+export function lockBody() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.height = '100%';
+    document.body.style.width = '100%';
+}
+
+export function unlockBody() {
+    document.body.style.overflow = 'visible';
+    document.body.style.position = 'static';
+}

@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
+import {lockBody, unlockBody} from '../utils';
 import './modal.css';
 
 class Modal extends Component {
-    componentDidUpdate() {
-        document.body.style.overflow = this.props.show ? 'hidden' : 'visible';
+    componentDidUpdate(prevProps) {
+        if (this.props.show) {
+            lockBody();
+        } else {
+            if (prevProps.show) {
+                unlockBody();
+            }
+        }
     }
 
     render() {

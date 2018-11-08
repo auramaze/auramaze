@@ -5,7 +5,8 @@ import {HashLink} from 'react-router-hash-link';
 import * as Scroll from 'react-scroll';
 import logo from '../static/logo-white-frame.svg';
 import './navbar-mobile.css';
-import {ModalContext} from "../app";
+import {ModalContext} from '../app';
+import {lockBody, unlockBody} from '../utils';
 import {withCookies} from "react-cookie";
 
 const scroll = Scroll.animateScroll;
@@ -39,7 +40,7 @@ class NavbarMobile extends Component {
     }
 
     hideNavbarMobile() {
-        document.body.style.overflow = 'visible';
+        unlockBody();
         this.setState({expand: false});
     }
 
@@ -112,7 +113,11 @@ class NavbarMobile extends Component {
                             </Link>
                         </div>
                         <div className={`nav-toggle ${this.state.expand && 'nav-toggle-cancel'}`} onClick={() => {
-                            document.body.style.overflow = this.state.expand ? 'visible' : 'hidden';
+                            if (this.state.expand) {
+                                unlockBody();
+                            } else {
+                                lockBody();
+                            }
                             this.setState({expand: !this.state.expand});
                         }}>
                             <div className="nav-toggle-line" id="nav-toggle-1"/>
