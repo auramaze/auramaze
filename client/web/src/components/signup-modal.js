@@ -117,7 +117,7 @@ class SignupModal extends Component {
                             this.signup();
                         }}
                     >
-                        <div style={{color: '#666666', display: 'inlineBlock'}}>
+                        <div style={{color: '#666666', display: 'inlineBlock', margin: '0 10px'}}>
                             <img src={auramaze}
                                  style={{width: 25, height: 25, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span
@@ -131,7 +131,7 @@ class SignupModal extends Component {
                     <Buttonbox
                         style={gmailButtonboxStyle}
                     >
-                        <div style={{color: '#484848', display: 'inlineBlock'}}>
+                        <div style={{color: '#484848', display: 'inlineBlock', margin: '0 10px'}}>
                             <img src={google}
                                  style={{width: 20, height: 20, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span style={{
@@ -143,7 +143,7 @@ class SignupModal extends Component {
                     <Buttonbox
                         style={facebookButtonboxStyle}
                     >
-                        <div style={{color: '#ffffff', display: 'inlineBlock'}}>
+                        <div style={{color: '#ffffff', display: 'inlineBlock', margin: '0 10px'}}>
                             <img src={facebook}
                                  style={{width: 20, height: 20, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span style={{
