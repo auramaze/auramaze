@@ -14,34 +14,106 @@ class Art extends React.Component {
     }
 
     state = {
-        artizen: {
-            "type": "artist",
-            "data": [
-                {
-                    "id": 100186532,
-                    "username": "caravaggio",
-                    "name": {
-                        "en": "Caravaggio",
-                        "zh": "卡拉瓦乔",
-                        "default": "Caravaggio"
-                    },
-                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg",
-                    "type": "artist"
-                },
-                {
-                    "id": 100225091,
-                    "username": "leonardo-da-vinci",
-                    "name": {
-                        "en": "Leonardo da Vinci",
-                        "zh": "列奥纳多·达·芬奇",
-                        "default": "Leonardo da Vinci"
-                    },
-                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/leonardo-da-vinci.jpg",
-                    "type": "artist"
-                }
-            ]
-        }
+        artid: 10000007,
     };
+
+    async componentDidMount() {
+        try {
+            let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid);
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/introduction');
+            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/artizen');
+            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/review');
+            let artInfoJson = await artInfo.json();
+            let introInfoJson = await introInfo.json();
+            let artizenInfoJson = await artizenInfo.json();
+            let reviewInfoJson = await reviewInfo.json();
+            let fontLoadStatus = this.props.screenProps.fontLoaded;
+            // let returnArtizen = responseJson.artizen.length >= 1;
+            // let returnArt = responseJson.art.length >= 1;
+
+            artizenInfoJson.map((item, key) => {
+                if (item.type === "artist") {
+                    this.setState(previousState => (
+                        {
+                            hasArtists: true,
+                            artists: item.data.map((artistItem, artistKey) => {
+                                return (
+                                    <ArtizenCard key={artistKey}
+                                                 name={artistItem.name.default}
+                                                 source={artistItem.avatar}
+                                                 fontLoaded={fontLoadStatus}/>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "museum") {
+                    this.setState(previousState => (
+                        {
+                            hasMuseums: true,
+                            museums: item.data.map((museumItem, museumKey) => {
+                                return (
+                                    <ArtizenCard key={museumKey}
+                                                 name={museumItem.name.default}
+                                                 source={museumItem.avatar}
+                                                 fontLoaded={fontLoadStatus}/>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "genre") {
+                    this.setState(previousState => (
+                        {
+                            hasGenres: true,
+                            genres: item.data.map((genreItem, genreKey) => {
+                                return (
+                                    <ArtizenCard key={genreKey}
+                                                 name={genreItem.name.default}
+                                                 source={genreItem.avatar}
+                                                 fontLoaded={fontLoadStatus}/>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "style") {
+                    this.setState(previousState => (
+                        {
+                            hasStyles: true,
+                            styles: item.data.map((styleItem, styleKey) => {
+                                return (
+                                    <ArtizenCard key={styleKey}
+                                                 name={styleItem.name.default}
+                                                 source={styleItem.avatar}
+                                                 fontLoaded={fontLoadStatus}/>
+                                )
+                            })
+                        }
+                    ));
+                }
+            });
+
+            this.setState(previousState => (
+                {
+                    art: <ArtInfo fontLoaded={fontLoadStatus}
+                                  url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
+                    introductions: introInfoJson.map((item, key) => {
+                        return (
+                            <ReviewCard key={key}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        text={item.content.blocks[0].text}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                        );
+                    }),
+                }
+            ));
+        } catch (error) {
+            alert(error);
+        }
+    }
 
     render() {
 
@@ -68,45 +140,28 @@ class Art extends React.Component {
             },
         });
 
-        let artistContents = this.state.artizen.data.map((item, key) => {
-            return (
-                <ArtizenCard key={key}
-                             name={item.name.en}
-                             source={item.avatar}
-                             fontLoaded={fontLoadStatus}/>
-            );
-        });
-
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
                     <TopBar/>
-                    <ArtInfo fontLoaded={fontLoadStatus}/>
+                    {this.state.art}
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
-                        <ReviewCard name={"AuraMaze"}
-                                    source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/auramaze-logo-square.png'}
-                                    text={`\n\tThe Starry Night is an oil on canvas by the Dutch post-impressionist painter Vincent van Gogh.\n\tPainted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an idealized village. It has been in the permanent collection of the Museum of Modern Art in New York City since 1941, acquired through the Lillie P. Bliss Bequest. Regarded as among Van Gogh's finest works, The Starry Night is one of the most  recognized  paintings in the history of Western culture.\n`}
-                                    fontLoaded={fontLoadStatus}/>
+                        {this.state.introductions}
 
-                        <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/>
-                        {artistContents}
+                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.artists}
 
-                        <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Museum of Modern Art"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/artic.png'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.museums}
 
-                        <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Cloudscapes"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/genre-painting.jpg'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.genres}
 
-                        <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Post-Impressionism"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/post-impressionism.jpg'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.styles}
+
                         <View style={{height: 30}}/>
                         <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
                         <ReviewCard name={"Ray"}

@@ -34,9 +34,9 @@ class ArtInfo extends React.Component {
         return (
             <View style={styles.viewStyle}>
                 <AutoHeightImage width={Dimensions.get('window').width}
-                       source={{uri: 'https://s3.us-east-2.amazonaws.com/auramaze-test/images/jacques-louis-david/1787/197945.jpg'}}/>
+                       source={{uri: this.props.url}}/>
                 <Text style={styles.textStyle}>
-                    The Starry Night
+                    {this.props.title}
                 </Text>
                 <Image source={heart} style={styles.loveStyle}/>
             </View>
