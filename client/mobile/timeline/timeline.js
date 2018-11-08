@@ -14,66 +14,42 @@ class TimeLine extends React.Component {
 
     state = {term: '', searchArt: '', searchArtizen: ''};
 
-    searchAuraMaze(url) {
-        return fetch('https://apidev.auramaze.org/v1/search?q=' + url)
-            .then((response) => response.json())
-            .then((responseJson) => {
-
-                let returnArtizen = responseJson.artizen.length >= 1;
-                let returnArt = responseJson.art.length >=1;
-
-                this.setState(previousState => (
-                    {
-                        haveArtizen: returnArtizen,
-                        searchArtizen: responseJson.artizen.map((item, key) => {
-                            return (
-                                <ArtizenCard key={key}
+    async searchAuraMaze(url) {
+        try {
+            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
+            let responseJson = await response.json();
+            let returnArtizen = responseJson.artizen.length >= 1;
+            let returnArt = responseJson.art.length >=1;
+            this.setState(previousState => (
+                {
+                    haveArtizen: returnArtizen,
+                    searchArtizen: responseJson.artizen.map((item, key) => {
+                        return (
+                            <ArtizenCard key={key}
                                          name={item.name.default ? item.name.default : ""}
                                          source={item.avatar ? item.avatar : ""}
                                          id={item.id}
                                          fontLoaded={this.props.screenProps.fontLoaded}/>
-                            );
-                        }),
-                        haveArt: returnArt,
-                        searchArt: responseJson.art.map((item, key) => {
-                            return (
-                                <ArtCard key={key}
-                                         artName={item.title.default}
-                                         artistName={item.artist ? item.artist.default : ""}
-                                         source={item.image && item.image.default ? item.image.default.url : ""}
-                                         compYear={item.completionYear ? item.completionYear : ""}
-                                         id={item.id}
-                                         fontLoaded={this.props.screenProps.fontLoaded}/>
-                            );
-                        })
-                    }
-                ));
-            })
-            .catch((error) => {
-                alert(error);
-            });
+                        );
+                    }),
+                    haveArt: returnArt,
+                    searchArt: responseJson.art.map((item, key) => {
+                        return (
+                            <ArtCard key={key}
+                                     artName={item.title.default}
+                                     artistName={item.artist ? item.artist.default : ""}
+                                     source={item.image && item.image.default ? item.image.default.url : ""}
+                                     compYear={item.completionYear ? item.completionYear : ""}
+                                     id={item.id}
+                                     fontLoaded={this.props.screenProps.fontLoaded}/>
+                        );
+                    })
+                }
+            ));
+        } catch (error) {
+            alert(error);
+        }
     }
-
-    // async searchAuraMaze(url) {
-    //     try {
-    //         let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
-    //         let responseJson = await response.json();
-    //         alert(response.json());
-    //         this.state.searchArt = responseJson.art.map((item, key) => {
-    //             return (
-    //                 <ArtCard key={key}
-    //                          artName={item.title.default}
-    //                          artistName={item.artist.default}
-    //                          source={'https://s3.us-east-2.amazonaws.com/auramaze-test/images/william-turner/1840/238862.jpg'}
-    //                          compYear={item.completionYear}
-    //                          id={item.id}
-    //                          fontLoaded={this.props.screenProps.fontLoaded}/>
-    //             );
-    //         });
-    //     } catch (error) {
-    //         alert(error);
-    //     }
-    // }
 
     render() {
 
