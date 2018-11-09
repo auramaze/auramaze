@@ -27,7 +27,7 @@ router.get('/', [
             body: {
                 'from': req.query.from,
                 '_source': {
-                    'excludes': ['image.*.simple_word*', 'image.*.signature']
+                    'excludes': ['image.*.simple_word_*', 'image.*.signature']
                 },
                 'size': 20,
                 'query': {
