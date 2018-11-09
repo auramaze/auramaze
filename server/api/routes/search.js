@@ -26,7 +26,9 @@ router.get('/', [
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
                 'from': req.query.from,
-                '_source': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*', 'introduction*', 'completion_year', 'username'],
+                '_source': {
+                    'excludes': ['image.*.simple_word*', 'image.*.signature']
+                },
                 'size': 20,
                 'query': {
                     'bool': {
