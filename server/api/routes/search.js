@@ -26,6 +26,7 @@ router.get('/', [
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
                 'from': req.query.from,
+                '_source': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*', 'introduction*', 'completion_year'],
                 'size': 20,
                 'query': {
                     'bool': {
@@ -34,7 +35,7 @@ router.get('/', [
                                 {
                                     'multi_match': {
                                         'query': req.query.q,
-                                        'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
+                                        'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*','completion_year'],
                                         'fuzziness': 'AUTO',
                                         'prefix_length': 0,
                                         'operator': 'and'
