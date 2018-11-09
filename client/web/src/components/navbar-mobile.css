@@ -107,21 +107,3 @@
     text-align: center;
     text-decoration: none;
 }
-
-.nav-item-mobile a:before {
-    content: "";
-    position: absolute;
-    width: 100px;
-    height: 2px;
-    bottom: 2px;
-    left: 25px;
-    background-color: white;
-    visibility: hidden;
-    transform: scaleX(0);
-    transition: all 0.3s;
-}
-
-.nav-item-mobile a:hover:before {
-    visibility: visible;
-    transform: scaleX(1);
-}

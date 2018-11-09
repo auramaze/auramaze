@@ -5,7 +5,8 @@ const rds = mysql.createConnection({
     user: process.env.AWS_RDS_USER,
     password: process.env.AWS_RDS_PASSWORD,
     database: process.env.AWS_RDS_DATABASE,
-    typeCast: (field, next) => field.type === 'JSON' ? JSON.parse(field.string()) : next()
+    typeCast: (field, next) => field.type === 'JSON' ? JSON.parse(field.string()) : next(),
+    multipleStatements: true
 });
 const _ = require('lodash');
 const franc = require('franc-min');

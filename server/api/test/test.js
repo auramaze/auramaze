@@ -1746,6 +1746,17 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
+            
+            it('should support search for completion year', done => {
+                request(app).get('/v1/search?q=1787')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.art && res.body.art.some(e => e.id === 10000005));
+                    })
+                    .end(done);
+            });
+
 
             it('should support art name in Chinese', done => {
                 request(app).get('/v1/search?q=' + encodeURIComponent('奴隶'))

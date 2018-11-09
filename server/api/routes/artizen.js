@@ -84,12 +84,16 @@ router.get('/:id/art', [
                 const id = result[0].id;
                 // Get art id and type from Aurora table `archive`
                 let sql, parameters;
+                let multitype = false;
                 if (req.query.type) {
                     sql = 'SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?';
                     parameters = [parseInt(id), req.query.type, size, page * size];
                 } else {
                     const types = result.map(item => item.type);
-                    sql = Array(types.length).fill('(SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?)').join(' UNION ALL ');
+                    if (types.length > 1) {
+                        multitype = true;
+                    }
+                    sql = Array(types.length).fill('SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?').join(';');
                     parameters = [];
                     for (let type of types) {
                         parameters.push(parseInt(id), type, size, page * size);
@@ -100,6 +104,11 @@ router.get('/:id/art', [
                     if (err) {
                         next(err);
                     } else {
+                        if (multitype) {
+                            // Merge multiple query results
+                            result = [].concat.apply([], result);
+                        }
+
                         // Group by type
                         result = result.reduce((acc, cur) => {
                             (acc[cur.type] = acc[cur.type] || []).push(cur);

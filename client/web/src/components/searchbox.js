@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import {withRouter} from 'react-router-dom';
 import './searchbox.css';
 
 class Searchbox extends Component {
@@ -9,7 +10,6 @@ class Searchbox extends Component {
         this.state = {value: ''};
 
         this.handleChange = this.handleChange.bind(this);
-        // this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
@@ -17,10 +17,14 @@ class Searchbox extends Component {
     }
 
     render() {
+        const {style, history} = this.props;
         return (
-            <div {...this.props}>
+            <div style={style}>
                 <div className="slogan">AuraMaze</div>
-                <form action="/search" method="get">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    history.push(`/search?q=${encodeURIComponent(this.state.value)}`);
+                }}>
                     <div className="searchbox">
                         <input name="q" type="text" value={this.state.value} onChange={this.handleChange}/>
                         <div className="icon">
@@ -33,4 +37,4 @@ class Searchbox extends Component {
     }
 }
 
-export default Searchbox;
+export default withRouter(Searchbox);

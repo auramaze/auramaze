@@ -4,16 +4,19 @@ import * as qs from 'query-string';
 import ItemList from '../components/item-list';
 import './search.css';
 import request from 'request';
-import after from 'lodash.after';
 import {API_ENDPOINT} from '../common';
 
 class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            query: qs.parse(props.location.search, {ignoreQueryPrefix: true}).q,
+            query: Search.getQueryFromProps(props),
             items: {art: [], artizen: []}
         };
+    }
+
+    static getQueryFromProps(props) {
+        return qs.parse(props.location.search, {ignoreQueryPrefix: true}).q;
     }
 
     componentDidMount() {
@@ -32,7 +35,7 @@ class Search extends Component {
     render() {
         return (
             <div className="search">
-                <ItemList items={this.state.items} extended/>
+                <ItemList key={Search.getQueryFromProps(this.props)} items={this.state.items} extended/>
             </div>
         );
     }

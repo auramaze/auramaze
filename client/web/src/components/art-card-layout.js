@@ -25,11 +25,11 @@ class ArtCardLayout extends Component {
     }
 
     static getArtWidth(art) {
-        return art.image ? art.image.default.width : 1;
+        return art.image && art.image.default ? art.image.default.width : 1;
     }
 
     static getArtHeight(art) {
-        return art.image ? art.image.default.height : 0;
+        return art.image && art.image.default ? art.image.default.height : 0;
     }
 
     static appendArts(arts, prevState, artCardWidth, extendedHeight) {
@@ -88,7 +88,7 @@ class ArtCardLayout extends Component {
                                         margin: 20
                                     }}
                                     id={art.id}
-                                    image={art.image && art.image.default.url}
+                                    image={art.image && art.image.default && art.image.default.url}
                                     artist={art.artist && art.artist.default}
                                     completionYear={art.completion_year}
                                     title={art.title && art.title.default}

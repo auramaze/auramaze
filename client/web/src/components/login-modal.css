@@ -1,0 +1,12 @@
+.login-modal-content {
+    padding: 8% 10%;
+    box-sizing: border-box;
+}
+
+.login-modal-content p {
+    text-align: center;
+}
+
+.login-modal-button {
+    height: 20px;
+}
