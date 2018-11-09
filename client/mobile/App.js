@@ -10,22 +10,13 @@ import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
 import { Input } from 'react-native-elements';
+import CameraScreen from "./components/camera-screen";
 
 class RecommendScreen extends React.Component {
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text>Recommend Screen</Text>
-            </View>
-        );
-    }
-}
-
-class CameraScreen extends React.Component {
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Camera Screen</Text>
             </View>
         );
     }
