@@ -26,6 +26,9 @@ router.get('/', [
             url: `${process.env.ESROOT}/${index}/_search`,
             body: {
                 'from': req.query.from,
+                '_source': {
+                    'excludes': ['image.*.simple_word_*', 'image.*.signature']
+                },
                 'size': 20,
                 'query': {
                     'bool': {
@@ -47,6 +50,14 @@ router.get('/', [
                                             'fields': ['introduction.*'],
                                             'operator': 'and'
                                         }
+                                },
+                                {
+                                    'multi_match':
+                                    {
+                                        'query': req.query.q,
+                                        'fields': ['completion_year','username'],
+                                        'operator': 'and'
+                                    }
                                 }
                             ]
                     }
@@ -61,6 +72,7 @@ router.get('/', [
                         'genre.*': {'number_of_fragments': 0},
                         'style.*': {'number_of_fragments': 0},
                         'name.*': {'number_of_fragments': 0},
+                        'username': {'number_of_fragments': 0},
                         'introduction.*': {'number_of_fragments': 3, 'fragment_size': 150}
                     }
                 }
