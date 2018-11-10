@@ -10,7 +10,7 @@ class Buttonbox extends Component {
     render() {
         const {children, processing, onClick, ...props} = this.props;
         return (
-            <div className="buttonbox font-size-s" {...props}
+            <div className={`buttonbox font-size-s ${processing ? 'buttonbox-processing' : ''}`} {...props}
                  onClick={(e) => {
                      if (processing) {
                          e.preventDefault();

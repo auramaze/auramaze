@@ -17,7 +17,6 @@ const buttonboxStyle = {
     width: '100%',
     height: 50,
     borderRadius: 5,
-    cursor: 'pointer',
     whiteSpace: 'nowrap'
 };
 const auramazeButtonboxStyle = Object.assign({
