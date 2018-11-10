@@ -1,5 +1,4 @@
 require('dotenv').config();
-// const providers = ['twitter', 'google', 'facebook', 'github']
 const providers = ['google', 'facebook', 'github'];
 
 const callbacks = providers.map(provider => `https://apidev.auramaze.org/v1/auth/${provider}/callback`);

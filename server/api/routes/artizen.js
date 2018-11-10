@@ -199,7 +199,7 @@ router.delete('/:id', oneOf([
     });
 });
 
-/* GET artizen introduction. */
+/* GET all introductions of artizen introduction. */
 router.get('/:id/introduction', [
     param('id').isInt().isLength({min: 9, max: 9}),
 ], (req, res, next) => {
@@ -208,12 +208,39 @@ router.get('/:id/introduction', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=? AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             res.json(result);
+        }
+    });
+});
+
+/* GET one introduction of artizen. */
+router.get('/:id/introduction/:text_id', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('text_id').isInt().isLength({min: 10, max: 10}),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.artizen_id=? AND text.type=0 AND text.valid GROUP BY text.id', [req.params.text_id, req.params.id], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            if (result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                });
+            }
         }
     });
 });
@@ -258,7 +285,7 @@ router.post('/:id/introduction', [
     });
 });
 
-/* GET artizen review. */
+/* GET all reviews of artizen. */
 router.get('/:id/review', [
     param('id').isInt().isLength({min: 9, max: 9}),
 ], (req, res, next) => {
@@ -267,12 +294,39 @@ router.get('/:id/review', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=(?) AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=? AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             res.json(result);
+        }
+    });
+});
+
+/* GET one review of artizen. */
+router.get('/:id/review/:text_id', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('text_id').isInt().isLength({min: 10, max: 10}),
+], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.artizen_id=? AND text.type=1 AND text.valid GROUP BY text.id', [req.params.text_id, req.params.id], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            if (result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                });
+            }
         }
     });
 });
