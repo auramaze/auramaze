@@ -29,11 +29,13 @@ exports.facebook = (accessToken, refreshToken, profile, cb) => {
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
+                console.log('err1');
                 return cb(null, false);
             } else {
                 rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
                     /* istanbul ignore if */
                     if (err) {
+                        console.log('err2');
                         return cb(null, false);
                     } else {
                         profile.auramaze_id = result[0].id;
