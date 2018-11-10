@@ -1,5 +1,6 @@
 exports.google = (req, res) => {
     const io = req.app.get('io');
+    console.log(JSON.stringify(req.user));
     const user = {
         name: req.user.displayName,
         photo: req.user.photos[0].value.replace(/sz=50/gi, 'sz=250')
