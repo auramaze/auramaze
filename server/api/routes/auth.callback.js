@@ -9,12 +9,13 @@ exports.google = (accessToken, refreshToken, profile, cb) => {
             if (err) {
                 return cb(null, false);
             } else {
-                rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
                     /* istanbul ignore if */
                     if (err) {
                         return cb(null, false);
                     } else {
                         profile.auramaze_id = result[0].id;
+                        profile.auramaze_username = result[0].username;
                         return cb(null, profile);
                     }
                 });
@@ -31,12 +32,13 @@ exports.facebook = (accessToken, refreshToken, profile, cb) => {
             if (err) {
                 return cb(null, false);
             } else {
-                rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
+                rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
                     /* istanbul ignore if */
                     if (err) {
                         return cb(null, false);
                     } else {
                         profile.auramaze_id = result[0].id;
+                        profile.auramaze_username = result[0].username;
                         return cb(null, profile);
                     }
                 });
