@@ -29,7 +29,7 @@ exports.facebook = (accessToken, refreshToken, profile, cb) => {
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
-                console.log('err1');
+                console.log(err.toString());
                 return cb(null, false);
             } else {
                 rds.query('SELECT LAST_INSERT_ID() AS id', (err, result, fields) => {
