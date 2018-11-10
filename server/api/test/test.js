@@ -388,6 +388,15 @@ describe('Test api', function () {
                     .end(done);
             });
 
+            it('should return multiple types of relations', done => {
+                request(app).get('/v1/artizen/nga/art').expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.length > 1);
+                    })
+                    .end(done);
+            });
+
             it('should return empty relations', done => {
                 request(app).get('/v1/artizen/metmuseum/art?type=artist').expect(200)
                     .expect('Content-Type', /json/)
