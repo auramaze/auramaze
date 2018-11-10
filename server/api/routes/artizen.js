@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 const common = require('./common');
 const rds = common.rds;
-const {param, query, body, oneOf, validationResult} = require('express-validator/check');
+const {auth} = require('./auth.config');
 
 /* GET artizen data. */
 router.get('/:id', oneOf([
@@ -285,6 +286,41 @@ router.post('/:id/introduction', [
     });
 });
 
+/* Vote for one introduction of artizen. */
+router.post('/:id/introduction/:text_id/vote', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('text_id').isInt().isLength({min: 10, max: 10}),
+    oneOf([
+        body('type').equals('up'),
+        body('type').equals('down')
+    ])
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                });
+            } else {
+                next(err);
+            }
+        } else {
+            res.json({
+                message: `Vote success: ${req.params.id} introduction ${req.params.text_id}`,
+            });
+        }
+    });
+});
+
 /* GET all reviews of artizen. */
 router.get('/:id/review', [
     param('id').isInt().isLength({min: 9, max: 9}),
@@ -372,6 +408,41 @@ router.post('/:id/review', [
                         message: `Insert review success: ${req.params.id} ${id}`
                     });
                 }
+            });
+        }
+    });
+});
+
+/* Vote for one review of artizen. */
+router.post('/:id/review/:text_id/vote', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('text_id').isInt().isLength({min: 10, max: 10}),
+    oneOf([
+        body('type').equals('up'),
+        body('type').equals('down')
+    ])
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                });
+            } else {
+                next(err);
+            }
+        } else {
+            res.json({
+                message: `Vote success: ${req.params.id} review ${req.params.text_id}`,
             });
         }
     });

@@ -1,5 +1,7 @@
 require('dotenv').config();
-const providers = ['google', 'facebook', 'github'];
+const jwt = require('express-jwt');
+
+const providers = ['google', 'facebook'];
 
 const callbacks = providers.map(provider => `https://apidev.auramaze.org/v1/auth/${provider}/callback`);
 
@@ -17,8 +19,6 @@ exports.FACEBOOK_CONFIG = {
     profileFields: ['id', 'emails', 'name', 'picture.width(250)'],
     callbackURL: facebookURL
 };
-
-const jwt = require('express-jwt');
 
 const getTokenFromHeaders = (req) => {
     const {headers: {authorization}} = req;
