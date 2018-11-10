@@ -29,7 +29,12 @@ module.exports = () => {
     // The callback that is invoked when an OAuth provider sends back user
     // information. Normally, you would save the user to the database
     // in this callback and it would be customized for each provider.
-    const callback = (accessToken, refreshToken, profile, cb) => cb(null, profile);
+    const callback = (accessToken, refreshToken, profile, cb) => {
+        console.log(accessToken);
+        console.log(refreshToken);
+        console.log(JSON.stringify(profile));
+        return cb(null, profile);
+    };
 
     // Adding each OAuth provider's strategy to passport
     // passport.use(new TwitterStrategy(TWITTER_CONFIG, callback))
