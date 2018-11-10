@@ -5,7 +5,7 @@ import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
 
-class Art extends React.Component {
+class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -154,7 +154,7 @@ class Art extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.hasArtists ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
                         {this.state.artists}
 
                         {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : ""}
@@ -181,4 +181,4 @@ class Art extends React.Component {
 }
 
 
-export default Art;
+export default Artizen;

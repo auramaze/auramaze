@@ -1,7 +1,6 @@
 import React from 'react';
 import {Text, View, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Camera, Permissions} from 'expo';
-import AutoHeightImage from "react-native-auto-height-image";
 
 class CameraScreen extends React.Component {
     state = {

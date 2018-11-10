@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
-import {Button, SearchBar} from 'react-native-elements';
+import {SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";

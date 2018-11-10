@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from "react-navigation";
-import {SearchBar} from 'react-native-elements';
 import Art from "../art/art";
+import Artizen from "../artizen/artizen";
 import TimeLine from "../timeline/timeline";
 
 const TimeLineStack = createStackNavigator(
@@ -13,6 +13,7 @@ const TimeLineStack = createStackNavigator(
             }
         },
         Art: {screen: Art},
+        Artizen: {screen: Artizen},
     },
     {
         initialRouteName: 'TimeLine',
