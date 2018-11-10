@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const {body, oneOf, validationResult} = require('express-validator/check');
 const authController = require('./auth.controller');
 const {auth} = require('./auth.config');
