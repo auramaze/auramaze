@@ -2,8 +2,8 @@ const common = require('./common');
 const rds = common.rds;
 
 exports.google = (accessToken, refreshToken, profile, cb) => {
-    rds.query('INSERT INTO artizen (google, name) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
-        [[profile.id, JSON.stringify({default: profile.displayName})]],
+    rds.query('INSERT INTO artizen (google, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+        [[profile.id, JSON.stringify({default: profile.displayName}), profile.photos[0].value.replace(/sz=50/gi, 'sz=250')]],
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
@@ -25,8 +25,8 @@ exports.google = (accessToken, refreshToken, profile, cb) => {
 
 exports.facebook = (accessToken, refreshToken, profile, cb) => {
     const {givenName, familyName} = profile.name;
-    rds.query('INSERT INTO artizen (facebook, name) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
-        [[profile.id, JSON.stringify({default: `${givenName} ${familyName}`})]],
+    rds.query('INSERT INTO artizen (facebook, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+        [[profile.id, JSON.stringify({default: `${givenName} ${familyName}`}), profile.photos[0].value]],
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
