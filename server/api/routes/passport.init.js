@@ -3,17 +3,13 @@ const crypto = require('crypto');
 const validator = require('validator');
 const common = require('./common');
 const rds = common.rds;
-// const {Strategy: TwitterStrategy} = require('passport-twitter');
+const authCallback = require('./auth.callback');
 const {OAuth2Strategy: GoogleStrategy} = require('passport-google-oauth');
 const {Strategy: FacebookStrategy} = require('passport-facebook');
-const {Strategy: GithubStrategy} = require('passport-github');
 const LocalStrategy = require('passport-local');
-// const {
-//     TWITTER_CONFIG, GOOGLE_CONFIG, FACEBOOK_CONFIG, GITHUB_CONFIG
-// } = require('../config');
 
 const {
-    GOOGLE_CONFIG, FACEBOOK_CONFIG, GITHUB_CONFIG
+    GOOGLE_CONFIG, FACEBOOK_CONFIG
 } = require('./auth.config');
 
 function validatePassword(password, salt, hash) {
@@ -21,27 +17,13 @@ function validatePassword(password, salt, hash) {
 }
 
 module.exports = () => {
-
     // Allowing passport to serialize and deserialize users into sessions
     passport.serializeUser((user, cb) => cb(null, user));
     passport.deserializeUser((obj, cb) => cb(null, obj));
 
-    // The callback that is invoked when an OAuth provider sends back user
-    // information. Normally, you would save the user to the database
-    // in this callback and it would be customized for each provider.
-    const callback = (accessToken, refreshToken, profile, cb) => {
-        console.log(accessToken);
-        console.log(refreshToken);
-        console.log(JSON.stringify(profile));
-        profile.auramaze_id = 'auramaze';
-        return cb(null, profile);
-    };
-
     // Adding each OAuth provider's strategy to passport
-    // passport.use(new TwitterStrategy(TWITTER_CONFIG, callback))
-    passport.use(new GoogleStrategy(GOOGLE_CONFIG, callback));
-    passport.use(new FacebookStrategy(FACEBOOK_CONFIG, callback));
-    passport.use(new GithubStrategy(GITHUB_CONFIG, callback));
+    passport.use(new GoogleStrategy(GOOGLE_CONFIG, authCallback.google));
+    passport.use(new FacebookStrategy(FACEBOOK_CONFIG, authCallback.facebook));
 
     passport.use(new LocalStrategy({
         usernameField: 'id',
