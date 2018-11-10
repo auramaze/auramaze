@@ -11,6 +11,8 @@ const rds = mysql.createConnection({
 const _ = require('lodash');
 const franc = require('franc-min');
 const convert3To1 = require('iso-639-3-to-1');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 function Common() {
 }
@@ -89,6 +91,32 @@ Common.prototype.detectLanguage = (content) => {
         content = Common.prototype.convertContentToPlainText(content);
     }
     return convert3To1(franc(content, {minLength: 1}));
+};
+
+
+Common.prototype.generateJWT = (user) => {
+    const today = new Date();
+    const expirationDate = new Date(today);
+    expirationDate.setDate(today.getDate() + 60);
+
+    return jwt.sign({
+        id: parseInt(user.id),
+        exp: parseInt(expirationDate.getTime() / 1000, 10),
+    }, process.env.SECRET);
+};
+
+Common.prototype.toAuthJSON = (user) => {
+    return {
+        id: user.id,
+        username: user.username,
+        token: this.generateJWT(user),
+    };
+};
+
+Common.prototype.generateSaltHash = (password) => {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
+    return {salt, hash};
 };
 
 

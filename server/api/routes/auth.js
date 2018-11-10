@@ -30,31 +30,6 @@ router.use((req, res, next) => {
 router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
 
-function generateJWT(user) {
-    const today = new Date();
-    const expirationDate = new Date(today);
-    expirationDate.setDate(today.getDate() + 60);
-
-    return jwt.sign({
-        id: parseInt(user.id),
-        exp: parseInt(expirationDate.getTime() / 1000, 10),
-    }, process.env.SECRET);
-}
-
-function toAuthJSON(user) {
-    return {
-        id: user.id,
-        username: user.username,
-        token: generateJWT(user),
-    };
-}
-
-function generateSaltHash(password) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-    return {salt, hash};
-}
-
 // Sign up with email
 router.post('/signup', [
     body('email').isEmail(),
@@ -65,7 +40,7 @@ router.post('/signup', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {salt, hash} = generateSaltHash(req.body.password);
+    const {salt, hash} = common.generateSaltHash(req.body.password);
     req.body.salt = salt;
     req.body.hash = hash;
 
@@ -81,7 +56,7 @@ router.post('/signup', [
                 next(err);
             }
         } else {
-            res.json(toAuthJSON(result[0]));
+            res.json(common.toAuthJSON(result[0]));
         }
     });
 });
@@ -106,7 +81,7 @@ router.post('/login', [
             return next(err);
         } else {
             if (artizen) {
-                return res.json(toAuthJSON(artizen));
+                return res.json(common.toAuthJSON(artizen));
             } else {
                 res.status(400).json({
                     code: 'LOGIN_ERROR',
