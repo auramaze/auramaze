@@ -6,8 +6,6 @@ import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
-import google from '../icons/google.svg';
-import facebook from '../icons/facebook.svg';
 import './signup-modal.css';
 import {AuthContext} from "../app";
 import {API_ENDPOINT, API_URL} from "../common";
@@ -25,15 +23,6 @@ const buttonboxStyle = {
 const auramazeButtonboxStyle = Object.assign({
     backgroundColor: '#cdcdcd',
     color: '#666666'
-}, buttonboxStyle);
-const gmailButtonboxStyle = Object.assign({
-    backgroundColor: '#ffffff',
-    color: '#484848',
-    border: 'solid 2px #484848'
-}, buttonboxStyle);
-const facebookButtonboxStyle = Object.assign({
-    backgroundColor: '#3b5998',
-    color: '#ffffff'
 }, buttonboxStyle);
 
 class SignupModal extends Component {
