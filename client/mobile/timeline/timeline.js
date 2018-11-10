@@ -41,7 +41,7 @@ class TimeLine extends React.Component {
                                 key={key}
                                 onPress={() => this.props.navigation.navigate('Art', {
                                     artId: item.id,
-                                    otherParam: item.title.default,
+                                    titleName: item.title.default,
                                 })}>
                                 <ArtCard
                                     artName={item.title.default}

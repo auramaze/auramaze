@@ -23,6 +23,10 @@ const TimeLineStack = createStackNavigator(
             headerStyle: {
                 backgroundColor: '#fff',
                 borderBottomWidth: 0,
+                shadowColor: 'black',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 5,
             },
             headerTintColor: '#666666',
             headerTitleStyle: {

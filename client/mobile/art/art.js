@@ -15,20 +15,11 @@ class Art extends React.Component {
 
     state = {};
 
-    // static navigationOptions = ({ navigation, navigationOptions }) => {
-    //     console.log(navigationOptions);
-    //     // Notice the logs ^
-    //     // sometimes we call with the default navigationOptions and other times
-    //     // we call this with the previous navigationOptions that were returned from
-    //     // this very function
-    //     return {
-    //         title: navigation.getParam('otherParam', 'A Nested Details Screen'),
-    //         headerStyle: {
-    //             backgroundColor: navigationOptions.headerTintColor,
-    //         },
-    //         headerTintColor: navigationOptions.headerStyle.backgroundColor,
-    //     };
-    // };
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.getParam('titleName', 'No Title'),
+        };
+    };
 
     async componentDidMount() {
         try {
