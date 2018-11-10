@@ -1,8 +1,8 @@
 import React from 'react';
 import Art from "./art/art"
 import {Font} from 'expo';
-import {createBottomTabNavigator} from "react-navigation";
-import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
+import { createStackNavigator, createBottomTabNavigator} from "react-navigation";
+import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
@@ -11,12 +11,19 @@ import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
 import { Input } from 'react-native-elements';
 import CameraScreen from "./components/camera-screen";
+import TimeLineStack from "./components/timeline-stack";
 
 class RecommendScreen extends React.Component {
+
+    _handlePress = () => {
+        Linking.openURL("https://dev.auramaze.org");
+        this.props.onPress && this.props.onPress();
+    };
+
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Recommend Screen</Text>
+                <Text onPress={this._handlePress}>Recommend Screen</Text>
             </View>
         );
     }
@@ -69,7 +76,7 @@ export default class App extends React.Component {
 
         const MyNavi = createBottomTabNavigator(
             {
-                TimeLine: {screen: TimeLine},
+                TimeLine: {screen: TimeLineStack},
                 Artventure: {screen: Art},
                 CameraLeft: {screen: CameraScreen},
                 CameraRight: {screen: CameraScreen},

@@ -1,10 +1,12 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
-import {SearchBar} from 'react-native-elements';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {Button, SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
+import Art from "../art/art";
+
 
 class TimeLine extends React.Component {
 
@@ -19,7 +21,7 @@ class TimeLine extends React.Component {
             let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
             let responseJson = await response.json();
             let returnArtizen = responseJson.artizen.length >= 1;
-            let returnArt = responseJson.art.length >=1;
+            let returnArt = responseJson.art.length >= 1;
             this.setState(previousState => (
                 {
                     haveArtizen: returnArtizen,
@@ -35,13 +37,21 @@ class TimeLine extends React.Component {
                     haveArt: returnArt,
                     searchArt: responseJson.art.map((item, key) => {
                         return (
-                            <ArtCard key={key}
-                                     artName={item.title.default}
-                                     artistName={item.artist ? item.artist.default : ""}
-                                     source={item.image && item.image.default ? item.image.default.url : ""}
-                                     compYear={item.completionYear ? item.completionYear : ""}
-                                     id={item.id}
-                                     fontLoaded={this.props.screenProps.fontLoaded}/>
+                            <TouchableOpacity
+                                key={key}
+                                onPress={() => this.props.navigation.navigate('Art', {
+                                    artId: item.id,
+                                    otherParam: item.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={item.title.default}
+                                    artistName={item.artist ? item.artist.default : ""}
+                                    source={item.image && item.image.default ? item.image.default.url : ""}
+                                    compYear={item.completionYear ? item.completionYear : ""}
+                                    id={item.id}
+                                    fontLoaded={this.props.screenProps.fontLoaded}
+                                />
+                            </TouchableOpacity>
                         );
                     })
                 }

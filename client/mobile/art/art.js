@@ -13,16 +13,31 @@ class Art extends React.Component {
         super(props);
     }
 
-    state = {
-        artid: 10000007,
-    };
+    state = {};
+
+    // static navigationOptions = ({ navigation, navigationOptions }) => {
+    //     console.log(navigationOptions);
+    //     // Notice the logs ^
+    //     // sometimes we call with the default navigationOptions and other times
+    //     // we call this with the previous navigationOptions that were returned from
+    //     // this very function
+    //     return {
+    //         title: navigation.getParam('otherParam', 'A Nested Details Screen'),
+    //         headerStyle: {
+    //             backgroundColor: navigationOptions.headerTintColor,
+    //         },
+    //         headerTintColor: navigationOptions.headerStyle.backgroundColor,
+    //     };
+    // };
 
     async componentDidMount() {
         try {
-            let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/introduction');
-            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + this.state.artid + '/review');
+            const { navigation } = this.props;
+            const artId = navigation.getParam('artId', 0);
+            let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
+            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();
@@ -122,7 +137,7 @@ class Art extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
-                paddingTop: Constants.statusBarHeight,
+                // paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 margin: 20,
@@ -143,7 +158,7 @@ class Art extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    <TopBar/>
+                    {/*<TopBar/>*/}
                     {this.state.art}
                     <View style={styles.mainContext}>
 
