@@ -94,7 +94,7 @@ Common.prototype.detectLanguage = (content) => {
 };
 
 
-Common.prototype.generateJWT = (user) => {
+const generateJWT = (user) => {
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
@@ -105,11 +105,13 @@ Common.prototype.generateJWT = (user) => {
     }, process.env.SECRET);
 };
 
+Common.prototype.generateJWT = generateJWT;
+
 Common.prototype.toAuthJSON = (user) => {
     return {
         id: user.id,
         username: user.username,
-        token: this.generateJWT(user),
+        token: generateJWT(user),
     };
 };
 
