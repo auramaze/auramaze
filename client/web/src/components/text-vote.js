@@ -24,7 +24,6 @@ class TextVote extends Component {
     componentDidUpdate(prevProps) {
         const {up, down, status} = this.props;
         if (up !== prevProps.up || down !== prevProps.down || status !== prevProps.status) {
-            console.log('update');
             this.setState({up, down, status});
         }
     }
