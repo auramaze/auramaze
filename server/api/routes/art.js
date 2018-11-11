@@ -276,17 +276,8 @@ router.get('/:id/introduction', [
     }
 
     const authId = req.payload && req.payload.id;
-    let sql, parameters;
 
-    if (authId) {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=? AND text.type=0 AND text.valid GROUP BY text.id';
-        parameters = [authId, req.params.id];
-    } else {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=? AND text.type=0 AND text.valid GROUP BY text.id';
-        parameters = [req.params.id];
-    }
-
-    rds.query(sql, parameters, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 0, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -419,17 +410,8 @@ router.get('/:id/review', [
     }
 
     const authId = req.payload && req.payload.id;
-    let sql, parameters;
 
-    if (authId) {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=? AND text.type=1 AND text.valid GROUP BY text.id';
-        parameters = [authId, req.params.id];
-    } else {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=? AND text.type=1 AND text.valid GROUP BY text.id';
-        parameters = [req.params.id];
-    }
-
-    rds.query(sql, parameters, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 1, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);

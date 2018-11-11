@@ -43,6 +43,21 @@ Common.prototype.batchGetItems = (group, id, callback) => {
     rds.query(`SELECT * FROM ${group} WHERE id IN (?)`, [id], callback);
 };
 
+// Get all introductions / reviews of item
+Common.prototype.getTexts = (group, itemId, textType, authId, callback) => {
+    let sql, parameters;
+
+    if (authId) {
+        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+        parameters = [authId, itemId, textType];
+    } else {
+        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+        parameters = [itemId, textType];
+    }
+
+    rds.query(sql, parameters, callback);
+};
+
 // Insert item data
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;

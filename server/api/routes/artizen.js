@@ -200,16 +200,18 @@ router.delete('/:id', oneOf([
     });
 });
 
-/* GET all introductions of artizen introduction. */
+/* GET all introductions of artizen. */
 router.get('/:id/introduction', [
     param('id').isInt().isLength({min: 9, max: 9}),
-], (req, res, next) => {
+], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=? AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    const authId = req.payload && req.payload.id;
+
+    common.getTexts('artizen', req.params.id, 0, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -324,13 +326,15 @@ router.post('/:id/introduction/:text_id/vote', [
 /* GET all reviews of artizen. */
 router.get('/:id/review', [
     param('id').isInt().isLength({min: 9, max: 9}),
-], (req, res, next) => {
+], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.artizen_id=? AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    const authId = req.payload && req.payload.id;
+
+    common.getTexts('artizen', req.params.id, 1, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
