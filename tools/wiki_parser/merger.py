@@ -22,6 +22,7 @@ def join(org_file, new_file, output_path):
     other_count = 0
 
     result_dict = copy.deepcopy(org_dict)
+    print('org dict size: ', len(org_dict), 'new dict size: ', len(new_dict))
     for i in range(len(org_dict)):
         wiki = new_dict.get(org_dict[i]['username'], None)
         link = org_dict[i]['wikipediaLink']
@@ -30,9 +31,6 @@ def join(org_file, new_file, output_path):
         except IndexError:
             url = 'NA'
         if not url.startswith('en.wiki'):
-            print(link)
-            if wiki:
-                print(len(wiki['title']), len(wiki['html']))
             wiki = None
             other_count += 1
         else:
@@ -42,7 +40,7 @@ def join(org_file, new_file, output_path):
     with open(output_path, 'w') as f:
         json.dump(result_dict, f, indent=4)
 
-    print(en_count, other_count)
+    print('valid wiki:', en_count, 'invalid wiki: ', other_count)
 
 
 if __name__ == '__main__':

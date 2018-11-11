@@ -4,6 +4,7 @@ import json
 import glob
 import argparse
 import copy
+from bs4 import BeautifulSoup
 from tqdm import tqdm as tqdm
 
 class WikiParser:
@@ -13,6 +14,10 @@ class WikiParser:
 
     def _parse(self, user_name, text):
         wiki_dic = {}
+        soup = BeautifulSoup(text, 'html.parser')
+        for table in soup.find_all("table"):
+            table.decompose()
+        text = str(soup)
 
         start_title = text.find("<title")
         end_start_title = text.find(">", start_title+1)
@@ -30,11 +35,16 @@ class WikiParser:
             else:
                 stop_introduction = min(stop_introduction_1, stop_introduction_2)
 
-        introduction = text[start_introduction : stop_introduction - 1] + '<p>'
-        introduction = re.sub(r'</p>(.*?)<p>', '', introduction)[:-3]
-        introduction = re.sub(r'(<sup.+?</sup>)', '', introduction)
-        introduction = re.sub(r'(<a.+?>)|(</a>)', '', introduction)
-        introduction = re.sub(r'(<img.+?/>)', '', introduction)
+        introduction = text[start_introduction : stop_introduction - 1]
+        soup = BeautifulSoup(introduction, 'html.parser')
+        for sup in soup.find_all('sup'):
+            sup.decompose()
+        for link in soup.find_all('a'):
+            link.unwrap()
+        for img in soup.find_all('img'):
+            img.decompose()
+        introduction = ''.join([str(para) for para in soup.find_all('p')])
+
         wiki_dic["html"] = introduction
 
         self.dict[user_name] = wiki_dic
@@ -59,7 +69,7 @@ def main():
 
     driver = WikiParser()
 
-    for file in glob.glob(os.path.join(args.input_path, '*')):
+    for file in tqdm(glob.glob(os.path.join(args.input_path, '*'))):
         input_path = os.path.join(args.input_path, os.path.basename(file))
         driver.process(input_path)
 
