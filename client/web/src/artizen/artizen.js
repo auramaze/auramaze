@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withCookies} from 'react-cookie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
@@ -37,6 +38,8 @@ class Artizen extends Component {
     }
 
     updateArtizen(artizenId) {
+        const token = this.props.cookies.get('token');
+
         this.setState({
             artizen: {},
             arts: [],
@@ -66,6 +69,9 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/introduction`,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
@@ -75,6 +81,9 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/review`,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
@@ -191,4 +200,4 @@ Artizen.propTypes = {
     }),
 };
 
-export default Artizen;
+export default withCookies(Artizen);

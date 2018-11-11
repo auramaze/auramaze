@@ -119,8 +119,11 @@ class TextCard extends Component {
                 </div>
                 <div className="text-card-vote">
                     <FontAwesomeIcon
+                        style={{cursor: this.state.status === 1 ? 'default' : 'pointer'}}
                         onClick={() => {
-                            this.handleVote('up');
+                            if (this.state.status !== 1) {
+                                this.handleVote('up');
+                            }
                         }}
                         className="text-card-vote-icon"
                         icon={this.state.status === 1 ? faThumbsUpSolid : faThumbsUpRegular}
@@ -128,8 +131,11 @@ class TextCard extends Component {
                     />
                     <span>{this.state.up}</span>
                     <FontAwesomeIcon
+                        style={{cursor: this.state.status === -1 ? 'default' : 'pointer'}}
                         onClick={() => {
-                            this.handleVote('down');
+                            if (this.state.status !== -1) {
+                                this.handleVote('down');
+                            }
                         }}
                         className="text-card-vote-icon"
                         icon={this.state.status === -1 ? faThumbsDownSolid : faThumbsDownRegular}
