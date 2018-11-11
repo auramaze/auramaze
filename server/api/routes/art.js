@@ -288,9 +288,9 @@ router.get('/:id/introduction', [
 });
 
 /* GET one introduction of art. */
-router.get('/:id/introduction/:text_id', [
+router.get('/:id/introduction/:textId', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -298,17 +298,8 @@ router.get('/:id/introduction/:text_id', [
     }
 
     const authId = req.payload && req.payload.id;
-    let sql, parameters;
 
-    if (authId) {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.art_id=? AND text.type=0 AND text.valid GROUP BY text.id';
-        parameters = [authId, req.params.text_id, req.params.id];
-    } else {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.art_id=? AND text.type=0 AND text.valid GROUP BY text.id';
-        parameters = [req.params.text_id, req.params.id];
-    }
-
-    rds.query(sql, parameters, (err, result, fields) => {
+    common.getText('art', req.params.id, 0, req.params.textId, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -318,7 +309,7 @@ router.get('/:id/introduction/:text_id', [
             } else {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             }
         }
@@ -366,9 +357,9 @@ router.post('/:id/introduction', [
 });
 
 /* Vote for one introduction of art. */
-router.post('/:id/introduction/:text_id/vote', [
+router.post('/:id/introduction/:textId/vote', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -381,20 +372,20 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} introduction ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} introduction ${req.params.textId}`,
             });
         }
     });
@@ -422,9 +413,9 @@ router.get('/:id/review', [
 });
 
 /* GET one review of art. */
-router.get('/:id/review/:text_id', [
+router.get('/:id/review/:textId', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -432,17 +423,8 @@ router.get('/:id/review/:text_id', [
     }
 
     const authId = req.payload && req.payload.id;
-    let sql, parameters;
 
-    if (authId) {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.art_id=? AND text.type=1 AND text.valid GROUP BY text.id';
-        parameters = [authId, req.params.text_id, req.params.id];
-    } else {
-        sql = 'SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.art_id=? AND text.type=1 AND text.valid GROUP BY text.id';
-        parameters = [req.params.text_id, req.params.id];
-    }
-
-    rds.query(sql, parameters, (err, result, fields) => {
+    common.getText('art', req.params.id, 1, req.params.textId, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -452,7 +434,7 @@ router.get('/:id/review/:text_id', [
             } else {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             }
         }
@@ -506,9 +488,9 @@ router.post('/:id/review', [
 });
 
 /* Vote for one review of art. */
-router.post('/:id/review/:text_id/vote', [
+router.post('/:id/review/:textId/vote', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -521,20 +503,20 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} review ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} review ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} review ${req.params.textId}`,
             });
         }
     });
