@@ -231,7 +231,7 @@ class Artizen extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    <View style={{height: 30}}/>
+                    <View style={{height: 20}}/>
                     {this.state.artizen}
                     <View style={styles.mainContext}>
 

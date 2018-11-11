@@ -41,7 +41,7 @@ class ArtizenInfo extends React.Component {
         return (
             <View style={styles.viewStyle}>
                 <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
-                                 style={{borderRadius: Dimensions.get('window').width * 2 / 10}}
+                                 style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
                                  source={this.props.url ? {uri: this.props.url} : noImage}/>
                 <Text style={styles.textStyle}>
                     {this.props.title}
