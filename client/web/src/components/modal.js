@@ -4,6 +4,7 @@ import './modal.css';
 
 class Modal extends Component {
     componentDidUpdate(prevProps) {
+        console.log(this.props.show);
         if (this.props.show) {
             lockBody();
         } else {

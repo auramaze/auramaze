@@ -1,12 +1,96 @@
-.text-modal-content {
-    padding: 8% 10%;
+.text-modal {
+    padding: 20px;
     box-sizing: border-box;
 }
 
-.text-modal-content p {
+.text-modal p {
     text-align: center;
 }
 
-.text-modal-button {
-    height: 20px;
+.text-modal-title {
+    position: relative;
+    height: 60px;
+    margin: 0 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.text-modal-avatar {
+    display: inline-block !important;
+    vertical-align: top;
+    margin: 8px;
+    width: 40px;
+    height: 40px;
+    border: #cdcdcd 2px solid;
+    border-radius: 50%;
+}
+
+.text-modal-name {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px 0;
+    line-height: 40px;
+    font-size: 15px;
+    font-family: 'CenturyGothic', serif;
+}
+
+.text-modal-audio {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translate(0, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 15px #ffffff;
+    font-size: 16px;
+    color: #666666;
+}
+
+.text-modal-more {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+    width: 30px;
+    text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px 15px #ffffff;
+    font-size: 16px;
+    color: #666666;
+}
+
+.text-modal-content {
+    position: relative;
+    margin: 0 10px;
+    padding: 10px;
+    border-top: 1px solid #666666;
+    border-bottom: 1px solid #666666;
+    overflow: hidden;
+    white-space: normal;
+    font-size: 15px;
+    font-family: 'SegoeUI', serif;
+    user-select: text;
+}
+
+.text-modal-mask-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 40px 30px #ffffff;
+}
+
+.text-modal-vote {
+    margin: 0 10px;
+    padding: 10px;
+    text-align: right;
+    font-size: 15px;
+    color: #666666;
+}
+
+.text-modal-vote-icon {
+    margin-left: 20px;
+}
+
+.text-modal-vote span {
+    margin-left: 10px;
 }

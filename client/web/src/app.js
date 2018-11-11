@@ -13,8 +13,10 @@ import Art from './art/art';
 import Artizen from './artizen/artizen';
 import SignupModal from "./components/signup-modal";
 import LoginModal from "./components/login-modal";
+import TextModal from "./components/text-modal";
 
 export const ModalContext = React.createContext();
+export const WindowContext = React.createContext();
 
 const HomeNavbar = (props) => {
     return (
@@ -64,6 +66,7 @@ class App extends Component {
 
         this.state = {
             windowWidth: document.documentElement.clientWidth,
+            windowHeight: window.innerHeight,
             expand: false,
             signupModalShow: false,
             loginModalShow: false,
@@ -99,41 +102,49 @@ class App extends Component {
     updateWindowDimensions() {
         this.setState({
             windowWidth: document.documentElement.clientWidth,
+            windowHeight: window.innerHeight
         });
     }
 
     render() {
         return (
-            <ModalContext.Provider value={{
-                signupModalShow: this.state.signupModalShow,
-                loginModalShow: this.state.loginModalShow,
-                showSignupModal: this.state.showSignupModal,
-                hideSignupModal: this.state.hideSignupModal,
-                showLoginModal: this.state.showLoginModal,
-                hideLoginModal: this.state.hideLoginModal
+            <WindowContext.Provider value={{
+                windowWidth: this.state.windowWidth,
+                windowHeight: this.state.windowHeight
             }}>
-                <Router>
-                    <div>
-                        <Route exact path="/" component={Home}/>
-                        <Route path="/search" component={Search}/>
-                        <Route path="/art/:artId" component={Art}/>
-                        <Route path="/artizen/:artizenId" component={Artizen}/>
-                        <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
-                            />
-                            <Route
-                                path='/'
-                                component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
-                            />
-                        </Switch>
-                    </div>
-                </Router>
-                <SignupModal show={this.state.signupModalShow} handleClose={this.state.hideSignupModal}/>
-                <LoginModal show={this.state.loginModalShow} handleClose={this.state.hideLoginModal}/>
-            </ModalContext.Provider>
+                <ModalContext.Provider value={{
+                    signupModalShow: this.state.signupModalShow,
+                    loginModalShow: this.state.loginModalShow,
+                    showSignupModal: this.state.showSignupModal,
+                    hideSignupModal: this.state.hideSignupModal,
+                    showLoginModal: this.state.showLoginModal,
+                    hideLoginModal: this.state.hideLoginModal
+                }}>
+                    <Router>
+                        <div>
+                            <Route exact path="/" component={Home}/>
+                            <Route path="/search" component={Search}/>
+                            <Route path="/art/:artId" component={Art}/>
+                            <Route path="/artizen/:artizenId" component={Artizen}/>
+                            <Route path="/:itemType(art|artizen)/:itemId/:textType(introduction|review)/:textId"
+                                   component={TextModal}/>
+                            <Switch>
+                                <Route
+                                    exact
+                                    path="/"
+                                    render={this.state.windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
+                                />
+                                <Route
+                                    path='/'
+                                    component={this.state.windowWidth > 768 ? Navbar : NavbarMobile}
+                                />
+                            </Switch>
+                        </div>
+                    </Router>
+                    <SignupModal show={this.state.signupModalShow} handleClose={this.state.hideSignupModal}/>
+                    <LoginModal show={this.state.loginModalShow} handleClose={this.state.hideLoginModal}/>
+                </ModalContext.Provider>
+            </WindowContext.Provider>
         );
     }
 }

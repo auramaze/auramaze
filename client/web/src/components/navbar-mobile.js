@@ -8,7 +8,7 @@ import './navbar-mobile.css';
 import {ModalContext} from '../app';
 import {lockBody, unlockBody} from '../utils';
 import {withCookies} from "react-cookie";
-import {removeCookies} from "../common";
+import {removeCookies} from "../utils";
 
 const scroll = Scroll.animateScroll;
 

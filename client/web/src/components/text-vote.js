@@ -10,7 +10,8 @@ import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-ico
 import {faThumbsUp as faThumbsUpRegular} from '@fortawesome/free-regular-svg-icons';
 import {faThumbsDown as faThumbsDownRegular} from '@fortawesome/free-regular-svg-icons';
 import {ModalContext} from '../app';
-import {API_ENDPOINT, removeCookies} from "../common";
+import {API_ENDPOINT} from "../common";
+import {removeCookies} from "../utils";
 import './text-vote.css';
 
 class TextVote extends Component {

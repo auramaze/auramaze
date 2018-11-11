@@ -7,7 +7,7 @@ import {ModalContext} from '../app';
 import logo from '../static/logo-white-frame.svg';
 import './navbar.css';
 import {withCookies} from "react-cookie";
-import {removeCookies} from "../common";
+import {removeCookies} from "../utils";
 
 const scroll = Scroll.animateScroll;
 
