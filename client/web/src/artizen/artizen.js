@@ -69,7 +69,7 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/introduction`,
-                        headers: {
+                        headers: token && {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true
@@ -81,7 +81,7 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/review`,
-                        headers: {
+                        headers: token && {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true

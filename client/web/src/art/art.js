@@ -64,7 +64,7 @@ class Art extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/art/${id}/introduction`,
-                        headers: {
+                        headers: token && {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true
@@ -76,7 +76,7 @@ class Art extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/art/${id}/review`,
-                        headers: {
+                        headers: token && {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true
