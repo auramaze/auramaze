@@ -27,11 +27,18 @@ class TimeLine extends React.Component {
                     haveArtizen: returnArtizen,
                     searchArtizen: responseJson.artizen.map((item, key) => {
                         return (
-                            <ArtizenCard key={key}
-                                         name={item.name.default ? item.name.default : ""}
-                                         source={item.avatar ? item.avatar : ""}
-                                         id={item.id}
-                                         fontLoaded={this.props.screenProps.fontLoaded}/>
+                            <TouchableOpacity
+                                key={key}
+                                onPress={() => this.props.navigation.navigate('Artizen', {
+                                    artizenId: item.id,
+                                    titleName: item.name.default,
+                                })}>
+                                <ArtizenCard key={key}
+                                             name={item.name.default ? item.name.default : ""}
+                                             source={item.avatar ? item.avatar : ""}
+                                             id={item.id}
+                                             fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </TouchableOpacity>
                         );
                     }),
                     haveArt: returnArt,

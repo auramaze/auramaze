@@ -12,6 +12,7 @@ import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
 import CameraScreen from "./components/camera-screen";
 import TimeLineStack from "./components/timeline-stack";
+import ArtizenInfo from "./components/artizen-info";
 
 class RecommendScreen extends React.Component {
 
@@ -77,7 +78,7 @@ export default class App extends React.Component {
         const MyNavi = createBottomTabNavigator(
             {
                 TimeLine: {screen: TimeLineStack},
-                Artventure: {screen: Art},
+                Artventure: {screen: ArtizenInfo},
                 CameraLeft: {screen: CameraScreen},
                 CameraRight: {screen: CameraScreen},
                 Recommend: {screen: RecommendScreen},

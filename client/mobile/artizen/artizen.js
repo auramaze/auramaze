@@ -3,7 +3,8 @@ import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
-import ArtizenCard from "../components/artizen-card";
+import ArtCard from "../components/art-card";
+import ArtizenInfo from "../components/artizen-info";
 
 class Artizen extends React.Component {
 
@@ -13,7 +14,7 @@ class Artizen extends React.Component {
 
     state = {};
 
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({navigation}) => {
         return {
             title: navigation.getParam('titleName', 'No Title'),
         };
@@ -21,69 +22,117 @@ class Artizen extends React.Component {
 
     async componentDidMount() {
         try {
-            const { navigation } = this.props;
-            const artId = navigation.getParam('artId', 0);
-            let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
-            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
-            let artInfoJson = await artInfo.json();
-            let introInfoJson = await introInfo.json();
+            const {navigation} = this.props;
+            const artizenId = navigation.getParam('artizenId', 0);
+            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
+            let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
             let artizenInfoJson = await artizenInfo.json();
-            let reviewInfoJson = await reviewInfo.json();
+            let introInfoJson = await introInfo.json();
+            let artInfoJson = await artInfo.json();
             let fontLoadStatus = this.props.screenProps.fontLoaded;
             // let returnArtizen = responseJson.artizen.length >= 1;
             // let returnArt = responseJson.art.length >= 1;
 
-            artizenInfoJson.map((item, key) => {
+            artInfoJson.map((item, key) => {
                 (item.type === "artist") && this.setState(previousState => (
                     {
-                        hasArtists: true,
-                        artists: item.data.map((artistItem, artistKey) => {
+                        isArtist: true,
+                        artworks: item.data.map((artItem, artKey) => {
                             return (
-                                <ArtizenCard key={artistKey}
-                                             name={artistItem.name.default}
-                                             source={artistItem.avatar}
-                                             fontLoaded={fontLoadStatus}/>
+                                <ArtCard
+                                    key={artKey}
+                                    artName={artItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
+                                    compYear={artItem.completionYear ? artItem.completionYear : ""}
+                                    id={artItem.id}
+                                    fontLoaded={fontLoadStatus}/>
                             )
                         })
                     }
                 ));
                 (item.type === "museum") && this.setState(previousState => (
                     {
-                        hasMuseums: true,
-                        museums: item.data.map((museumItem, museumKey) => {
+                        isMuseum: true,
+                        collections: item.data.map((museumItem, museumKey) => {
                             return (
-                                <ArtizenCard key={museumKey}
-                                             name={museumItem.name.default}
-                                             source={museumItem.avatar}
-                                             fontLoaded={fontLoadStatus}/>
+                                <ArtCard
+                                    key={museumKey}
+                                    artName={museumItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
+                                    compYear={museumItem.completionYear ? museumItem.completionYear : ""}
+                                    id={museumItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
+                (item.type === "critic") && this.setState(previousState => (
+                    {
+                        isCritic: true,
+                        related: item.data.map((criticItem, criticKey) => {
+                            return (
+                                <ArtCard
+                                    key={criticKey}
+                                    artName={criticItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
+                                    compYear={criticItem.completionYear ? criticItem.completionYear : ""}
+                                    id={criticItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
+                (item.type === "exhibition") && this.setState(previousState => (
+                    {
+                        isExhibition: true,
+                        exhibits: item.data.map((exhibitItem, exhibitKey) => {
+                            return (
+                                <ArtCard
+                                    key={exhibitKey}
+                                    artName={exhibitItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
+                                    compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
+                                    id={exhibitItem.id}
+                                    fontLoaded={fontLoadStatus}/>
                             )
                         })
                     }
                 ));
                 (item.type === "genre") && this.setState(previousState => (
                     {
-                        hasGenres: true,
-                        genres: item.data.map((genreItem, genreKey) => {
+                        isGenre: true,
+                        related: item.data.map((genreItem, genreKey) => {
                             return (
-                                <ArtizenCard key={genreKey}
-                                             name={genreItem.name.default}
-                                             source={genreItem.avatar}
-                                             fontLoaded={fontLoadStatus}/>
+                                <ArtCard
+                                    key={genreKey}
+                                    artName={genreItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
+                                    compYear={genreItem.completionYear ? genreItem.completionYear : ""}
+                                    id={genreItem.id}
+                                    fontLoaded={fontLoadStatus}/>
                             )
                         })
                     }
                 ));
                 (item.type === "style") && this.setState(previousState => (
                     {
-                        hasStyles: true,
-                        styles: item.data.map((styleItem, styleKey) => {
+                        isStyle: true,
+                        related: item.data.map((styleItem, styleKey) => {
                             return (
-                                <ArtizenCard key={styleKey}
-                                             name={styleItem.name.default}
-                                             source={styleItem.avatar}
-                                             fontLoaded={fontLoadStatus}/>
+                                <ArtCard
+                                    key={styleKey}
+                                    artName={styleItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
+                                    compYear={styleItem.completionYear ? styleItem.completionYear : ""}
+                                    id={styleItem.id}
+                                    fontLoaded={fontLoadStatus}/>
                             )
                         })
                     }
@@ -92,8 +141,14 @@ class Artizen extends React.Component {
 
             this.setState(previousState => (
                 {
-                    art: <ArtInfo fontLoaded={fontLoadStatus}
-                                  url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
+                    artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
+                                          url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
+                                          isArtist={this.state.isArtist}
+                                          isMuseum={this.state.isMuseum}
+                                          isExhibition={this.state.isExhibition}
+                                          isStyle={this.state.isStyle}
+                                          isGenre={this.state.isGenre}
+                                          isCritic={this.state.isCritic}/>,
                     introductions: introInfoJson.map((item, key) => {
                         return (
                             <ReviewCard key={key}
@@ -139,31 +194,32 @@ class Artizen extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    {/*<TopBar/>*/}
-                    {this.state.art}
+                    <View style={{height: 30}}/>
+                    {this.state.artizen}
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.hasArtists ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
-                        {this.state.artists}
+                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.artworks}
 
-                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : ""}
-                        {this.state.museums}
+                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.collections}
 
-                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : ""}
-                        {this.state.genres}
+                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.exhibits}
 
-                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : ""}
-                        {this.state.styles}
+                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.related}
+
+                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.related}
+
+                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.related}
 
                         <View style={{height: 30}}/>
-                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
-                        <ReviewCard name={"Ray"}
-                                    source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg'}
-                                    text={`\n\t说来惭愧，真正意识到梵高的伟大是在自己得了精神疾病以后。虽然以前去过好几个收录了梵高作品的博物馆，却没有感受到强烈的冲击。直到后来得了严重的抑郁症，每天需要吃药才有感触。有一个夏天的晚上吃完某种安定情绪的药物后产生了幻觉，当我看到窗外稀疏的星星时，星星就像《星空》中的一样旋转跳跃起来，甚至涌向我。第一时间我想到了梵高，感动得留下了眼泪，由于吃药我已经很久没有哭了。这种感觉不是悲伤也不是孤独，而是理解。世界上形形色色的人当中总有一些孤独的灵魂，而孤独的灵魂也可以有强烈的共鸣，虽然我们不是一个时代的人。\n`}
-                                    fontLoaded={fontLoadStatus}/>
 
                     </View>
                 </ScrollView>
