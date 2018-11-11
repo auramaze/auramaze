@@ -31,7 +31,7 @@ def send_post_request(index, id, data):
     :param dict data: Request data, should be in JSON format
     :return: None
     '''
-    r = es.update(index=index, id=id, body=data)
+    r = es.update(index=index, doc_type='_doc', id=id, body=data)
 
 
 def send_delete_request(path):
