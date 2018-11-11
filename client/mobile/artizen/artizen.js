@@ -42,7 +42,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={artKey}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: artItem.id,
                                         titleName: artItem.title.default,
                                     })}>
@@ -65,7 +65,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={museumKey}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: museumItem.id,
                                         titleName: museumItem.title.default,
                                     })}>
@@ -88,7 +88,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={criticKey}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: criticItem.id,
                                         titleName: criticItem.title.default,
                                     })}>
@@ -111,7 +111,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={exhibitKey}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: exhibitItem.id,
                                         titleName: exhibitItem.title.default,
                                     })}>
@@ -134,7 +134,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={genreKey}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: genreItem.id,
                                         titleName: genreItem.title.default,
                                     })}>
@@ -157,7 +157,7 @@ class Artizen extends React.Component {
                             return (
                                 <TouchableOpacity
                                     key={key}
-                                    onPress={() => this.props.navigation.navigate('Art', {
+                                    onPress={() => this.props.navigation.push('Art', {
                                         artId: styleItem.id,
                                         titleName: styleItem.title.default,
                                     })}>

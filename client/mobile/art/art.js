@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -13,7 +13,7 @@ class Art extends React.Component {
 
     state = {};
 
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({navigation}) => {
         return {
             title: navigation.getParam('titleName', 'No Title'),
         };
@@ -21,7 +21,7 @@ class Art extends React.Component {
 
     async componentDidMount() {
         try {
-            const { navigation } = this.props;
+            const {navigation} = this.props;
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
             let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
@@ -42,10 +42,17 @@ class Art extends React.Component {
                             hasArtists: true,
                             artists: item.data.map((artistItem, artistKey) => {
                                 return (
-                                    <ArtizenCard key={artistKey}
-                                                 name={artistItem.name.default}
-                                                 source={artistItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
+                                    <TouchableOpacity
+                                        key={artistKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: artistItem.id,
+                                            titleName: artistItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={artistItem.name.default}
+                                            source={artistItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
                                 )
                             })
                         }
@@ -57,10 +64,17 @@ class Art extends React.Component {
                             hasMuseums: true,
                             museums: item.data.map((museumItem, museumKey) => {
                                 return (
-                                    <ArtizenCard key={museumKey}
-                                                 name={museumItem.name.default}
-                                                 source={museumItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
+                                    <TouchableOpacity
+                                        key={museumKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: museumItem.id,
+                                            titleName: museumItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={museumItem.name.default}
+                                            source={museumItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
                                 )
                             })
                         }
@@ -72,10 +86,17 @@ class Art extends React.Component {
                             hasGenres: true,
                             genres: item.data.map((genreItem, genreKey) => {
                                 return (
-                                    <ArtizenCard key={genreKey}
-                                                 name={genreItem.name.default}
-                                                 source={genreItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
+                                    <TouchableOpacity
+                                        key={genreKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: genreItem.id,
+                                            titleName: genreItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={genreItem.name.default}
+                                            source={genreItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
                                 )
                             })
                         }
@@ -87,10 +108,17 @@ class Art extends React.Component {
                             hasStyles: true,
                             styles: item.data.map((styleItem, styleKey) => {
                                 return (
-                                    <ArtizenCard key={styleKey}
-                                                 name={styleItem.name.default}
-                                                 source={styleItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
+                                    <TouchableOpacity
+                                        key={styleKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: styleItem.id,
+                                            titleName: styleItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={styleItem.name.default}
+                                            source={styleItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
                                 )
                             })
                         }
