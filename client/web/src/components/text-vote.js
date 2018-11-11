@@ -21,8 +21,17 @@ class TextVote extends Component {
         this.handleVote = this.handleVote.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        const {up, down, status} = this.props;
+        if (up !== prevProps.up || down !== prevProps.down || status !== prevProps.status) {
+            console.log('update');
+            this.setState({up, down, status});
+        }
+    }
+
     handleVote(type, showLoginModal) {
-        const {itemType, itemId, textType, textId, status, cookies} = this.props;
+        const {itemType, itemId, textType, textId, cookies} = this.props;
+        const {status} = this.state;
         if (status === 1 && type === 'up' || status === -1 && type === 'down') {
             return;
         }
