@@ -1,13 +1,13 @@
-.text-modal {
+.editor-modal {
     padding: 20px;
     box-sizing: border-box;
 }
 
-.text-modal p {
+.editor-modal p {
     text-align: center;
 }
 
-.text-modal-title {
+.editor-modal-title {
     position: relative;
     height: 60px;
     margin: 0 10px;
@@ -15,7 +15,7 @@
     white-space: nowrap;
 }
 
-.text-modal-avatar {
+.editor-modal-avatar {
     display: inline-block !important;
     vertical-align: top;
     margin: 8px;
@@ -25,7 +25,7 @@
     border-radius: 50%;
 }
 
-.text-modal-name {
+.editor-modal-name {
     display: inline-block;
     vertical-align: top;
     margin: 10px 0;
@@ -34,31 +34,7 @@
     font-family: 'CenturyGothic', serif;
 }
 
-.text-modal-audio {
-    position: absolute;
-    top: 50%;
-    right: 40px;
-    transform: translate(0, -50%);
-    background-color: #ffffff;
-    box-shadow: 0 0 20px 15px #ffffff;
-    font-size: 16px;
-    color: #666666;
-}
-
-.text-modal-more {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translate(0, -50%);
-    width: 30px;
-    text-align: center;
-    background-color: #ffffff;
-    box-shadow: 0 0 20px 15px #ffffff;
-    font-size: 16px;
-    color: #666666;
-}
-
-.text-modal-content {
+.editor-modal-content {
     position: relative;
     margin: 0 10px;
     padding: 10px;
@@ -71,18 +47,9 @@
     user-select: text;
 }
 
-.text-modal-vote {
-    margin: 0 10px;
-    padding: 10px;
+.editor-modal-footer {
+    margin: 20px 0 0 0;
     text-align: right;
     font-size: 15px;
     color: #666666;
-}
-
-.text-modal-vote-icon {
-    margin-left: 20px;
-}
-
-.text-modal-vote span {
-    margin-left: 10px;
 }

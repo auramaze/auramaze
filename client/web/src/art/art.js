@@ -10,6 +10,7 @@ import ArtizenCard from '../components/artizen-card';
 import TextCard from '../components/text-card';
 import SlickPrevArror from '../components/slick-prev-arrow';
 import SlickNextArror from '../components/slick-next-arrow';
+import EditorModal from '../components/editor-modal';
 import {API_ENDPOINT} from '../common';
 import './art.css';
 
@@ -156,6 +157,7 @@ class Art extends Component {
                         </div>
                     )}
                     <SectionTitle sectionTitle="Reviews"/>
+                    <EditorModal/>
                     {this.state.reviews.map(review =>
                         <TextCard
                             key={review.id}
