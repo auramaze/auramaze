@@ -12,9 +12,8 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {};
     }
-
-    state = {};
 
     async searchAuraMaze(url) {
         try {
@@ -132,7 +131,7 @@ class TimeLine extends React.Component {
                     onClear={onClear}
                     onSubmitEditing={onEnd}
                     onCancel={onCancel}/>
-                <ScrollView>
+                <ScrollView keyboardDismissMode='on-drag'>
                     {this.state.haveArtizen ?
                         <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
                     {this.state.searchArtizen}

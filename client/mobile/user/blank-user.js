@@ -1,91 +1,159 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, Button, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Dimensions, TouchableWithoutFeedback, Text, TouchableOpacity, Keyboard} from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
-import noImage from "../icons/no-image-artizen.png";
+import logoIcon from "../assets/auramaze-logo.png";
+import google from '../icons/google.png';
+import facebook from '../icons/facebook.png';
+import {Input} from "react-native-elements";
+import Hr from 'react-native-hr-plus';
+
+const DismissKeyboard = ({children}) => (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        {children}
+    </TouchableWithoutFeedback>
+);
 
 class BlankUser extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
-    _onPressButton() {
+    static _onPressButton() {
         alert("asd");
     };
-
-    state = {};
 
     render() {
 
         let fontLoadStatus = this.props.screenProps.fontLoaded;
-
 
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
                 alignItems: 'center'
             },
-            loginScreenButton:{
-                width: Dimensions.get('window').width * 2 / 3,
-                marginRight:40,
-                marginLeft:40,
-                marginTop:10,
-                paddingTop:10,
-                paddingBottom:10,
-                borderWidth: 1,
-                backgroundColor:'#666666',
-                borderColor: '#666666',
-                borderRadius:5
+            textWithDivider: {
+                color: '#666666',
+                paddingHorizontal: 10
             },
-            signupScreenButton:{
+            buttonGeneral: {
+                flexDirection: 'row', alignItems: 'center',
+                justifyContent: 'center',
+                width: Dimensions.get('window').width - 40,
+                height: 45,
+                marginVertical: 10,
+                borderWidth: 1
+                // borderRadius: 3
+            },
+            buttonAuramaze: {
+                backgroundColor: '#666666',
+                borderColor: '#666666'
+            },
+            buttonGoogle: {
+                backgroundColor: 'white',
+                borderColor: '#666666'
+            },
+            buttonFacebook: {
+                backgroundColor: '#3B5998',
+                borderColor: '#3B5998'
+            },
+            signupScreenButton: {
                 width: Dimensions.get('window').width * 2 / 3,
-                marginRight:40,
-                marginLeft:40,
-                paddingTop:10,
-                paddingBottom:10,
-                backgroundColor:'white',
+                marginRight: 40,
+                marginLeft: 40,
+                paddingTop: 10,
+                paddingBottom: 10,
+                backgroundColor: 'white',
                 // borderWidth: 1,
                 borderColor: '#666666',
-                borderRadius:5
+                borderRadius: 5
             },
-            loginText:{
-                fontWeight: 'bold',
-                color:'#fff',
-                textAlign:'center',
-                paddingHorizontal : 10,
+            textGenreal: {
+                textAlign: 'center',
+                paddingHorizontal: 10,
                 fontSize: 15
             },
-            signupText:{
-                fontWeight: 'bold',
-                color:'#666666',
-                textAlign:'center',
-                paddingHorizontal : 10,
+            textAuramaze: {
+                color: 'white'
+            },
+            textGoogle: {
+                color: 'black'
+            },
+            textFacebook: {
+                color: 'white'
+            },
+            signupText: {
+                color: '#666666',
+                textAlign: 'center',
+                paddingHorizontal: 10,
                 fontSize: 15
             }
         });
 
         return (
-            <View style={styles.mainStruct}>
-                <View style={{height: 120}}/>
-                <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
-                                 style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
-                                 source={noImage}/>
-                <View style={{height: 80}}/>
-                <TouchableOpacity
-                    style={styles.loginScreenButton}
-                    onPress={this._onPressButton}
-                    underlayColor='#fff'>
-                    <Text style={styles.loginText}>Sign Up</Text>
-                </TouchableOpacity>
-                <View style={{height: 10}}/>
-                <TouchableOpacity
-                    style={styles.signupScreenButton}
-                    onPress={this._onPressButton}
-                    underlayColor='#fff'>
-                    <Text style={styles.signupText}>Log In</Text>
-                </TouchableOpacity>
+            <DismissKeyboard>
+                <View style={styles.mainStruct}>
 
-            </View>
+                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                     source={logoIcon}
+                                     style={{marginTop: 80, marginBottom: 30}}/>
+
+
+                    <Input placeholder='Name'
+                           inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                    />
+                    <Input placeholder='Email'
+                           inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                    />
+                    <Input placeholder='Password'
+                           inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                           containerStyle={{marginBottom: 10}}
+                    />
+
+                    <TouchableOpacity
+                        style={[styles.buttonGeneral, styles.buttonAuramaze]}
+                        onPress={BlankUser._onPressButton}
+                        underlayColor='#fff'>
+                        <AutoHeightImage
+                            width={20}
+                            source={logoIcon} style={{tintColor: 'white'}}/>
+                        <Text style={[styles.textGenreal, styles.textAuramaze]}>Create AuraMaze account</Text>
+                    </TouchableOpacity>
+
+                    <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
+                        <Text style={styles.textWithDivider}>OR</Text>
+                    </Hr>
+
+                    <TouchableOpacity
+                        style={[styles.buttonGeneral, styles.buttonGoogle]}
+                        onPress={BlankUser._onPressButton}
+                        underlayColor='#fff'>
+                        <AutoHeightImage
+                            width={20}
+                            source={google}/>
+                        <Text style={[styles.textGenreal, styles.textGoogle]}>Sign up with Google</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.buttonGeneral, styles.buttonFacebook]}
+                        onPress={BlankUser._onPressButton}
+                        underlayColor='#fff'>
+                        <AutoHeightImage
+                            width={20}
+                            source={facebook}/>
+                        <Text style={[styles.textGenreal, styles.textFacebook]}>Sign up with Facebook</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.signupScreenButton}
+                        onPress={BlankUser._onPressButton}
+                        underlayColor='#fff'>
+                        <Text style={styles.signupText}>Already have an account? Log In</Text>
+                    </TouchableOpacity>
+
+                </View>
+            </DismissKeyboard>
         );
     }
 }
