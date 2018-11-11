@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import {Constants} from 'expo';
 import ArtCard from "../components/art-card";
@@ -14,7 +14,7 @@ class TimeLine extends React.Component {
         super(props);
     }
 
-    state = {term: '', searchArt: '', searchArtizen: ''};
+    state = {};
 
     async searchAuraMaze(url) {
         try {
@@ -134,11 +134,11 @@ class TimeLine extends React.Component {
                     onCancel={onCancel}/>
                 <ScrollView>
                     {this.state.haveArtizen ?
-                        <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : ""}
+                        <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
                     {this.state.searchArtizen}
-                    {this.state.haveArtizen ? <View style={{height: 20}}/> : ""}
+                    {this.state.haveArtizen ? <View style={{height: 20}}/> : <View/>}
                     {this.state.haveArt ?
-                        <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/> : ""}
+                        <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
                     {this.state.searchArt}
                 </ScrollView>
             </View>

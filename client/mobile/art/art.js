@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -182,16 +182,16 @@ class Art extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.artists}
 
-                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.museums}
 
-                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.genres}
 
-                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.styles}
 
                         <View style={{height: 30}}/>

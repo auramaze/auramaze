@@ -48,12 +48,12 @@ class ArtizenInfo extends React.Component {
                     {this.props.title}
                 </Text>
                 <View style={styles.badgeHolderStyle}>
-                    {this.props.isArtist ? <Image source={artist} style={styles.badgeStyle}/> : ""}
-                    {this.props.isMuseum ? <Image source={museum} style={styles.badgeStyle}/> : ""}
-                    {this.props.isGenre ? <Image source={genre} style={styles.badgeStyle}/> : ""}
-                    {this.props.isStyle ? <Image source={style} style={styles.badgeStyle}/> : ""}
-                    {this.props.isCritic ? <Image source={critic} style={styles.badgeStyle}/> : ""}
-                    {this.props.isExhibition ? <Image source={exhibition} style={styles.badgeStyle}/> : ""}
+                    {this.props.isArtist ? <Image source={artist} style={styles.badgeStyle}/> : <View/>}
+                    {this.props.isMuseum ? <Image source={museum} style={styles.badgeStyle}/> : <View/>}
+                    {this.props.isGenre ? <Image source={genre} style={styles.badgeStyle}/> : <View/>}
+                    {this.props.isStyle ? <Image source={style} style={styles.badgeStyle}/> : <View/>}
+                    {this.props.isCritic ? <Image source={critic} style={styles.badgeStyle}/> : <View/>}
+                    {this.props.isExhibition ? <Image source={exhibition} style={styles.badgeStyle}/> : <View/>}
                 </View>
             </View>
         )
