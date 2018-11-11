@@ -1,0 +1,12 @@
+.text-modal-content {
+    padding: 8% 10%;
+    box-sizing: border-box;
+}
+
+.text-modal-content p {
+    text-align: center;
+}
+
+.text-modal-button {
+    height: 20px;
+}

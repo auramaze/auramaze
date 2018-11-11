@@ -56,9 +56,11 @@ class SignupModal extends Component {
                 } else {
                     cookies.remove('token', {path: '/'});
                 }
-                this.setState({name: '', email: '', password: ''})
+                this.setState({id: '', password: '', auramazeProcessing: false});
+                window.location.reload();
+            } else {
+                this.setState({auramazeProcessing: false});
             }
-            this.setState({auramazeProcessing: false});
         });
     }
 
