@@ -20,7 +20,7 @@ class ArtizenInfo extends React.Component {
         const styles = StyleSheet.create({
             viewStyle: {
                 flex: 1, flexDirection: 'column',
-                alignItems: 'center',
+                alignItems: 'center'
             },
             badgeHolderStyle: {
                 flex: 1, flexDirection: 'row',
@@ -30,6 +30,7 @@ class ArtizenInfo extends React.Component {
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginTop: 15,
+                textAlign: 'center'
             },
             badgeStyle: {
                 width: 30,
