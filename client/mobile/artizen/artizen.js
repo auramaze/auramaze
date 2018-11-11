@@ -36,66 +36,58 @@ class Artizen extends React.Component {
             // let returnArt = responseJson.art.length >= 1;
 
             artizenInfoJson.map((item, key) => {
-                if (item.type === "artist") {
-                    this.setState(previousState => (
-                        {
-                            hasArtists: true,
-                            artists: item.data.map((artistItem, artistKey) => {
-                                return (
-                                    <ArtizenCard key={artistKey}
-                                                 name={artistItem.name.default}
-                                                 source={artistItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
-                                )
-                            })
-                        }
-                    ));
-                }
-                else if (item.type === "museum") {
-                    this.setState(previousState => (
-                        {
-                            hasMuseums: true,
-                            museums: item.data.map((museumItem, museumKey) => {
-                                return (
-                                    <ArtizenCard key={museumKey}
-                                                 name={museumItem.name.default}
-                                                 source={museumItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
-                                )
-                            })
-                        }
-                    ));
-                }
-                else if (item.type === "genre") {
-                    this.setState(previousState => (
-                        {
-                            hasGenres: true,
-                            genres: item.data.map((genreItem, genreKey) => {
-                                return (
-                                    <ArtizenCard key={genreKey}
-                                                 name={genreItem.name.default}
-                                                 source={genreItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
-                                )
-                            })
-                        }
-                    ));
-                }
-                else if (item.type === "style") {
-                    this.setState(previousState => (
-                        {
-                            hasStyles: true,
-                            styles: item.data.map((styleItem, styleKey) => {
-                                return (
-                                    <ArtizenCard key={styleKey}
-                                                 name={styleItem.name.default}
-                                                 source={styleItem.avatar}
-                                                 fontLoaded={fontLoadStatus}/>
-                                )
-                            })
-                        }
-                    ));
-                }
+                (item.type === "artist") && this.setState(previousState => (
+                    {
+                        hasArtists: true,
+                        artists: item.data.map((artistItem, artistKey) => {
+                            return (
+                                <ArtizenCard key={artistKey}
+                                             name={artistItem.name.default}
+                                             source={artistItem.avatar}
+                                             fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
+                (item.type === "museum") && this.setState(previousState => (
+                    {
+                        hasMuseums: true,
+                        museums: item.data.map((museumItem, museumKey) => {
+                            return (
+                                <ArtizenCard key={museumKey}
+                                             name={museumItem.name.default}
+                                             source={museumItem.avatar}
+                                             fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
+                (item.type === "genre") && this.setState(previousState => (
+                    {
+                        hasGenres: true,
+                        genres: item.data.map((genreItem, genreKey) => {
+                            return (
+                                <ArtizenCard key={genreKey}
+                                             name={genreItem.name.default}
+                                             source={genreItem.avatar}
+                                             fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
+                (item.type === "style") && this.setState(previousState => (
+                    {
+                        hasStyles: true,
+                        styles: item.data.map((styleItem, styleKey) => {
+                            return (
+                                <ArtizenCard key={styleKey}
+                                             name={styleItem.name.default}
+                                             source={styleItem.avatar}
+                                             fontLoaded={fontLoadStatus}/>
+                            )
+                        })
+                    }
+                ));
             });
 
             this.setState(previousState => (
