@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -40,14 +40,20 @@ class Artizen extends React.Component {
                         isArtist: true,
                         artworks: item.data.map((artItem, artKey) => {
                             return (
-                                <ArtCard
+                                <TouchableOpacity
                                     key={artKey}
-                                    artName={artItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
-                                    compYear={artItem.completionYear ? artItem.completionYear : ""}
-                                    id={artItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: artItem.id,
+                                        titleName: artItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={artItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
+                                        compYear={artItem.completionYear ? artItem.completionYear : ""}
+                                        id={artItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -57,14 +63,20 @@ class Artizen extends React.Component {
                         isMuseum: true,
                         collections: item.data.map((museumItem, museumKey) => {
                             return (
-                                <ArtCard
+                                <TouchableOpacity
                                     key={museumKey}
-                                    artName={museumItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
-                                    compYear={museumItem.completionYear ? museumItem.completionYear : ""}
-                                    id={museumItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: museumItem.id,
+                                        titleName: museumItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={museumItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
+                                        compYear={museumItem.completionYear ? museumItem.completionYear : ""}
+                                        id={museumItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -74,14 +86,20 @@ class Artizen extends React.Component {
                         isCritic: true,
                         related: item.data.map((criticItem, criticKey) => {
                             return (
-                                <ArtCard
+                                <TouchableOpacity
                                     key={criticKey}
-                                    artName={criticItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
-                                    compYear={criticItem.completionYear ? criticItem.completionYear : ""}
-                                    id={criticItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: criticItem.id,
+                                        titleName: criticItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={criticItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
+                                        compYear={criticItem.completionYear ? criticItem.completionYear : ""}
+                                        id={criticItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -91,14 +109,20 @@ class Artizen extends React.Component {
                         isExhibition: true,
                         exhibits: item.data.map((exhibitItem, exhibitKey) => {
                             return (
-                                <ArtCard
+                                <TouchableOpacity
                                     key={exhibitKey}
-                                    artName={exhibitItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
-                                    compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
-                                    id={exhibitItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: exhibitItem.id,
+                                        titleName: exhibitItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={exhibitItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
+                                        compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
+                                        id={exhibitItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -108,14 +132,20 @@ class Artizen extends React.Component {
                         isGenre: true,
                         related: item.data.map((genreItem, genreKey) => {
                             return (
-                                <ArtCard
+                                <TouchableOpacity
                                     key={genreKey}
-                                    artName={genreItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
-                                    compYear={genreItem.completionYear ? genreItem.completionYear : ""}
-                                    id={genreItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: genreItem.id,
+                                        titleName: genreItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={genreItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
+                                        compYear={genreItem.completionYear ? genreItem.completionYear : ""}
+                                        id={genreItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
@@ -125,14 +155,21 @@ class Artizen extends React.Component {
                         isStyle: true,
                         related: item.data.map((styleItem, styleKey) => {
                             return (
-                                <ArtCard
-                                    key={styleKey}
-                                    artName={styleItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
-                                    compYear={styleItem.completionYear ? styleItem.completionYear : ""}
-                                    id={styleItem.id}
-                                    fontLoaded={fontLoadStatus}/>
+                                <TouchableOpacity
+                                    key={key}
+                                    onPress={() => this.props.navigation.navigate('Art', {
+                                        artId: styleItem.id,
+                                        titleName: styleItem.title.default,
+                                    })}>
+                                    <ArtCard
+                                        key={styleKey}
+                                        artName={styleItem.title.default}
+                                        artistName={artizenInfoJson.name.default}
+                                        source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
+                                        compYear={styleItem.completionYear ? styleItem.completionYear : ""}
+                                        id={styleItem.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
                             )
                         })
                     }
