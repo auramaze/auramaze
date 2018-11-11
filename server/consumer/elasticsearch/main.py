@@ -13,7 +13,7 @@ import MySQLdb
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, ElasticsearchException
 
 ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
@@ -31,7 +31,6 @@ def send_post_request(index, id, data):
     :param dict data: Request data, should be in JSON format
     :return: None
     '''
-    
     r = es.update(index=index, doc_type='_doc', id=id, body=data)
 
 def send_delete_request(index, id):
@@ -40,7 +39,6 @@ def send_delete_request(index, id):
     :param str path: Relative path of ElasticSearch
     :return: None
     '''
-
     r = es.delete(index=index, doc_type='_doc', id=id)
 
 
@@ -68,7 +66,7 @@ def upsert_art(msg_value):
         send_post_request('art', id, data)
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in upsert_art(): {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
@@ -106,7 +104,7 @@ def upsert_artizen(msg_value):
                 send_delete_request('artizen', id)
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in upsert_artizen(): {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
@@ -121,7 +119,7 @@ def delete_art(msg_value):
         send_delete_request('art', id)
     except (TypeError, KeyError) as e:
         print('Invalid message format in delete_art(): {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
@@ -136,7 +134,7 @@ def delete_artizen(msg_value):
         send_delete_request('artizen', id)
     except (TypeError, KeyError) as e:
         print('Invalid message format in delete_artizen(): {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
@@ -175,7 +173,7 @@ def update_relation(msg_value):
         print('Invalid message format in update_relation(): {}: {}'.format(msg_value, e), flush=True)
     except MySQLdb.Error as e:
         print('Error in MySQL operation: {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
@@ -229,7 +227,7 @@ def update_introduction(msg_value):
         print('Invalid message format in update_introduction(): {}: {}'.format(msg_value, e), flush=True)
     except MySQLdb.Error as e:
         print('Error in MySQL operation: {}: {}'.format(msg_value, e), flush=True)
-    except elasticsearch.ElasticsearchException as e:
+    except ElasticsearchException as e:
         print('Error in sending request to ElasticSearch: {}: {}'.format(msg_value, e), flush=True)
 
 
