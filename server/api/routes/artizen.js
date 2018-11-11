@@ -253,16 +253,18 @@ router.get('/:id/introduction/:textId', [
 /* POST artizen introduction. */
 router.post('/:id/introduction', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
     body('rating').not().exists(),
     body('content.blocks').exists()
-], (req, res, next) => {
+], auth.required, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const {payload: {id}} = req;
+
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), null, parseInt(req.params.id), 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -378,7 +380,6 @@ router.get('/:id/review/:textId', [
 /* POST artizen review. */
 router.post('/:id/review', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
     oneOf([
         body('content').not().exists(),
         body('content.blocks').exists()
@@ -387,13 +388,16 @@ router.post('/:id/review', [
         body('rating').exists().isInt({min: 1, max: 5}),
         body('content.blocks').exists()
     ])
-], (req, res, next) => {
+], auth.required, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const {payload: {id}} = req;
+
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), null, parseInt(req.params.id), 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
