@@ -13,6 +13,7 @@ import MySQLdb
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
+from elasticsearch import Elasticsearch
 
 ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
@@ -20,17 +21,17 @@ AWS_RDS_HOST = os.getenv('AWS_RDS_HOST')
 AWS_RDS_USER = os.getenv('AWS_RDS_USER')
 AWS_RDS_PASSWORD = os.getenv('AWS_RDS_PASSWORD')
 AWS_RDS_DATABASE = os.getenv('AWS_RDS_DATABASE')
+es = Elasticsearch([ES_HOST])
 
 
-def send_post_request(path, data):
+def send_post_request(index, id, data):
     '''
     Send post request with requests
     :param str path: Relative path of ElasticSearch
     :param dict data: Request data, should be in JSON format
     :return: None
     '''
-    r = requests.post(urllib.parse.urljoin(ES_HOST, path), json=data)
-    r.raise_for_status()
+    r = es.update(index=index, id=id, body=data)
 
 
 def send_delete_request(path):
@@ -64,7 +65,7 @@ def upsert_art(msg_value):
             'doc_as_upsert': True
         }
 
-        send_post_request('art/_doc/{}/_update'.format(id), data)
+        send_post_request('art', id, data)
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in upsert_art(): {}: {}'.format(msg_value, e), flush=True)
     except requests.exceptions.HTTPError as e:
@@ -97,7 +98,7 @@ def upsert_artizen(msg_value):
                 'doc_as_upsert': True
             }
 
-            send_post_request('artizen/_doc/{}/_update'.format(id), data)
+            send_post_request('artizen', id, data)
         elif msg_value['before']:
             old_type = json.loads(msg_value['before']['type']) if msg_value['before']['type'] else []
             if len(old_type) > 0:
@@ -169,7 +170,7 @@ def update_relation(msg_value):
             'doc_as_upsert': True
         }
 
-        send_post_request('art/_doc/{}/_update'.format(art_id), data)
+        send_post_request('art', art_id, data)
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in update_relation(): {}: {}'.format(msg_value, e), flush=True)
     except MySQLdb.Error as e:
@@ -223,7 +224,7 @@ def update_introduction(msg_value):
             'doc_as_upsert': True
         }
 
-        send_post_request('{}/_doc/{}/_update'.format(column.rstrip('_id'), art_id if art_id else artizen_id), data)
+        send_post_request(column.rstrip('_id'), art_id if art_id else artizen_id, data)
     except (TypeError, KeyError, json.decoder.JSONDecodeError) as e:
         print('Invalid message format in update_introduction(): {}: {}'.format(msg_value, e), flush=True)
     except MySQLdb.Error as e:
@@ -272,7 +273,7 @@ while True:
     if msg_value is None:
         # Tombstone message
         continue
-    # print(msg_value, flush=True)
+    print(msg_value, flush=True)
 
     try:
         if msg_value['source']['table'] == 'art':
