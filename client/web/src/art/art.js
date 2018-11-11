@@ -13,6 +13,8 @@ import SlickNextArror from '../components/slick-next-arrow';
 import EditorModal from '../components/editor-modal';
 import {API_ENDPOINT} from '../common';
 import './art.css';
+import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class Art extends Component {
     constructor(props) {
@@ -21,7 +23,8 @@ class Art extends Component {
             art: {},
             artizens: [],
             introductions: [],
-            reviews: []
+            reviews: [],
+            editModalShow: false
         };
         this.artSection = React.createRef();
         this.updateArt = this.updateArt.bind(this);
@@ -156,8 +159,11 @@ class Art extends Component {
                                 />)}
                         </div>
                     )}
-                    <SectionTitle sectionTitle="Reviews"/>
-                    <EditorModal/>
+                    <SectionTitle sectionTitle="Reviews">
+                        <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
+                            this.setState({editModalShow: true});
+                        }}/>
+                    </SectionTitle>
                     {this.state.reviews.map(review =>
                         <TextCard
                             key={review.id}
@@ -177,6 +183,9 @@ class Art extends Component {
                             status={review.status}
                         />)}
                 </div>
+                <EditorModal show={this.state.editModalShow} handleClose={() => {
+                    this.setState({editModalShow: false})
+                }} itemType="art" itemId={this.state.art.id} textType="review"/>
             </div>
         );
     }

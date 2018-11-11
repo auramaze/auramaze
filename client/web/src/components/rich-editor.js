@@ -6,10 +6,9 @@ import './rich-editor.css';
 class RichEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        this.state = {editorState: props.editorState};
 
         this.focus = () => this.refs.editor.focus();
-        this.onChange = (editorState) => this.setState({editorState});
 
         this.handleKeyCommand = (command) => this._handleKeyCommand(command);
         this.toggleBlockType = (type) => this._toggleBlockType(type);
@@ -17,36 +16,35 @@ class RichEditor extends React.Component {
     }
 
     _handleKeyCommand(command) {
-        const {editorState} = this.state;
+        const {editorState} = this.props;
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
-            this.onChange(newState);
+            this.props.onChange(newState);
             return true;
         }
         return false;
     }
 
     _toggleBlockType(blockType) {
-        this.onChange(
+        this.props.onChange(
             RichUtils.toggleBlockType(
-                this.state.editorState,
+                this.props.editorState,
                 blockType
             )
         );
     }
 
     _toggleInlineStyle(inlineStyle) {
-        this.onChange(
+        this.props.onChange(
             RichUtils.toggleInlineStyle(
-                this.state.editorState,
+                this.props.editorState,
                 inlineStyle
             )
         );
     }
 
     render() {
-        const {editorState} = this.state;
-        const {placeholder} = this.props;
+        const {placeholder, editorState} = this.props;
 
         // If the user changes block type before entering any text, we can
         // either style the placeholder or hide it. Let's just hide it now.
@@ -74,7 +72,7 @@ class RichEditor extends React.Component {
                         customStyleMap={styleMap}
                         editorState={editorState}
                         handleKeyCommand={this.handleKeyCommand}
-                        onChange={this.onChange}
+                        onChange={this.props.onChange}
                         placeholder={placeholder}
                         ref="editor"
                         spellCheck={true}

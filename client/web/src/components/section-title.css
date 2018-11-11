@@ -4,3 +4,7 @@
     color: #666666;
     border-bottom: #666666 2px solid;
 }
+
+.section-title-addon {
+    float: right;
+}
