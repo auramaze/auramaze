@@ -1,0 +1,1762 @@
+[
+    {
+        "name": {
+            "default": "Color Field Painting",
+            "en": "Color Field Painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "color-field-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Color_Field"
+    },
+    {
+        "name": {
+            "default": "Gongbi",
+            "en": "Gongbi"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "gongbi",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Gongbi"
+    },
+    {
+        "name": {
+            "default": "Abstract Art",
+            "en": "Abstract Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "abstract-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Abstract_art"
+    },
+    {
+        "name": {
+            "default": "Superflat",
+            "en": "Superflat"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "superflat",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Superflat"
+    },
+    {
+        "name": {
+            "default": "Lettrism",
+            "en": "Lettrism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "lettrism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Lettrism"
+    },
+    {
+        "name": {
+            "default": "Romanesque",
+            "en": "Romanesque"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "romanesque",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Romanesque_architecture"
+    },
+    {
+        "name": {
+            "default": "Neo-Suprematism",
+            "en": "Neo-Suprematism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neosuprematism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Suprematism"
+    },
+    {
+        "name": {
+            "default": "Cubism",
+            "en": "Cubism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cubism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cubism"
+    },
+    {
+        "name": {
+            "default": "Neo-Geo",
+            "en": "Neo-Geo"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neogeo",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo_Geo"
+    },
+    {
+        "name": {
+            "default": "Cartographic Art",
+            "en": "Cartographic Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cartographic-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cartography"
+    },
+    {
+        "name": {
+            "default": "Indian Space painting",
+            "en": "Indian Space painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "indian-space-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Landscape_painting"
+    },
+    {
+        "name": {
+            "default": "Tachisme",
+            "en": "Tachisme"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "tachisme",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tachisme"
+    },
+    {
+        "name": {
+            "default": "Cubo-Expressionism",
+            "en": "Cubo-Expressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cuboexpressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Czech_Cubism"
+    },
+    {
+        "name": {
+            "default": "Existential Art",
+            "en": "Existential Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "existential-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Existentialism"
+    },
+    {
+        "name": {
+            "default": "Fauvism",
+            "en": "Fauvism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "fauvism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Fauvism"
+    },
+    {
+        "name": {
+            "default": "Art Singulier",
+            "en": "Art Singulier"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "art-singulier",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Outsider_art"
+    },
+    {
+        "name": {
+            "default": "Intimism",
+            "en": "Intimism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "intimism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Intimism"
+    },
+    {
+        "name": {
+            "default": "Modernismo",
+            "en": "Modernismo"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "modernismo",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Modernismo"
+    },
+    {
+        "name": {
+            "default": "Maximalism",
+            "en": "Maximalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "maximalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Maximalism"
+    },
+    {
+        "name": {
+            "default": "Tonalism",
+            "en": "Tonalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "tonalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tonalism"
+    },
+    {
+        "name": {
+            "default": "Gothic",
+            "en": "Gothic"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "gothic",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Gothic"
+    },
+    {
+        "name": {
+            "default": "Orientalism",
+            "en": "Orientalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "orientalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Orientalism"
+    },
+    {
+        "name": {
+            "default": "Kinetic Art",
+            "en": "Kinetic Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "kinetic-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Kinetic_art"
+    },
+    {
+        "name": {
+            "default": "S\u014dsaku hanga",
+            "en": "S\u014dsaku hanga"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "sosaku-hanga",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Shin-hanga"
+    },
+    {
+        "name": {
+            "default": "Street Photography",
+            "en": "Street Photography"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "street-photography",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Street_photography"
+    },
+    {
+        "name": {
+            "default": "Neoclassicism",
+            "en": "Neoclassicism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoclassicism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neoclassicism"
+    },
+    {
+        "name": {
+            "default": "International Gothic",
+            "en": "International Gothic"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "international-gothic",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/International_Gothic"
+    },
+    {
+        "name": {
+            "default": "Pointillism",
+            "en": "Pointillism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "pointillism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Pointillism"
+    },
+    {
+        "name": {
+            "default": "Expressionism",
+            "en": "Expressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "expressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Expressionism"
+    },
+    {
+        "name": {
+            "default": "Realism",
+            "en": "Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Realism"
+    },
+    {
+        "name": {
+            "default": "Hyper-Realism",
+            "en": "Hyper-Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "hyperrealism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Hyperrealism_(visual_arts)"
+    },
+    {
+        "name": {
+            "default": "Hyper-Mannerism (Anachronism)",
+            "en": "Hyper-Mannerism (Anachronism)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "hypermannerism-anachronism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Anachronism"
+    },
+    {
+        "name": {
+            "default": "Costumbrismo",
+            "en": "Costumbrismo"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "costumbrismo",
+        "wikipedia_url": "https://es.wikipedia.org/wiki/Costumbrismo"
+    },
+    {
+        "name": {
+            "default": "Renaissance",
+            "en": "Renaissance"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Renaissance"
+    },
+    {
+        "name": {
+            "default": "Regionalism",
+            "en": "Regionalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "regionalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Regionalism"
+    },
+    {
+        "name": {
+            "default": "Joseon Dynasty",
+            "en": "Joseon Dynasty"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "joseon-dynasty",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Joseon"
+    },
+    {
+        "name": {
+            "default": "Suprematism",
+            "en": "Suprematism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "suprematism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Suprematism"
+    },
+    {
+        "name": {
+            "default": "Baroque",
+            "en": "Baroque"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "baroque",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Baroque"
+    },
+    {
+        "name": {
+            "default": "Neo-Romanticism",
+            "en": "Neo-Romanticism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoromanticism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-romanticism"
+    },
+    {
+        "name": {
+            "default": "Naturalism",
+            "en": "Naturalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "naturalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Naturalism"
+    },
+    {
+        "name": {
+            "default": "High Renaissance",
+            "en": "High Renaissance"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "high-renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/High_Renaissance"
+    },
+    {
+        "name": {
+            "default": "Post-Painterly Abstraction",
+            "en": "Post-Painterly Abstraction"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "postpainterly-abstraction",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Post-painterly_abstraction"
+    },
+    {
+        "name": {
+            "default": "Academicism",
+            "en": "Academicism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "academicism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Academic_art"
+    },
+    {
+        "name": {
+            "default": "Social Realism",
+            "en": "Social Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "social-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Social_realism"
+    },
+    {
+        "name": {
+            "default": "Socialist Realism",
+            "en": "Socialist Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "socialist-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Socialist_realism"
+    },
+    {
+        "name": {
+            "default": "Purism",
+            "en": "Purism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "purism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Purism"
+    },
+    {
+        "name": {
+            "default": "Zen",
+            "en": "Zen"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "zen",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Zen"
+    },
+    {
+        "name": {
+            "default": "Rayonism",
+            "en": "Rayonism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "rayonism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Rayonism"
+    },
+    {
+        "name": {
+            "default": "Tubism",
+            "en": "Tubism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "tubism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tubism"
+    },
+    {
+        "name": {
+            "default": "Transavantgarde",
+            "en": "Transavantgarde"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "transavantgarde",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Transavantgarde"
+    },
+    {
+        "name": {
+            "default": "Pictorialism",
+            "en": "Pictorialism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "pictorialism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Pictorialism"
+    },
+    {
+        "name": {
+            "default": "Light and Space",
+            "en": "Light and Space"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "light-and-space",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Light_and_Space"
+    },
+    {
+        "name": {
+            "default": "Orphism",
+            "en": "Orphism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "orphism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Orphism_(religion)"
+    },
+    {
+        "name": {
+            "default": "Ink and wash painting",
+            "en": "Ink and wash painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "ink-and-wash-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Ink_wash_painting"
+    },
+    {
+        "name": {
+            "default": "Luminism",
+            "en": "Luminism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "luminism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Luminism_(American_art_style)"
+    },
+    {
+        "name": {
+            "default": "Native Art",
+            "en": "Native Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "native-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Indigenous_Australian_art"
+    },
+    {
+        "name": {
+            "default": "Spectralism",
+            "en": "Spectralism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "spectralism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Spectral_music"
+    },
+    {
+        "name": {
+            "default": "Timurid Period",
+            "en": "Timurid Period"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "timurid-period",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Timurid_dynasty"
+    },
+    {
+        "name": {
+            "default": "Post-Impressionism",
+            "en": "Post-Impressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "postimpressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Post-Impressionism"
+    },
+    {
+        "name": {
+            "default": "Futurism",
+            "en": "Futurism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "futurism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Futurism"
+    },
+    {
+        "name": {
+            "default": "Photorealism",
+            "en": "Photorealism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "photorealism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Photorealism"
+    },
+    {
+        "name": {
+            "default": "Metaphysical art",
+            "en": "Metaphysical art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "metaphysical-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Metaphysical_art"
+    },
+    {
+        "name": {
+            "default": "Muralism",
+            "en": "Muralism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "muralism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mural"
+    },
+    {
+        "name": {
+            "default": "Analytical Cubism",
+            "en": "Analytical Cubism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "analytical-cubism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cubism"
+    },
+    {
+        "name": {
+            "default": "Neo-Figurative Art",
+            "en": "Neo-Figurative Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neofigurative-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-figurative_art"
+    },
+    {
+        "name": {
+            "default": "Abstract Expressionism",
+            "en": "Abstract Expressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "abstract-expressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Abstract_expressionism"
+    },
+    {
+        "name": {
+            "default": "Precisionism",
+            "en": "Precisionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "precisionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Precisionism"
+    },
+    {
+        "name": {
+            "default": "Tenebrism",
+            "en": "Tenebrism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "tenebrism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tenebrism"
+    },
+    {
+        "name": {
+            "default": "Graffiti Art",
+            "en": "Graffiti Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "graffiti-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Graffiti"
+    },
+    {
+        "name": {
+            "default": "New Realism",
+            "en": "New Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "new-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/New_realism_(philosophy)"
+    },
+    {
+        "name": {
+            "default": "Symbolism",
+            "en": "Symbolism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "symbolism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Symbolism"
+    },
+    {
+        "name": {
+            "default": "Romanticism",
+            "en": "Romanticism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "romanticism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Romanticism"
+    },
+    {
+        "name": {
+            "default": "Neoplasticism",
+            "en": "Neoplasticism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoplasticism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/De_Stijl"
+    },
+    {
+        "name": {
+            "default": "Byzantine",
+            "en": "Byzantine"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "byzantine",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Byzantine_Empire"
+    },
+    {
+        "name": {
+            "default": "Op Art",
+            "en": "Op Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "op-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Op_art"
+    },
+    {
+        "name": {
+            "default": "Nouveau R\u00e9alisme",
+            "en": "Nouveau R\u00e9alisme"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "nouveau-realisme",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Nouveau_r%C3%A9alisme"
+    },
+    {
+        "name": {
+            "default": "Classicism",
+            "en": "Classicism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "classicism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Classicism"
+    },
+    {
+        "name": {
+            "default": "Mail Art",
+            "en": "Mail Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mail-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mail_art"
+    },
+    {
+        "name": {
+            "default": "Lyrical Abstraction",
+            "en": "Lyrical Abstraction"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "lyrical-abstraction",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Lyrical_abstraction"
+    },
+    {
+        "name": {
+            "default": "Feminist Art",
+            "en": "Feminist Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "feminist-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Feminist_art"
+    },
+    {
+        "name": {
+            "default": "Yamato-e",
+            "en": "Yamato-e"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "yamatoe",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Yamato-e"
+    },
+    {
+        "name": {
+            "default": "Early Christian",
+            "en": "Early Christian"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "early-christian",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Early_Christianity"
+    },
+    {
+        "name": {
+            "default": "Nas-Taliq",
+            "en": "Nas-Taliq"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "nastaliq",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Nasta%CA%BFl%C4%ABq"
+    },
+    {
+        "name": {
+            "default": "Na\u00efve Art (Primitivism)",
+            "en": "Na\u00efve Art (Primitivism)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "naive-art-primitivism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Na%C3%AFve_art"
+    },
+    {
+        "name": {
+            "default": "Automatic Painting",
+            "en": "Automatic Painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "automatic-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Automatic_painting"
+    },
+    {
+        "name": {
+            "default": "Street art",
+            "en": "Street art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "street-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Street_art"
+    },
+    {
+        "name": {
+            "default": "Shin-hanga",
+            "en": "Shin-hanga"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "shinhanga",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Shin-hanga"
+    },
+    {
+        "name": {
+            "default": "Early Renaissance",
+            "en": "Early Renaissance"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "early-renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Renaissance"
+    },
+    {
+        "name": {
+            "default": "Fantastic Realism",
+            "en": "Fantastic Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "fantastic-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Magic_realism"
+    },
+    {
+        "name": {
+            "default": "Miserablism",
+            "en": "Miserablism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "miserablism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Was_It_Worth_It%3F_(Pet_Shop_Boys_song)"
+    },
+    {
+        "name": {
+            "default": "Contemporary Realism",
+            "en": "Contemporary Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "contemporary-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Contemporary_realism"
+    },
+    {
+        "name": {
+            "default": "Art Informel",
+            "en": "Art Informel"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "art-informel",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Informalism"
+    },
+    {
+        "name": {
+            "default": "Ottoman Period",
+            "en": "Ottoman Period"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "ottoman-period",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Ottoman_Empire"
+    },
+    {
+        "name": {
+            "default": "Mechanistic Cubism",
+            "en": "Mechanistic Cubism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mechanistic-cubism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cubism"
+    },
+    {
+        "name": {
+            "default": "Northern Renaissance",
+            "en": "Northern Renaissance"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "northern-renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Northern_Renaissance"
+    },
+    {
+        "name": {
+            "default": "Pop Art",
+            "en": "Pop Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "pop-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Pop_art"
+    },
+    {
+        "name": {
+            "default": "New Casualism",
+            "en": "New Casualism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "new-casualism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Casualism"
+    },
+    {
+        "name": {
+            "default": "Ilkhanid",
+            "en": "Ilkhanid"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "ilkhanid",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Ilkhanate"
+    },
+    {
+        "name": {
+            "default": "Sky Art",
+            "en": "Sky Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "sky-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Sky_Arts"
+    },
+    {
+        "name": {
+            "default": "Synthetic Cubism",
+            "en": "Synthetic Cubism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "synthetic-cubism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cubism"
+    },
+    {
+        "name": {
+            "default": "Mosan art",
+            "en": "Mosan art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mosan-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mosan_art"
+    },
+    {
+        "name": {
+            "default": "Dada",
+            "en": "Dada"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "dada",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Dada"
+    },
+    {
+        "name": {
+            "default": "Outsider art",
+            "en": "Outsider art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "outsider-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Outsider_art"
+    },
+    {
+        "name": {
+            "default": "Magic Realism",
+            "en": "Magic Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "magic-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Magic_realism"
+    },
+    {
+        "name": {
+            "default": "Post-Minimalism",
+            "en": "Post-Minimalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "postminimalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Postminimalism"
+    },
+    {
+        "name": {
+            "default": "Neo-Expressionism",
+            "en": "Neo-Expressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoexpressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-expressionism"
+    },
+    {
+        "name": {
+            "default": "Neo-baroque",
+            "en": "Neo-baroque"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neobaroque",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-Baroque"
+    },
+    {
+        "name": {
+            "default": "Impressionism",
+            "en": "Impressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "impressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Impressionism"
+    },
+    {
+        "name": {
+            "default": "Hard Edge Painting",
+            "en": "Hard Edge Painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "hard-edge-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Hard-edge_painting"
+    },
+    {
+        "name": {
+            "default": "Cloisonnism",
+            "en": "Cloisonnism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cloisonnism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cloisonnism"
+    },
+    {
+        "name": {
+            "default": "Analytical\u00a0Realism",
+            "en": "Analytical\u00a0Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "analytical-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Pavel_Filonov"
+    },
+    {
+        "name": {
+            "default": "Neo-Dada",
+            "en": "Neo-Dada"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neodada",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-Dada"
+    },
+    {
+        "name": {
+            "default": "American Realism",
+            "en": "American Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "american-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/American_Realism"
+    },
+    {
+        "name": {
+            "default": "Mannerism (Late Renaissance)",
+            "en": "Mannerism (Late Renaissance)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mannerism-late-renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mannerism"
+    },
+    {
+        "name": {
+            "default": "Action painting",
+            "en": "Action painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "action-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Action_painting"
+    },
+    {
+        "name": {
+            "default": "Neo-Concretism",
+            "en": "Neo-Concretism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoconcretism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-Concrete_Movement"
+    },
+    {
+        "name": {
+            "default": "Minimalism",
+            "en": "Minimalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "minimalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Minimalism"
+    },
+    {
+        "name": {
+            "default": "Rococo",
+            "en": "Rococo"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "rococo",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Rococo"
+    },
+    {
+        "name": {
+            "default": "Cyber Art",
+            "en": "Cyber Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cyber-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cyberarts"
+    },
+    {
+        "name": {
+            "default": "Perceptism ",
+            "en": "Perceptism "
+        },
+        "type": [
+            "style"
+        ],
+        "username": "perceptism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Perspectivism"
+    },
+    {
+        "name": {
+            "default": "Lowbrow Art",
+            "en": "Lowbrow Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "lowbrow-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Lowbrow_(art_movement)"
+    },
+    {
+        "name": {
+            "default": "Transautomatism",
+            "en": "Transautomatism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "transautomatism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Transautomatism"
+    },
+    {
+        "name": {
+            "default": "Neo-Orthodoxism",
+            "en": "Neo-Orthodoxism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neoorthodoxism",
+        "wikipedia_url": "NA"
+    },
+    {
+        "name": {
+            "default": "Cubo-Futurism",
+            "en": "Cubo-Futurism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "cubofuturism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cubo-Futurism"
+    },
+    {
+        "name": {
+            "default": "Constructivism",
+            "en": "Constructivism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "constructivism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Constructivism"
+    },
+    {
+        "name": {
+            "default": "Synchromism",
+            "en": "Synchromism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "synchromism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Synchromism"
+    },
+    {
+        "name": {
+            "default": "Art Brut",
+            "en": "Art Brut"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "art-brut",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Art_Brut"
+    },
+    {
+        "name": {
+            "default": "Nanga (Bunjinga)",
+            "en": "Nanga (Bunjinga)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "nanga-bunjinga",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Nanga_(Japanese_painting)"
+    },
+    {
+        "name": {
+            "default": "Spatialism",
+            "en": "Spatialism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "spatialism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Spatialism"
+    },
+    {
+        "name": {
+            "default": "Figurative Expressionism",
+            "en": "Figurative Expressionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "figurative-expressionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/American_Figurative_Expressionism"
+    },
+    {
+        "name": {
+            "default": "Concretism",
+            "en": "Concretism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "concretism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Concretism"
+    },
+    {
+        "name": {
+            "default": "Verism",
+            "en": "Verism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "verism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Verism"
+    },
+    {
+        "name": {
+            "default": "Poster Art Realism",
+            "en": "Poster Art Realism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "poster-art-realism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Socialist_realism"
+    },
+    {
+        "name": {
+            "default": "Synthetism",
+            "en": "Synthetism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "synthetism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Synthetism"
+    },
+    {
+        "name": {
+            "default": "Stuckism",
+            "en": "Stuckism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "stuckism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Stuckism"
+    },
+    {
+        "name": {
+            "default": "Ukiyo-e",
+            "en": "Ukiyo-e"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "ukiyoe",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Ukiyo-e"
+    },
+    {
+        "name": {
+            "default": "Surrealism",
+            "en": "Surrealism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "surrealism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Surrealism"
+    },
+    {
+        "name": {
+            "default": "P&D (Pattern and Decoration)",
+            "en": "P&D (Pattern and Decoration)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "pd-pattern-and-decoration",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Textile_printing"
+    },
+    {
+        "name": {
+            "default": "Toyism",
+            "en": "Toyism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "toyism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Toyism"
+    },
+    {
+        "name": {
+            "default": "Environmental (Land) Art",
+            "en": "Environmental (Land) Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "environmental-land-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Land_art"
+    },
+    {
+        "name": {
+            "default": "Biedermeier",
+            "en": "Biedermeier"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "biedermeier",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Biedermeier"
+    },
+    {
+        "name": {
+            "default": "Conceptual Art",
+            "en": "Conceptual Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "conceptual-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Conceptual_art"
+    },
+    {
+        "name": {
+            "default": "Neo-Rococo",
+            "en": "Neo-Rococo"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neorococo",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Rococo_Revival"
+    },
+    {
+        "name": {
+            "default": "Nihonga",
+            "en": "Nihonga"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "nihonga",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Nihonga"
+    },
+    {
+        "name": {
+            "default": "Neo-Minimalism",
+            "en": "Neo-Minimalism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neominimalism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-minimalism"
+    },
+    {
+        "name": {
+            "default": "Neo-Byzantine",
+            "en": "Neo-Byzantine"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neobyzantine",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neobyzantine_Octoechos"
+    },
+    {
+        "name": {
+            "default": "Junk Art",
+            "en": "Junk Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "junk-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Found_object"
+    },
+    {
+        "name": {
+            "default": "Safavid Period",
+            "en": "Safavid Period"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "safavid-period",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Safavid_dynasty"
+    },
+    {
+        "name": {
+            "default": "Kitsch",
+            "en": "Kitsch"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "kitsch",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Kitsch"
+    },
+    {
+        "name": {
+            "default": "Excessivism",
+            "en": "Excessivism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "excessivism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Excessivism"
+    },
+    {
+        "name": {
+            "default": "Contemporary",
+            "en": "Contemporary"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "contemporary",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Contemporary_(disambiguation)"
+    },
+    {
+        "name": {
+            "default": "Art Nouveau (Modern)",
+            "en": "Art Nouveau (Modern)"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "art-nouveau-modern",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Art_Deco"
+    },
+    {
+        "name": {
+            "default": "Mozarabic",
+            "en": "Mozarabic"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mozarabic",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mozarabic_language"
+    },
+    {
+        "name": {
+            "default": "New European Painting",
+            "en": "New European Painting"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "new-european-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/New_European_Painting"
+    },
+    {
+        "name": {
+            "default": "Divisionism",
+            "en": "Divisionism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "divisionism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Divisionism"
+    },
+    {
+        "name": {
+            "default": "Proto Renaissance",
+            "en": "Proto Renaissance"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "proto-renaissance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Renaissance_art"
+    },
+    {
+        "name": {
+            "default": "Neo-Pop Art",
+            "en": "Neo-Pop Art"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "neopop-art",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Neo-pop"
+    },
+    {
+        "name": {
+            "default": "Japonism",
+            "en": "Japonism"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "japonism",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Japonism"
+    },
+    {
+        "name": {
+            "default": "Mughal",
+            "en": "Mughal"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "mughal",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mughal_Empire"
+    },
+    {
+        "name": {
+            "default": "Art Deco",
+            "en": "Art Deco"
+        },
+        "type": [
+            "style"
+        ],
+        "username": "art-deco",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Art_Deco"
+    }
+]

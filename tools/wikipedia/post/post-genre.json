@@ -1,0 +1,596 @@
+[
+    {
+        "name": {
+            "default": "architecture",
+            "en": "architecture"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "architecture",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Architecture"
+    },
+    {
+        "name": {
+            "default": "pastorale",
+            "en": "pastorale"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "pastorale",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Pastorale"
+    },
+    {
+        "name": {
+            "default": "landscape",
+            "en": "landscape"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "landscape",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Landscape"
+    },
+    {
+        "name": {
+            "default": "advertisement",
+            "en": "advertisement"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "advertisement",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Advertising"
+    },
+    {
+        "name": {
+            "default": "trompe-l'\u0153il",
+            "en": "trompe-l'\u0153il"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "trompeloeil",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Trompe-l%27%C5%93il"
+    },
+    {
+        "name": {
+            "default": "battle painting",
+            "en": "battle painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "battle-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Military_art"
+    },
+    {
+        "name": {
+            "default": "graffiti",
+            "en": "graffiti"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "graffiti",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Graffiti"
+    },
+    {
+        "name": {
+            "default": "vanitas",
+            "en": "vanitas"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "vanitas",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Vanitas"
+    },
+    {
+        "name": {
+            "default": "caricature",
+            "en": "caricature"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "caricature",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Caricature"
+    },
+    {
+        "name": {
+            "default": "symbolic painting",
+            "en": "symbolic painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "symbolic-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Symbolism_(arts)"
+    },
+    {
+        "name": {
+            "default": "interior",
+            "en": "interior"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "interior",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Interior"
+    },
+    {
+        "name": {
+            "default": "bijinga",
+            "en": "bijinga"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "bijinga",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Bijin-ga"
+    },
+    {
+        "name": {
+            "default": "video",
+            "en": "video"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "video",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Video"
+    },
+    {
+        "name": {
+            "default": "yakusha-e",
+            "en": "yakusha-e"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "yakushae",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Yakusha-e"
+    },
+    {
+        "name": {
+            "default": "mosaic",
+            "en": "mosaic"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "mosaic",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Mosaic"
+    },
+    {
+        "name": {
+            "default": "veduta",
+            "en": "veduta"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "veduta",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Veduta"
+    },
+    {
+        "name": {
+            "default": "calligraphy",
+            "en": "calligraphy"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "calligraphy",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Calligraphy"
+    },
+    {
+        "name": {
+            "default": "photo",
+            "en": "photo"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "photo",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Photograph"
+    },
+    {
+        "name": {
+            "default": "design",
+            "en": "design"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "design",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Design"
+    },
+    {
+        "name": {
+            "default": "illustration",
+            "en": "illustration"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "illustration",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Illustration"
+    },
+    {
+        "name": {
+            "default": "urushi-e",
+            "en": "urushi-e"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "urushie",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Urushi-e"
+    },
+    {
+        "name": {
+            "default": "tessellation",
+            "en": "tessellation"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "tessellation",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tessellation"
+    },
+    {
+        "name": {
+            "default": "quadratura",
+            "en": "quadratura"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "quadratura",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Illusionistic_ceiling_painting"
+    },
+    {
+        "name": {
+            "default": "shan shui",
+            "en": "shan shui"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "shan-shui",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Shan_shui"
+    },
+    {
+        "name": {
+            "default": "miniature",
+            "en": "miniature"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "miniature",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Miniature"
+    },
+    {
+        "name": {
+            "default": "nude painting (nu)",
+            "en": "nude painting (nu)"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "nude-painting-nu",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Nude_(art)"
+    },
+    {
+        "name": {
+            "default": "tapestry",
+            "en": "tapestry"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "tapestry",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tapestry"
+    },
+    {
+        "name": {
+            "default": "genre painting",
+            "en": "genre painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "genre-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Genre_painting"
+    },
+    {
+        "name": {
+            "default": "flower painting",
+            "en": "flower painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "flower-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Flower_paintings_of_Georgia_O%27Keeffe"
+    },
+    {
+        "name": {
+            "default": "portrait",
+            "en": "portrait"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "portrait",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Portrait"
+    },
+    {
+        "name": {
+            "default": "performance",
+            "en": "performance"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "performance",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Performance"
+    },
+    {
+        "name": {
+            "default": "mythological painting",
+            "en": "mythological painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "mythological-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Category:Mythological_paintings"
+    },
+    {
+        "name": {
+            "default": "history painting",
+            "en": "history painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "history-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/History_painting"
+    },
+    {
+        "name": {
+            "default": "religious painting",
+            "en": "religious painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "religious-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Religious_art"
+    },
+    {
+        "name": {
+            "default": "panorama",
+            "en": "panorama"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "panorama",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Panorama"
+    },
+    {
+        "name": {
+            "default": "bird-and-flower painting",
+            "en": "bird-and-flower painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "birdandflower-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Bird-and-flower_painting"
+    },
+    {
+        "name": {
+            "default": "still life",
+            "en": "still life"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "still-life",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Still_life"
+    },
+    {
+        "name": {
+            "default": "poster",
+            "en": "poster"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "poster",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Poster"
+    },
+    {
+        "name": {
+            "default": "cloudscape",
+            "en": "cloudscape"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "cloudscape",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cloudscape"
+    },
+    {
+        "name": {
+            "default": "literary painting",
+            "en": "literary painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "literary-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Literature"
+    },
+    {
+        "name": {
+            "default": "cityscape",
+            "en": "cityscape"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "cityscape",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Cityscape"
+    },
+    {
+        "name": {
+            "default": "abstract",
+            "en": "abstract"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "abstract",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Abstract"
+    },
+    {
+        "name": {
+            "default": "figurative",
+            "en": "figurative"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "figurative",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Figurative"
+    },
+    {
+        "name": {
+            "default": "artist's book",
+            "en": "artist's book"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "artists-book",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Artist%27s_book"
+    },
+    {
+        "name": {
+            "default": "capriccio",
+            "en": "capriccio"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "capriccio",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Capriccio"
+    },
+    {
+        "name": {
+            "default": "marina",
+            "en": "marina"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "marina",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Marina"
+    },
+    {
+        "name": {
+            "default": "tronie",
+            "en": "tronie"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "tronie",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Tronie"
+    },
+    {
+        "name": {
+            "default": "self-portrait",
+            "en": "self-portrait"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "selfportrait",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Self-portrait"
+    },
+    {
+        "name": {
+            "default": "sketch and study",
+            "en": "sketch and study"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "sketch-and-study",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Sketch_(drawing)"
+    },
+    {
+        "name": {
+            "default": "animal painting",
+            "en": "animal painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "animal-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Animal_painter"
+    },
+    {
+        "name": {
+            "default": "sculpture",
+            "en": "sculpture"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "sculpture",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Sculpture"
+    },
+    {
+        "name": {
+            "default": "allegorical painting",
+            "en": "allegorical painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "allegorical-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Allegory"
+    },
+    {
+        "name": {
+            "default": "installation",
+            "en": "installation"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "installation",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Installation"
+    },
+    {
+        "name": {
+            "default": "wildlife painting",
+            "en": "wildlife painting"
+        },
+        "type": [
+            "genre"
+        ],
+        "username": "wildlife-painting",
+        "wikipedia_url": "https://en.wikipedia.org/wiki/Animal_painter"
+    }
+]

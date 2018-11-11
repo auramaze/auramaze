@@ -7,15 +7,11 @@ import {ModalContext} from '../app';
 import logo from '../static/logo-white-frame.svg';
 import './navbar.css';
 import {withCookies} from "react-cookie";
+import {removeCookies} from "../utils";
 
 const scroll = Scroll.animateScroll;
 
 class Navbar extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
         const home = this.props.home;
         const {cookies} = this.props;
@@ -29,9 +25,8 @@ class Navbar extends Component {
                             {id && <div className="nav-item">
                                 <Link to="#" onClick={(e) => {
                                     e.preventDefault();
-                                    cookies.remove('id', {path: '/'});
-                                    cookies.remove('username', {path: '/'});
-                                    cookies.remove('token', {path: '/'});
+                                    removeCookies(cookies);
+                                    window.location.reload();
                                 }}>Log out</Link>
                             </div>}
                             {id && <div className="nav-item">

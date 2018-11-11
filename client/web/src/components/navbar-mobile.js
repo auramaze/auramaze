@@ -8,6 +8,7 @@ import './navbar-mobile.css';
 import {ModalContext} from '../app';
 import {lockBody, unlockBody} from '../utils';
 import {withCookies} from "react-cookie";
+import {removeCookies} from "../utils";
 
 const scroll = Scroll.animateScroll;
 
@@ -100,9 +101,8 @@ class NavbarMobile extends Component {
                                     <Link to="#" onClick={(e) => {
                                         e.preventDefault();
                                         this.hideNavbarMobile();
-                                        cookies.remove('id', {path: '/'});
-                                        cookies.remove('username', {path: '/'});
-                                        cookies.remove('token', {path: '/'});
+                                        removeCookies(cookies);
+                                        window.location.reload();
                                     }}>Log out</Link>
                                 </div>}
                             </div>

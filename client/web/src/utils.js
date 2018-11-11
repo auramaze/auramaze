@@ -32,12 +32,18 @@ export function convertHTMLToEditorState(html) {
 
 export function lockBody() {
     document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.height = '100%';
-    document.body.style.width = '100%';
+    // document.body.style.position = 'fixed';
+    // document.body.style.height = '100%';
+    // document.body.style.width = '100%';
 }
 
 export function unlockBody() {
     document.body.style.overflow = 'visible';
-    document.body.style.position = 'static';
+    // document.body.style.position = 'static';
 }
+
+export const removeCookies = (cookies) => {
+    cookies.remove('id', {path: '/'});
+    cookies.remove('username', {path: '/'});
+    cookies.remove('token', {path: '/'});
+};

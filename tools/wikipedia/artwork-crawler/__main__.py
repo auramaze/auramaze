@@ -4,7 +4,9 @@ import math
 import json
 import pprint
 import re
+import requests
 import urllib.request
+
 import numpy as np
 from apiclient.discovery import build
 from PIL import Image
@@ -55,6 +57,53 @@ def artistQuery():
             artists.append(new_artist)
     return artists
 
+
+def otherQuery():
+    others = []
+    with open(data_path + 'museums.json') as other_json_file:
+        other_json = json.load(other_json_file)
+        for other, value in other_json.items():
+            # other_name = re.sub(r'[^A-Za-z\s]+', '', unidecode(other).strip().rstrip())
+            # other_name = other_name.replace(' ', '-').lower()
+            # new_other['username'] = other_name
+            # new_other['styleName'] = other
+            if len(value) == 1:
+                other_json[other] = value[0]
+            elif len(value) == 0:
+                other_json[other] = {'museumName': other}
+                others.append(other_json[other])
+                continue
+            else:
+                print(other, 'resized')
+                other_json[other] = value[0]
+            other_json[other]['museumName'] = other
+            other_json[other]['locationName'] = other_json[other]['name']
+            del other_json[other]['name']
+            try:
+                service = build("customsearch", "v1",
+                        developerKey="AIzaSyCqI-ixGbVm-y4svD41Dahyyhs4Edz86B0")
+
+                res = service.cse().list(
+                      q=other + ' Wikipedia',
+                      # q='Paul Ackerman Wikipedia',
+                      cx='017007423820323933062:fhljekcpliy',
+                    ).execute()
+
+                for item in res["items"]:
+                    if 'Wikipedia' in item["htmlTitle"] and 'jpg' not in item["htmlTitle"]:
+                        # pprint.pprint(item)
+                        other_json[other]['wikipediaLink'] = item["formattedUrl"]
+                        break
+                    else:
+                        other_json[other]['wikipediaLink'] = 'NA'
+                print(other, other_json[other]['wikipediaLink'])
+            except KeyError:
+                other_json[other]['wikipediaLink'] = 'NA'
+
+            others.append(other_json[other])
+    return others
+
+
 def validateLink():
     pass
 
@@ -101,16 +150,20 @@ def searchQuery(query):
     return 'NA'
 
 
-def downloadWiki(link):
+def downloadWiki(title, link):
     try:
         headers = {}
         headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
         req = urllib.request.Request(link, headers = headers)
         resp = urllib.request.urlopen(req)
-        respData = str(resp.read())
-        return respData
+        respData = str(resp.read().decode('utf-8'))
+
+        f = open('museum-html/{}.html'.format(title), 'w+', encoding='utf-8')
+        f.write(respData)
+        f.close()
+        print(title, "download")
     except Exception as e:
-        print(str(e))
+        print(title, str(e))
 
 
 def parseWiki(html):
@@ -131,6 +184,17 @@ def parseWiki(html):
     wiki_dic["introduction"] = introduction
 
     return wiki_dic
+
+
+def museumUsername(museum_dict):
+    for museum in museum_dict:
+        for location in museum_dict[museum]:
+            museum_name = location['name']
+            museum_name = re.sub(r'[^A-Za-z\s]+', '', unidecode(museum_name).strip().rstrip())
+            museum_name = museum_name.replace(' ', '-').lower()
+            print(museum_name)
+            location['username'] = museum_name
+    return museum_dict
 
 
 def imageSimilarity(img1, img2):
@@ -160,8 +224,9 @@ def main():
     args = sys.argv[1:]
 
     if not args:
-        print('usage: [-a(art)/-i(imageSimilarity)]')
+        print('usage: [-a(art)/-i(imageSimilarity)/--artist/--location/--download/--other/--post/--postAPI]')
         sys.exit(1)
+
     elif args[0] == '-a':
         queries = constructQuery()
         art_id = 0
@@ -190,12 +255,90 @@ def main():
             queries[key]["type"] = "art"
         exportJSON(queries, './', 'wiki-sample-link')
         # pprint.pprint(queries)
+
     elif args[0] == '-i':
         print(imageSimilarity(img_path + 'mona-lisa.jpg', img_path + '/mona-lisa-f-1.jpg'))
+
     elif args[0] == '--artist':
         artists = artistQuery()
         # pprint.pprint(artists)
         exportJSON(artists, './', 'wiki-artists')
+
+    elif args[0] == '--location':
+        museum_dict = {}
+        with open(data_path + 'location.json') as museum_json_file:
+            museum_dict = json.load(museum_json_file)
+        locations = museumUsername(museum_dict)
+        exportJSON(museum_dict, './', 'museum-locations')
+
+    elif args[0] == '--download':
+        download_json = {}
+        with open(data_path + 'wiki-museums.json') as download_json_file:
+            download_json = json.load(download_json_file)
+        for download in download_json:
+            if 'wikipediaLink' in download:
+                downloadWiki(download['username'], download['wikipediaLink'])
+
+    elif args[0] == '--other':
+        others = otherQuery()
+        exportJSON(others, './', 'wiki-museums')
+
+    elif args[0] == '--help':
+        original_json = {}
+        new_json = {}
+        with open('wiki-museum.json') as original_json_file:
+            original_json = json.load(original_json_file)
+        with open('wiki-museums.json') as new_json_file:
+            new_json = json.load(new_json_file)
+        for museum in new_json:
+            if len(original_json[museum['museumName']]) != 0:
+                if 'username' in original_json[museum['museumName']][0]:
+                    museum['username'] = original_json[museum['museumName']][0]['username']
+                else:
+                    print('type 1', museum['museumName'])
+            else:
+                print('type 2', museum['museumName'])
+                museum_name = museum['museumName'].split(',')[0]
+                museum_name = re.sub(r'[^A-Za-z\s]+', '', unidecode(museum_name).strip().rstrip())
+                museum_name = museum_name.replace(' ', '-').lower()
+                museum['username'] = museum_name
+                museum['locationName'] = 'NA'
+                museum['address'] = 'NA'
+                museum['location'] = {}
+                museum['wikipediaLink'] = 'NA'
+        exportJSON(new_json, './', 'wiki-museums')
+
+    elif args[0] == '--post':
+        json_dicts = []
+        post_dicts = []
+        with open('wiki-museums.json') as original_json_file:
+            json_dicts = json.load(original_json_file)
+        for json_dict in json_dicts:
+            post_dict = {'name': {}, 'type': ['museum']}
+            post_dict['name']['default'] = post_dict['name']['en'] = json_dict['museumName']
+            post_dict['username'] = json_dict['username']
+            post_dict['wikipedia_url'] = json_dict['wikipediaLink']
+            print(post_dict['name']['default'])
+            post_dicts.append(post_dict)
+        exportJSON(post_dicts, './post/', 'post-museum')
+
+    elif args[0] == '--postAPI':
+        post_dicts = []
+        with open('draftjs/wiki-artists-draftjs.json') as original_json_file:
+            post_dicts = json.load(original_json_file)
+        for payload in post_dicts:
+            try:
+                r = requests.get("https://apidev.auramaze.org/v1/artizen/{}".format(payload['username']), json=payload)
+                res = r.json()
+                url = "https://apidev.auramaze.org/v1/artizen/{}/introduction".format(res['id'])
+                if payload['wikipedia'] and payload['wikipedia']['content']:
+                    content = {"author_id": "100000010", "content": payload['wikipedia']['content']}
+                    r = requests.post(url, json=content)
+                    print(r.status_code, r.content)
+                else:
+                    print(payload['username'], 'no Wikipedia')
+            except Exception as e:
+                print(str(e), res)
 
 if __name__ == '__main__':
     main()
