@@ -13,6 +13,9 @@ import SlickPrevArror from '../components/slick-prev-arrow';
 import SlickNextArror from '../components/slick-next-arrow';
 import {API_ENDPOINT} from '../common';
 import './artizen.css';
+import EditorModal from "../components/editor-modal";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit} from "@fortawesome/free-solid-svg-icons";
 
 class Artizen extends Component {
     constructor(props) {
@@ -21,7 +24,8 @@ class Artizen extends Component {
             artizen: {},
             arts: [],
             introductions: [],
-            reviews: []
+            reviews: [],
+            editModalShow: false
         };
         this.artSection = React.createRef();
         this.updateArtizen = this.updateArtizen.bind(this);
@@ -155,7 +159,11 @@ class Artizen extends Component {
                                 </div>)}
                         </Slider>}
                     </div>
-                    <SectionTitle sectionTitle="Reviews"/>
+                    <SectionTitle sectionTitle="Reviews">
+                        <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
+                            this.setState({editModalShow: true});
+                        }}/>
+                    </SectionTitle>
                     {this.state.reviews.map(review =>
                         <TextCard
                             key={review.id}
@@ -187,6 +195,9 @@ class Artizen extends Component {
                         </div>
                     )}
                 </div>
+                <EditorModal show={this.state.editModalShow} handleClose={() => {
+                    this.setState({editModalShow: false})
+                }} itemType="artizen" itemId={this.state.artizen.id} textType="review"/>
             </div>
         );
     }
