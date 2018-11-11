@@ -141,6 +141,7 @@ class Artizen extends Component {
                                         content={introduction.content}
                                         up={introduction.up}
                                         down={introduction.down}
+                                        status={introduction.status}
                                     />
                                 </div>)}
                         </Slider>}
@@ -162,6 +163,7 @@ class Artizen extends Component {
                             content={review.content}
                             up={review.up}
                             down={review.down}
+                            status={review.status}
                         />)}
                 </div>
                 <div className="artizen-right-section" ref={this.artSection}>
