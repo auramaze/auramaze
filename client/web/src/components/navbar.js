@@ -11,11 +11,6 @@ import {withCookies} from "react-cookie";
 const scroll = Scroll.animateScroll;
 
 class Navbar extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
         const home = this.props.home;
         const {cookies} = this.props;
