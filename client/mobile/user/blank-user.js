@@ -1,5 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, TouchableWithoutFeedback, Text, TouchableOpacity, Keyboard} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Dimensions,
+    TouchableWithoutFeedback,
+    Text,
+    TouchableOpacity,
+    Keyboard,
+    AsyncStorage
+} from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import google from '../icons/google.png';
@@ -22,6 +31,27 @@ class BlankUser extends React.Component {
 
     static _onPressButton() {
         alert("asd");
+    };
+
+    static createAuraMaze = async () => {
+        try {
+            this.setState({auramazeProcessing: true});
+            await AsyncStorage.setItem('key', 'I like to save it.');
+        } catch (error) {
+
+        }
+    };
+
+    static _retrieveData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('key');
+            if (value !== null) {
+                // We have data!!
+                alert(value);
+            }
+        } catch (error) {
+            // Error retrieving data
+        }
     };
 
     render() {
@@ -102,18 +132,21 @@ class BlankUser extends React.Component {
 
                     <Input placeholder='Name'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                           onChangeText={(username) => this.setState(previousState => ({username: username}))}
                     />
                     <Input placeholder='Email'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                           onChangeText={(email) => this.setState(previousState => ({email: email}))}
                     />
                     <Input placeholder='Password'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                           onChangeText={(password) => this.setState(previousState => ({password: password}))}
                            containerStyle={{marginBottom: 10}}
                     />
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                        onPress={BlankUser._onPressButton}
+                        onPress={BlankUser._storeData}
                         underlayColor='#fff'>
                         <AutoHeightImage
                             width={20}
@@ -127,7 +160,7 @@ class BlankUser extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonGoogle]}
-                        onPress={BlankUser._onPressButton}
+                        onPress={BlankUser._retrieveData}
                         underlayColor='#fff'>
                         <AutoHeightImage
                             width={20}
