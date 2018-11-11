@@ -1,11 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
-import TopBar from "../components/top-bar";
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
-import {Constants} from "expo";
 
 class Art extends React.Component {
 
@@ -13,35 +11,141 @@ class Art extends React.Component {
         super(props);
     }
 
-    state = {
-        artizen: {
-            "type": "artist",
-            "data": [
-                {
-                    "id": 100186532,
-                    "username": "caravaggio",
-                    "name": {
-                        "en": "Caravaggio",
-                        "zh": "卡拉瓦乔",
-                        "default": "Caravaggio"
-                    },
-                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg",
-                    "type": "artist"
-                },
-                {
-                    "id": 100225091,
-                    "username": "leonardo-da-vinci",
-                    "name": {
-                        "en": "Leonardo da Vinci",
-                        "zh": "列奥纳多·达·芬奇",
-                        "default": "Leonardo da Vinci"
-                    },
-                    "avatar": "https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/leonardo-da-vinci.jpg",
-                    "type": "artist"
-                }
-            ]
-        }
+    state = {};
+
+    static navigationOptions = ({navigation}) => {
+        return {
+            title: navigation.getParam('titleName', 'No Title'),
+        };
     };
+
+    async componentDidMount() {
+        try {
+            const {navigation} = this.props;
+            const artId = navigation.getParam('artId', 0);
+            let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
+            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
+            let artInfoJson = await artInfo.json();
+            let introInfoJson = await introInfo.json();
+            let artizenInfoJson = await artizenInfo.json();
+            let reviewInfoJson = await reviewInfo.json();
+            let fontLoadStatus = this.props.screenProps.fontLoaded;
+            // let returnArtizen = responseJson.artizen.length >= 1;
+            // let returnArt = responseJson.art.length >= 1;
+
+            artizenInfoJson.map((item, key) => {
+                if (item.type === "artist") {
+                    this.setState(previousState => (
+                        {
+                            hasArtists: true,
+                            artists: item.data.map((artistItem, artistKey) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={artistKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: artistItem.id,
+                                            titleName: artistItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={artistItem.name.default}
+                                            source={artistItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "museum") {
+                    this.setState(previousState => (
+                        {
+                            hasMuseums: true,
+                            museums: item.data.map((museumItem, museumKey) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={museumKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: museumItem.id,
+                                            titleName: museumItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={museumItem.name.default}
+                                            source={museumItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "genre") {
+                    this.setState(previousState => (
+                        {
+                            hasGenres: true,
+                            genres: item.data.map((genreItem, genreKey) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={genreKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: genreItem.id,
+                                            titleName: genreItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={genreItem.name.default}
+                                            source={genreItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    ));
+                }
+                else if (item.type === "style") {
+                    this.setState(previousState => (
+                        {
+                            hasStyles: true,
+                            styles: item.data.map((styleItem, styleKey) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={styleKey}
+                                        onPress={() => this.props.navigation.push('Artizen', {
+                                            artizenId: styleItem.id,
+                                            titleName: styleItem.name.default,
+                                        })}>
+                                        <ArtizenCard
+                                            name={styleItem.name.default}
+                                            source={styleItem.avatar}
+                                            fontLoaded={fontLoadStatus}/>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    ));
+                }
+            });
+
+            this.setState(previousState => (
+                {
+                    art: <ArtInfo fontLoaded={fontLoadStatus}
+                                  url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
+                    introductions: introInfoJson.map((item, key) => {
+                        return (
+                            <ReviewCard key={key}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        text={item.content.blocks[0].text}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                        );
+                    }),
+                }
+            ));
+        } catch (error) {
+            alert(error);
+        }
+    }
 
     render() {
 
@@ -50,7 +154,7 @@ class Art extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
-                paddingTop: Constants.statusBarHeight,
+                // paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 margin: 20,
@@ -68,45 +172,28 @@ class Art extends React.Component {
             },
         });
 
-        let artistContents = this.state.artizen.data.map((item, key) => {
-            return (
-                <ArtizenCard key={key}
-                             name={item.name.en}
-                             source={item.avatar}
-                             fontLoaded={fontLoadStatus}/>
-            );
-        });
-
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    <TopBar/>
-                    <ArtInfo fontLoaded={fontLoadStatus}/>
+                    {/*<TopBar/>*/}
+                    {this.state.art}
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
-                        <ReviewCard name={"AuraMaze"}
-                                    source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/auramaze-logo-square.png'}
-                                    text={`\n\tThe Starry Night is an oil on canvas by the Dutch post-impressionist painter Vincent van Gogh.\n\tPainted in June 1889, it depicts the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence, just before sunrise, with the addition of an idealized village. It has been in the permanent collection of the Museum of Modern Art in New York City since 1941, acquired through the Lillie P. Bliss Bequest. Regarded as among Van Gogh's finest works, The Starry Night is one of the most  recognized  paintings in the history of Western culture.\n`}
-                                    fontLoaded={fontLoadStatus}/>
+                        {this.state.introductions}
 
-                        <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/>
-                        {artistContents}
+                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.artists}
 
-                        <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Museum of Modern Art"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/artic.png'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.museums}
 
-                        <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Cloudscapes"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/genre-painting.jpg'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.genres}
 
-                        <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/>
-                        <ArtizenCard name={"Post-Impressionism"}
-                                     source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/post-impressionism.jpg'}
-                                     fontLoaded={fontLoadStatus}/>
+                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.styles}
+
                         <View style={{height: 30}}/>
                         <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
                         <ReviewCard name={"Ray"}

@@ -2,30 +2,29 @@ import React from 'react';
 import Art from "./art/art"
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
-import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
+import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
+import {Input} from 'react-native-elements';
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
 import recommendation from './icons/recommand.png';
 import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
-import { Input } from 'react-native-elements';
+import CameraScreen from "./components/camera-screen";
+import TimeLineStack from "./components/timeline-stack";
+import ArtizenInfo from "./components/artizen-info";
 
 class RecommendScreen extends React.Component {
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Recommend Screen</Text>
-            </View>
-        );
-    }
-}
 
-class CameraScreen extends React.Component {
+    _handlePress = () => {
+        Linking.openURL("https://dev.auramaze.org");
+        this.props.onPress && this.props.onPress();
+    };
+
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Camera Screen</Text>
+                <Text onPress={this._handlePress}>Recommend Screen</Text>
             </View>
         );
     }
@@ -47,7 +46,7 @@ class SettingScreen extends React.Component {
 
                 <Input
                     placeholder='INPUT WITH ERROR MESSAGE'
-                    errorStyle={{ color: 'red' }}
+                    errorStyle={{color: 'red'}}
                     errorMessage='ENTER A VALID ERROR HERE'
                 />
             </View>
@@ -74,12 +73,12 @@ export default class App extends React.Component {
 
     render() {
 
-        const lengthBasis = Dimensions.get('window').width/375;
+        const lengthBasis = Dimensions.get('window').width / 375;
 
         const MyNavi = createBottomTabNavigator(
             {
-                TimeLine: {screen: TimeLine},
-                Artventure: {screen: Art},
+                TimeLine: {screen: TimeLineStack},
+                Artventure: {screen: ArtizenInfo},
                 CameraLeft: {screen: CameraScreen},
                 CameraRight: {screen: CameraScreen},
                 Recommend: {screen: RecommendScreen},
@@ -94,25 +93,25 @@ export default class App extends React.Component {
                                 tintColor: tintColor
                             },
                             cameraStyle: {tintColor: '#fff'},
-                            cameraLeftStyle: {marginRight: -lengthBasis*25},
+                            cameraLeftStyle: {marginRight: -lengthBasis * 25},
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
-                                width: lengthBasis*65,
-                                height: lengthBasis*40,
+                                width: lengthBasis * 65,
+                                height: lengthBasis * 40,
                                 backgroundColor: '#909090',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                marginVertical: lengthBasis*10
+                                marginVertical: lengthBasis * 10
                             },
                             cameraHolderLeft: {
-                                borderBottomLeftRadius: lengthBasis*19,
-                                borderTopLeftRadius: lengthBasis*19,
-                                marginLeft: lengthBasis*25,
+                                borderBottomLeftRadius: lengthBasis * 19,
+                                borderTopLeftRadius: lengthBasis * 19,
+                                marginLeft: lengthBasis * 25,
                             },
                             cameraHolderRight: {
-                                width: lengthBasis*35,
-                                borderBottomRightRadius: lengthBasis*19,
-                                borderTopRightRadius: lengthBasis*19,
+                                width: lengthBasis * 35,
+                                borderBottomRightRadius: lengthBasis * 19,
+                                borderTopRightRadius: lengthBasis * 19,
                                 marginRight: 0,
                             }
                         });
