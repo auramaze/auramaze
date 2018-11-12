@@ -31,7 +31,7 @@ class LogInPage extends React.Component {
     logAuraMaze() {
         this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
-            email: this.state.email,
+            id: this.state.email,
             password: this.state.password
         });
         fetch('https://apidev.auramaze.org/v1/auth/login', {
@@ -133,10 +133,14 @@ class LogInPage extends React.Component {
         });
 
         return (
-            <View>
+            <View style={{
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
                 <View style={{
-                    flexDirection: 'column',
-                    alignItems: 'center'
+                    width: Dimensions.get('window').width,
+                    alignItems: 'center',
+                    justifyContent: 'center'
                 }}>
                     <Input placeholder='Email'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}

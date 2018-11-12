@@ -10,6 +10,7 @@ import {
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import SignUpPage from "./sign-up-page";
+import LogInPage from "./log-in-page";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -78,7 +79,7 @@ class BlankUser extends React.Component {
                                      style={{marginTop: 80, marginBottom: 30}}/>
 
 
-                    <SignUpPage/>
+                    <LogInPage/>
 
                 </View>
             </DismissKeyboard>
