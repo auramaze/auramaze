@@ -3,10 +3,8 @@ import {
     StyleSheet,
     View,
     Dimensions,
-    TouchableWithoutFeedback,
     Text,
     TouchableOpacity,
-    Keyboard,
     AsyncStorage
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
@@ -100,7 +98,6 @@ class SignUpPage extends React.Component {
                 height: 45,
                 marginVertical: 10,
                 borderWidth: 1
-                // borderRadius: 3
             },
             buttonAuramaze: {
                 backgroundColor: '#666666',
@@ -116,12 +113,9 @@ class SignUpPage extends React.Component {
             },
             signupScreenButton: {
                 width: Dimensions.get('window').width * 2 / 3,
-                marginRight: 40,
-                marginLeft: 40,
-                paddingTop: 10,
-                paddingBottom: 10,
+                marginRight: 40, marginLeft: 40,
+                paddingTop: 10, paddingBottom: 10,
                 backgroundColor: 'white',
-                // borderWidth: 1,
                 borderColor: '#666666',
                 borderRadius: 5
             },
@@ -130,19 +124,11 @@ class SignUpPage extends React.Component {
                 paddingHorizontal: 10,
                 fontSize: 15
             },
-            textAuramaze: {
-                color: 'white'
-            },
-            textGoogle: {
-                color: 'black'
-            },
-            textFacebook: {
-                color: 'white'
-            },
+            textWhite: {color: 'white'},
+            textBlack: {color: 'black'},
             signupText: {
                 color: '#666666',
                 textAlign: 'center',
-                paddingHorizontal: 10,
                 fontSize: 15
             }
         });
@@ -160,27 +146,21 @@ class SignUpPage extends React.Component {
 
                     <Input placeholder='Name'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(username) => this.setState(previousState => ({name: username}))}
-                    />
+                           onChangeText={(username) => this.setState(previousState => ({name: username}))}/>
                     <Input placeholder='Email'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(email) => this.setState(previousState => ({email: email}))}
-                    />
+                           onChangeText={(email) => this.setState(previousState => ({email: email}))}/>
                     <Input placeholder='Password'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(password) => this.setState(previousState => ({password: password}))}
-                           containerStyle={{marginBottom: 10}}
-                    />
+                           onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
                 </View>
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonAuramaze]}
                     onPress={this.createAuraMaze}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={logoIcon} style={{tintColor: 'white'}}/>
-                    <Text style={[styles.textGenreal, styles.textAuramaze]}>Create AuraMaze account</Text>
+                    <AutoHeightImage width={20} source={logoIcon} style={{tintColor: 'white'}}/>
+                    <Text style={[styles.textGenreal, styles.textWhite]}>Create AuraMaze account</Text>
                 </TouchableOpacity>
 
                 <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
@@ -191,20 +171,16 @@ class SignUpPage extends React.Component {
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
                     onPress={SignUpPage._retrieveData}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={google}/>
-                    <Text style={[styles.textGenreal, styles.textGoogle]}>Sign up with Google</Text>
+                    <AutoHeightImage width={20} source={google}/>
+                    <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
                     onPress={SignUpPage._onPressButton}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={facebook}/>
-                    <Text style={[styles.textGenreal, styles.textFacebook]}>Sign up with Facebook</Text>
+                    <AutoHeightImage width={20} source={facebook}/>
+                    <Text style={[styles.textGenreal, styles.textWhite]}>Sign up with Facebook</Text>
                 </TouchableOpacity>
 
             </View>

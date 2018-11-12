@@ -3,10 +3,8 @@ import {
     StyleSheet,
     View,
     Dimensions,
-    TouchableWithoutFeedback,
     Text,
     TouchableOpacity,
-    Keyboard,
     AsyncStorage
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
@@ -86,7 +84,6 @@ class LogInPage extends React.Component {
                 height: 45,
                 marginVertical: 10,
                 borderWidth: 1
-                // borderRadius: 3
             },
             buttonAuramaze: {
                 backgroundColor: '#666666',
@@ -115,15 +112,8 @@ class LogInPage extends React.Component {
                 paddingHorizontal: 10,
                 fontSize: 15
             },
-            textAuramaze: {
-                color: 'white'
-            },
-            textGoogle: {
-                color: 'black'
-            },
-            textFacebook: {
-                color: 'white'
-            },
+            textWhite: {color: 'white'},
+            textBlack: {color: 'black'},
             loginText: {
                 color: '#666666',
                 textAlign: 'center',
@@ -143,25 +133,20 @@ class LogInPage extends React.Component {
                     justifyContent: 'center',
                     marginVertical: 20.5
                 }}>
-                    <Input placeholder='Email/Username/Id'
+                    <Input placeholder='Email or username'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(email) => this.setState(previousState => ({email: email}))}
-                    />
+                           onChangeText={(email) => this.setState(previousState => ({email: email}))}/>
                     <Input placeholder='Password'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(password) => this.setState(previousState => ({password: password}))}
-                           containerStyle={{marginBottom: 10}}
-                    />
+                           onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
                 </View>
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonAuramaze]}
                     onPress={this.logAuraMaze}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={logoIcon} style={{tintColor: 'white'}}/>
-                    <Text style={[styles.textGenreal, styles.textAuramaze]}>Log in with AuraMaze account</Text>
+                    <AutoHeightImage width={20} source={logoIcon} style={{tintColor: 'white'}}/>
+                    <Text style={[styles.textGenreal, styles.textWhite]}>Log in with AuraMaze account</Text>
                 </TouchableOpacity>
 
                 <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
@@ -172,20 +157,16 @@ class LogInPage extends React.Component {
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
                     onPress={LogInPage._retrieveData}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={google}/>
-                    <Text style={[styles.textGenreal, styles.textGoogle]}>Log in with Google</Text>
+                    <AutoHeightImage width={20} source={google}/>
+                    <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
                     onPress={LogInPage._onPressButton}
                     underlayColor='#fff'>
-                    <AutoHeightImage
-                        width={20}
-                        source={facebook}/>
-                    <Text style={[styles.textGenreal, styles.textFacebook]}>Log in with Facebook</Text>
+                    <AutoHeightImage width={20} source={facebook}/>
+                    <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>
                 </TouchableOpacity>
 
             </View>
