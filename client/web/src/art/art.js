@@ -54,6 +54,7 @@ class Art extends Component {
             json: true
         }, (error, response, art) => {
             if (response && response.statusCode === 200) {
+                console.log(art);
                 this.setState({art: art});
                 const id = art.id;
                 if (id) {
@@ -185,7 +186,7 @@ class Art extends Component {
                 </div>
                 <EditorModal show={this.state.editModalShow} handleClose={() => {
                     this.setState({editModalShow: false})
-                }} itemType="art" itemId={this.state.art.id} textType="review"/>
+                }} itemType="art" itemId={this.state.art.id} itemName={this.state.art.title} textType="review"/>
             </div>
         );
     }

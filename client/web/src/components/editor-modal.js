@@ -69,7 +69,7 @@ class EditorModal extends Component {
     };
 
     render() {
-        const {show, handleClose, ...props} = this.props;
+        const {show, handleClose, itemName, textType, ...props} = this.props;
         const {editorState} = this.state;
 
         return (<ModalContext.Consumer>
@@ -87,7 +87,7 @@ class EditorModal extends Component {
                         >
                             <div className="editor-modal">
                                 <RichEditor
-                                    placeholder={`Write an introduction to`}
+                                    placeholder={`Write ${textType === 'introduction' ? 'an' : 'a'} ${textType}${itemName && ` ${textType === 'introduction' ? 'to' : 'for'} "${itemName.default}"`}...`}
                                     editorState={editorState}
                                     onChange={(editorState) => {
                                         this.setState({editorState});

@@ -197,7 +197,7 @@ class Artizen extends Component {
                 </div>
                 <EditorModal show={this.state.editModalShow} handleClose={() => {
                     this.setState({editModalShow: false})
-                }} itemType="artizen" itemId={this.state.artizen.id} textType="review"/>
+                }} itemType="artizen" itemId={this.state.artizen.id} itemName={this.state.artizen.name} textType="review"/>
             </div>
         );
     }
