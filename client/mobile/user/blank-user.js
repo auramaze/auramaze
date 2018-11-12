@@ -27,18 +27,34 @@ class BlankUser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.createAuraMaze = this.createAuraMaze.bind(this);
     }
 
     static _onPressButton() {
         alert("asd");
     };
 
-    static createAuraMaze = async () => {
+    createAuraMaze() {
+        this.setState(previousState => ({auramazeProcessing: true}));
         try {
-            this.setState({auramazeProcessing: true});
-            await AsyncStorage.setItem('key', 'I like to save it.');
+            fetch('https://apidev.auramaze.org/v1/auth/signup', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: {default: this.state.name},
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            }).then(response => {
+                alert(JSON.stringify(response));
+                if (response && response.statusCode === 200) {
+                    alert("succeed");
+                } else {
+                    alert("fail");
+                    this.setState(previousState => ({auramazeProcessing: false}));
+                }
+            });
         } catch (error) {
-
+            alert(error);
         }
     };
 
@@ -132,7 +148,7 @@ class BlankUser extends React.Component {
 
                     <Input placeholder='Name'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(username) => this.setState(previousState => ({username: username}))}
+                           onChangeText={(username) => this.setState(previousState => ({name: username}))}
                     />
                     <Input placeholder='Email'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
@@ -146,7 +162,7 @@ class BlankUser extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                        onPress={BlankUser._storeData}
+                        onPress={this.createAuraMaze}
                         underlayColor='#fff'>
                         <AutoHeightImage
                             width={20}
