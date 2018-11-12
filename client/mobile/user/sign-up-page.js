@@ -26,7 +26,24 @@ class SignUpPage extends React.Component {
         alert("asd");
     };
 
+    checkValid() {
+        if (!this.state.name || !/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/.test(this.state.name)) {
+            alert("Invalid username!");
+            return false;
+        }
+        if (!this.state.email) {
+            alert("Invalid email!");
+            return false;
+        }
+        if (!this.state.password || !/^[A-Za-z0-9#?!@$%^&*-]{4,}$/.test(this.state.password)) {
+            alert("Invalid password!");
+            return false;
+        }
+        return true;
+    }
+
     createAuraMaze() {
+        if (!this.checkValid()) return;
         this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
             name: {default: this.state.name},

@@ -26,10 +26,23 @@ class LogInPage extends React.Component {
         alert("asd");
     };
 
+    checkValid() {
+        if (!this.state.id) {
+            alert("Invalid email or username!");
+            return false;
+        }
+        if (!this.state.password || !/^[A-Za-z0-9#?!@$%^&*-]{4,}$/.test(this.state.password)) {
+            alert("Invalid password!");
+            return false;
+        }
+        return true;
+    }
+
     logAuraMaze() {
+        if (!this.checkValid()) return;
         this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
-            id: this.state.email,
+            id: this.state.id,
             password: this.state.password
         });
         fetch('https://apidev.auramaze.org/v1/auth/login', {
@@ -135,7 +148,7 @@ class LogInPage extends React.Component {
                 }}>
                     <Input placeholder='Email or username'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(email) => this.setState(previousState => ({email: email}))}/>
+                           onChangeText={(id) => this.setState(previousState => ({id: id}))}/>
                     <Input placeholder='Password'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
