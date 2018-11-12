@@ -107,7 +107,6 @@ class LogInPage extends React.Component {
                 paddingTop: 10,
                 paddingBottom: 10,
                 backgroundColor: 'white',
-                // borderWidth: 1,
                 borderColor: '#666666',
                 borderRadius: 5
             },
