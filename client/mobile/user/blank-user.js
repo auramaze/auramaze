@@ -5,7 +5,7 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Keyboard,
-    AsyncStorage
+    Text, TouchableOpacity
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
@@ -22,13 +22,10 @@ class BlankUser extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {pageIsSign: true};
         this.createAuraMaze = this.createAuraMaze.bind(this);
     }
 
-    static _onPressButton() {
-        alert("asd");
-    };
 
     createAuraMaze() {
         this.setState(previousState => ({auramazeProcessing: true}));
@@ -67,8 +64,29 @@ class BlankUser extends React.Component {
             mainStruct: {
                 flex: 1, flexDirection: 'column',
                 alignItems: 'center'
-            }
+            },
+            signupText: {
+                color: '#666666',
+                textAlign: 'center',
+                paddingHorizontal: 10,
+                fontSize: 15
+            },
+            signupScreenButton: {
+                width: Dimensions.get('window').width * 2 / 3,
+                marginRight: 40,
+                marginLeft: 40,
+                paddingTop: 10,
+                paddingBottom: 10,
+                backgroundColor: 'white',
+                // borderWidth: 1,
+                borderColor: '#666666',
+                borderRadius: 5
+            },
         });
+
+        let _onPressButton = () => {
+            this.setState(previousState => ({pageIsSign: !previousState.pageIsSign}));
+        };
 
         return (
             <DismissKeyboard>
@@ -78,14 +96,23 @@ class BlankUser extends React.Component {
                                      source={logoIcon}
                                      style={{marginTop: 80, marginBottom: 30}}/>
 
+                    {this.state.pageIsSign ? <SignUpPage/> : <LogInPage/>}
 
-                    <LogInPage/>
+                    <TouchableOpacity
+                        style={styles.signupScreenButton}
+                        onPress={_onPressButton}
+                        underlayColor='#fff'>
+                        <Text style={styles.signupText}>
+                            {this.state.pageIsSign === true ?
+                                "Already have an account? Log In" :
+                                "No account? Sign up"}
+                        </Text>
+                    </TouchableOpacity>
 
                 </View>
             </DismissKeyboard>
         );
     }
 }
-
 
 export default BlankUser;

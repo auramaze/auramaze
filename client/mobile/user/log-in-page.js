@@ -135,14 +135,15 @@ class LogInPage extends React.Component {
         return (
             <View style={{
                 flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
             }}>
                 <View style={{
                     width: Dimensions.get('window').width,
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    marginVertical: 20.5
                 }}>
-                    <Input placeholder='Email'
+                    <Input placeholder='Email/Username/Id'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(email) => this.setState(previousState => ({email: email}))}
                     />
@@ -185,13 +186,6 @@ class LogInPage extends React.Component {
                         width={20}
                         source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textFacebook]}>Log in with Facebook</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.loginScreenButton}
-                    onPress={LogInPage._onPressButton}
-                    underlayColor='#fff'>
-                    <Text style={styles.loginText}>Don't have an account, Sign up</Text>
                 </TouchableOpacity>
 
             </View>

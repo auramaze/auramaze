@@ -207,13 +207,6 @@ class SignUpPage extends React.Component {
                     <Text style={[styles.textGenreal, styles.textFacebook]}>Sign up with Facebook</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.signupScreenButton}
-                    onPress={SignUpPage._onPressButton}
-                    underlayColor='#fff'>
-                    <Text style={styles.signupText}>Already have an account? Log In</Text>
-                </TouchableOpacity>
-
             </View>
         );
     }
