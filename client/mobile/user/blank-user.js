@@ -4,17 +4,11 @@ import {
     View,
     Dimensions,
     TouchableWithoutFeedback,
-    Text,
-    TouchableOpacity,
     Keyboard,
     AsyncStorage
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
-import google from '../icons/google.png';
-import facebook from '../icons/facebook.png';
-import {Input} from "react-native-elements";
-import Hr from 'react-native-hr-plus';
 import SignUpPage from "./sign-up-page";
 
 const DismissKeyboard = ({children}) => (
@@ -62,18 +56,6 @@ class BlankUser extends React.Component {
             this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
-    };
-
-    static _retrieveData = async () => {
-        try {
-            const value = await AsyncStorage.getItem('key');
-            if (value !== null) {
-                // We have data!!
-                alert(value);
-            }
-        } catch (error) {
-            // Error retrieving data
-        }
     };
 
     render() {

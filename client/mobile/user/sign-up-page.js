@@ -48,18 +48,31 @@ class SignUpPage extends React.Component {
             } else {
                 throw new Error('Create account fail.');
             }
-        }).then(function (myJson) {
-            alert(JSON.stringify(myJson));
-            this.setState(previousState => ({auramazeProcessing: false}));
-        }).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
-            alert('There has been a problem with your fetch operation: ' + error.message);
-        });
+        }).then((responseJson) => this.setSignUpData(responseJson))
+            .catch(function (error) {
+                this.setState(previousState => ({auramazeProcessing: false}));
+                alert('There has been a problem with your fetch operation: ' + error.message);
+            });
     };
+
+    setSignUpData = async (responseJson) => {
+        alert(JSON.stringify(responseJson));
+        this.setState(previousState => ({auramazeProcessing: false}));
+        try {
+            await AsyncStorage.clear();
+            await AsyncStorage.multiSet([
+                ['username', responseJson.username],
+                ['id', responseJson.id],
+                ['token', responseJson.token]]);
+        } catch (error) {
+            alert(error);
+        }
+    };
+
 
     static _retrieveData = async () => {
         try {
-            const value = await AsyncStorage.getItem('key');
+            const value = await AsyncStorage.getItem('username');
             if (value !== null) {
                 // We have data!!
                 alert(value);
@@ -135,10 +148,14 @@ class SignUpPage extends React.Component {
         });
 
         return (
-            <View>
+            <View style={{
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
                 <View style={{
-                    flexDirection: 'column',
-                    alignItems: 'center'
+                    width: Dimensions.get('window').width,
+                    alignItems: 'center',
+                    justifyContent: 'center'
                 }}>
 
                     <Input placeholder='Name'
