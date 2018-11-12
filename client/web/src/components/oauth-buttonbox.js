@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {withCookies, Cookies} from 'react-cookie';
+import {withCookies} from 'react-cookie';
 import Buttonbox from './buttonbox';
 import google from '../icons/google.svg';
 import facebook from '../icons/facebook.svg';
@@ -105,7 +105,7 @@ class OAuthButtonbox extends Component {
                 onClick={this.startAuth}
             >
                 <div style={oauthInnerStyle[provider]}>
-                    <img src={providerLogo[provider]}
+                    <img src={providerLogo[provider]} alt={provider}
                          style={{width: 20, height: 20, marginRight: 10, verticalAlign: 'middle'}}/>
                     <span style={{
                         display: 'inlineBlock',

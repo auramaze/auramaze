@@ -4,17 +4,15 @@ import {withCookies} from 'react-cookie';
 import {Link, withRouter} from 'react-router-dom';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEllipsisV, faHeadphonesAlt} from "@fortawesome/free-solid-svg-icons";
+import {faHeadphonesAlt} from "@fortawesome/free-solid-svg-icons";
 import ReactStars from "react-stars";
 import {convertFromRaw, Editor, EditorState} from "draft-js";
 import Modal from './modal';
-import Inputbox from './inputbox';
-import './text-modal.css';
-import {AuthContext, WindowContext} from "../app";
-import {API_ENDPOINT, API_URL} from "../common";
+import {WindowContext} from "../app";
+import {API_ENDPOINT} from "../common";
 import {unlockBody} from "../utils";
 import TextVote from "./text-vote";
-import Searchbox from "./searchbox";
+import './text-modal.css';
 
 class TextModal extends Component {
     constructor(props) {

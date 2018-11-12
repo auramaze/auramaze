@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import request from 'request';
-import {withCookies, Cookies} from 'react-cookie';
+import {withCookies} from 'react-cookie';
 import io from 'socket.io-client'
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
 import OAuthButtonbox from './oauth-buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
-import './login-modal.css';
-import {AuthContext} from "../app";
 import {API_URL} from "../common";
 import {API_ENDPOINT} from "../common";
+import './login-modal.css';
 
 const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
@@ -102,7 +101,7 @@ class LoginModal extends Component {
                         }}
                     >
                         <div style={{color: '#666666', display: 'inlineBlock', margin: '0 10px'}}>
-                            <img src={auramaze}
+                            <img src={auramaze} alt="auramaze"
                                  style={{width: 25, height: 25, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span
                                 style={{

@@ -4,7 +4,7 @@ import {
     Route,
     Switch
 } from 'react-router-dom';
-import {withCookies, Cookies} from 'react-cookie';
+import {withCookies} from 'react-cookie';
 import Navbar from './components/navbar';
 import NavbarMobile from './components/navbar-mobile';
 import Home from './home/home';

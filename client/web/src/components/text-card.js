@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import request from "request";
 import ReactStars from 'react-stars';
 import {Editor, EditorState, convertFromRaw} from 'draft-js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeadphonesAlt} from '@fortawesome/free-solid-svg-icons';
 import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import TextVote from './text-vote';
-import {API_ENDPOINT} from "../common";
 import './text-card.css';
 
 class TextCard extends Component {

@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from 'react-cookie';
-import {Scrollbars} from 'react-custom-scrollbars';
 import ReactStars from "react-stars";
 import {convertToRaw, EditorState} from "draft-js";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import Modal from './modal';
-import {AuthContext, ModalContext, WindowContext} from "../app";
-import {API_ENDPOINT, API_URL} from "../common";
-import {removeCookies, unlockBody} from "../utils";
+import {ModalContext} from "../app";
+import {API_ENDPOINT} from "../common";
+import {removeCookies} from "../utils";
 import RichEditor from './rich-editor';
 import Buttonbox from './buttonbox'
 import './editor-modal.css';
-import auramaze from "../static/logo-white-frame.svg";
 
 const cancelButtonboxStyle = {
     display: 'inline-block',

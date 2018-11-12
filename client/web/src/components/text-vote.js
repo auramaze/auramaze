@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import {withCookies} from 'react-cookie';
 import request from "request";
-import ReactStars from 'react-stars';
-import {Editor, EditorState, convertFromRaw} from 'draft-js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faThumbsUp as faThumbsUpSolid} from '@fortawesome/free-solid-svg-icons';
 import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +28,7 @@ class TextVote extends Component {
     handleVote(type, showLoginModal) {
         const {itemType, itemId, textType, textId, cookies} = this.props;
         const {status} = this.state;
-        if (status === 1 && type === 'up' || status === -1 && type === 'down') {
+        if ((status === 1 && type === 'up') || (status === -1 && type === 'down')) {
             return;
         }
 
@@ -79,7 +76,6 @@ class TextVote extends Component {
     }
 
     render() {
-        const {cookies} = this.props;
         return (<ModalContext.Consumer>
                 {({showLoginModal}) => (
                     <div className="text-vote">

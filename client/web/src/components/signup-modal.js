@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import request from 'request';
-import {withCookies, Cookies} from "react-cookie";
+import {withCookies} from "react-cookie";
 import io from 'socket.io-client'
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
 import './signup-modal.css';
-import {AuthContext} from "../app";
 import {API_ENDPOINT, API_URL} from "../common";
 import OAuthButtonbox from "./oauth-buttonbox";
 
@@ -111,7 +110,7 @@ class SignupModal extends Component {
                         }}
                     >
                         <div style={{color: '#666666', display: 'inlineBlock', margin: '0 10px'}}>
-                            <img src={auramaze}
+                            <img src={auramaze} alt="auramaze"
                                  style={{width: 25, height: 25, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span
                                 style={{
