@@ -1,9 +1,7 @@
 import React from 'react';
-import Art from "./art/art"
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
 import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
-import {Input} from 'react-native-elements';
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
@@ -12,7 +10,6 @@ import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
 import CameraScreen from "./components/camera-screen";
 import TimeLineStack from "./components/timeline-stack";
-import ArtizenInfo from "./components/artizen-info";
 import BlankUser from "./user/blank-user";
 
 class RecommendScreen extends React.Component {
