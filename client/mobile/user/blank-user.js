@@ -36,26 +36,31 @@ class BlankUser extends React.Component {
 
     createAuraMaze() {
         this.setState(previousState => ({auramazeProcessing: true}));
-        try {
-            fetch('https://apidev.auramaze.org/v1/auth/signup', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: {default: this.state.name},
-                    email: this.state.email,
-                    password: this.state.password
-                })
-            }).then(response => {
-                alert(JSON.stringify(response));
-                if (response && response.statusCode === 200) {
-                    alert("succeed");
-                } else {
-                    alert("fail");
-                    this.setState(previousState => ({auramazeProcessing: false}));
-                }
-            });
-        } catch (error) {
-            alert(error);
-        }
+        let bodyObject = JSON.stringify({
+            name: {default: this.state.name},
+            email: this.state.email,
+            password: this.state.password
+        });
+        fetch('https://apidev.auramaze.org/v1/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
+            },
+            body: bodyObject
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Create account fail.');
+            }
+        }).then(function (myJson) {
+            alert(JSON.stringify(myJson));
+            this.setState(previousState => ({auramazeProcessing: false}));
+        }).catch(function (error) {
+            this.setState(previousState => ({auramazeProcessing: false}));
+            alert('There has been a problem with your fetch operation: ' + error.message);
+        });
     };
 
     static _retrieveData = async () => {
