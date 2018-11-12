@@ -35,21 +35,7 @@ class SettingScreen extends React.Component {
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Input
-                    placeholder='BASIC INPUT'
-                />
-
-
-                <Input
-                    placeholder='INPUT WITH SHAKING EFFECT'
-                    shake={true}
-                />
-
-                <Input
-                    placeholder='INPUT WITH ERROR MESSAGE'
-                    errorStyle={{color: 'red'}}
-                    errorMessage='ENTER A VALID ERROR HERE'
-                />
+                <Text>Artventure Screen</Text>
             </View>
         );
     }

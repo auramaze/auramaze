@@ -85,18 +85,6 @@ class SignUpPage extends React.Component {
     };
 
 
-    static _retrieveData = async () => {
-        try {
-            const value = await AsyncStorage.getItem('username');
-            if (value !== null) {
-                // We have data!!
-                alert(value);
-            }
-        } catch (error) {
-            // Error retrieving data
-        }
-    };
-
     render() {
 
         const styles = StyleSheet.create({
@@ -150,6 +138,15 @@ class SignUpPage extends React.Component {
             }
         });
 
+        let logIn = async () => {
+            try {
+                await AsyncStorage.setItem('isAuthorized', 'true')
+                    .then(this.props.screenProps.toLogIn);
+            } catch (error) {
+                alert(error)
+            }
+        };
+
         return (
             <View style={{
                 flexDirection: 'column',
@@ -186,7 +183,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={SignUpPage._retrieveData}
+                    onPress={logIn}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>

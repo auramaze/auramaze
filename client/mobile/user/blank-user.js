@@ -5,12 +5,13 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Keyboard,
-    Text, TouchableOpacity
+    Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import SignUpPage from "./sign-up-page";
 import LogInPage from "./log-in-page";
+import UserIndex from "./user-index";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -22,39 +23,15 @@ class BlankUser extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true};
-        this.createAuraMaze = this.createAuraMaze.bind(this);
+        this.state = {pageIsSign: true, hasAuthorized: false};
     }
 
-
-    createAuraMaze() {
-        this.setState(previousState => ({auramazeProcessing: true}));
-        let bodyObject = JSON.stringify({
-            name: {default: this.state.name},
-            email: this.state.email,
-            password: this.state.password
-        });
-        fetch('https://apidev.auramaze.org/v1/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                "Content-Type": "application/json"
-            },
-            body: bodyObject
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Create account fail.');
-            }
-        }).then(function (myJson) {
-            alert(JSON.stringify(myJson));
-            this.setState(previousState => ({auramazeProcessing: false}));
-        }).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
-            alert('There has been a problem with your fetch operation: ' + error.message);
-        });
-    };
+    componentDidMount() {
+        AsyncStorage.getItem('isAuthorized',
+            (value) => {
+                this.setState({ hasAuthorized: value });
+            });
+    }
 
     render() {
 
@@ -78,40 +55,53 @@ class BlankUser extends React.Component {
                 paddingTop: 10,
                 paddingBottom: 10,
                 backgroundColor: 'white',
-                // borderWidth: 1,
                 borderColor: '#666666',
                 borderRadius: 5
             },
         });
 
         let _onPressButton = () => {
+            AsyncStorage.getItem('isAuthorized',
+                (value) => {
+                    alert(value)
+                });
             this.setState(previousState => ({pageIsSign: !previousState.pageIsSign}));
         };
 
-        return (
-            <DismissKeyboard>
-                <View style={styles.mainStruct}>
+        if (this.state.hasAuthorized === 'false'){
+            return (
+                <DismissKeyboard>
+                    <View style={styles.mainStruct}>
 
-                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                     source={logoIcon}
-                                     style={{marginTop: 80, marginBottom: 30}}/>
+                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                         source={logoIcon}
+                                         style={{marginTop: 80, marginBottom: 30}}/>
 
-                    {this.state.pageIsSign ? <SignUpPage/> : <LogInPage/>}
+                        {this.state.pageIsSign ?
+                            <SignUpPage screenProps={{ toLogIn: () => this.setState({ hasAuthorized: 'true' }) }}/> :
+                            <LogInPage screenProps={{ toLogIn: () => this.setState({ hasAuthorized: 'true' }) }}/>}
 
-                    <TouchableOpacity
-                        style={styles.signupScreenButton}
-                        onPress={_onPressButton}
-                        underlayColor='#fff'>
-                        <Text style={styles.signupText}>
-                            {this.state.pageIsSign === true ?
-                                "Already have an account? Log In" :
-                                "No account? Sign up"}
-                        </Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.signupScreenButton}
+                            onPress={_onPressButton}
+                            underlayColor='#fff'>
+                            <Text style={styles.signupText}>
+                                {this.state.pageIsSign === true ?
+                                    "Already have an account? Log In" :
+                                    "No account? Sign up"}
+                            </Text>
+                        </TouchableOpacity>
 
-                </View>
-            </DismissKeyboard>
-        );
+                    </View>
+                </DismissKeyboard>
+            );
+        } else {
+            return (
+                <UserIndex screenProps={{ toLogOut: () => this.setState({ hasAuthorized: 'false' }) }}/>
+            )
+        }
+
+
     }
 }
 
