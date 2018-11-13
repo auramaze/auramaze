@@ -15,6 +15,10 @@ class TimeLine extends React.Component {
         this.state = {};
     }
 
+    // componentDidMount() {
+    //     setTimeout(() => {this.scrollView.scrollTo({x: -30}) }, 1) // scroll view position fix
+    // }
+
     async searchAuraMaze(url) {
         try {
             let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
@@ -134,6 +138,19 @@ class TimeLine extends React.Component {
                 <ScrollView keyboardDismissMode='on-drag'>
                     {this.state.haveArtizen ?
                         <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
+                    {/*<ScrollView*/}
+                        {/*ref={(scrollView) => {*/}
+                            {/*this.scrollView = scrollView;*/}
+                        {/*}}*/}
+                        {/*style={styles.container}*/}
+                        {/*pagingEnabled={true}*/}
+                        {/*horizontal={true}*/}
+                        {/*decelerationRate={0}*/}
+                        {/*snapToInterval={Dimensions.get('window') - 60}*/}
+                        {/*snapToAlignment={"center"}*/}
+                        {/*>*/}
+                        {/*{this.state.searchArtizen}*/}
+                    {/*</ScrollView>*/}
                     {this.state.searchArtizen}
                     {this.state.haveArtizen ? <View style={{height: 20}}/> : <View/>}
                     {this.state.haveArt ?
