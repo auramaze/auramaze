@@ -72,18 +72,14 @@ class SignUpPage extends React.Component {
 
     setSignUpData = async (responseJson) => {
         alert(JSON.stringify(responseJson));
+        this.props.screenProps.toLogIn();
         this.setState(previousState => ({auramazeProcessing: false}));
-        try {
-            await AsyncStorage.clear();
-            await AsyncStorage.multiSet([
-                ['username', responseJson.username],
-                ['id', responseJson.id],
-                ['token', responseJson.token]]);
-        } catch (error) {
-            alert(error);
-        }
+        await AsyncStorage.multiSet([
+                ['username', ''],
+                ['token', responseJson.token]],
+            ['id', responseJson.id]).
+        then(this.props.screenProps.toLogIn);
     };
-
 
     render() {
 

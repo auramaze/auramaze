@@ -99,11 +99,16 @@ class BlankUser extends React.Component {
         };
 
         let _toLogOut = () => {
-            this.setState({hasAuthorized: 'false'});
+            AsyncStorage.multiSet([
+                ['isAuthorized', 'false'],
+                ["username", 'undefined'],
+                ["token", 'undefined'],
+                ["id", 'undefined'],
+            ]).then(this.setState({hasAuthorized: false}));
         };
 
         let _toLogIn = () => {
-            this.setState({hasAuthorized: 'true'});
+            this.setState({hasAuthorized: true});
         };
 
         if (this.state.hasAuthorized !== true) {
