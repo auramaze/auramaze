@@ -21,7 +21,7 @@ class ArtizenCard extends React.Component {
                 shadowColor: '#000',
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
-                marginTop: 15, marginHorizontal: 15
+                marginTop: this.props.topMargin, marginHorizontal: 15
             },
             imageStyle: {
                 width: 50,
