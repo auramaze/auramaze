@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import left from '../icons/left.png';
-import share from '../icons/share.png';
+import left from '../assets/icons/left.png';
+import share from '../assets/icons/share.png';
 
 const TopBar = () => {
     const {viewStyle, imageStyle} = styles;

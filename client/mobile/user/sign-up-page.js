@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
-import google from '../icons/google.png';
-import facebook from '../icons/facebook.png';
+import google from '../assets/icons/google.png';
+import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
 

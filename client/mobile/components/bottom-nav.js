@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import compass from '../icons/compass.png';
-import journal from '../icons/journal.png';
-import camera from '../icons/camera.png';
-import recommendation from '../icons/recommand.png';
-import lines from '../icons/lines.png';
+import compass from '../assets/icons/compass.png';
+import journal from '../assets/icons/journal.png';
+import camera from '../assets/icons/camera.png';
+import recommendation from '../assets/icons/recommand.png';
+import lines from '../assets/icons/lines.png';
 
 class BottomNav extends React.Component {
 

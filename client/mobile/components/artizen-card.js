@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import noImage from '../icons/no-image-artizen.png';
+import noImage from '../assets/icons/no-image-artizen.png';
 
 class ArtizenCard extends React.Component {
 

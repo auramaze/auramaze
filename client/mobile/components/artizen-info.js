@@ -1,13 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import noImage from '../icons/no-image-artizen.png';
-import artist from '../icons/artizen-type/artist.png'
-import critic from '../icons/artizen-type/critic.png'
-import exhibition from '../icons/artizen-type/exhibition.png'
-import genre from '../icons/artizen-type/genre.png'
-import museum from '../icons/artizen-type/museum.png'
-import style from '../icons/artizen-type/style.png'
+import noImage from '../assets/icons/no-image-artizen.png';
+import artist from '../assets/icons/artizen-type/artist.png'
+import critic from '../assets/icons/artizen-type/critic.png'
+import exhibition from '../assets/icons/artizen-type/exhibition.png'
+import genre from '../assets/icons/artizen-type/genre.png'
+import museum from '../assets/icons/artizen-type/museum.png'
+import style from '../assets/icons/artizen-type/style.png'
 
 class ArtizenInfo extends React.Component {
 
