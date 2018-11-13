@@ -20,8 +20,14 @@ class UserIndex extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true};
+        this.state = {pageIsSign: true, id: ''};
     }
+
+    componentDidMount() {
+        AsyncStorage.getItem('id').then((value) => {
+            this.setState({id: value});
+        });
+    };
 
     render() {
 
@@ -105,6 +111,10 @@ class UserIndex extends React.Component {
 
                     <Text style={styles.signupText}>
                         Success!
+                    </Text>
+
+                    <Text style={styles.signupText}>
+                        Your id is: {this.state.id}
                     </Text>
 
                     <TouchableOpacity
