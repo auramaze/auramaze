@@ -163,7 +163,7 @@ class TimeLine extends React.Component {
                 <View style={styles.mainContext}>
                     <ScrollView keyboardDismissMode='on-drag'>
                         {this.state.haveArtizen ?
-                            <View style={{margin: 5}}>
+                            <View style={{marginHorizontal: 5}}>
                                 <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
                             </View> : null}
                         <FlatList data={arrays}
@@ -174,10 +174,12 @@ class TimeLine extends React.Component {
 
                         {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
                         {this.state.haveArt ?
-                            <View style={{margin: 5}}>
+                            <View style={{marginHorizontal: 5}}>
                                 <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
                             </View> : null}
-                        {this.state.searchArt}
+                        <View style={{flex: 1, alignItems: 'center'}}>
+                            {this.state.searchArt}
+                        </View>
                     </ScrollView>
                 </View>
 

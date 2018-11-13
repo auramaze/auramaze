@@ -85,7 +85,7 @@ export default class App extends React.Component {
                                 backgroundColor: '#909090',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                marginVertical: lengthBasis * 10
+                                marginVertical: 10 / ( Dimensions.get('window').width / 375)
                             },
                             cameraHolderLeft: {
                                 borderBottomLeftRadius: lengthBasis * 19,
@@ -96,7 +96,7 @@ export default class App extends React.Component {
                                 width: lengthBasis * 35,
                                 borderBottomRightRadius: lengthBasis * 19,
                                 borderTopRightRadius: lengthBasis * 19,
-                                marginRight: 0,
+                                marginRight: lengthBasis * 20 - 20,
                             }
                         });
 

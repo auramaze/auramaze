@@ -109,7 +109,10 @@ class BlankUser extends React.Component {
                             onPress={_checkStatus}>
                             <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
                                              source={logoIcon}
-                                             style={{marginTop: 80, marginBottom: 30}}/>
+                                             style={{
+                                                 marginTop: Dimensions.get('window').width * 80 / 375,
+                                                 marginBottom: 30
+                                             }}/>
                         </TouchableOpacity>
 
                         {this.state.pageIsSign ?
