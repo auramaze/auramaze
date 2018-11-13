@@ -19,7 +19,7 @@ class SignUpPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.createAuraMaze = this.createAuraMaze.bind(this);
+        this._createAuraMaze = this._createAuraMaze.bind(this);
     }
 
     static _onPressButton() {
@@ -42,7 +42,7 @@ class SignUpPage extends React.Component {
         return true;
     }
 
-    createAuraMaze() {
+    _createAuraMaze() {
         if (!this.checkValid()) return;
         this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
@@ -71,14 +71,12 @@ class SignUpPage extends React.Component {
     };
 
     setSignUpData = async (responseJson) => {
-        alert(JSON.stringify(responseJson));
         this.props.screenProps.toLogIn();
         this.setState(previousState => ({auramazeProcessing: false}));
         await AsyncStorage.multiSet([
-                ['username', ''],
-                ['token', responseJson.token]],
-            ['id', responseJson.id]).
-        then(this.props.screenProps.toLogIn);
+            ['username', 'undefined'],
+            ['token', responseJson.token.toString()],
+            ['id', responseJson.id.toString()]]).then(this.props.screenProps.toLogIn);
     };
 
     render() {
@@ -167,7 +165,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                    onPress={this.createAuraMaze}
+                    onPress={this._createAuraMaze}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={logoIcon} style={{tintColor: 'white'}}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Create AuraMaze account</Text>

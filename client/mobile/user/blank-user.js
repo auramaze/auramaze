@@ -27,15 +27,6 @@ class BlankUser extends React.Component {
     }
 
     componentDidMount() {
-        // AsyncStorage.getItem('isAuthorized',
-        //     (value) => {
-        //         if (value === undefined) {
-        //             AsyncStorage.setItem('isAuthorized', 'false');
-        //             this.setState({hasAuthorized: false});
-        //         } else {
-        //             this.setState({hasAuthorized: value});
-        //         }
-        //     });
 
         AsyncStorage.getItem('isAuthorized').then((value) => {
             if (value === undefined || value === 'false') {
@@ -84,7 +75,6 @@ class BlankUser extends React.Component {
         };
 
         let _checkStatus = () => {
-
             AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
                 let isAuthorized = data[0][1];
                 let username = data[1][1];
@@ -95,7 +85,6 @@ class BlankUser extends React.Component {
                     + "\ntoken: " + token
                     + "\nid: " + id)
             });
-
         };
 
         let _toLogOut = () => {
