@@ -27,11 +27,25 @@ class BlankUser extends React.Component {
     }
 
     componentDidMount() {
-        AsyncStorage.getItem('isAuthorized',
-            (value) => {
-                this.setState({ hasAuthorized: value });
-            });
-    }
+        // AsyncStorage.getItem('isAuthorized',
+        //     (value) => {
+        //         if (value === undefined) {
+        //             AsyncStorage.setItem('isAuthorized', 'false');
+        //             this.setState({hasAuthorized: false});
+        //         } else {
+        //             this.setState({hasAuthorized: value});
+        //         }
+        //     });
+
+        AsyncStorage.getItem('isAuthorized').then((value) => {
+            if (value === undefined) {
+                AsyncStorage.setItem('isAuthorized', 'false');
+                this.setState({hasAuthorized: false});
+            } else {
+                this.setState({hasAuthorized: value});
+            }
+        });
+    };
 
     render() {
 
@@ -61,25 +75,30 @@ class BlankUser extends React.Component {
         });
 
         let _onPressButton = () => {
-            AsyncStorage.getItem('isAuthorized',
-                (value) => {
-                    alert(value)
-                });
             this.setState(previousState => ({pageIsSign: !previousState.pageIsSign}));
         };
 
-        if (this.state.hasAuthorized === 'false'){
+        let _checkStatus = () => {
+            AsyncStorage.getItem('isAuthorized').then((value) => {
+                alert(value);
+            });
+        };
+
+        if (this.state.hasAuthorized !== 'true') {
             return (
                 <DismissKeyboard>
                     <View style={styles.mainStruct}>
 
-                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                         source={logoIcon}
-                                         style={{marginTop: 80, marginBottom: 30}}/>
+                        <TouchableOpacity
+                            onPress={_checkStatus}>
+                            <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                             source={logoIcon}
+                                             style={{marginTop: 80, marginBottom: 30}}/>
+                        </TouchableOpacity>
 
                         {this.state.pageIsSign ?
-                            <SignUpPage screenProps={{ toLogIn: () => this.setState({ hasAuthorized: 'true' }) }}/> :
-                            <LogInPage screenProps={{ toLogIn: () => this.setState({ hasAuthorized: 'true' }) }}/>}
+                            <SignUpPage screenProps={{toLogIn: () => this.setState({hasAuthorized: 'true'})}}/> :
+                            <LogInPage screenProps={{toLogIn: () => this.setState({hasAuthorized: 'true'})}}/>}
 
                         <TouchableOpacity
                             style={styles.signupScreenButton}
@@ -97,7 +116,7 @@ class BlankUser extends React.Component {
             );
         } else {
             return (
-                <UserIndex screenProps={{ toLogOut: () => this.setState({ hasAuthorized: 'false' }) }}/>
+                <UserIndex screenProps={{toLogOut: () => this.setState({hasAuthorized: 'false'})}}/>
             )
         }
 

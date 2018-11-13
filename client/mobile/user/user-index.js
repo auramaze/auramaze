@@ -76,13 +76,22 @@ class UserIndex extends React.Component {
             }
         };
 
+        let _checkStatus = () => {
+            AsyncStorage.getItem('isAuthorized').then((value) => {
+                alert(value);
+            });
+        };
+
         return (
             <DismissKeyboard>
                 <View style={styles.mainStruct}>
 
-                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                     source={logoIcon}
-                                     style={{marginTop: 80, marginBottom: 30}}/>
+                    <TouchableOpacity
+                        onPress={_checkStatus}>
+                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                         source={logoIcon}
+                                         style={{marginTop: 80, marginBottom: 30}}/>
+                    </TouchableOpacity>
 
                     <Text style={styles.signupText}>
                         Success!
@@ -94,7 +103,6 @@ class UserIndex extends React.Component {
                         underlayColor='#fff'>
                         <Text style={[styles.textGenreal, styles.textWhite]}>Log Out</Text>
                     </TouchableOpacity>
-
 
                 </View>
             </DismissKeyboard>
