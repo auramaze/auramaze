@@ -77,14 +77,15 @@ class UserIndex extends React.Component {
         };
 
         let _checkStatus = () => {
-            AsyncStorage.getAllKeys((err, keys) => {
-                AsyncStorage.multiGet(keys, (err, stores) => {
-                    stores.map((result, i, store) => {
-                        let key = store[i][0];
-                        let value = store[i][1];
-                        alert(key + " " + value);
-                    });
-                });
+            AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
+                let isAuthorized = data[0][1];
+                let username = data[1][1];
+                let token = data[2][1];
+                let id = data[3][1];
+                alert("isAuthorized: " + isAuthorized
+                    + "\nusername: " + username
+                    + "\ntoken: " + token
+                    + "\nid: " + id)
             });
         };
 
