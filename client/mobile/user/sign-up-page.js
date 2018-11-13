@@ -50,6 +50,7 @@ class SignUpPage extends React.Component {
             email: this.state.email,
             password: this.state.password
         });
+
         fetch('https://apidev.auramaze.org/v1/auth/signup', {
             method: 'POST',
             headers: {
@@ -61,18 +62,20 @@ class SignUpPage extends React.Component {
             if (response.ok) {
                 return response.json();
             } else {
+                Promise.reject(response.json());
                 throw new Error('Create account fail.');
             }
-        }).then((responseJson) => this._setSignUpData(responseJson))
-            .catch(function (error) {
-                this.setState(previousState => ({auramazeProcessing: false}));
-                alert('There has been a problem with your fetch operation: ' + error.message);
-            });
+        }).then((responseJson) => this._setSignUpData(responseJson)
+        ).catch(function (error) {
+            this.setState(previousState => ({auramazeProcessing: false}));
+            alert('There has been a problem with your fetch operation: ' + error.message);
+        });
     };
 
     _setSignUpData = async (responseJson) => {
         this.setState(previousState => ({auramazeProcessing: false}));
         await AsyncStorage.multiSet([
+            ['isAuthorized', 'true'],
             ['username', 'undefined'],
             ['token', responseJson.token.toString()],
             ['id', responseJson.id.toString()]]).then(this.props.screenProps.toLogIn());
