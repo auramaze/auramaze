@@ -20,11 +20,9 @@ class SignUpPage extends React.Component {
         super(props);
         this.state = {};
         this._createAuraMaze = this._createAuraMaze.bind(this);
+        this._setSignUpData = this._setSignUpData.bind(this);
+        this._logIn = this._logIn.bind(this);
     }
-
-    static _onPressButton() {
-        alert("asd");
-    };
 
     checkValid() {
         if (!this.state.name || !/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/.test(this.state.name)) {
@@ -76,84 +74,27 @@ class SignUpPage extends React.Component {
         this.setState(previousState => ({auramazeProcessing: false}));
         await AsyncStorage.multiSet([
             ['isAuthorized', 'true'],
-            ['username', 'undefined'],
+            ['username', 'username', responseJson.username ?
+                responseJson.username.toString() : "undefined"],
             ['token', responseJson.token.toString()],
-            ['id', responseJson.id.toString()]]).then(this.props.screenProps.toLogIn());
+            ['id', responseJson.id.toString()]])
+            .then(this.props.screenProps.toLogIn());
+    };
+
+    _logIn = async () => {
+        try {
+            await AsyncStorage.setItem('isAuthorized', 'true')
+                .then(this.props.screenProps.toLogIn);
+        } catch (error) {
+            alert(error)
+        }
     };
 
     render() {
 
-        const styles = StyleSheet.create({
-            mainStruct: {
-                flex: 1, flexDirection: 'column',
-                alignItems: 'center'
-            },
-            textWithDivider: {
-                color: '#666666',
-                paddingHorizontal: 10
-            },
-            buttonGeneral: {
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'center',
-                width: Dimensions.get('window').width - 40,
-                height: 45,
-                marginVertical: 10,
-                borderWidth: 1
-            },
-            buttonAuramaze: {
-                backgroundColor: '#666666',
-                borderColor: '#666666'
-            },
-            buttonGoogle: {
-                backgroundColor: 'white',
-                borderColor: '#666666'
-            },
-            buttonFacebook: {
-                backgroundColor: '#3B5998',
-                borderColor: '#3B5998'
-            },
-            signupScreenButton: {
-                width: Dimensions.get('window').width * 2 / 3,
-                marginRight: 40, marginLeft: 40,
-                paddingTop: 10, paddingBottom: 10,
-                backgroundColor: 'white',
-                borderColor: '#666666',
-                borderRadius: 5
-            },
-            textGenreal: {
-                textAlign: 'center',
-                paddingHorizontal: 10,
-                fontSize: 15
-            },
-            textWhite: {color: 'white'},
-            textBlack: {color: 'black'},
-            signupText: {
-                color: '#666666',
-                textAlign: 'center',
-                fontSize: 15
-            }
-        });
-
-        let logIn = async () => {
-            try {
-                await AsyncStorage.setItem('isAuthorized', 'true')
-                    .then(this.props.screenProps.toLogIn);
-            } catch (error) {
-                alert(error)
-            }
-        };
-
         return (
-            <View style={{
-                flexDirection: 'column',
-                alignItems: 'center'
-            }}>
-                <View style={{
-                    width: Dimensions.get('window').width,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-
+            <View style={styles.mainStruct}>
+                <View style={styles.inputHolder}>
                     <Input placeholder='Name'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(username) => this.setState(previousState => ({name: username}))}/>
@@ -179,7 +120,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={logIn}
+                    onPress={this._logIn}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>
@@ -187,7 +128,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={SignUpPage._onPressButton}
+                    onPress={this._logIn}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Sign up with Facebook</Text>
@@ -198,5 +139,59 @@ class SignUpPage extends React.Component {
     }
 }
 
+const styles = StyleSheet.create({
+    mainStruct: {
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    inputHolder: {
+        width: Dimensions.get('window').width,
+        alignItems: 'center', justifyContent: 'center'
+    },
+    textWithDivider: {
+        color: '#666666',
+        paddingHorizontal: 10
+    },
+    buttonGeneral: {
+        flexDirection: 'row', alignItems: 'center',
+        justifyContent: 'center',
+        width: Dimensions.get('window').width - 40,
+        height: 45,
+        marginVertical: 10,
+        borderWidth: 1
+    },
+    buttonAuramaze: {
+        backgroundColor: '#666666',
+        borderColor: '#666666'
+    },
+    buttonGoogle: {
+        backgroundColor: 'white',
+        borderColor: '#666666'
+    },
+    buttonFacebook: {
+        backgroundColor: '#3B5998',
+        borderColor: '#3B5998'
+    },
+    signupScreenButton: {
+        width: Dimensions.get('window').width * 2 / 3,
+        marginRight: 40, marginLeft: 40,
+        paddingTop: 10, paddingBottom: 10,
+        backgroundColor: 'white',
+        borderColor: '#666666',
+        borderRadius: 5
+    },
+    textGenreal: {
+        textAlign: 'center',
+        paddingHorizontal: 10,
+        fontSize: 15
+    },
+    textWhite: {color: 'white'},
+    textBlack: {color: 'black'},
+    signupText: {
+        color: '#666666',
+        textAlign: 'center',
+        fontSize: 15
+    }
+});
 
 export default SignUpPage;

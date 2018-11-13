@@ -19,12 +19,10 @@ class LogInPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.logAuraMaze = this.logAuraMaze.bind(this);
+        this._logAuraMaze = this._logAuraMaze.bind(this);
+        this._setLogInData = this._setLogInData.bind(this);
+        this._logIn = this._logIn.bind(this);
     }
-
-    static _onPressButton() {
-        alert("asd");
-    };
 
     checkValid() {
         if (!this.state.id) {
@@ -38,7 +36,16 @@ class LogInPage extends React.Component {
         return true;
     }
 
-    logAuraMaze() {
+    _logIn = async () => {
+        try {
+            await AsyncStorage.setItem('isAuthorized', 'true')
+                .then(this.props.screenProps.toLogIn);
+        } catch (error) {
+            alert(error)
+        }
+    };
+
+    _logAuraMaze() {
         if (!this.checkValid()) return;
         this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
@@ -58,94 +65,33 @@ class LogInPage extends React.Component {
             } else {
                 throw new Error('Log in fail.');
             }
-        }).then(function (myJson) {
-            alert(JSON.stringify(myJson));
-            this.setState(previousState => ({auramazeProcessing: false}));
-        }).catch(function (error) {
+        }).then((responseJson) => this._setLogInData(responseJson)
+        ).catch(function (error) {
             this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
     };
 
-    static _retrieveData = async () => {
+    _setLogInData = async (responseJson) => {
+        this.setState(previousState => ({auramazeProcessing: false}));
         try {
-            const value = await AsyncStorage.getItem('key');
-            if (value !== null) {
-                // We have data!!
-                alert(value);
-            }
+            await AsyncStorage.multiSet([
+                ['isAuthorized', 'true'],
+                ['username', responseJson.username ?
+                    responseJson.username.toString() : "undefined"],
+                ['token', responseJson.token.toString()],
+                ['id', responseJson.id.toString()]])
+                .then(this.props.screenProps.toLogIn());
         } catch (error) {
-            // Error retrieving data
+            alert(error)
         }
     };
 
     render() {
 
-        const styles = StyleSheet.create({
-            mainStruct: {
-                flex: 1, flexDirection: 'column',
-                alignItems: 'center'
-            },
-            textWithDivider: {
-                color: '#666666',
-                paddingHorizontal: 10
-            },
-            buttonGeneral: {
-                flexDirection: 'row', alignItems: 'center',
-                justifyContent: 'center',
-                width: Dimensions.get('window').width - 40,
-                height: 45,
-                marginVertical: 10,
-                borderWidth: 1
-            },
-            buttonAuramaze: {
-                backgroundColor: '#666666',
-                borderColor: '#666666'
-            },
-            buttonGoogle: {
-                backgroundColor: 'white',
-                borderColor: '#666666'
-            },
-            buttonFacebook: {
-                backgroundColor: '#3B5998',
-                borderColor: '#3B5998'
-            },
-            loginScreenButton: {
-                width: Dimensions.get('window').width * 2 / 3,
-                marginRight: 40,
-                marginLeft: 40,
-                paddingTop: 10,
-                paddingBottom: 10,
-                backgroundColor: 'white',
-                borderColor: '#666666',
-                borderRadius: 5
-            },
-            textGenreal: {
-                textAlign: 'center',
-                paddingHorizontal: 10,
-                fontSize: 15
-            },
-            textWhite: {color: 'white'},
-            textBlack: {color: 'black'},
-            loginText: {
-                color: '#666666',
-                textAlign: 'center',
-                paddingHorizontal: 10,
-                fontSize: 15
-            }
-        });
-
         return (
-            <View style={{
-                flexDirection: 'column',
-                alignItems: 'center',
-            }}>
-                <View style={{
-                    width: Dimensions.get('window').width,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginVertical: 20.5
-                }}>
+            <View style={styles.mainStruct}>
+                <View style={styles.inputHolder}>
                     <Input placeholder='Email or username'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(id) => this.setState(previousState => ({id: id}))}/>
@@ -156,7 +102,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                    onPress={this.logAuraMaze}
+                    onPress={this._logAuraMaze}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={logoIcon} style={{tintColor: 'white'}}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Log in with AuraMaze account</Text>
@@ -168,7 +114,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={LogInPage._retrieveData}
+                    onPress={this._logIn}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
@@ -176,7 +122,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={LogInPage._onPressButton}
+                    onPress={this._logIn}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>
@@ -187,5 +133,63 @@ class LogInPage extends React.Component {
     }
 }
 
+const styles = StyleSheet.create({
+    mainStruct: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    inputHolder: {
+        width: Dimensions.get('window').width,
+        alignItems: 'center', justifyContent: 'center',
+        marginVertical: 20.5
+    },
+    textWithDivider: {
+        color: '#666666',
+        paddingHorizontal: 10
+    },
+    buttonGeneral: {
+        flexDirection: 'row', alignItems: 'center',
+        justifyContent: 'center',
+        width: Dimensions.get('window').width - 40,
+        height: 45,
+        marginVertical: 10,
+        borderWidth: 1
+    },
+    buttonAuramaze: {
+        backgroundColor: '#666666',
+        borderColor: '#666666'
+    },
+    buttonGoogle: {
+        backgroundColor: 'white',
+        borderColor: '#666666'
+    },
+    buttonFacebook: {
+        backgroundColor: '#3B5998',
+        borderColor: '#3B5998'
+    },
+    loginScreenButton: {
+        width: Dimensions.get('window').width * 2 / 3,
+        marginRight: 40,
+        marginLeft: 40,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: 'white',
+        borderColor: '#666666',
+        borderRadius: 5
+    },
+    textGenreal: {
+        textAlign: 'center',
+        paddingHorizontal: 10,
+        fontSize: 15
+    },
+    textWhite: {color: 'white'},
+    textBlack: {color: 'black'},
+    loginText: {
+        color: '#666666',
+        textAlign: 'center',
+        paddingHorizontal: 10,
+        fontSize: 15
+    }
+});
 
 export default LogInPage;
