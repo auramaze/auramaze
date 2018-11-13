@@ -38,11 +38,16 @@ class BlankUser extends React.Component {
         //     });
 
         AsyncStorage.getItem('isAuthorized').then((value) => {
-            if (value === undefined) {
-                AsyncStorage.setItem('isAuthorized', 'false');
+            if (value === undefined || value === 'false') {
+                AsyncStorage.multiSet([
+                    ['isAuthorized', 'false'],
+                    ["username", 'undefined'],
+                    ["token", 'undefined'],
+                    ["id", 'undefined'],
+                ]);
                 this.setState({hasAuthorized: false});
             } else {
-                this.setState({hasAuthorized: value});
+                this.setState({hasAuthorized: true});
             }
         });
     };
@@ -79,9 +84,25 @@ class BlankUser extends React.Component {
         };
 
         let _checkStatus = () => {
-            AsyncStorage.getItem('isAuthorized').then((value) => {
-                alert(value);
+
+            AsyncStorage.getAllKeys((err, keys) => {
+                AsyncStorage.multiGet(keys, (err, stores) => {
+                    stores.map((result, i, store) => {
+                        let key = store[i][0];
+                        let value = store[i][1];
+                        alert(key + " " + value);
+                    });
+                });
             });
+
+        };
+
+        let _toLogOut = () => {
+            this.setState({hasAuthorized: 'false'});
+        };
+
+        let _toLogIn = () => {
+            this.setState({hasAuthorized: 'true'});
         };
 
         if (this.state.hasAuthorized !== 'true') {
@@ -97,8 +118,8 @@ class BlankUser extends React.Component {
                         </TouchableOpacity>
 
                         {this.state.pageIsSign ?
-                            <SignUpPage screenProps={{toLogIn: () => this.setState({hasAuthorized: 'true'})}}/> :
-                            <LogInPage screenProps={{toLogIn: () => this.setState({hasAuthorized: 'true'})}}/>}
+                            <SignUpPage screenProps={{toLogIn: _toLogIn}}/> :
+                            <LogInPage screenProps={{toLogIn: _toLogIn}}/>}
 
                         <TouchableOpacity
                             style={styles.signupScreenButton}
@@ -116,7 +137,7 @@ class BlankUser extends React.Component {
             );
         } else {
             return (
-                <UserIndex screenProps={{toLogOut: () => this.setState({hasAuthorized: 'false'})}}/>
+                <UserIndex screenProps={{toLogOut: _toLogOut}}/>
             )
         }
 
