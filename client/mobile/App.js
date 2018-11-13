@@ -1,9 +1,7 @@
 import React from 'react';
-import Art from "./art/art"
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
 import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
-import {Input} from 'react-native-elements';
 import compass from './icons/compass.png';
 import journal from './icons/journal.png';
 import camera from './icons/camera.png';
@@ -12,7 +10,7 @@ import lines from './icons/lines.png';
 import TimeLine from "./timeline/timeline";
 import CameraScreen from "./components/camera-screen";
 import TimeLineStack from "./components/timeline-stack";
-import ArtizenInfo from "./components/artizen-info";
+import BlankUser from "./user/blank-user";
 
 class RecommendScreen extends React.Component {
 
@@ -34,21 +32,7 @@ class SettingScreen extends React.Component {
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Input
-                    placeholder='BASIC INPUT'
-                />
-
-
-                <Input
-                    placeholder='INPUT WITH SHAKING EFFECT'
-                    shake={true}
-                />
-
-                <Input
-                    placeholder='INPUT WITH ERROR MESSAGE'
-                    errorStyle={{color: 'red'}}
-                    errorMessage='ENTER A VALID ERROR HERE'
-                />
+                <Text>Artventure Screen</Text>
             </View>
         );
     }
@@ -78,11 +62,11 @@ export default class App extends React.Component {
         const MyNavi = createBottomTabNavigator(
             {
                 TimeLine: {screen: TimeLineStack},
-                Artventure: {screen: ArtizenInfo},
+                Artventure: {screen: SettingScreen},
                 CameraLeft: {screen: CameraScreen},
                 CameraRight: {screen: CameraScreen},
                 Recommend: {screen: RecommendScreen},
-                Settings: {screen: SettingScreen},
+                Settings: {screen: BlankUser},
             },
             {
                 navigationOptions: ({navigation}) => ({
@@ -101,7 +85,7 @@ export default class App extends React.Component {
                                 backgroundColor: '#909090',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                marginVertical: lengthBasis * 10
+                                marginVertical: 10 / ( Dimensions.get('window').width / 375)
                             },
                             cameraHolderLeft: {
                                 borderBottomLeftRadius: lengthBasis * 19,
@@ -112,7 +96,7 @@ export default class App extends React.Component {
                                 width: lengthBasis * 35,
                                 borderBottomRightRadius: lengthBasis * 19,
                                 borderTopRightRadius: lengthBasis * 19,
-                                marginRight: 0,
+                                marginRight: lengthBasis * 20 - 20,
                             }
                         });
 
