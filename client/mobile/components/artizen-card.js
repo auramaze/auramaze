@@ -34,7 +34,7 @@ class ArtizenCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: 225,
+                fontSize: 20, width: Dimensions.get('window').width * 225 / 375,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15

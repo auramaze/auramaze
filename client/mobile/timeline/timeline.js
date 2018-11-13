@@ -72,9 +72,8 @@ class TimeLine extends React.Component {
         return (
             <View style={{margin: 5}}>
                 <View style={{
-                    width: 300,
-                    marginTop: 10,
-                    marginHorizontal: 10,
+                    width: Dimensions.get('window').width * 300 / 375,
+                    marginTop: 10, marginHorizontal: 10,
                     alignItems: 'center', justifyContent: 'center'
                 }}>
                     {item[0]}
@@ -82,7 +81,7 @@ class TimeLine extends React.Component {
                 {item.length > 1 ?
                     <View
                         style={{
-                            width: 300, height: 100,
+                            width: Dimensions.get('window').width * 300 / 375, height: 100,
                             marginHorizontal: 10, marginBottom: -20,
                             alignItems: 'center', justifyContent: 'center'
                         }}>
@@ -140,7 +139,7 @@ class TimeLine extends React.Component {
             }
             this.searchAuraMaze(this.state.term);
         };
-        var arrays = [], size = 2;
+        let arrays = [], size = 2;
         while (this.state.searchArtizen.length > 0)
             arrays.push(this.state.searchArtizen.splice(0, size));
         return (
@@ -164,7 +163,9 @@ class TimeLine extends React.Component {
                 <View style={styles.mainContext}>
                     <ScrollView keyboardDismissMode='on-drag'>
                         {this.state.haveArtizen ?
-                            <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
+                            <View style={{margin: 5}}>
+                                <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </View> : null}
                         <FlatList data={arrays}
                                   horizontal={true}
                                   showsHorizontalScrollIndicator={false}
@@ -173,7 +174,9 @@ class TimeLine extends React.Component {
 
                         {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
                         {this.state.haveArt ?
-                            <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/> : <View/>}
+                            <View style={{margin: 5}}>
+                                <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </View> : null}
                         {this.state.searchArt}
                     </ScrollView>
                 </View>
