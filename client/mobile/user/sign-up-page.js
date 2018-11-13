@@ -63,20 +63,19 @@ class SignUpPage extends React.Component {
             } else {
                 throw new Error('Create account fail.');
             }
-        }).then((responseJson) => this.setSignUpData(responseJson))
+        }).then((responseJson) => this._setSignUpData(responseJson))
             .catch(function (error) {
                 this.setState(previousState => ({auramazeProcessing: false}));
                 alert('There has been a problem with your fetch operation: ' + error.message);
             });
     };
 
-    setSignUpData = async (responseJson) => {
-        this.props.screenProps.toLogIn();
+    _setSignUpData = async (responseJson) => {
         this.setState(previousState => ({auramazeProcessing: false}));
         await AsyncStorage.multiSet([
             ['username', 'undefined'],
             ['token', responseJson.token.toString()],
-            ['id', responseJson.id.toString()]]).then(this.props.screenProps.toLogIn);
+            ['id', responseJson.id.toString()]]).then(this.props.screenProps.toLogIn());
     };
 
     render() {
