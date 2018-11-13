@@ -51,6 +51,7 @@ class Art extends React.Component {
                                         <ArtizenCard
                                             name={artistItem.name.default}
                                             source={artistItem.avatar}
+                                            topMargin={15}
                                             fontLoaded={fontLoadStatus}/>
                                     </TouchableOpacity>
                                 )
@@ -73,6 +74,7 @@ class Art extends React.Component {
                                         <ArtizenCard
                                             name={museumItem.name.default}
                                             source={museumItem.avatar}
+                                            topMargin={15}
                                             fontLoaded={fontLoadStatus}/>
                                     </TouchableOpacity>
                                 )
@@ -95,6 +97,7 @@ class Art extends React.Component {
                                         <ArtizenCard
                                             name={genreItem.name.default}
                                             source={genreItem.avatar}
+                                            topMargin={15}
                                             fontLoaded={fontLoadStatus}/>
                                     </TouchableOpacity>
                                 )
@@ -117,6 +120,7 @@ class Art extends React.Component {
                                         <ArtizenCard
                                             name={styleItem.name.default}
                                             source={styleItem.avatar}
+                                            topMargin={15}
                                             fontLoaded={fontLoadStatus}/>
                                     </TouchableOpacity>
                                 )
