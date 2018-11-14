@@ -6,6 +6,7 @@ from operator import itemgetter
 from queue import Queue
 from threading import Thread
 import time
+import base64
 
 app = Flask(__name__)
 
@@ -77,4 +78,5 @@ def search_image(ses, raw):
 
 @app.route('/auravision/', methods=['POST'])
 def auravision():
-    return jsonify({'art': search_image(ses, request.files['raw'].read())})
+    raw = base64.b64decode(request.form['base64'])
+    return jsonify({'art': search_image(ses, raw)})
