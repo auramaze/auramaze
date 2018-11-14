@@ -3,11 +3,18 @@ import {createStackNavigator} from "react-navigation";
 import Art from "../art/art";
 import Artizen from "../artizen/artizen";
 import TimeLine from "../timeline/timeline";
+import CameraScreen from "./camera-screen";
 
 const TimeLineStack = createStackNavigator(
     {
         TimeLine: {
             screen: TimeLine,
+            navigationOptions: {
+                header: null
+            }
+        },
+        CameraScreen: {
+            screen: CameraScreen,
             navigationOptions: {
                 header: null
             }

@@ -3,6 +3,12 @@ import {Text, View, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Camera, Permissions} from 'expo';
 
 class CameraScreen extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.takePicture = this.takePicture.bind(this);
+    }
+
     state = {
         hasCameraPermission: null,
         type: Camera.Constants.Type.back
@@ -15,21 +21,15 @@ class CameraScreen extends React.Component {
 
     handleMountError = ({message}) => console.error(message);
 
-    // takePicture = () => {
-    //     if (this.camera) {
-    //         this.camera.takePictureAsync({onPictureSaved: this.onPictureSaved});
-    //     }
-    // };
-
     takePicture = () => {
         if (this.camera) {
-            this.camera.takePictureAsync({base64: true, quality: 0.2})
+            this.camera.takePictureAsync({base64: true, quality: 0.01})
                 .then((photo) => {
-                    alert(photo.base64.length);
+                    // alert(photo.base64.length);
                     let data = new FormData();
-                    data.append("raw", photo.base64);
+                    data.append("base64", photo.base64);
 
-                    fetch('https://apidev.auramaze.org/v1/search', {
+                    fetch('https://apidev.auramaze.org/auravision/', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -40,10 +40,20 @@ class CameraScreen extends React.Component {
                         if (response.ok) {
                             return response.json();
                         } else {
+                            alert(JSON.stringify(response));
                             Promise.reject(response.json());
                             throw new Error('Create account fail.');
                         }
-                    }).then((responseJson) => {alert(JSON.stringify(responseJson))}
+                    }).then((responseJson) => {
+                            alert(JSON.stringify(responseJson));
+                            let resultArt = responseJson.art;
+                            if (resultArt.length === 1) {
+                                this.props.navigation.navigate('Art', {
+                                    artId: resultArt[0].id,
+                                    titleName: resultArt[0].title.default,
+                                });
+                            }
+                        }
                     ).catch(function (error) {
                         alert('There has been a problem with your fetch operation: ' + error.message);
                     });
