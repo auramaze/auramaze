@@ -62,8 +62,7 @@ class ReviewCard extends React.Component {
                     </View>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
                 </View>
-                <Text
-                    style={styles.bodyText}>{this.props.text}</Text>
+                <Text style={styles.bodyText}>{this.props.text}</Text>
                 <ReviewFooter/>
             </View>
         )

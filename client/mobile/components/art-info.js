@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
 
 import AutoHeightImage from 'react-native-auto-height-image';
-import heart from '../icons/heart-regular.png';
+import heart from '../assets/icons/heart-regular.png';
 
 class ArtInfo extends React.Component {
 

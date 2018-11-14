@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
-import thumbs_down from '../icons/thumbs-down.png';
-import thumbs_up from '../icons/thumbs-up.png';
+import thumbs_down from '../assets/icons/thumbs-down.png';
+import thumbs_up from '../assets/icons/thumbs-up.png';
 
 class ReviewFooter extends React.Component {
 

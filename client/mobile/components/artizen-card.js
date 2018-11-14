@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import noImage from '../icons/no-image-artizen.png';
+import noImage from '../assets/icons/no-image-artizen.png';
 
 class ArtizenCard extends React.Component {
 
@@ -21,7 +21,7 @@ class ArtizenCard extends React.Component {
                 shadowColor: '#000',
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
-                marginTop: 15, marginHorizontal: 15
+                marginTop: this.props.topMargin, marginHorizontal: 15
             },
             imageStyle: {
                 width: 50,
@@ -34,7 +34,7 @@ class ArtizenCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: 225,
+                fontSize: 20, width: Dimensions.get('window').width * 225 / 375,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15

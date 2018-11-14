@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -238,22 +238,22 @@ class Artizen extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.artworks}
 
-                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.collections}
 
-                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.exhibits}
 
-                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.related}
 
-                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.related}
 
-                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : ""}
+                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.related}
 
                         <View style={{height: 30}}/>
