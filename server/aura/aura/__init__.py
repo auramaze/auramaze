@@ -1,16 +1,21 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import os
+import time
+import base64
 from flask import Flask, request, jsonify
-from elasticsearch import Elasticsearch
-from .elasticsearch_driver import AuraMazeSignatureES
-from .photo import Photo
 from operator import itemgetter
 from queue import Queue
 from threading import Thread
-import time
-import base64
+from elasticsearch import Elasticsearch
+from .elasticsearch_driver import AuraMazeSignatureES
+from .photo import Photo
 
 app = Flask(__name__)
 
-es = Elasticsearch(['https://search-auramaze-test-lvic4eihmds7zwtnqganecktha.us-east-2.es.amazonaws.com'])
+es = Elasticsearch([os.getenv('ES_HOST')])
 ses = AuraMazeSignatureES(es, distance_cutoff=0.5)
 num_trials = 6
 num_workers = 3
