@@ -19,6 +19,7 @@ num_workers = 3
 def worker(q, ses, results):
     while True:
         painting = q.get()
+        # print('get-{}-{}'.format(painting_hash(painting), time.time()))
         if painting is None:
             break
         if results['best'] is None:
@@ -47,6 +48,7 @@ def search_image(ses, raw):
         if results['best']:
             break
         q.put(painting)
+        # print('put-{}-{}'.format(painting_hash(painting), time.time()))
 
     def block_queue(q):
         # block until all tasks are done
@@ -76,12 +78,47 @@ def search_image(ses, raw):
     return unique
 
 
+def search_image_sync(ses, raw):
+    photo = Photo(raw)
+    paintings = photo.generate_paintings()
+    results = []
+    for _, painting in zip(range(num_trials), paintings):
+        # print(_)
+        # print('start-{}'.format(time.time()))
+        l = ses.search_image(painting, all_orientations=True, bytestream=True)
+        # print('end-{}'.format(time.time()))
+        if len(l):
+            min_dist_index, min_dist_item = min(enumerate(l), key=lambda item: item[1]['dist'])
+            if min_dist_item['dist'] < 0.3:
+                return [min_dist_item]
+            results.extend(l)
+
+    results = sorted(results, key=itemgetter('dist'))
+    ids = set()
+    unique = []
+    for item in results:
+        if item['id'] not in ids:
+            unique.append(item)
+            ids.add(item['id'])
+
+    return unique
+
+
+def painting_hash(painting):
+    import hashlib
+    return hashlib.md5(str(painting).encode('utf-8')).hexdigest()
+
+
 @app.route('/aura/', methods=['POST'])
-def auravision():
+def aura():
     if request.form['type'] == 'base64':
         raw = base64.b64decode(request.form['data'])
     elif request.form['type'] == 'raw':
         raw = request.files['data'].read()
     else:
         return None, 400
-    return jsonify({'art': search_image(ses, raw)})
+    # start = time.time()
+    results = search_image_sync(ses, raw)
+    # end = time.time()
+    # print(end - start)
+    return jsonify({'art': results})

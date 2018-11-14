@@ -89,16 +89,21 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         if all_orientations:
             # use four rotations
-            rotations = [lambda x: x,
-                         np.rot90,
-                         lambda x: np.rot90(x, 2),
-                         lambda x: np.rot90(x, 3)]
+            # rotations = [lambda x: x,
+            #              np.rot90,
+            #              lambda x: np.rot90(x, 2),
+            #              lambda x: np.rot90(x, 3)]
+
+            rotations = [lambda x: x]
 
             # crop image
+            # crops = [lambda x: x,
+            #          lambda x: crop_by_scale(x, 0.9),
+            #          lambda x: crop_by_scale(x, 0.8),
+            #          lambda x: crop_by_scale(x, 0.7)]
+
             crops = [lambda x: x,
-                     lambda x: crop_by_scale(x, 0.9),
-                     lambda x: crop_by_scale(x, 0.8),
-                     lambda x: crop_by_scale(x, 0.7)]
+                     lambda x: crop_by_scale(x, 0.9)]
 
             orientations = product(rotations, crops)
 
@@ -151,10 +156,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         if pre_filter is not None:
             body['query']['bool']['filter'] = pre_filter
 
+        import time
+        # print('send-{}'.format(time.time()))
         res = self.es.search(index=self.index,
                              doc_type=self.doc_type,
                              body=body,
                              size=self.size)['hits']['hits']
+        # print('receive-{}'.format(time.time()))
 
         sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
 

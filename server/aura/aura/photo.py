@@ -5,14 +5,18 @@ import io
 
 
 class Photo:
-    def __init__(self, raw, N=10, canny1=5, canny2=50, canny3=1, approx=0.02):
+    def __init__(self, raw, resize=500, N=10, canny1=5, canny2=50, canny3=1, approx=0.02):
         self.raw = raw
+        self.resize = resize
         self.N = N
         self.canny1 = canny1
         self.canny2 = canny2
         self.canny3 = canny3
         self.approx = approx
-        self.image = Image.open(io.BytesIO(raw))
+        image = Image.open(io.BytesIO(raw))
+        width, height = image.size
+        ratio = min(self.resize / float(width), self.resize / float(height))
+        self.image = image.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
         self.array = np.asanyarray(self.image)
         self.boxes = self.generate_boxes()
 
@@ -27,9 +31,7 @@ class Photo:
 
     def generate_boxes(self):
         record = set()
-        oldshape = self.array.shape
-        image = cv2.resize(self.array, (600, 800))
-        newshape = image.shape
+        image = self.array
 
         gray0 = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -57,9 +59,6 @@ class Photo:
                             cosine = abs(self.angle(approx[j % 4], approx[j - 2], approx[j - 1]))
                             maxCosine = max(maxCosine, cosine)
                         if maxCosine < 0.3:
-                            for it in approx:
-                                it[0][0] *= oldshape[1] / newshape[1]
-                                it[0][1] *= oldshape[0] / newshape[0]
                             box = tuple((it[0][0], it[0][1]) for it in approx)
                             sorted_box = tuple(sorted(box))
                             if sorted_box not in record:
