@@ -68,11 +68,13 @@ function addTypes(relations, callback) {
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), (req, res, next) => {
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const userId = req.payload && req.payload.id;
 
     common.getItem('art', req.params.id, (err, result, fields) => {
         /* istanbul ignore if */
@@ -81,6 +83,9 @@ router.get('/:id', oneOf([
         } else {
             if (result.length) {
                 res.json(result[0]);
+                if (userId) {
+                    common.insertHistory(userId, 'art', result[0].id);
+                }
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',

@@ -38,6 +38,11 @@ Common.prototype.getItem = (group, id, callback) => {
     rds.query(sql, parameters, callback);
 };
 
+// Insert user browsing history
+Common.prototype.insertHistory = (userId, group, id) => {
+    rds.query(`INSERT INTO history (user_id, ${group}_id) VALUES (?)`, [[userId, id]]);
+};
+
 // Batch get item data
 Common.prototype.batchGetItems = (group, id, callback) => {
     rds.query(`SELECT * FROM ${group} WHERE id IN (?)`, [id], callback);
