@@ -111,10 +111,8 @@ def painting_hash(painting):
 
 @app.route('/aura', methods=['POST'])
 def aura():
-    if request.form['type'] == 'base64':
-        raw = base64.b64decode(request.form['data'])
-    elif request.form['type'] == 'raw':
-        raw = request.files['data'].read()
+    if 'image' in request.json:
+        raw = base64.b64decode(request.json['image'])
     else:
         return None, 400
     # start = time.time()
