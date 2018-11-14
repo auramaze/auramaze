@@ -28,7 +28,7 @@ class CameraScreen extends React.Component {
                     // alert(photo.base64.slice(0,100));
                     this.setState(previousState => (
                         {
-                            url: photo.base64
+                            scannedImage: photo.base64
                         }
                     ));
                 });
@@ -36,7 +36,7 @@ class CameraScreen extends React.Component {
     };
 
     onPictureSaved = async photo => {
-        alert(photo.url);
+        alert(photo.scannedImage);
     };
 
     render() {
@@ -48,8 +48,9 @@ class CameraScreen extends React.Component {
         } else {
             return (
                 <View style={{flex: 1}}>
-                    {this.state.url ?
-                        <Image style={{flex: 1, width: Dimensions.get('window').width}} source={{url: 'data:image/jpg;base64,' + this.state.url}}/> :
+                    {this.state.scannedImage ?
+                        <Image style={{flex: 1, width: Dimensions.get('window').width}}
+                               source={{url: 'data:image/jpg;base64,' + this.state.scannedImage}}/> :
                         <Camera
                             style={{flex: 1}}
                             type={this.state.type}

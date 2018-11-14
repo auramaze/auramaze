@@ -15,9 +15,9 @@ class TimeLine extends React.Component {
         this.state = {searchArtizen: []};
     }
 
-    async searchAuraMaze(url) {
+    async searchAuraMaze(searchItem) {
         try {
-            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
+            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + searchItem);
             let responseJson = await response.json();
             let returnArtizen = responseJson.artizen.length >= 1;
             let returnArt = responseJson.art.length >= 1;
