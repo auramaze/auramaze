@@ -52,6 +52,9 @@ class Artizen extends Component {
         });
         request.get({
             url: `${API_ENDPOINT}/artizen/${artizenId}`,
+            headers: token && {
+                'Authorization': `Bearer ${token}`
+            },
             json: true
         }, (error, response, artizen) => {
             if (response && response.statusCode === 200) {

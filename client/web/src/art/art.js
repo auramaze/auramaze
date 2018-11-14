@@ -51,6 +51,9 @@ class Art extends Component {
         });
         request.get({
             url: `${API_ENDPOINT}/art/${artId}`,
+            headers: token && {
+                'Authorization': `Bearer ${token}`
+            },
             json: true
         }, (error, response, art) => {
             if (response && response.statusCode === 200) {
