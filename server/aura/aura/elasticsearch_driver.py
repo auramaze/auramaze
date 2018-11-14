@@ -97,13 +97,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             rotations = [lambda x: x]
 
             # crop image
-            # crops = [lambda x: x,
-            #          lambda x: crop_by_scale(x, 0.9),
-            #          lambda x: crop_by_scale(x, 0.8),
-            #          lambda x: crop_by_scale(x, 0.7)]
-
             crops = [lambda x: x,
-                     lambda x: crop_by_scale(x, 0.9)]
+                     lambda x: crop_by_scale(x, 0.9),
+                     lambda x: crop_by_scale(x, 0.8),
+                     lambda x: crop_by_scale(x, 0.7)]
+
+            # crops = [lambda x: x,
+            #          lambda x: crop_by_scale(x, 0.9)]
 
             orientations = product(rotations, crops)
 
