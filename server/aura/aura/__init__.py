@@ -109,7 +109,7 @@ def painting_hash(painting):
     return hashlib.md5(str(painting).encode('utf-8')).hexdigest()
 
 
-@app.route('/aura/', methods=['POST'])
+@app.route('/aura', methods=['POST'])
 def aura():
     if request.form['type'] == 'base64':
         raw = base64.b64decode(request.form['data'])
