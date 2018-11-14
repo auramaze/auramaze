@@ -117,6 +117,10 @@ def painting_hash(painting):
 @app.route('/aura', methods=['POST'])
 def aura():
     if 'image' in request.json:
+        # from PIL import Image
+        # from io import BytesIO
+        # im = Image.open(BytesIO(base64.b64decode(request.json['image'])))
+        # im.save('temp.jpg','JPEG')
         raw = base64.b64decode(request.json['image'])
     else:
         return None, 400
