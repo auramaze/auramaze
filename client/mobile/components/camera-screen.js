@@ -23,9 +23,38 @@ class CameraScreen extends React.Component {
 
     takePicture = () => {
         if (this.camera) {
-            this.camera.takePictureAsync({base64: true})
+            this.camera.takePictureAsync({base64: true, quality: 0.2})
                 .then((photo) => {
-                    // alert(photo.base64.slice(0,100));
+                    alert(photo.base64.length);
+                    let data = new FormData();
+                    data.append("raw", photo.base64);
+
+                    fetch('https://apidev.auramaze.org/v1/search', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Content-Type": "multipart/form-data"
+                        },
+                        body: data
+                    }).then(function (response) {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            Promise.reject(response.json());
+                            throw new Error('Create account fail.');
+                        }
+                    }).then((responseJson) => {alert(JSON.stringify(responseJson))}
+                    ).catch(function (error) {
+                        alert('There has been a problem with your fetch operation: ' + error.message);
+                    });
+
+
+                    // let str = photo.base64;
+                    // alert("Size of sample is: " + str.length);
+                    // let compressed = LZString.compress(str);
+                    // alert("Size of compressed sample is: " + compressed.length);
+                    // str = LZString.decompress(compressed);
+                    // alert("Sample is: " + str.length);
                     this.setState(previousState => (
                         {
                             scannedImage: photo.base64
