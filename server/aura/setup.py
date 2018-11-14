@@ -27,6 +27,7 @@ setup(
         'Pillow==5.3.0',
         'pyparsing==2.3.0',
         'python-dateutil==2.7.5',
+        'python-dotenv==0.9.1',
         'requests==2.20.1',
         'scikit-image==0.12.3',
         'scipy==1.1.0',
