@@ -5,7 +5,7 @@ import io
 
 
 class Photo:
-    def __init__(self, raw, resize=500, N=10, canny1=5, canny2=50, canny3=1, approx=0.02):
+    def __init__(self, raw, resize=600, N=10, canny1=5, canny2=50, canny3=1, approx=0.02):
         self.raw = raw
         self.resize = resize
         self.N = N
@@ -15,8 +15,10 @@ class Photo:
         self.approx = approx
         image = Image.open(io.BytesIO(raw))
         width, height = image.size
-        ratio = min(self.resize / float(width), self.resize / float(height))
-        self.image = image.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
+        if (max(width, height) > self.resize):
+            ratio = min(self.resize / float(width), self.resize / float(height))
+            image = image.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
+        self.image = image
         self.array = np.asanyarray(self.image)
         self.boxes = self.generate_boxes()
 
