@@ -76,7 +76,12 @@ def search_image(ses, raw):
     return unique
 
 
-@app.route('/auravision/', methods=['POST'])
+@app.route('/aura/', methods=['POST'])
 def auravision():
-    raw = base64.b64decode(request.form['base64'])
+    if request.form['type'] == 'base64':
+        raw = base64.b64decode(request.form['data'])
+    elif request.form['type'] == 'raw':
+        raw = request.files['data'].read()
+    else:
+        return None, 400
     return jsonify({'art': search_image(ses, raw)})

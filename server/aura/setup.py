@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='auravision',
+    name='aura',
     version='0.1.0',
-    packages=['auravision'],
+    packages=['aura'],
     include_package_data=True,
     install_requires=[
         'certifi==2018.10.15',
