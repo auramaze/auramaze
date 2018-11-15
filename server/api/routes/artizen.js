@@ -227,29 +227,42 @@ router.delete('/:id', oneOf([
     });
 });
 
-// /* Follow an artizen. */
-// router.post('/:id', oneOf([
-//     param('id').isInt().isLength({min: 9, max: 9}),
-//     param('id').custom(common.validateUsername).withMessage('Invalid username')
-// ]), auth.required, (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (!validationResult(req).isEmpty()) {
-//         return res.status(400).json({errors: errors.array()});
-//     }
-//
-//     const {payload: {id}} = req;
-//
-//     common.updateItem('artizen', req.params.id, req.body, (err, data) => {
-//         /* istanbul ignore if */
-//         if (err) {
-//             next(err);
-//         } else {
-//             res.json({
-//                 message: `Update artizen success: ${req.params.id}`
-//             });
-//         }
-//     });
-// });
+/* Follow an artizen. */
+router.post('/:id/follow', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        body('type').equals('true'),
+        body('type').equals('false')
+    ])
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    let sql, parameters;
+
+    if (req.body.type === 'true') {
+        sql = 'REPLACE INTO follow (follower_id, followee_id) VALUES (?)';
+        parameters = [[id, req.params.id]];
+    } else {
+        sql = 'DELETE FROM follow WHERE follower_id=? AND followee_id=?';
+        parameters = [id, req.params.id];
+    }
+
+    rds.query(sql, parameters, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Follow success: ${req.params.id} ${req.body.type}`,
+            });
+        }
+    });
+});
 
 /* GET all introductions of artizen. */
 router.get('/:id/introduction', [
