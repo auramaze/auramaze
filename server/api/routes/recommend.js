@@ -20,14 +20,15 @@ router.get('/', [
 
     let results = {'art': [], 'artizen': []};
 
-    rds.query('SELECT art_id FROM history WHERE user_id=? AND art_id IS NOT NULL ORDER BY id DESC LIMIT 10', [id], (err, result, fields) => {
+    rds.query('SELECT art_id FROM history WHERE user_id=? AND art_id IS NOT NULL ORDER BY id DESC LIMIT 50', [id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             if (result.length) {
-                const art_ids = result.map(item => item.art_id);
-                rds.query('SELECT DISTINCT artizen.* FROM artizen INNER JOIN archive ON artizen.id=archive.artizen_id WHERE archive.art_id IN (?)', [art_ids], (err, result, fields) => {
+                const art_ids_50 = result.map(item => item.art_id);
+                const art_ids_10 = art_ids_50.slice(0, 10);
+                rds.query('SELECT DISTINCT artizen.* FROM artizen INNER JOIN archive ON artizen.id=archive.artizen_id WHERE archive.art_id IN (?)', [art_ids_10], (err, result, fields) => {
                     /* istanbul ignore if */
                     if (err) {
                         next(err);
@@ -41,7 +42,7 @@ router.get('/', [
                                     '_source': {
                                         'excludes': ['image.*.simple_word_*', 'image.*.signature']
                                     },
-                                    'size': 20,
+                                    'size': 50,
                                     'query': {
                                         'bool': {
                                             'must': {
@@ -51,7 +52,7 @@ router.get('/', [
                                                     'operator': 'or'
                                                 }
                                             },
-                                            'must_not': art_ids.map(id => ({
+                                            'must_not': art_ids_50.map(id => ({
                                                 'term': {
                                                     'id': id
                                                 }
@@ -68,7 +69,7 @@ router.get('/', [
                                         message: 'Error in recommender system'
                                     });
                                 } else {
-                                    results.art = body.hits.hits.map(item => Object.assign(item._source, {
+                                    results.art = shuffle(body.hits.hits).slice(0, 10).map(item => Object.assign(item._source, {
                                         _score: item._score,
                                     }));
                                     res.json(results);
@@ -85,5 +86,14 @@ router.get('/', [
         }
     });
 });
+
+
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 
 module.exports = router;
