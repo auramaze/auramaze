@@ -154,13 +154,12 @@ class Artizen extends React.Component {
                         related: item.data.map((styleItem, styleKey) => {
                             return (
                                 <TouchableOpacity
-                                    key={key}
+                                    key={styleKey}
                                     onPress={() => this.props.navigation.push('Art', {
                                         artId: styleItem.id,
                                         titleName: styleItem.title.default,
                                     })}>
                                     <ArtCard
-                                        key={styleKey}
                                         artName={styleItem.title.default}
                                         artistName={artizenInfoJson.name.default}
                                         source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
@@ -184,10 +183,9 @@ class Artizen extends React.Component {
                                           isStyle={this.state.isStyle}
                                           isGenre={this.state.isGenre}
                                           isCritic={this.state.isCritic}/>,
-                    introductions: introInfoJson.map((item, key) => {
+                    introductions: introInfoJson.map((item, introInfoKey) => {
                         return (
-
-                            <ReviewCard key={key}
+                            <ReviewCard key={introInfoKey}
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
@@ -239,28 +237,27 @@ class Artizen extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.artworks}
+                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isArtist ? this.state.artworks : null}
 
-                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> :
-                            <View/>}
-                        {this.state.collections}
+                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isMuseum ? this.state.collections : null}
 
-                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> :
-                            <View/>}
-                        {this.state.exhibits}
+                        {this.state.isExhibition ?
+                            <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isExhibition ? this.state.exhibits : null}
 
-                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
-                            <View/>}
-                        {this.state.related}
+                        {this.state.isCritic ?
+                            <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isCritic ? this.state.related : null}
 
                         {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
-                        {this.state.related}
+                        {this.state.isGenre ? this.state.related : null}
 
                         {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
-                        {this.state.related}
+                        {this.state.isStyle ? this.state.related : null}
 
                         <View style={{height: 30}}/>
 
