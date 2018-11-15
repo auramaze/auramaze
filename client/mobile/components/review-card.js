@@ -1,12 +1,17 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
+import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
 import ReviewFooter from "./review-footer";
+import headphone from "../assets/icons/headphones-alt-solid.png"
+import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
+import AutoHeightImage from 'react-native-auto-height-image';
 
 class ReviewCard extends React.Component {
 
     constructor(props) {
         super(props);
     }
+
+    state = {isSpeaking: false};
 
     render() {
         const styles = StyleSheet.create({
@@ -24,6 +29,12 @@ class ReviewCard extends React.Component {
                 borderRadius: 25,
                 borderColor: '#666666', borderWidth: 1,
             },
+            headphoneStyle: {
+                tintColor: '#666666'
+            },
+            headphoneStyleGif: {
+                tintColor: 'tomato'
+            },
             avatarHolder: {
                 height: 50, width: 50,
                 alignItems: 'center',
@@ -37,7 +48,7 @@ class ReviewCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: 225,
+                fontSize: 20, width: 195,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -61,6 +72,25 @@ class ReviewCard extends React.Component {
                             style={styles.imageStyle}/>
                     </View>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
+                    <TouchableOpacity onPress={() => {
+                        this.setState(previousState => (
+                            {
+                                isSpeaking: !previousState.isSpeaking
+                            }
+                        ));
+                        Expo.Speech.isSpeakingAsync().then((result) => {
+                            if (result) {
+                                Expo.Speech.stop();
+                            } else {
+                                Expo.Speech.speak(this.props.text);
+                            }
+                        });
+                    }}>
+                        {this.state.isSpeaking ?
+                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
+                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
+                    </TouchableOpacity>
+
                 </View>
                 <Text style={styles.bodyText}>{this.props.text}</Text>
                 <ReviewFooter/>
