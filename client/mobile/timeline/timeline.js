@@ -15,53 +15,56 @@ class TimeLine extends React.Component {
         this.state = {searchArtizen: []};
     }
 
-    async searchAuraMaze(url) {
+    async searchAuraMaze(searchItem) {
         try {
-            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + url);
+            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + searchItem);
             let responseJson = await response.json();
             let returnArtizen = responseJson.artizen.length >= 1;
             let returnArt = responseJson.art.length >= 1;
-            let object_arr = [];
+            let artizenArray = [];
             responseJson.artizen.map((item, key) => {
-                object_arr.push(
+                artizenArray.push(
                     <TouchableOpacity key={key}
                                       onPress={() => this.props.navigation.navigate('Artizen', {
                                           artizenId: item.id,
                                           titleName: item.name.default,
                                       })}>
                         <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                     source={item.avatar ? item.avatar : ""}
+                                     source={item.avatar ? item.avatar : null}
                                      id={item.id}
                                      topMargin={0}
                                      fontLoaded={this.props.screenProps.fontLoaded}/>
                     </TouchableOpacity>)
             });
-            this.setState(previousState => (
-                {
-                    haveArtizen: returnArtizen,
-                    searchArtizen: object_arr,
-                    haveArt: returnArt,
-                    searchArt: responseJson.art.map((item, key) => {
-                        return (
-                            <TouchableOpacity
-                                key={key}
-                                onPress={() => this.props.navigation.navigate('Art', {
-                                    artId: item.id,
-                                    titleName: item.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={item.title.default}
-                                    artistName={item.artist ? item.artist.default : ""}
-                                    source={item.image && item.image.default ? item.image.default.url : ""}
-                                    compYear={item.completionYear ? item.completionYear : ""}
-                                    id={item.id}
-                                    fontLoaded={this.props.screenProps.fontLoaded}
-                                />
-                            </TouchableOpacity>
-                        );
-                    })
-                }
-            ));
+
+            let artizenArrays = [], size = 2;
+            while (artizenArray.length > 0)
+                artizenArrays.push(artizenArray.splice(0, size));
+
+            this.setState({
+                haveArtizen: returnArtizen,
+                searchArtizen: artizenArrays,
+                haveArt: returnArt,
+                searchArt: responseJson.art.map((item, key) => {
+                    return (
+                        <TouchableOpacity
+                            key={key}
+                            onPress={() => this.props.navigation.navigate('Art', {
+                                artId: item.id,
+                                titleName: item.title.default,
+                            })}>
+                            <ArtCard
+                                artName={item.title.default}
+                                artistName={item.artist ? item.artist.default : ""}
+                                source={item.image && item.image.default ? item.image.default.url : null}
+                                compYear={item.completionYear ? item.completionYear : ""}
+                                id={item.id}
+                                fontLoaded={this.props.screenProps.fontLoaded}
+                            />
+                        </TouchableOpacity>
+                    );
+                })
+            });
         } catch (error) {
             alert(error);
         }
@@ -93,8 +96,6 @@ class TimeLine extends React.Component {
 
     render() {
 
-        let fontLoadStatus = this.props.screenProps.fontLoaded;
-
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
@@ -107,7 +108,8 @@ class TimeLine extends React.Component {
             headerText: {
                 fontSize: 20,
                 color: '#666666',
-                fontFamily: fontLoadStatus ? ('century-gothic-regular') : 'Cochin',
+                fontFamily: this.props.screenProps.fontLoaded ?
+                    ('century-gothic-regular') : 'Cochin',
             },
             bottomLine: {
                 borderBottomColor: '#666666',
@@ -127,9 +129,7 @@ class TimeLine extends React.Component {
         };
 
         let onCancel = () => {
-            this.setState(previousState => (
-                {term: ''}
-            ));
+            this.setState({term: ''});
         };
 
         let onEnd = () => {
@@ -139,9 +139,8 @@ class TimeLine extends React.Component {
             }
             this.searchAuraMaze(this.state.term);
         };
-        let arrays = [], size = 2;
-        while (this.state.searchArtizen.length > 0)
-            arrays.push(this.state.searchArtizen.splice(0, size));
+
+
         return (
             <View style={styles.mainStruct}>
                 <SearchBar
@@ -153,9 +152,7 @@ class TimeLine extends React.Component {
                     cancelButtonTitle="Cancel"
                     value={this.state.term}
                     onChangeText={(term) => (
-                        this.setState(previousState => (
-                            {term: term}
-                        )))}
+                        this.setState({term: term}))}
                     onClear={onClear}
                     onSubmitEditing={onEnd}
                     onCancel={onCancel}/>
@@ -166,7 +163,7 @@ class TimeLine extends React.Component {
                             <View style={{marginHorizontal: 5}}>
                                 <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
                             </View> : null}
-                        <FlatList data={arrays}
+                        <FlatList data={this.state.searchArtizen}
                                   horizontal={true}
                                   showsHorizontalScrollIndicator={false}
                                   renderItem={({item}) => TimeLine.renderRow(item)}
@@ -177,13 +174,11 @@ class TimeLine extends React.Component {
                             <View style={{marginHorizontal: 5}}>
                                 <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
                             </View> : null}
-                        <View style={{flex: 1, alignItems: 'center'}}>
+                        <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
                             {this.state.searchArt}
                         </View>
                     </ScrollView>
                 </View>
-
-
             </View>
 
         );

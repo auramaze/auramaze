@@ -8,8 +8,8 @@ import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
 import lines from './assets/icons/lines.png';
 import TimeLine from "./timeline/timeline";
-import CameraScreen from "./components/camera-screen";
-import TimeLineStack from "./components/timeline-stack";
+import CameraStack from "./camera/camera-stack";
+import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
 
 class RecommendScreen extends React.Component {
@@ -63,8 +63,7 @@ export default class App extends React.Component {
             {
                 TimeLine: {screen: TimeLineStack},
                 Artventure: {screen: SettingScreen},
-                CameraLeft: {screen: CameraScreen},
-                CameraRight: {screen: CameraScreen},
+                Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendScreen},
                 Settings: {screen: BlankUser},
             },
@@ -77,44 +76,40 @@ export default class App extends React.Component {
                                 tintColor: tintColor
                             },
                             cameraStyle: {tintColor: '#fff'},
-                            cameraLeftStyle: {marginRight: -lengthBasis * 25},
+                            artventureStyle: {marginLeft: -lengthBasis * 12},
+                            recommendationStyle: {marginRight: -lengthBasis * 12},
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
                                 width: lengthBasis * 65,
                                 height: lengthBasis * 40,
                                 backgroundColor: '#909090',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginVertical: 10 / ( Dimensions.get('window').width / 375)
-                            },
-                            cameraHolderLeft: {
-                                borderBottomLeftRadius: lengthBasis * 19,
-                                borderTopLeftRadius: lengthBasis * 19,
-                                marginLeft: lengthBasis * 25,
-                            },
-                            cameraHolderRight: {
-                                width: lengthBasis * 35,
-                                borderBottomRightRadius: lengthBasis * 19,
-                                borderTopRightRadius: lengthBasis * 19,
-                                marginRight: lengthBasis * 20 - 20,
+                                borderRadius: lengthBasis * 45,
+                                alignItems: 'center', justifyContent: 'center',
+                                marginVertical: 8 / (Dimensions.get('window').width / 375)
                             }
                         });
 
                         const {routeName} = navigation.state;
 
-                        if (routeName === 'CameraLeft') {
-                            return <View style={[styles.cameraHolder, styles.cameraHolderLeft]}>
+                        if (routeName === 'Camera') {
+                            return <View style={[styles.cameraHolder]}>
                                 <Image source={camera}
-                                       style={[styles.imageStyle, styles.cameraStyle, styles.cameraLeftStyle]}/>
+                                       style={[styles.imageStyle, styles.cameraStyle]}/>
                             </View>
-                        } else if (routeName === 'CameraRight') {
-                            return <View style={[styles.cameraHolder, styles.cameraHolderRight]}/>
+                        }
+
+                        if (routeName === 'Artventure') {
+                            return <Image source={journal}
+                                   style={[styles.imageStyle, styles.artventureStyle]}/>
+                        }
+
+                        if (routeName === 'Recommend') {
+                            return <Image source={recommendation}
+                                          style={[styles.imageStyle, styles.recommendationStyle]}/>
                         }
 
                         let iconName = '';
                         if (routeName === 'TimeLine') iconName = compass;
-                        else if (routeName === 'Artventure') iconName = journal;
-                        else if (routeName === 'Recommend') iconName = recommendation;
                         else if (routeName === 'Settings') iconName = lines;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
