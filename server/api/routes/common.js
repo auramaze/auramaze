@@ -44,9 +44,6 @@ Common.prototype.getItem = (group, id, authId, callback) => {
         }
     }
 
-    console.log(sql);
-    console.log(parameters);
-
     rds.query(sql, parameters, callback);
 };
 
