@@ -56,17 +56,19 @@ class CameraScreen extends React.Component {
                             this.setState({imageProcessing: false});
                             alert(JSON.stringify(response));
                             Promise.reject(response.json());
-                            throw new Error('Create account fail.');
+                            throw new Error('Search image fail.');
                         }
                     }).then((responseJson) => {
                             this.setState({imageProcessing: false});
                             // alert(JSON.stringify(responseJson));
                             let resultArt = responseJson.art;
-                            if (resultArt.length === 1) {
+                            if (resultArt.length >= 1) {
                                 this.props.navigation.navigate('Art', {
                                     artId: resultArt[0].id,
                                     titleName: resultArt[0].title.default,
                                 });
+                            } else {
+                                alert("No image found");
                             }
                         }
                     ).catch(function (error) {
@@ -121,7 +123,7 @@ class CameraScreen extends React.Component {
                             {this.state.imageProcessing ? <View style={{
                                 flex: 1,
                                 alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: 250,
+                                left: 0, right: 0, top: 225,
                             }}>
 
                                 <Animated.Image
