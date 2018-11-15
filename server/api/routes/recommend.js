@@ -20,7 +20,7 @@ router.get('/', [
 
     let results = {'art': [], 'artizen': []};
 
-    rds.query('SELECT art_id FROM history WHERE user_id=? AND art_id IS NOT NULL LIMIT 10', [id], (err, result, fields) => {
+    rds.query('SELECT art_id FROM history WHERE user_id=? AND art_id IS NOT NULL ORDER BY id DESC LIMIT 10', [id], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
