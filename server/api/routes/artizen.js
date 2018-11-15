@@ -359,7 +359,7 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
@@ -492,7 +492,7 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
