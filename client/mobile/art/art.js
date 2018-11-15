@@ -141,7 +141,8 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
                                         fontLoaded={fontLoadStatus}/>
 
@@ -153,7 +154,8 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}
                                         fontLoaded={fontLoadStatus}/>
                         );
@@ -193,7 +195,7 @@ class Art extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    {/*<TopBar/>*/}
+
                     {this.state.art}
                     <View style={styles.mainContext}>
 

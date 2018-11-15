@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
+import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import thumbs_down from '../assets/icons/thumbs-down.png';
 import thumbs_up from '../assets/icons/thumbs-up.png';
 
@@ -28,7 +28,14 @@ class ReviewFooter extends React.Component {
 
         return (
             <View style={styles.viewStyle}>
-                <Image source={thumbs_up} style={styles.imageStyle}/>
+                <TouchableOpacity onPress={() => {
+                    alert("itemId: " + this.props.itemId +
+                        "\nitemType: " + this.props.itemType +
+                        "\ntextId: " + this.props.textId +
+                        "\ntextType: " + this.props.textType)
+                }}>
+                    <Image source={thumbs_up} style={styles.imageStyle}/>
+                </TouchableOpacity>
                 <Text style={styles.textStyle}>{this.props.up}</Text>
                 <Image source={thumbs_down} style={styles.imageStyle}/>
                 <Text style={styles.textStyle}>{this.props.down}</Text>

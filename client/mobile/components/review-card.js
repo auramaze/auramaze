@@ -88,7 +88,9 @@ class ReviewCard extends React.Component {
 
                 </View>
                 <Text style={styles.bodyText}>{this.props.text}</Text>
-                <ReviewFooter up={this.props.up} down={this.props.down}/>
+                <ReviewFooter up={this.props.up} down={this.props.down}
+                              itemType={this.props.itemType} itemId={this.props.itemId}
+                              textType={this.props.textType} textId={this.props.textId}/>
             </View>
         )
     }
