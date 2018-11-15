@@ -63,8 +63,7 @@ export default class App extends React.Component {
             {
                 TimeLine: {screen: TimeLineStack},
                 Artventure: {screen: SettingScreen},
-                CameraLeft: {screen: CameraStack},
-                // CameraRight: {screen: () => null},
+                Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendScreen},
                 Settings: {screen: BlankUser},
             },
@@ -85,15 +84,14 @@ export default class App extends React.Component {
                                 height: lengthBasis * 40,
                                 backgroundColor: '#909090',
                                 borderRadius: lengthBasis * 45,
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                alignItems: 'center', justifyContent: 'center',
                                 marginVertical: 8 / (Dimensions.get('window').width / 375)
                             }
                         });
 
                         const {routeName} = navigation.state;
 
-                        if (routeName === 'CameraLeft') {
+                        if (routeName === 'Camera') {
                             return <View style={[styles.cameraHolder]}>
                                 <Image source={camera}
                                        style={[styles.imageStyle, styles.cameraStyle]}/>
@@ -112,8 +110,6 @@ export default class App extends React.Component {
 
                         let iconName = '';
                         if (routeName === 'TimeLine') iconName = compass;
-                        // else if (routeName === 'Artventure') iconName = journal;
-                        // else if (routeName === 'Recommend') iconName = recommendation;
                         else if (routeName === 'Settings') iconName = lines;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;

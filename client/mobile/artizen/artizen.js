@@ -194,7 +194,7 @@ class Artizen extends React.Component {
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
                                         id={item.id}
-                                        isIntro={true}
+                                        isIntro={true} up={item.up} down={item.down}
                                         fontLoaded={fontLoadStatus}/>
 
                         );

@@ -86,11 +86,9 @@ class ReviewCard extends React.Component {
                             <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
                     </TouchableOpacity> : null}
 
-
-
                 </View>
                 <Text style={styles.bodyText}>{this.props.text}</Text>
-                <ReviewFooter/>
+                <ReviewFooter up={this.props.up} down={this.props.down}/>
             </View>
         )
     }
