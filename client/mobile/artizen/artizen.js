@@ -31,8 +31,6 @@ class Artizen extends React.Component {
             let introInfoJson = await introInfo.json();
             let artInfoJson = await artInfo.json();
             let fontLoadStatus = this.props.screenProps.fontLoaded;
-            // let returnArtizen = responseJson.artizen.length >= 1;
-            // let returnArt = responseJson.art.length >= 1;
 
             artInfoJson.map((item, key) => {
                 (item.type === "artist") && this.setState(previousState => (
