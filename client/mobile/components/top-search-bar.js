@@ -31,7 +31,7 @@ class TopSearchBar extends React.Component {
                                      source={item.avatar ? item.avatar : null}
                                      id={item.id}
                                      topMargin={0}
-                                     fontLoaded={this.props.screenProps.fontLoaded}/>
+                                     fontLoaded={this.props.fontLoaded}/>
                     </TouchableOpacity>)
             });
 
@@ -57,7 +57,7 @@ class TopSearchBar extends React.Component {
                                 source={item.image && item.image.default ? item.image.default.url : null}
                                 compYear={item.completionYear ? item.completionYear : ""}
                                 id={item.id}
-                                fontLoaded={this.props.screenProps.fontLoaded}
+                                fontLoaded={this.props.fontLoaded}
                             />
                         </TouchableOpacity>
                     );

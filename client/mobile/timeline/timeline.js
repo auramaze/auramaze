@@ -153,7 +153,8 @@ class TimeLine extends React.Component {
         return (
             <View style={styles.mainStruct}>
 
-                <TopSearchBar updateSearchStatus={this.updateSearchStatus}/>
+                <TopSearchBar updateSearchStatus={this.updateSearchStatus}
+                              fontLoaded={this.props.screenProps.fontLoaded}/>
 
                 {this.state.hasSearched ? <SearchPage searchResult={this.state.searchResult}
                                                       fontLoaded={this.props.screenProps.fontLoaded}/> : null}

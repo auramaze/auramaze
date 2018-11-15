@@ -45,7 +45,7 @@ class SearchPage extends React.Component {
             headerText: {
                 fontSize: 20,
                 color: '#666666',
-                fontFamily: this.props.screenProps.fontLoaded ?
+                fontFamily: this.props.fontLoaded ?
                     ('century-gothic-regular') : 'Cochin',
             },
             bottomLine: {
