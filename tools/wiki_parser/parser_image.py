@@ -76,6 +76,6 @@ if __name__ == '__main__':
     driver = WikiImageParser()
     with open('test.json') as f:
         dic = json.load(f)
-    for user_name, link in tqdm(sorted(dic.items())[1590:]):
+    for user_name, link in tqdm(sorted(dic.items())):
         driver.download(user_name, link, 'img')
 
