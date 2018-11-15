@@ -26,16 +26,15 @@ class CameraScreen extends React.Component {
             this.camera.takePictureAsync({base64: true, quality: 0.01})
                 .then((photo) => {
                     // alert(photo.base64.length);
-                    let data = new FormData();
-                    data.append("base64", photo.base64);
+                    let dataJson = {'image': photo.base64};
 
-                    fetch('https://apidev.auramaze.org/auravision/', {
+                    fetch('https://apidev.auramaze.org/v1/search', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            "Content-Type": "multipart/form-data"
+                            "Content-Type": "application/json"
                         },
-                        body: data
+                        body: JSON.stringify(dataJson)
                     }).then(function (response) {
                         if (response.ok) {
                             return response.json();
