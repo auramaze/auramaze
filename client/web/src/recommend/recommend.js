@@ -46,7 +46,7 @@ class Recommend extends Component {
         return (
 
             <div className="recommend">
-                <ItemList items={this.state.items} extended/>
+                <ItemList items={this.state.items}/>
             </div>
         );
     }
