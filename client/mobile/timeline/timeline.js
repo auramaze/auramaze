@@ -6,13 +6,16 @@ import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
 import Art from "../art/art";
+import TopSearchBar from "../components/top-search-bar";
+import SearchPage from "../components/search-page";
 
 
 class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchArtizen: []};
+        this.state = {searchResult: {hasSearched: false}};
+        this.updateSearchStatus = this.updateSearchStatus.bind(this);
     }
 
     async searchAuraMaze(searchItem) {
@@ -94,6 +97,12 @@ class TimeLine extends React.Component {
         );
     }
 
+    updateSearchStatus = (info) => {
+        this.setState(previousState => (
+            {searchResult: info}
+        ));
+    };
+
     render() {
 
         const styles = StyleSheet.create({
@@ -143,42 +152,12 @@ class TimeLine extends React.Component {
 
         return (
             <View style={styles.mainStruct}>
-                <SearchBar
-                    ref={search => this.search = search}
-                    containerStyle={{backgroundColor: '#fff'}}
-                    inputContainerStyle={{backgroundColor: '#eeeeee'}}
-                    platform="ios"
-                    placeholder='Search'
-                    cancelButtonTitle="Cancel"
-                    value={this.state.term}
-                    onChangeText={(term) => (
-                        this.setState({term: term}))}
-                    onClear={onClear}
-                    onSubmitEditing={onEnd}
-                    onCancel={onCancel}/>
 
-                <View style={styles.mainContext}>
-                    <ScrollView keyboardDismissMode='on-drag'>
-                        {this.state.haveArtizen ?
-                            <View style={{marginHorizontal: 5}}>
-                                <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                            </View> : null}
-                        <FlatList data={this.state.searchArtizen}
-                                  horizontal={true}
-                                  showsHorizontalScrollIndicator={false}
-                                  renderItem={({item}) => TimeLine.renderRow(item)}
-                                  keyExtractor={(item, index) => index.toString()}/>
+                <TopSearchBar updateSearchStatus={this.updateSearchStatus}/>
 
-                        {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
-                        {this.state.haveArt ?
-                            <View style={{marginHorizontal: 5}}>
-                                <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                            </View> : null}
-                        <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                            {this.state.searchArt}
-                        </View>
-                    </ScrollView>
-                </View>
+                {this.state.hasSearched ? <SearchPage searchResult={this.state.searchResult}
+                                                      fontLoaded={this.props.screenProps.fontLoaded}/> : null}
+
             </View>
 
         );
