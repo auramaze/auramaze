@@ -159,8 +159,6 @@ Common.prototype.updateItem = (group, id, item, callback) => {
         parameters = columns.map(column => conversion[column](item[column]));
     }
     parameters.push(id);
-    console.log(sql);
-    console.log(parameters);
     rds.query(sql, parameters, callback);
 };
 
