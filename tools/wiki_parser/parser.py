@@ -1,9 +1,7 @@
-import re
 import os
 import json
 import glob
 import argparse
-import copy
 from bs4 import BeautifulSoup
 from tqdm import tqdm as tqdm
 

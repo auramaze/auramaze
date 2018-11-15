@@ -25,6 +25,8 @@ def join(org_file, new_file, output_path):
     print('org dict size: ', len(org_dict), 'new dict size: ', len(new_dict))
     for i in range(len(org_dict)):
         wiki = new_dict.get(org_dict[i]['username'], None)
+        if wiki == '':
+            wiki = None
         link = org_dict[i]['wikipediaLink']
         try:
             url = link.split('//')[1]
