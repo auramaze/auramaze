@@ -2,17 +2,10 @@ import React from 'react';
 import {createStackNavigator} from "react-navigation";
 import Art from "../art/art";
 import Artizen from "../artizen/artizen";
-import TimeLine from "../timeline/timeline";
 import CameraScreen from "./camera-screen";
 
-const TimeLineStack = createStackNavigator(
+const CameraStack = createStackNavigator(
     {
-        TimeLine: {
-            screen: TimeLine,
-            navigationOptions: {
-                header: null
-            }
-        },
         CameraScreen: {
             screen: CameraScreen,
             navigationOptions: {
@@ -23,7 +16,7 @@ const TimeLineStack = createStackNavigator(
         Artizen: {screen: Artizen},
     },
     {
-        initialRouteName: 'TimeLine',
+        initialRouteName: 'CameraScreen',
         cardStyle: {
             backgroundColor: 'white'
         },
@@ -44,4 +37,4 @@ const TimeLineStack = createStackNavigator(
     }
 );
 
-export default TimeLineStack;
+export default CameraStack;

@@ -1,6 +1,9 @@
 import React from 'react';
 import {Text, View, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Camera, Permissions} from 'expo';
+import camera_button from '../assets/icons/camera-button.png';
+import noImage from "../assets/icons/no-image-artizen.png";
+import AutoHeightImage from "react-native-auto-height-image";
 
 class CameraScreen extends React.Component {
 
@@ -21,9 +24,14 @@ class CameraScreen extends React.Component {
 
     handleMountError = ({message}) => console.error(message);
 
-    takePicture = () => {
+    takePicture = async () => {
+        // const dim = Dimensions.get('window');
+        // alert('width: '+ dim.width);
+        // alert('height: '+ dim.height);
+
         if (this.camera) {
-            this.camera.takePictureAsync({base64: true, quality: 0.01})
+
+            this.camera.takePictureAsync({base64: true, quality: 0.01, skipProcessing: true})
                 .then((photo) => {
                     // alert(photo.base64.length);
                     let dataJson = {'image': photo.base64};
@@ -86,45 +94,42 @@ class CameraScreen extends React.Component {
         } else {
             return (
                 <View style={{flex: 1}}>
-                    {this.state.scannedImage ?
-                        <Image style={{flex: 1, width: Dimensions.get('window').width}}
-                               source={{url: 'data:image/jpg;base64,' + this.state.scannedImage}}/> :
-                        <Camera
-                            style={{flex: 1}}
-                            type={this.state.type}
-                            onMountError={this.handleMountError}
-                            pictureSize={"High"}
-                            ref={ref => {
-                                this.camera = ref;
+                    {/*{this.state.scannedImage ?*/}
+                    {/*<Image style={{flex: 1, width: Dimensions.get('window').width}}*/}
+                    {/*source={{url: 'data:image/jpg;base64,' + this.state.scannedImage}}/> :*/}
+                    <Camera
+                        style={{flex: 1}}
+                        type={this.state.type}
+                        onMountError={this.handleMountError}
+                        pictureSize={"High"}
+                        ref={ref => {
+                            this.camera = ref;
+                        }}>
+                        <View
+                            style={{
+                                flex: 1,
+                                backgroundColor: 'transparent',
+                                flexDirection: 'row',
                             }}>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    backgroundColor: 'transparent',
-                                    flexDirection: 'row',
-                                }}>
 
-                                <View style={{
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    position: 'absolute',
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 60,
-                                }}>
-                                    <TouchableOpacity
-                                        onPress={this.takePicture}
-                                        style={{alignSelf: 'center'}}
-                                    >
-                                        <Text
-                                            style={{fontSize: 18, marginBottom: 10, color: 'white'}}>
-                                            {' '}Take{' '}
-                                        </Text>
-
-                                    </TouchableOpacity>
-                                </View>
+                            <View style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                bottom: 40,
+                            }}>
+                                <TouchableOpacity
+                                    onPress={this.takePicture}
+                                    style={{alignSelf: 'center'}}
+                                >
+                                    <AutoHeightImage width={75} style={{tintColor: 'white'}}
+                                                     source={camera_button}/>
+                                </TouchableOpacity>
                             </View>
-                        </Camera>}
+                        </View>
+                    </Camera>
 
                 </View>
             );

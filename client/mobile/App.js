@@ -8,8 +8,8 @@ import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
 import lines from './assets/icons/lines.png';
 import TimeLine from "./timeline/timeline";
-import CameraScreen from "./components/camera-screen";
-import TimeLineStack from "./components/timeline-stack";
+import CameraStack from "./camera/camera-stack";
+import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
 
 class RecommendScreen extends React.Component {
@@ -63,8 +63,8 @@ export default class App extends React.Component {
             {
                 TimeLine: {screen: TimeLineStack},
                 Artventure: {screen: SettingScreen},
-                CameraLeft: {screen: CameraScreen},
-                CameraRight: {screen: CameraScreen},
+                CameraLeft: {screen: CameraStack},
+                CameraRight: {screen: CameraStack},
                 Recommend: {screen: RecommendScreen},
                 Settings: {screen: BlankUser},
             },
