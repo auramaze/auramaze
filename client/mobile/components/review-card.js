@@ -48,7 +48,7 @@ class ReviewCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: 195,
+                fontSize: 20, width: this.props.isIntro ? 195 : 225,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -72,7 +72,7 @@ class ReviewCard extends React.Component {
                             style={styles.imageStyle}/>
                     </View>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    <TouchableOpacity onPress={() => {
+                    {this.props.isIntro ? <TouchableOpacity onPress={() => {
                         Expo.Speech.isSpeakingAsync().then((result) => {
                             if (result) {
                                 Expo.Speech.stop();
@@ -81,10 +81,12 @@ class ReviewCard extends React.Component {
                             }
                         });
                     }}>
-                        {this.state.isSpeaking ?
+                        {this.state.isSpeaking && this.props.isIntro ?
                             <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
                             <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                    </TouchableOpacity>
+                    </TouchableOpacity> : null}
+
+
 
                 </View>
                 <Text style={styles.bodyText}>{this.props.text}</Text>
