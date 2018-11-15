@@ -73,11 +73,6 @@ class ReviewCard extends React.Component {
                     </View>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
                     <TouchableOpacity onPress={() => {
-                        this.setState(previousState => (
-                            {
-                                isSpeaking: !previousState.isSpeaking
-                            }
-                        ));
                         Expo.Speech.isSpeakingAsync().then((result) => {
                             if (result) {
                                 Expo.Speech.stop();
