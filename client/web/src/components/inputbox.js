@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import './inputbox.css';
 
 class Inputbox extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const {onChange, style, ...props} = this.props;
         return (

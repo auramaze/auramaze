@@ -37,7 +37,7 @@ class ReviewCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20,
+                fontSize: 20, width: 225,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -60,10 +60,9 @@ class ReviewCard extends React.Component {
                             source={{uri: this.props.source}}
                             style={styles.imageStyle}/>
                     </View>
-                    <Text style={styles.headerText}>{this.props.name}</Text>
+                    <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
                 </View>
-                <Text
-                    style={styles.bodyText}>{this.props.text}</Text>
+                <Text style={styles.bodyText}>{this.props.text}</Text>
                 <ReviewFooter/>
             </View>
         )

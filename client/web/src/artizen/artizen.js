@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withCookies} from 'react-cookie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
@@ -12,6 +13,9 @@ import SlickPrevArror from '../components/slick-prev-arrow';
 import SlickNextArror from '../components/slick-next-arrow';
 import {API_ENDPOINT} from '../common';
 import './artizen.css';
+import EditorModal from "../components/editor-modal";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit} from "@fortawesome/free-solid-svg-icons";
 
 class Artizen extends Component {
     constructor(props) {
@@ -20,7 +24,8 @@ class Artizen extends Component {
             artizen: {},
             arts: [],
             introductions: [],
-            reviews: []
+            reviews: [],
+            editModalShow: false
         };
         this.artSection = React.createRef();
         this.updateArtizen = this.updateArtizen.bind(this);
@@ -37,6 +42,8 @@ class Artizen extends Component {
     }
 
     updateArtizen(artizenId) {
+        const token = this.props.cookies.get('token');
+
         this.setState({
             artizen: {},
             arts: [],
@@ -45,6 +52,9 @@ class Artizen extends Component {
         });
         request.get({
             url: `${API_ENDPOINT}/artizen/${artizenId}`,
+            headers: token && {
+                'Authorization': `Bearer ${token}`
+            },
             json: true
         }, (error, response, artizen) => {
             if (response && response.statusCode === 200) {
@@ -66,6 +76,9 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/introduction`,
+                        headers: token && {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
@@ -75,6 +88,9 @@ class Artizen extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/artizen/${id}/review`,
+                        headers: token && {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
@@ -110,9 +126,11 @@ class Artizen extends Component {
             <div className="artizen">
                 <div className="artizen-left-section">
                     <ArtizenHeader
+                        id={this.state.artizen.id}
                         name={this.state.artizen.name && this.state.artizen.name.default}
                         avatar={this.state.artizen.avatar}
                         type={this.state.artizen.type}
+                        following={this.state.artizen.following}
                     />
                     <SectionTitle sectionTitle="Introductions"/>
                     <div className="slider-container">
@@ -141,11 +159,16 @@ class Artizen extends Component {
                                         content={introduction.content}
                                         up={introduction.up}
                                         down={introduction.down}
+                                        status={introduction.status}
                                     />
                                 </div>)}
                         </Slider>}
                     </div>
-                    <SectionTitle sectionTitle="Reviews"/>
+                    <SectionTitle sectionTitle="Reviews">
+                        <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
+                            this.setState({editModalShow: true});
+                        }}/>
+                    </SectionTitle>
                     {this.state.reviews.map(review =>
                         <TextCard
                             key={review.id}
@@ -162,6 +185,7 @@ class Artizen extends Component {
                             content={review.content}
                             up={review.up}
                             down={review.down}
+                            status={review.status}
                         />)}
                 </div>
                 <div className="artizen-right-section" ref={this.artSection}>
@@ -176,6 +200,9 @@ class Artizen extends Component {
                         </div>
                     )}
                 </div>
+                <EditorModal show={this.state.editModalShow} handleClose={() => {
+                    this.setState({editModalShow: false})
+                }} itemType="artizen" itemId={this.state.artizen.id} itemName={this.state.artizen.name} textType="review"/>
             </div>
         );
     }
@@ -189,4 +216,4 @@ Artizen.propTypes = {
     }),
 };
 
-export default Artizen;
+export default withCookies(Artizen);

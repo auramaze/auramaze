@@ -38,7 +38,7 @@ class ArtCard extends React.Component {
                 <AutoHeightImage width={Dimensions.get('window').width * 5 / 6}
                                  source={{uri: this.props.source}}/>
                 <Text style={[styles.generalText, styles.headerText]}>{this.props.artName}</Text>
-                {this.props.artistName? <Text style={[styles.generalText, styles.infoText]}>
+                {this.props.artistName ? <Text style={[styles.generalText, styles.infoText]}>
                     {this.props.artistName} {this.props.compYear ? "," + this.props.compYear : ""}
                 </Text> : <View style={{height: 10}}/>}
             </View>

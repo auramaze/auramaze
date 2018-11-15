@@ -3,18 +3,15 @@ import {Link} from 'react-router-dom';
 import ReactStars from 'react-stars';
 import {Editor, EditorState, convertFromRaw} from 'draft-js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faThumbsUp as faThumbsUpSolid} from '@fortawesome/free-solid-svg-icons';
-import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-icons';
-import {faThumbsUp as faThumbsUpRegular} from '@fortawesome/free-regular-svg-icons';
-import {faThumbsDown as faThumbsDownRegular} from '@fortawesome/free-regular-svg-icons';
 import {faHeadphonesAlt} from '@fortawesome/free-solid-svg-icons';
 import {faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import TextVote from './text-vote';
 import './text-card.css';
 
 class TextCard extends Component {
     constructor(props) {
         super(props);
-        this.state = {contentHeight: 0, audio: false};
+        this.state = {contentHeight: 0, audio: false, up: props.up, down: props.down, status: props.status};
         this.content = React.createRef();
         this.updateContentHeight = this.updateContentHeight.bind(this);
     }
@@ -35,7 +32,7 @@ class TextCard extends Component {
     }
 
     render() {
-        const {authorId, authorUsername, authorName, authorAvatar, itemType, itemId, itemUsername, textType, textId, rating, content, up, down, ...props} = this.props;
+        const {authorId, authorUsername, authorName, authorAvatar, itemType, itemId, itemUsername, textType, textId, rating, content, up, down, status, ...props} = this.props;
         return (
             <div {...props} className="text-card card-shadow">
                 <div className="text-card-title">
@@ -55,7 +52,7 @@ class TextCard extends Component {
                 </div>
                 <div className="text-card-content">
                     <div ref={this.content}>
-                        {this.props.textType === 'review' && this.props.rating &&
+                        {textType === 'review' && rating &&
                         <div className="react-stars-container">
                             <ReactStars
                                 count={5}
@@ -73,20 +70,8 @@ class TextCard extends Component {
                     </div>
                     {this.state.contentHeight > 200 && <div className="text-card-mask-bottom"/>}
                 </div>
-                <div className="text-card-vote">
-                    <FontAwesomeIcon
-                        className="text-card-vote-icon"
-                        icon={this.props.status === 1 ? faThumbsUpSolid : faThumbsUpRegular}
-                        size="lg"
-                    />
-                    <span>{up}</span>
-                    <FontAwesomeIcon
-                        className="text-card-vote-icon"
-                        icon={this.props.status === -1 ? faThumbsDownSolid : faThumbsDownRegular}
-                        size="lg"
-                    />
-                    <span>{down}</span>
-                </div>
+                <TextVote itemType={itemType} itemId={itemId} textType={textType} textId={textId} up={up}
+                          down={down} status={status}/>
             </div>
         );
     }

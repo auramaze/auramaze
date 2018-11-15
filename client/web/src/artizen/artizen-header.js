@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Follow from "../components/follow";
 import artist from '../icons/artist.svg';
 import museum from '../icons/museum.svg';
 import genre from '../icons/genre.svg';
@@ -16,7 +17,7 @@ class ArtizenHeader extends Component {
     }
 
     render() {
-        const {avatar, name, type, ...props} = this.props;
+        const {id, avatar, name, type, following, ...props} = this.props;
         return (
             <div className="artizen-header" {...props}>
                 {avatar ?
@@ -40,6 +41,7 @@ class ArtizenHeader extends Component {
                             className="artizen-badge"
                         />)}
                 </div>}
+                <Follow id={id} status={Boolean(following)}/>
             </div>
         );
     }

@@ -1,37 +1,27 @@
 import React, {Component} from 'react';
 import request from 'request';
+import {withCookies} from "react-cookie";
+import io from 'socket.io-client'
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
-import google from '../icons/google.svg';
-import facebook from '../icons/facebook.svg';
 import './signup-modal.css';
-import {AuthContext} from "../app";
-import {API_ENDPOINT} from "../common";
-import {withCookies} from "react-cookie";
+import {API_ENDPOINT, API_URL} from "../common";
+import OAuthButtonbox from "./oauth-buttonbox";
 
+const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
 const buttonboxStyle = {
     margin: '20px 0',
     width: '100%',
     height: 50,
     borderRadius: 5,
-    cursor: 'pointer',
     whiteSpace: 'nowrap'
 };
 const auramazeButtonboxStyle = Object.assign({
     backgroundColor: '#cdcdcd',
     color: '#666666'
-}, buttonboxStyle);
-const gmailButtonboxStyle = Object.assign({
-    backgroundColor: '#ffffff',
-    color: '#484848',
-    border: 'solid 2px #484848'
-}, buttonboxStyle);
-const facebookButtonboxStyle = Object.assign({
-    backgroundColor: '#3b5998',
-    color: '#ffffff'
 }, buttonboxStyle);
 
 class SignupModal extends Component {
@@ -65,9 +55,11 @@ class SignupModal extends Component {
                 } else {
                     cookies.remove('token', {path: '/'});
                 }
-                this.setState({name: '', email: '', password: ''})
+                this.setState({id: '', password: '', auramazeProcessing: false});
+                window.location.reload();
+            } else {
+                this.setState({auramazeProcessing: false});
             }
-            this.setState({auramazeProcessing: false});
         });
     }
 
@@ -118,7 +110,7 @@ class SignupModal extends Component {
                         }}
                     >
                         <div style={{color: '#666666', display: 'inlineBlock', margin: '0 10px'}}>
-                            <img src={auramaze}
+                            <img src={auramaze} alt="auramaze"
                                  style={{width: 25, height: 25, marginRight: 10, verticalAlign: 'middle'}}/>
                             <span
                                 style={{
@@ -128,30 +120,8 @@ class SignupModal extends Component {
                         </div>
                     </Buttonbox>
                     <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
-                    <Buttonbox
-                        style={gmailButtonboxStyle}
-                    >
-                        <div style={{color: '#484848', display: 'inlineBlock', margin: '0 10px'}}>
-                            <img src={google}
-                                 style={{width: 20, height: 20, marginRight: 10, verticalAlign: 'middle'}}/>
-                            <span style={{
-                                display: 'inlineBlock',
-                                verticalAlign: 'middle'
-                            }}>Sign up with Google</span>
-                        </div>
-                    </Buttonbox>
-                    <Buttonbox
-                        style={facebookButtonboxStyle}
-                    >
-                        <div style={{color: '#ffffff', display: 'inlineBlock', margin: '0 10px'}}>
-                            <img src={facebook}
-                                 style={{width: 20, height: 20, marginRight: 10, verticalAlign: 'middle'}}/>
-                            <span style={{
-                                display: 'inlineBlock',
-                                verticalAlign: 'middle'
-                            }}>Sign up with Facebook</span>
-                        </div>
-                    </Buttonbox>
+                    <OAuthButtonbox signup provider="google" socket={socket}/>
+                    <OAuthButtonbox signup provider="facebook" socket={socket}/>
                 </div>
             </Modal>
         );

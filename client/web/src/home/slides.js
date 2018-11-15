@@ -5,6 +5,7 @@ import Slide from './slide';
 import Searchbox from '../components/searchbox';
 import {API_ENDPOINT} from '../common';
 import './slides.css';
+import {WindowContext} from "../app";
 
 class Slides extends Component {
     constructor(props) {
@@ -68,38 +69,36 @@ class Slides extends Component {
 
     render() {
         return (
-            <div className="slides"
-                style={{
-                    height: this.props.windowHeight,
-                    width: this.props.windowWidth,
-                }}>
-                {(this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`]) &&
-                <Slide
-                    key={this.state.index}
-                    imgSrc={this.state[`imgSrc-${this.state.index}`]}
-                    imgWidth={this.state[`imgWidth-${this.state.index}`]}
-                    imgHeight={this.state[`imgHeight-${this.state.index}`]}
-                    windowWidth={this.props.windowWidth}
-                    windowHeight={this.props.windowHeight}
-                    reverse={this.state.reverse}
-                    onComplete={this.updateImage}
-                />}
-                <Searchbox style={{
-                    position: 'absolute',
-                    width: 500,
-                    maxWidth: '80%',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                }}/>
-            </div>
+            <WindowContext.Consumer>
+                {({windowWidth, windowHeight}) => (
+                    <div className="slides"
+                         style={{
+                             height: windowHeight,
+                             width: windowWidth,
+                         }}>
+                        {(this.state && this.state.hasOwnProperty('index') && this.state[`imgSrc-${this.state.index}`] && this.state[`imgWidth-${this.state.index}`] && this.state[`imgHeight-${this.state.index}`]) &&
+                        <Slide
+                            key={this.state.index}
+                            imgSrc={this.state[`imgSrc-${this.state.index}`]}
+                            imgWidth={this.state[`imgWidth-${this.state.index}`]}
+                            imgHeight={this.state[`imgHeight-${this.state.index}`]}
+                            windowWidth={windowWidth}
+                            windowHeight={windowHeight}
+                            reverse={this.state.reverse}
+                            onComplete={this.updateImage}
+                        />}
+                        <Searchbox style={{
+                            position: 'absolute',
+                            width: 500,
+                            maxWidth: '80%',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                        }}/>
+                    </div>)}
+            </WindowContext.Consumer>
         );
     }
 }
-
-Slides.propTypes = {
-    windowWidth: PropTypes.number,
-    windowHeight: PropTypes.number,
-};
 
 export default Slides;

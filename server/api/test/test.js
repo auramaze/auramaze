@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../server');
 const uuidv4 = require('uuid/v4');
 const assert = require('assert');
 
@@ -384,6 +384,15 @@ describe('Test api', function () {
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.length > 0);
+                    })
+                    .end(done);
+            });
+
+            it('should return multiple types of relations', done => {
+                request(app).get('/v1/artizen/nga/art').expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.length > 1);
                     })
                     .end(done);
             });
@@ -1072,8 +1081,9 @@ describe('Test api', function () {
         describe('POST introduction to art', () => {
             it('should post introdcution to art', done => {
                 request(app).post('/v1/art/10000003/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1097,8 +1107,9 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).post('/v1/art/artid/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1122,8 +1133,9 @@ describe('Test api', function () {
             });
             it('should report invalid introdcution', done => {
                 request(app).post('/v1/art/10000003/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1148,8 +1160,9 @@ describe('Test api', function () {
             });
             it('should report no content', done => {
                 request(app).post('/v1/art/10000003/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                     })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -1160,8 +1173,9 @@ describe('Test api', function () {
             });
             it('should report invalid introduction content', done => {
                 request(app).post('/v1/art/10000003/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': 'this is not a json'
                     })
                     .expect(400)
@@ -1177,8 +1191,9 @@ describe('Test api', function () {
             it('should not get invalid introdcution to art', done => {
                 let text_id;
                 request(app).post('/v1/art/10000003/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1222,8 +1237,9 @@ describe('Test api', function () {
         describe('POST introduction to artizen', () => {
             it('should post introdcution to artizen', done => {
                 request(app).post('/v1/artizen/100000011/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1247,8 +1263,9 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).post('/v1/artizen/metmuseum/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1272,8 +1289,9 @@ describe('Test api', function () {
             });
             it('should report invalid introdcution', done => {
                 request(app).post('/v1/artizen/100000011/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1298,8 +1316,9 @@ describe('Test api', function () {
             });
             it('should report invalid introduction content', done => {
                 request(app).post('/v1/artizen/100000011/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': 'this is not a json'
                     })
                     .expect(400)
@@ -1315,8 +1334,9 @@ describe('Test api', function () {
             it('should not get invalid introdcution to artizen', done => {
                 let text_id;
                 request(app).post('/v1/artizen/100000011/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': JSON.stringify('大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。')
                     })
                     .expect(200)
@@ -1336,6 +1356,7 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).get('/v1/artizen/artizenid/introduction')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -1348,8 +1369,9 @@ describe('Test api', function () {
         describe('POST review of art', () => {
             it('should post review of art', done => {
                 request(app).post('/v1/art/10000003/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1373,8 +1395,9 @@ describe('Test api', function () {
             });
             it('should post rating of art', done => {
                 request(app).post('/v1/art/10000003/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5
                     })
                     .expect(200)
@@ -1386,8 +1409,9 @@ describe('Test api', function () {
             });
             it('should post review of art with rating', done => {
                 request(app).post('/v1/art/10000003/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1412,8 +1436,9 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).post('/v1/art/artid/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1438,8 +1463,9 @@ describe('Test api', function () {
             });
             it('should report invalid review content', done => {
                 request(app).post('/v1/art/10000003/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': 'this is not a json'
                     })
@@ -1456,8 +1482,9 @@ describe('Test api', function () {
             it('should get review of art', done => {
                 let text_id;
                 request(app).post('/v1/art/10000003/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1501,8 +1528,9 @@ describe('Test api', function () {
         describe('POST review of artizen', () => {
             it('should post review of artizen', done => {
                 request(app).post('/v1/artizen/100000011/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'content': {
                             entityMap: {},
                             blocks:
@@ -1526,8 +1554,9 @@ describe('Test api', function () {
             });
             it('should post rating of artizen', done => {
                 request(app).post('/v1/artizen/100000011/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5
                     })
                     .expect(200)
@@ -1539,8 +1568,9 @@ describe('Test api', function () {
             });
             it('should post review of artizen with rating', done => {
                 request(app).post('/v1/artizen/100000011/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1565,8 +1595,9 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).post('/v1/artizen/metmuseum/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': {
                             entityMap: {},
@@ -1591,8 +1622,9 @@ describe('Test api', function () {
             });
             it('should report invalid review content', done => {
                 request(app).post('/v1/artizen/100000011/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 5,
                         'content': 'this is not a json'
                     })
@@ -1609,8 +1641,9 @@ describe('Test api', function () {
             it('should get review of artizen', done => {
                 let text_id;
                 request(app).post('/v1/artizen/100000011/review')
+                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .send({
-                        'author_id': '100000010',
+                        'author_id': '100240736',
                         'rating': 3,
                         'content': {
                             entityMap: {},
@@ -1746,7 +1779,7 @@ describe('Test api', function () {
                     })
                     .end(done);
             });
-            
+
             it('should support search for completion year', done => {
                 request(app).get('/v1/search?q=1787')
                     .expect(200)

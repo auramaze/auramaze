@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
+const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 const common = require('./common');
 const rds = common.rds;
-const {param, query, body, oneOf, validationResult} = require('express-validator/check');
+const {auth} = require('./auth.config');
 
 // Check if usernames of all artizens exist in table `artizen`
 // Return an object with username as key and id/false as value
@@ -67,19 +68,24 @@ function addTypes(relations, callback) {
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), (req, res, next) => {
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    common.getItem('art', req.params.id, (err, result, fields) => {
+    const userId = req.payload && req.payload.id;
+
+    common.getItem('art', req.params.id, userId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             if (result.length) {
                 res.json(result[0]);
+                if (userId) {
+                    common.insertHistory(userId, 'art', result[0].id);
+                }
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',
@@ -243,6 +249,28 @@ router.put('/:username', [
     });
 });
 
+/* Update art data. */
+router.post('/:id', oneOf([
+    param('id').isInt().isLength({min: 8, max: 8}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    common.updateItem('art', req.params.id, req.body, (err, data) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Update art success: ${req.params.id}`
+            });
+        }
+    });
+});
+
 /* DELETE art data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
@@ -265,16 +293,18 @@ router.delete('/:id', oneOf([
     });
 });
 
-/* GET art introduction. */
+/* GET all introductions of art. */
 router.get('/:id/introduction', [
     param('id').isInt().isLength({min: 8, max: 8}),
-], (req, res, next) => {
+], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND text.type=0 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    const authId = req.payload && req.payload.id;
+
+    common.getTexts('art', req.params.id, 0, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -284,19 +314,50 @@ router.get('/:id/introduction', [
     });
 });
 
-/* POST art introduction. */
-router.post('/:id/introduction', [
+/* GET one introduction of art. */
+router.get('/:id/introduction/:textId', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
-    body('rating').not().exists(),
-    body('content.blocks').exists()
-], (req, res, next) => {
+    param('textId').isInt().isLength({min: 10, max: 10}),
+], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const authId = req.payload && req.payload.id;
+
+    common.getText('art', req.params.id, 0, req.params.textId, authId, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            if (result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
+                });
+            }
+        }
+    });
+});
+
+/* POST art introduction. */
+router.post('/:id/introduction', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+    body('rating').not().exists(),
+    body('content.blocks').exists()
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -324,16 +385,53 @@ router.post('/:id/introduction', [
     });
 });
 
-/* GET art review. */
-router.get('/:id/review', [
+/* Vote for one introduction of art. */
+router.post('/:id/introduction/:textId/vote', [
     param('id').isInt().isLength({min: 8, max: 8}),
-], (req, res, next) => {
+    param('textId').isInt().isLength({min: 10, max: 10}),
+    oneOf([
+        body('type').equals('up'),
+        body('type').equals('down')
+    ])
+], auth.required, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    rds.query('SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.art_id=(?) AND text.type=1 AND text.valid GROUP BY text.id', [req.params.id], (err, result, fields) => {
+    const {payload: {id}} = req;
+
+    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
+                });
+            } else {
+                next(err);
+            }
+        } else {
+            res.json({
+                message: `Vote success: ${req.params.id} introduction ${req.params.textId}`,
+            });
+        }
+    });
+});
+
+/* GET all reviews of art. */
+router.get('/:id/review', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+], auth.optional, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const authId = req.payload && req.payload.id;
+
+    common.getTexts('art', req.params.id, 1, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -343,10 +441,38 @@ router.get('/:id/review', [
     });
 });
 
+/* GET one review of art. */
+router.get('/:id/review/:textId', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
+], auth.optional, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const authId = req.payload && req.payload.id;
+
+    common.getText('art', req.params.id, 1, req.params.textId, authId, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            if (result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
+                });
+            }
+        }
+    });
+});
+
 /* POST art review. */
 router.post('/:id/review', [
     param('id').isInt().isLength({min: 8, max: 8}),
-    body('author_id').exists().isInt().isLength({min: 9, max: 9}),
     oneOf([
         body('content').not().exists(),
         body('content.blocks').exists()
@@ -355,13 +481,16 @@ router.post('/:id/review', [
         body('rating').exists().isInt({min: 1, max: 5}),
         body('content.blocks').exists()
     ])
-], (req, res, next) => {
+], auth.required, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const {payload: {id}} = req;
+
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(req.body.author_id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
+    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -384,6 +513,41 @@ router.post('/:id/review', [
                         message: `Insert review success: ${req.params.id} ${id}`
                     });
                 }
+            });
+        }
+    });
+});
+
+/* Vote for one review of art. */
+router.post('/:id/review/:textId/vote', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
+    oneOf([
+        body('type').equals('up'),
+        body('type').equals('down')
+    ])
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
+                res.status(404).json({
+                    code: 'TEXT_NOT_FOUND',
+                    message: `Text not found: ${req.params.id} review ${req.params.textId}`
+                });
+            } else {
+                next(err);
+            }
+        } else {
+            res.json({
+                message: `Vote success: ${req.params.id} review ${req.params.textId}`,
             });
         }
     });

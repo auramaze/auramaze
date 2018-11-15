@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withCookies} from 'react-cookie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
@@ -9,8 +10,11 @@ import ArtizenCard from '../components/artizen-card';
 import TextCard from '../components/text-card';
 import SlickPrevArror from '../components/slick-prev-arrow';
 import SlickNextArror from '../components/slick-next-arrow';
+import EditorModal from '../components/editor-modal';
 import {API_ENDPOINT} from '../common';
 import './art.css';
+import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class Art extends Component {
     constructor(props) {
@@ -19,7 +23,8 @@ class Art extends Component {
             art: {},
             artizens: [],
             introductions: [],
-            reviews: []
+            reviews: [],
+            editModalShow: false
         };
         this.artSection = React.createRef();
         this.updateArt = this.updateArt.bind(this);
@@ -36,6 +41,8 @@ class Art extends Component {
     }
 
     updateArt(artId) {
+        const token = this.props.cookies.get('token');
+
         this.setState({
             art: {},
             artizens: [],
@@ -44,6 +51,9 @@ class Art extends Component {
         });
         request.get({
             url: `${API_ENDPOINT}/art/${artId}`,
+            headers: token && {
+                'Authorization': `Bearer ${token}`
+            },
             json: true
         }, (error, response, art) => {
             if (response && response.statusCode === 200) {
@@ -61,6 +71,9 @@ class Art extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/art/${id}/introduction`,
+                        headers: token && {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
@@ -70,6 +83,9 @@ class Art extends Component {
 
                     request.get({
                         url: `${API_ENDPOINT}/art/${id}/review`,
+                        headers: token && {
+                            'Authorization': `Bearer ${token}`
+                        },
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
@@ -124,6 +140,7 @@ class Art extends Component {
                                         content={introduction.content}
                                         up={introduction.up}
                                         down={introduction.down}
+                                        status={introduction.status}
                                     />
                                 </div>)}
                         </Slider>}
@@ -145,7 +162,11 @@ class Art extends Component {
                                 />)}
                         </div>
                     )}
-                    <SectionTitle sectionTitle="Reviews"/>
+                    <SectionTitle sectionTitle="Reviews">
+                        <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
+                            this.setState({editModalShow: true});
+                        }}/>
+                    </SectionTitle>
                     {this.state.reviews.map(review =>
                         <TextCard
                             key={review.id}
@@ -162,8 +183,12 @@ class Art extends Component {
                             content={review.content}
                             up={review.up}
                             down={review.down}
+                            status={review.status}
                         />)}
                 </div>
+                <EditorModal show={this.state.editModalShow} handleClose={() => {
+                    this.setState({editModalShow: false})
+                }} itemType="art" itemId={this.state.art.id} itemName={this.state.art.title} textType="review"/>
             </div>
         );
     }
@@ -177,4 +202,4 @@ Art.propTypes = {
     }),
 };
 
-export default Art;
+export default withCookies(Art);

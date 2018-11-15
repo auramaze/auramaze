@@ -14,7 +14,7 @@ class Modal extends Component {
     }
 
     render() {
-        const {handleClose, show, style, children} = this.props;
+        const {handleClose, show, style, hideCloseButton, children} = this.props;
         const showHideClassName = show ? 'modal modal-show' : 'modal modal-hidden';
 
         return (
@@ -22,13 +22,13 @@ class Modal extends Component {
                 <div className="modal-background" onClick={handleClose}/>
                 <section className="modal-main card-shadow" style={style}>
                     {children}
-                    <div
+                    {!hideCloseButton && <div
                         className="modal-close-button"
                         onClick={handleClose}
                     >
                         <div className="modal-close-line-1"/>
                         <div className="modal-close-line-2"/>
-                    </div>
+                    </div>}
                 </section>
             </div>
         );
