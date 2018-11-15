@@ -354,9 +354,9 @@ router.post('/:id/introduction', [
 });
 
 /* Vote for one introduction of artizen. */
-router.post('/:id/introduction/:text_id/vote', [
+router.post('/:id/introduction/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -369,20 +369,20 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} introduction ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} introduction ${req.params.textId}`,
             });
         }
     });
@@ -487,9 +487,9 @@ router.post('/:id/review', [
 });
 
 /* Vote for one review of artizen. */
-router.post('/:id/review/:text_id/vote', [
+router.post('/:id/review/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -502,20 +502,20 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} review ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} review ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} review ${req.params.textId}`,
             });
         }
     });
