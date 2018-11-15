@@ -89,12 +89,12 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         if all_orientations:
             # use four rotations
-            # rotations = [lambda x: x,
-            #              np.rot90,
-            #              lambda x: np.rot90(x, 2),
-            #              lambda x: np.rot90(x, 3)]
+            rotations = [lambda x: x,
+                         np.rot90,
+                         lambda x: np.rot90(x, 2),
+                         lambda x: np.rot90(x, 3)]
 
-            rotations = [lambda x: x]
+            # rotations = [lambda x: x]
 
             # crop image
             crops = [lambda x: x,
