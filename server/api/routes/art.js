@@ -401,7 +401,7 @@ router.post('/:id/introduction/:textId/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
@@ -534,7 +534,7 @@ router.post('/:id/review/:textId/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {

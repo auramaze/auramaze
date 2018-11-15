@@ -78,6 +78,11 @@ Common.prototype.getText = (group, itemId, textType, textId, authId, callback) =
     rds.query(sql, parameters, callback);
 };
 
+// Vote for one introduction/review of item
+Common.prototype.voteText = (textId, authId, type, callback) => {
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[textId, authId, type === 'up' ? 1 : -1]], callback);
+};
+
 // Insert item data
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;

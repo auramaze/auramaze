@@ -227,6 +227,30 @@ router.delete('/:id', oneOf([
     });
 });
 
+// /* Follow an artizen. */
+// router.post('/:id', oneOf([
+//     param('id').isInt().isLength({min: 9, max: 9}),
+//     param('id').custom(common.validateUsername).withMessage('Invalid username')
+// ]), auth.required, (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!validationResult(req).isEmpty()) {
+//         return res.status(400).json({errors: errors.array()});
+//     }
+//
+//     const {payload: {id}} = req;
+//
+//     common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+//         /* istanbul ignore if */
+//         if (err) {
+//             next(err);
+//         } else {
+//             res.json({
+//                 message: `Update artizen success: ${req.params.id}`
+//             });
+//         }
+//     });
+// });
+
 /* GET all introductions of artizen. */
 router.get('/:id/introduction', [
     param('id').isInt().isLength({min: 9, max: 9}),
@@ -335,7 +359,7 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
@@ -468,7 +492,7 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
