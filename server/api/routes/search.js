@@ -80,7 +80,7 @@ router.get('/', [
             if (error || !(response && response.statusCode === 200)) {
                 res.status(500).json({
                     code: 'ES_ERROR',
-                    message: 'Error in ElasticSearch service'
+                    message: 'Error in Elasticsearch service'
                 });
             } else {
                 results[index] = body.hits.hits.map(item => Object.assign(item._source, {
@@ -114,7 +114,7 @@ router.post('/', [
                 message: 'Error in Aura image search'
             });
         } else {
-            res.json(body);
+            res.json(Object.assign(body, {artizen: []}));
         }
     });
 });

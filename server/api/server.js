@@ -13,9 +13,10 @@ const socketio = require('socket.io');
 
 
 const indexRouter = require('./routes/index');
-const searchRouter = require('./routes/search');
 const artRouter = require('./routes/art');
 const artizenRouter = require('./routes/artizen');
+const searchRouter = require('./routes/search');
+const recommendRouter = require('./routes/recommend');
 const slideRouter = require('./routes/slide');
 const authRouter = require('./routes/auth');
 const passportInit = require('./routes/passport.init');
@@ -43,9 +44,10 @@ app.use(session({
 
 
 app.use('/', indexRouter);
-app.use('/v1/search', searchRouter);
 app.use('/v1/art', artRouter);
 app.use('/v1/artizen', artizenRouter);
+app.use('/v1/search', searchRouter);
+app.use('/v1/recommend', recommendRouter);
 app.use('/v1/slide', slideRouter);
 app.use('/v1/auth', authRouter);
 
@@ -66,7 +68,6 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
-
 
 
 /**
@@ -141,6 +142,7 @@ function onError(error) {
         throw error;
     }
 }
+
 /* eslint-enable no-console */
 
 /**
