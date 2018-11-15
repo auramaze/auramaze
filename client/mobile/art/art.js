@@ -147,11 +147,6 @@ class Art extends React.Component {
 
                         );
                     }),
-                }
-            ));
-
-            this.setState(previousState => (
-                {
                     reviews: reviewInfoJson.map((item, key) => {
                         return (
                             <ReviewCard key={key}
@@ -162,7 +157,7 @@ class Art extends React.Component {
                                         isIntro={false} up={item.up} down={item.down}
                                         fontLoaded={fontLoadStatus}/>
                         );
-                    }),
+                    })
                 }
             ));
         } catch (error) {
