@@ -29,9 +29,9 @@ class ReviewFooter extends React.Component {
         return (
             <View style={styles.viewStyle}>
                 <Image source={thumbs_up} style={styles.imageStyle}/>
-                <Text style={styles.textStyle}>876</Text>
+                <Text style={styles.textStyle}>{this.props.up}</Text>
                 <Image source={thumbs_down} style={styles.imageStyle}/>
-                <Text style={styles.textStyle}>12</Text>
+                <Text style={styles.textStyle}>{this.props.down}</Text>
             </View>
         )
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
+import noImage from "../assets/icons/no-image-artizen.png";
 
 class ArtCard extends React.Component {
 
@@ -36,7 +37,7 @@ class ArtCard extends React.Component {
         return (
             <View style={styles.cardStyle}>
                 <AutoHeightImage width={Dimensions.get('window').width * 5 / 6}
-                                 source={{uri: this.props.source}}/>
+                                 source={this.props.source? {uri: this.props.source} : noImage}/>
                 <Text style={[styles.generalText, styles.headerText]}>{this.props.artName}</Text>
                 {this.props.artistName ? <Text style={[styles.generalText, styles.infoText]}>
                     {this.props.artistName} {this.props.compYear ? "," + this.props.compYear : ""}
