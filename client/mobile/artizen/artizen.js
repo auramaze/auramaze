@@ -188,12 +188,22 @@ class Artizen extends React.Component {
                                           isCritic={this.state.isCritic}/>,
                     introductions: introInfoJson.map((item, key) => {
                         return (
-                            <ReviewCard key={key}
-                                        name={item.author_name ? item.author_name.default : ""}
-                                        source={item.author_avatar ? item.author_avatar : ""}
-                                        text={item.content.blocks[0].text}
-                                        id={item.id}
-                                        fontLoaded={fontLoadStatus}/>
+                            <TouchableOpacity key={key}
+                                              onPress={() => {
+                                                  Expo.Speech.isSpeakingAsync().then((result) => {
+                                                      if (result) {
+                                                          Expo.Speech.stop();
+                                                      } else {
+                                                          Expo.Speech.speak(item.content.blocks[0].text, {language: 'en'});
+                                                      }
+                                                  });
+                                              }}>
+                                <ReviewCard name={item.author_name ? item.author_name.default : ""}
+                                            source={item.author_avatar ? item.author_avatar : ""}
+                                            text={item.content.blocks[0].text}
+                                            id={item.id}
+                                            fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
                         );
                     }),
                 }
@@ -241,19 +251,24 @@ class Artizen extends React.Component {
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : <View/>}
                         {this.state.artworks}
 
-                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
                         {this.state.collections}
 
-                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
                         {this.state.exhibits}
 
-                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
                         {this.state.related}
 
-                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
                         {this.state.related}
 
-                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
                         {this.state.related}
 
                         <View style={{height: 30}}/>

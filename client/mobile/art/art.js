@@ -136,12 +136,17 @@ class Art extends React.Component {
                                   url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
                     introductions: introInfoJson.map((item, key) => {
                         return (
-                            <TouchableOpacity
-                                onPress={() => {
-                                    Expo.Speech.speak(item.content.blocks[0].text, {language: 'en'});
-                                }}>
-                                <ReviewCard key={key}
-                                            name={item.author_name ? item.author_name.default : ""}
+                            <TouchableOpacity key={key}
+                                              onPress={() => {
+                                                  Expo.Speech.isSpeakingAsync().then((result) => {
+                                                      if (result) {
+                                                          Expo.Speech.stop();
+                                                      } else {
+                                                          Expo.Speech.speak(item.content.blocks[0].text, {language: 'en'});
+                                                      }
+                                                  });
+                                              }}>
+                                <ReviewCard name={item.author_name ? item.author_name.default : ""}
                                             source={item.author_avatar ? item.author_avatar : ""}
                                             text={item.content.blocks[0].text}
                                             id={item.id}
