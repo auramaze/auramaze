@@ -9,6 +9,7 @@ import Navbar from './components/navbar';
 import NavbarMobile from './components/navbar-mobile';
 import Home from './home/home';
 import Search from './search/search';
+import Recommend from './recommend/recommend';
 import Art from './art/art';
 import Artizen from './artizen/artizen';
 import SignupModal from "./components/signup-modal";
@@ -124,6 +125,7 @@ class App extends Component {
                         <div>
                             <Route exact path="/" component={Home}/>
                             <Route path="/search" component={Search}/>
+                            <Route path="/recommend" component={Recommend}/>
                             <Route path="/art/:artId" component={Art}/>
                             <Route path="/artizen/:artizenId" component={Artizen}/>
                             <Route path="/:itemType(art|artizen)/:itemId/:textType(introduction|review)/:textId"
