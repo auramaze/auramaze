@@ -57,7 +57,6 @@ class Art extends Component {
             json: true
         }, (error, response, art) => {
             if (response && response.statusCode === 200) {
-                console.log(art);
                 this.setState({art: art});
                 const id = art.id;
                 if (id) {
