@@ -38,7 +38,8 @@ class TimeLine extends React.Component {
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
                 {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                      fontLoaded={this.props.screenProps.fontLoaded}/> : null}
+                                                      fontLoaded={this.props.screenProps.fontLoaded}/> :
+                    null}
 
             </View>
         );

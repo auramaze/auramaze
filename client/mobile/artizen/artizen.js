@@ -192,6 +192,7 @@ class Artizen extends React.Component {
                                         itemId={artizenId} itemType={'artizen'}
                                         textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
 
                         );

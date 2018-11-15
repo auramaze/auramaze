@@ -144,6 +144,7 @@ class Art extends React.Component {
                                         itemId={artId} itemType={'art'}
                                         textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
 
                         );
@@ -157,6 +158,7 @@ class Art extends React.Component {
                                         itemId={artId} itemType={'art'}
                                         textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
                         );
                     })
