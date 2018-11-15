@@ -26,15 +26,27 @@ Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--
 Common.prototype.validatePassword = password => Boolean(password.match(/^[A-Za-z0-9#?!@$%^&*-]{4,}$/));
 
 // Get item data
-Common.prototype.getItem = (group, id, callback) => {
+Common.prototype.getItem = (group, id, authId, callback) => {
     let sql, parameters;
     if (isNaN(parseInt(id))) {
         sql = `SELECT * FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
+        if (group === 'artizen' && authId) {
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON followee_id=artizen.id WHERE follower_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
+            parameters = [authId, id.toString(), id.toString()];
+        }
     } else {
         sql = `SELECT * FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
+        if (group === 'artizen' && authId) {
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE follower_id=? AND followee_id=?) AS following FROM artizen WHERE artizen.id=?';
+            parameters = [authId, parseInt(id), parseInt(id)];
+        }
     }
+
+    console.log(sql);
+    console.log(parameters);
+
     rds.query(sql, parameters, callback);
 };
 

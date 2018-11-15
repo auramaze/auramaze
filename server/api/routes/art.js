@@ -76,7 +76,7 @@ router.get('/:id', oneOf([
 
     const userId = req.payload && req.payload.id;
 
-    common.getItem('art', req.params.id, (err, result, fields) => {
+    common.getItem('art', req.params.id, userId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
