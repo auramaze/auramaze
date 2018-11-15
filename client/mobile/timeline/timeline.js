@@ -24,8 +24,7 @@ class TimeLine extends React.Component {
 
         const styles = StyleSheet.create({
             mainStruct: {
-                flex: 1,
-                alignItems: 'center',
+                flex: 1, alignItems: 'center',
                 paddingTop: Constants.statusBarHeight,
             }
         });
@@ -42,7 +41,6 @@ class TimeLine extends React.Component {
                                                       fontLoaded={this.props.screenProps.fontLoaded}/> : null}
 
             </View>
-
         );
     }
 }
