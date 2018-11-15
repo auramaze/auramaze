@@ -230,10 +230,7 @@ router.delete('/:id', oneOf([
 /* Follow an artizen. */
 router.post('/:id/follow', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    oneOf([
-        body('type').equals('true'),
-        body('type').equals('false')
-    ])
+    body('type').isBoolean()
 ], auth.required, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -244,7 +241,7 @@ router.post('/:id/follow', [
 
     let sql, parameters;
 
-    if (req.body.type === 'true') {
+    if (req.body.type) {
         sql = 'REPLACE INTO follow (follower_id, followee_id) VALUES (?)';
         parameters = [[id, req.params.id]];
     } else {
