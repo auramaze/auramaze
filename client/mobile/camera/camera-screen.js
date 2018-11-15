@@ -1,8 +1,11 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, Image, Dimensions} from 'react-native';
+import {
+    Text, View, TouchableOpacity, Image, Dimensions, Animated,
+    Easing
+} from 'react-native';
 import {Camera, Permissions} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
-import noImage from "../assets/icons/no-image-artizen.png";
+import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
 
 class CameraScreen extends React.Component {
@@ -10,6 +13,7 @@ class CameraScreen extends React.Component {
     constructor(props) {
         super(props);
         this.takePicture = this.takePicture.bind(this);
+        this.spinValue = new Animated.Value(0);
     }
 
     state = {
@@ -20,6 +24,7 @@ class CameraScreen extends React.Component {
     async componentDidMount() {
         const {status} = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({hasCameraPermission: status === 'granted'});
+        this.spin();
     }
 
     handleMountError = ({message}) => console.error(message);
@@ -31,9 +36,10 @@ class CameraScreen extends React.Component {
 
         if (this.camera) {
 
+            this.setState({imageProcessing: true});
+
             this.camera.takePictureAsync({base64: true, quality: 0.01, skipProcessing: true})
                 .then((photo) => {
-                    // alert(photo.base64.length);
                     let dataJson = {'image': photo.base64};
 
                     fetch('https://apidev.auramaze.org/v1/search', {
@@ -47,12 +53,14 @@ class CameraScreen extends React.Component {
                         if (response.ok) {
                             return response.json();
                         } else {
+                            this.setState({imageProcessing: false});
                             alert(JSON.stringify(response));
                             Promise.reject(response.json());
                             throw new Error('Create account fail.');
                         }
                     }).then((responseJson) => {
-                            alert(JSON.stringify(responseJson));
+                            this.setState({imageProcessing: false});
+                            // alert(JSON.stringify(responseJson));
                             let resultArt = responseJson.art;
                             if (resultArt.length === 1) {
                                 this.props.navigation.navigate('Art', {
@@ -62,30 +70,30 @@ class CameraScreen extends React.Component {
                             }
                         }
                     ).catch(function (error) {
+                        this.setState({imageProcessing: false});
                         alert('There has been a problem with your fetch operation: ' + error.message);
                     });
-
-
-                    // let str = photo.base64;
-                    // alert("Size of sample is: " + str.length);
-                    // let compressed = LZString.compress(str);
-                    // alert("Size of compressed sample is: " + compressed.length);
-                    // str = LZString.decompress(compressed);
-                    // alert("Sample is: " + str.length);
-                    this.setState(previousState => (
-                        {
-                            scannedImage: photo.base64
-                        }
-                    ));
                 });
         }
     };
 
-    onPictureSaved = async photo => {
-        alert(photo.scannedImage);
-    };
+    spin() {
+        this.spinValue.setValue(0);
+        Animated.timing(
+            this.spinValue,
+            {
+                toValue: 1,
+                duration: 2000,
+                easing: Easing.linear
+            }
+        ).start(() => this.spin())
+    }
 
     render() {
+        const spin = this.spinValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+        });
         const {hasCameraPermission} = this.state;
         if (hasCameraPermission === null) {
             return <View/>;
@@ -94,9 +102,6 @@ class CameraScreen extends React.Component {
         } else {
             return (
                 <View style={{flex: 1}}>
-                    {/*{this.state.scannedImage ?*/}
-                    {/*<Image style={{flex: 1, width: Dimensions.get('window').width}}*/}
-                    {/*source={{url: 'data:image/jpg;base64,' + this.state.scannedImage}}/> :*/}
                     <Camera
                         style={{flex: 1}}
                         type={this.state.type}
@@ -108,17 +113,29 @@ class CameraScreen extends React.Component {
                         <View
                             style={{
                                 flex: 1,
-                                backgroundColor: 'transparent',
+                                backgroundColor: !this.state.imageProcessing ? 'transparent' : 'black',
+                                opacity: 0.8,
                                 flexDirection: 'row',
                             }}>
 
+                            {this.state.imageProcessing ? <View style={{
+                                flex: 1,
+                                alignItems: 'center', position: 'absolute',
+                                left: 0, right: 0, bottom: 250,
+                            }}>
+
+                                <Animated.Image
+                                    style={{
+                                    tintColor: 'white', width: 80,
+                                    height: 80, transform: [{rotate: spin}]
+                                }}
+                                    source={loading}/>
+                            </View> : null}
+
                             <View style={{
                                 flex: 1,
-                                alignItems: 'center',
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                bottom: 40,
+                                alignItems: 'center', position: 'absolute',
+                                left: 0, right: 0, bottom: 40,
                             }}>
                                 <TouchableOpacity
                                     onPress={this.takePicture}
