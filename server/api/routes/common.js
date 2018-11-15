@@ -99,6 +99,71 @@ Common.prototype.putItem = (group, item, callback) => {
     });
 };
 
+// Update item data
+Common.prototype.updateItem = (group, id, item, callback) => {
+    let sql, parameters;
+    let condition;
+
+    if (isNaN(parseInt(id))) {
+        condition = 'WHERE username=?';
+        id = id.toString();
+    } else {
+        condition = 'WHERE id=?';
+        id = parseInt(id);
+    }
+
+    if (group === 'art') {
+        const allowed = ['username', 'title', 'image', 'completion_year', 'metadata'];
+        const conversion = {
+            username: username => username,
+            title: title => JSON.stringify(title),
+            image: image => JSON.stringify(image),
+            completion_year: completion_year => completion_year,
+            metadata: metadata => JSON.stringify(metadata)
+        };
+
+        const keys = Object.keys(item);
+
+        const columns = keys.filter(key => allowed.includes(key));
+
+        if (columns.length === 0) {
+            callback(null, null);
+            return;
+        }
+
+        sql = `UPDATE art SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
+        parameters = columns.map(column => conversion[column](item[column]));
+    } else {
+        const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash'];
+        const conversion = {
+            username: username => username,
+            name: name => JSON.stringify(name),
+            type: type => JSON.stringify(type),
+            avatar: avatar => avatar,
+            metadata: metadata => JSON.stringify(metadata),
+            email: email => email,
+            salt: salt => salt,
+            hash: hash => hash
+        };
+
+        const keys = Object.keys(item);
+
+        const columns = keys.filter(key => allowed.includes(key));
+
+        if (columns.length === 0) {
+            callback(null, null);
+            return;
+        }
+
+        sql = `UPDATE artizen SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
+        parameters = columns.map(column => conversion[column](item[column]));
+    }
+    parameters.push(id);
+    console.log(sql);
+    console.log(parameters);
+    rds.query(sql, parameters, callback);
+};
+
 // Delete item data and relations
 Common.prototype.deleteItem = (group, id, callback) => {
     let sql, parameters;

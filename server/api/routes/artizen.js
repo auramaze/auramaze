@@ -183,6 +183,28 @@ router.put('/:username', [
     });
 });
 
+/* Update artizen data. */
+router.post('/:id', oneOf([
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Update artizen success: ${req.params.id}`
+            });
+        }
+    });
+});
+
 /* DELETE artizen data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 9, max: 9}),
