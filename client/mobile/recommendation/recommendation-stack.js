@@ -6,7 +6,7 @@ import Recommendation from "./recommendation";
 
 const RecommendationStack = createStackNavigator(
     {
-        TimeLine: {
+        Recommendation: {
             screen: Recommendation,
             navigationOptions: {
                 header: null

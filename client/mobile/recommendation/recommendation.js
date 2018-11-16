@@ -11,16 +11,16 @@ class Recommendation extends React.Component {
         super(props);
         this.state = {searchResult: {hasSearched: false}};
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
+        this.loadRecommend = this.loadRecommend.bind(this);
     }
 
     componentDidMount() {
-
+        // this.loadRecommend();
     }
 
-    async loadRecommend() {
-        try {
-            const token = await AsyncStorage.getItem('token');
-            if (token === null) {
+    loadRecommend() {
+        AsyncStorage.getItem('token').then((token) => {
+            if (token) {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`https://apidev.auramaze.org/v1/recommend`, {
@@ -43,9 +43,9 @@ class Recommendation extends React.Component {
                     alert('There has been a problem with your fetch operation: ' + error.message);
                 });
             }
-        } catch (error) {
-            alert(error);
-        }
+        }).catch(error => {
+            alert(error)
+        });
     }
 
 
@@ -54,7 +54,6 @@ class Recommendation extends React.Component {
             {searchResult: info}
         ));
     };
-
 
 
     render() {
@@ -74,8 +73,14 @@ class Recommendation extends React.Component {
                               navigation={this.props.navigation}
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
+                <TouchableOpacity onPress={this.loadRecommend}>
+
+                    <Text> asdsdsadad </Text>
+
+                </TouchableOpacity>
+
                 {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                      fontLoaded={this.props.screenProps.fontLoaded}/> :
+                                                                   fontLoaded={this.props.screenProps.fontLoaded}/> :
                     null}
 
             </View>
