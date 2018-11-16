@@ -19,15 +19,11 @@ class Art extends React.Component {
         };
     };
 
-    async componentDidMount() {
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
 
-            let token = null;
-
-            AsyncStorage.getItem('token').then((value) => {
-                token = value;
-            });
+            let token = await AsyncStorage.getItem('token');
 
             alert(token);
 
@@ -186,6 +182,10 @@ class Art extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
