@@ -19,32 +19,28 @@ class Recommendation extends React.Component {
     }
 
     loadRecommend() {
-        AsyncStorage.getItem('token').then((token) => {
-            if (token) {
-                alert('Please log in to use this function!')
-            } else {
-                fetch(`https://apidev.auramaze.org/v1/recommend`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json"
-                    }
-                }).then(function (response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Get recommendation.');
-                    }
-                }).then((responseJson) => {
-                    alert(responseJson);
-                }).catch(function (error) {
-                    this.setState(previousState => ({auramazeProcessing: false}));
-                    alert('There has been a problem with your fetch operation: ' + error.message);
-                });
-            }
+        AsyncStorage.getItem('token').then(token => {
+            fetch(`https://apidev.auramaze.org/v1/recommend`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Get recommendation.');
+                }
+            }).then((responseJson) => {
+                alert(responseJson);
+            }).catch(function (error) {
+                this.setState(previousState => ({auramazeProcessing: false}));
+                alert('There has been a problem with your fetch operation: ' + error.message);
+            });
         }).catch(error => {
-            alert(error)
+            alert(error);
         });
     }
 
