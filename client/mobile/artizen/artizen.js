@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
-import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
 import ArtizenInfo from "../components/artizen-info";
