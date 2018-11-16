@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -23,9 +23,15 @@ class Artizen extends React.Component {
     async componentDidMount() {
         try {
             const {navigation} = this.props;
+            const token = await AsyncStorage.getItem('token');
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
+            let introInfo = token === null ?
+                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
+                method: 'GET',
+                headers: token && {
+                     'Authorization': `Bearer ${token}`
+                }});
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJson = await introInfo.json();
