@@ -9,15 +9,10 @@ class Art extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
 
     async _loadInitialState(){
         try {
@@ -25,21 +20,23 @@ class Art extends React.Component {
 
             let token = await AsyncStorage.getItem('token');
 
-            alert(token);
-
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
             let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
                 method: 'GET',
                 headers: token && {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
                 }
             });
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
             let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
                 method: 'GET',
                 headers: token && {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
                 }
             });
             let artInfoJson = await artInfo.json();

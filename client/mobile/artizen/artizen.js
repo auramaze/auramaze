@@ -10,23 +10,15 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
-        let token = '';
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
-            token = await AsyncStorage.getItem('token') || 'none';
-
-            alert(token);
+            let token = await AsyncStorage.getItem('token');
 
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
@@ -205,7 +197,6 @@ class Artizen extends React.Component {
                                         isIntro={true} up={item.up} down={item.down}
                                         status={item.status}
                                         fontLoaded={fontLoadStatus}/>
-
                         );
                     }),
                 }
@@ -213,6 +204,10 @@ class Artizen extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
