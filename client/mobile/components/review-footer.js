@@ -15,10 +15,11 @@ class ReviewFooter extends React.Component {
         try {
             const token = await AsyncStorage.getItem('token');
             const {itemType, itemId, textType, textId} = this.props;
+            alert(token);
             if (token === null) {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`https://apidev.auramaze.org/v1/${itemType}/${itemId}/${textType}/${textId}/vote`, {
+                    fetch(`https://apidev.auramaze.org/v1/${itemType}/${itemId}/${textType}/${textId}/vote`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
