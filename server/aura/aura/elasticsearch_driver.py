@@ -132,7 +132,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         result = sorted(result, key=itemgetter('dist'))
         unique = []
         for item in result:
-            if item['id'] not in ids:
+            if 'id' in item and item['id'] not in ids:
                 unique.append(item)
                 ids.add(item['id'])
 
