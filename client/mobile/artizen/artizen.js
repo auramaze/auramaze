@@ -23,20 +23,19 @@ class Artizen extends React.Component {
     async componentDidMount() {
         try {
             const {navigation} = this.props;
-            let token = null;
-
-            AsyncStorage.getItem('token').then((value) => {
-                token = value;
+            AsyncStorage.getItem('token').then(token => {
+                this.setState({token: token});
             });
 
-            alert(token);
+            alert(this.state.token);
+
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
             let introInfo =
                 await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
                     method: 'GET',
-                    headers: token && {
-                        'Authorization': `Bearer ${token}`
+                    headers: this.state.token && {
+                        'Authorization': `Bearer ${this.state.token}`
                     }
                 });
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
