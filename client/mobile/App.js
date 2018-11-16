@@ -13,7 +13,6 @@ import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
 import RecommendationStack from "./recommendation/recommendation-stack";
 
-
 class SettingScreen extends React.Component {
     render() {
         return (
@@ -23,7 +22,6 @@ class SettingScreen extends React.Component {
         );
     }
 }
-
 
 export default class App extends React.Component {
 

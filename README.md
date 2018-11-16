@@ -405,7 +405,7 @@ curl -X POST $ESROOT/artizen/_doc/_bulk --header "Content-Type: application/json
 
 * Connect
 ```
-ssh -i auramaze-test-kafka.pem ubuntu@<SECRET>
+ssh -i auramaze-test-kafka.pem ubuntu@<IP>
 ```
 
 * Config
