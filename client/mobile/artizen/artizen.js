@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -10,29 +10,30 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
+    async _loadInitialState() {
         try {
             const {navigation} = this.props;
+            let token = await AsyncStorage.getItem('token');
+
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
+            let introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJson = await introInfo.json();
             let artInfoJson = await artInfo.json();
             let fontLoadStatus = this.props.screenProps.fontLoaded;
-            // let returnArtizen = responseJson.artizen.length >= 1;
-            // let returnArt = responseJson.art.length >= 1;
 
             artInfoJson.map((item, key) => {
                 (item.type === "artist") && this.setState(previousState => (
@@ -156,13 +157,12 @@ class Artizen extends React.Component {
                         related: item.data.map((styleItem, styleKey) => {
                             return (
                                 <TouchableOpacity
-                                    key={key}
+                                    key={styleKey}
                                     onPress={() => this.props.navigation.push('Art', {
                                         artId: styleItem.id,
                                         titleName: styleItem.title.default,
                                     })}>
                                     <ArtCard
-                                        key={styleKey}
                                         artName={styleItem.title.default}
                                         artistName={artizenInfoJson.name.default}
                                         source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
@@ -186,13 +186,16 @@ class Artizen extends React.Component {
                                           isStyle={this.state.isStyle}
                                           isGenre={this.state.isGenre}
                                           isCritic={this.state.isCritic}/>,
-                    introductions: introInfoJson.map((item, key) => {
+                    introductions: introInfoJson.map((item, introInfoKey) => {
                         return (
-                            <ReviewCard key={key}
+                            <ReviewCard key={introInfoKey}
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artizenId} itemType={'artizen'}
+                                        textId={item.id} textType={'introduction'}
+                                        isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
                         );
                     }),
@@ -201,6 +204,10 @@ class Artizen extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
@@ -238,23 +245,27 @@ class Artizen extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.artworks}
+                        {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isArtist ? this.state.artworks : null}
 
-                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.collections}
+                        {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isMuseum ? this.state.collections : null}
 
-                        {this.state.isExhibition ? <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.exhibits}
+                        {this.state.isExhibition ?
+                            <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isExhibition ? this.state.exhibits : null}
 
-                        {this.state.isCritic ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.related}
+                        {this.state.isCritic ?
+                            <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : null}
+                        {this.state.isCritic ? this.state.related : null}
 
-                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.related}
+                        {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
+                        {this.state.isGenre ? this.state.related : null}
 
-                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : <View/>}
-                        {this.state.related}
+                        {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
+                            <View/>}
+                        {this.state.isStyle ? this.state.related : null}
 
                         <View style={{height: 30}}/>
 

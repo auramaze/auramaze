@@ -52,6 +52,9 @@ class Artizen extends Component {
         });
         request.get({
             url: `${API_ENDPOINT}/artizen/${artizenId}`,
+            headers: token && {
+                'Authorization': `Bearer ${token}`
+            },
             json: true
         }, (error, response, artizen) => {
             if (response && response.statusCode === 200) {
@@ -123,9 +126,11 @@ class Artizen extends Component {
             <div className="artizen">
                 <div className="artizen-left-section">
                     <ArtizenHeader
+                        id={this.state.artizen.id}
                         name={this.state.artizen.name && this.state.artizen.name.default}
                         avatar={this.state.artizen.avatar}
                         type={this.state.artizen.type}
+                        following={this.state.artizen.following}
                     />
                     <SectionTitle sectionTitle="Introductions"/>
                     <div className="slider-container">

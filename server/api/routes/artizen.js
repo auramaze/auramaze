@@ -9,19 +9,24 @@ const {auth} = require('./auth.config');
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 9, max: 9}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), (req, res, next) => {
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    common.getItem('artizen', req.params.id, (err, result, fields) => {
+    const userId = req.payload && req.payload.id;
+
+    common.getItem('artizen', req.params.id, userId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             if (result.length) {
                 res.json(result[0]);
+                if (userId) {
+                    common.insertHistory(userId, 'artizen', result[0].id);
+                }
             } else {
                 res.status(404).json({
                     code: 'ARTIZEN_NOT_FOUND',
@@ -178,6 +183,28 @@ router.put('/:username', [
     });
 });
 
+/* Update artizen data. */
+router.post('/:id', oneOf([
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Update artizen success: ${req.params.id}`
+            });
+        }
+    });
+});
+
 /* DELETE artizen data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 9, max: 9}),
@@ -195,6 +222,40 @@ router.delete('/:id', oneOf([
         } else {
             res.json({
                 message: `DELETE artizen success: ${req.params.id}`
+            });
+        }
+    });
+});
+
+/* Follow an artizen. */
+router.post('/:id/follow', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    body('type').isBoolean()
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    let sql, parameters;
+
+    if (req.body.type) {
+        sql = 'REPLACE INTO follow (follower_id, followee_id) VALUES (?)';
+        parameters = [[id, req.params.id]];
+    } else {
+        sql = 'DELETE FROM follow WHERE follower_id=? AND followee_id=?';
+        parameters = [id, req.params.id];
+    }
+
+    rds.query(sql, parameters, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Follow success: ${req.params.id} ${req.body.type}`,
             });
         }
     });
@@ -293,9 +354,9 @@ router.post('/:id/introduction', [
 });
 
 /* Vote for one introduction of artizen. */
-router.post('/:id/introduction/:text_id/vote', [
+router.post('/:id/introduction/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -308,20 +369,20 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} introduction ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} introduction ${req.params.textId}`,
             });
         }
     });
@@ -426,9 +487,9 @@ router.post('/:id/review', [
 });
 
 /* Vote for one review of artizen. */
-router.post('/:id/review/:text_id/vote', [
+router.post('/:id/review/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -441,20 +502,20 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.text_id, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} review ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} review ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} review ${req.params.textId}`,
             });
         }
     });

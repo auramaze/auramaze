@@ -25,10 +25,6 @@ class SignUpPage extends React.Component {
     }
 
     checkValid() {
-        if (!this.state.name || !/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/.test(this.state.name)) {
-            alert("Invalid username!");
-            return false;
-        }
         if (!this.state.email) {
             alert("Invalid email!");
             return false;
@@ -102,6 +98,7 @@ class SignUpPage extends React.Component {
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(email) => this.setState(previousState => ({email: email}))}/>
                     <Input placeholder='Password'
+                           secureTextEntry={true}
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
                 </View>

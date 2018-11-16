@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
 const request = require('request');
-const {query, validationResult} = require('express-validator/check');
+const {query, body, validationResult} = require('express-validator/check');
 
-/* GET search results. */
+/* GET text search results. */
 router.get('/', [
     query('q').exists().isLength({min: 1}),
     query('from').optional().isInt(),
@@ -32,34 +32,31 @@ router.get('/', [
                 'size': 20,
                 'query': {
                     'bool': {
-                        'should':
-                            [
-                                {
-                                    'multi_match': {
-                                        'query': req.query.q,
-                                        'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
-                                        'fuzziness': 'AUTO',
-                                        'prefix_length': 0,
-                                        'operator': 'and'
-                                    }
-                                },
-                                {
-                                    'multi_match':
-                                        {
-                                            'query': req.query.q,
-                                            'fields': ['introduction.*'],
-                                            'operator': 'and'
-                                        }
-                                },
-                                {
-                                    'multi_match':
-                                    {
-                                        'query': req.query.q,
-                                        'fields': ['completion_year','username'],
-                                        'operator': 'and'
-                                    }
+                        'should': [
+                            {
+                                'multi_match': {
+                                    'query': req.query.q,
+                                    'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
+                                    'fuzziness': 'AUTO',
+                                    'prefix_length': 0,
+                                    'operator': 'and'
                                 }
-                            ]
+                            },
+                            {
+                                'multi_match': {
+                                    'query': req.query.q,
+                                    'fields': ['introduction.*'],
+                                    'operator': 'and'
+                                }
+                            },
+                            {
+                                'multi_match': {
+                                    'query': req.query.q,
+                                    'fields': ['completion_year', 'username'],
+                                    'operator': 'and'
+                                }
+                            }
+                        ]
                     }
                 },
                 'highlight': {
@@ -83,7 +80,7 @@ router.get('/', [
             if (error || !(response && response.statusCode === 200)) {
                 res.status(500).json({
                     code: 'ES_ERROR',
-                    message: 'Error in ElasticSearch service'
+                    message: 'Error in Elasticsearch service'
                 });
             } else {
                 results[index] = body.hits.hits.map(item => Object.assign(item._source, {
@@ -94,6 +91,32 @@ router.get('/', [
             }
         });
     }
+});
+
+/* GET image search results. */
+router.post('/', [
+    body('image').exists(),
+], function (req, res, next) {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    request.post({
+        url: 'http://localhost:5000/aura',
+        body: req.body,
+        json: true
+    }, (error, response, body) => {
+        /* istanbul ignore if */
+        if (error || !(response && response.statusCode === 200)) {
+            res.status(500).json({
+                code: 'AURA_ERROR',
+                message: 'Error in Aura image search'
+            });
+        } else {
+            res.json(Object.assign(body, {artizen: []}));
+        }
+    });
 });
 
 module.exports = router;

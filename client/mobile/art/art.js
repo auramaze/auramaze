@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -9,24 +9,39 @@ class Art extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
+
+            let token = await AsyncStorage.getItem('token');
+            alert(token);
+
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+            let introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
+            let reviewInfo = introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }) : fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();
@@ -136,19 +151,41 @@ class Art extends React.Component {
                                   url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
                     introductions: introInfoJson.map((item, key) => {
                         return (
+
                             <ReviewCard key={key}
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'introduction'}
+                                        isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
+
                         );
                     }),
+                    reviews: reviewInfoJson.map((item, key) => {
+                        return (
+                            <ReviewCard key={key}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        text={item.content.blocks[0].text}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'review'}
+                                        isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        );
+                    })
                 }
             ));
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
@@ -179,7 +216,7 @@ class Art extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    {/*<TopBar/>*/}
+
                     {this.state.art}
                     <View style={styles.mainContext}>
 
@@ -200,10 +237,7 @@ class Art extends React.Component {
 
                         <View style={{height: 30}}/>
                         <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
-                        <ReviewCard name={"Ray"}
-                                    source={'https://s3.us-east-2.amazonaws.com/auramaze-test/avatar/caravaggio.jpg'}
-                                    text={`\n\t说来惭愧，真正意识到梵高的伟大是在自己得了精神疾病以后。虽然以前去过好几个收录了梵高作品的博物馆，却没有感受到强烈的冲击。直到后来得了严重的抑郁症，每天需要吃药才有感触。有一个夏天的晚上吃完某种安定情绪的药物后产生了幻觉，当我看到窗外稀疏的星星时，星星就像《星空》中的一样旋转跳跃起来，甚至涌向我。第一时间我想到了梵高，感动得留下了眼泪，由于吃药我已经很久没有哭了。这种感觉不是悲伤也不是孤独，而是理解。世界上形形色色的人当中总有一些孤独的灵魂，而孤独的灵魂也可以有强烈的共鸣，虽然我们不是一个时代的人。\n`}
-                                    fontLoaded={fontLoadStatus}/>
+                        {this.state.reviews}
 
                     </View>
                 </ScrollView>

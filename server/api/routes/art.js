@@ -68,19 +68,24 @@ function addTypes(relations, callback) {
 router.get('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
     param('id').custom(common.validateUsername).withMessage('Invalid username')
-]), (req, res, next) => {
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
-    common.getItem('art', req.params.id, (err, result, fields) => {
+    const userId = req.payload && req.payload.id;
+
+    common.getItem('art', req.params.id, userId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
         } else {
             if (result.length) {
                 res.json(result[0]);
+                if (userId) {
+                    common.insertHistory(userId, 'art', result[0].id);
+                }
             } else {
                 res.status(404).json({
                     code: 'ART_NOT_FOUND',
@@ -244,6 +249,28 @@ router.put('/:username', [
     });
 });
 
+/* Update art data. */
+router.post('/:id', oneOf([
+    param('id').isInt().isLength({min: 8, max: 8}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    common.updateItem('art', req.params.id, req.body, (err, data) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Update art success: ${req.params.id}`
+            });
+        }
+    });
+});
+
 /* DELETE art data and relations. */
 router.delete('/:id', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
@@ -374,7 +401,7 @@ router.post('/:id/introduction/:textId/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
@@ -507,7 +534,7 @@ router.post('/:id/review/:textId/vote', [
 
     const {payload: {id}} = req;
 
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[req.params.textId, id, req.body.type === 'up' ? 1 : -1]], (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {

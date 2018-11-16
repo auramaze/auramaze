@@ -26,16 +26,30 @@ Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--
 Common.prototype.validatePassword = password => Boolean(password.match(/^[A-Za-z0-9#?!@$%^&*-]{4,}$/));
 
 // Get item data
-Common.prototype.getItem = (group, id, callback) => {
+Common.prototype.getItem = (group, id, authId, callback) => {
     let sql, parameters;
     if (isNaN(parseInt(id))) {
         sql = `SELECT * FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
+        if (group === 'artizen' && authId) {
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON followee_id=artizen.id WHERE follower_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
+            parameters = [authId, id.toString(), id.toString()];
+        }
     } else {
         sql = `SELECT * FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
+        if (group === 'artizen' && authId) {
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE follower_id=? AND followee_id=?) AS following FROM artizen WHERE artizen.id=?';
+            parameters = [authId, parseInt(id), parseInt(id)];
+        }
     }
+
     rds.query(sql, parameters, callback);
+};
+
+// Insert user browsing history
+Common.prototype.insertHistory = (userId, group, id) => {
+    rds.query(`INSERT INTO history (user_id, ${group}_id) VALUES (?)`, [[userId, id]]);
 };
 
 // Batch get item data
@@ -73,6 +87,11 @@ Common.prototype.getText = (group, itemId, textType, textId, authId, callback) =
     rds.query(sql, parameters, callback);
 };
 
+// Vote for one introduction/review of item
+Common.prototype.voteText = (textId, authId, type, callback) => {
+    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[textId, authId, type === 'up' ? 1 : -1]], callback);
+};
+
 // Insert item data
 Common.prototype.putItem = (group, item, callback) => {
     let sql, parameters;
@@ -92,6 +111,69 @@ Common.prototype.putItem = (group, item, callback) => {
             rds.query(`SELECT id, username from ${group} where id=LAST_INSERT_ID()`, callback);
         }
     });
+};
+
+// Update item data
+Common.prototype.updateItem = (group, id, item, callback) => {
+    let sql, parameters;
+    let condition;
+
+    if (isNaN(parseInt(id))) {
+        condition = 'WHERE username=?';
+        id = id.toString();
+    } else {
+        condition = 'WHERE id=?';
+        id = parseInt(id);
+    }
+
+    if (group === 'art') {
+        const allowed = ['username', 'title', 'image', 'completion_year', 'metadata'];
+        const conversion = {
+            username: username => username,
+            title: title => JSON.stringify(title),
+            image: image => JSON.stringify(image),
+            completion_year: completion_year => completion_year,
+            metadata: metadata => JSON.stringify(metadata)
+        };
+
+        const keys = Object.keys(item);
+
+        const columns = keys.filter(key => allowed.includes(key));
+
+        if (columns.length === 0) {
+            callback(null, null);
+            return;
+        }
+
+        sql = `UPDATE art SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
+        parameters = columns.map(column => conversion[column](item[column]));
+    } else {
+        const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash'];
+        const conversion = {
+            username: username => username,
+            name: name => JSON.stringify(name),
+            type: type => JSON.stringify(type),
+            avatar: avatar => avatar,
+            metadata: metadata => JSON.stringify(metadata),
+            email: email => email,
+            salt: salt => salt,
+            hash: hash => hash
+        };
+
+        const keys = Object.keys(item);
+
+        const columns = keys.filter(key => allowed.includes(key));
+
+        if (columns.length === 0) {
+            callback(null, null);
+            return;
+        }
+
+        sql = `UPDATE artizen SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
+        parameters = columns.map(column => conversion[column](item[column]));
+    }
+    parameters.push(id);
+    rds.query(sql, parameters, callback);
 };
 
 // Delete item data and relations

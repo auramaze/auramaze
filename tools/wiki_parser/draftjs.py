@@ -2,7 +2,7 @@ import json
 import requests
 
 if __name__ == '__main__':
-    for group in ['artists', 'genre', 'style']:
+    for group in ['artists', 'museums', 'genre', 'style']:
         artizens = json.load(open('wiki-{}-joined.json'.format(group)))
         for artizen in artizens:
             if artizen['wikipedia']:
