@@ -12,6 +12,9 @@ class ReviewFooter extends React.Component {
     }
 
     async handleVote(type) {
+        if (type === 'up' && this.state.status === 1) return;
+        if (type === 'down' && this.state.status === -1) return;
+
         try {
             const token = await AsyncStorage.getItem('token');
             const {itemType, itemId, textType, textId} = this.props;
@@ -33,7 +36,28 @@ class ReviewFooter extends React.Component {
                         throw new Error('Vote fail.');
                     }
                 }).then((responseJson) => {
-
+                    let newUp = this.state.up;
+                    let newDown = this.state.down;
+                    if (type === 'up') {
+                        if (this.state.status !== 1) {
+                            newUp++;
+                        }
+                        if (this.state.status === -1) {
+                            newDown--;
+                        }
+                    } else {
+                        if (this.state.status !== -1) {
+                            newDown++;
+                        }
+                        if (this.state.status === 1) {
+                            newUp--;
+                        }
+                    }
+                    this.setState({
+                        status: type === 'up' ? 1 : -1,
+                        up: newUp,
+                        down: newDown
+                    });
                 }).catch(function (error) {
                     this.setState(previousState => ({auramazeProcessing: false}));
                     alert('There has been a problem with your fetch operation: ' + error.message);
@@ -61,24 +85,29 @@ class ReviewFooter extends React.Component {
             },
             imageStyle: {
                 width: 20, height: 20, margin: 10,
-                tintColor: '#cdcdcd'
-            }
+            },
+            isClicked: {tintColor: 'black'},
+            notClicked: {tintColor: '#cdcdcd'},
         });
 
         return (
             <View style={styles.viewStyle}>
                 <TouchableOpacity onPress={() => {
-                    alert("itemId: " + this.props.itemId +
-                        "\nitemType: " + this.props.itemType +
-                        "\ntextId: " + this.props.textId +
-                        "\ntextType: " + this.props.textType +
-                        "\nstate: " + this.props.state)
+                    this.handleVote('up').done()
                 }}>
-                    <Image source={thumbs_up} style={styles.imageStyle}/>
+                    <Image source={thumbs_up} style={[styles.imageStyle,
+                        this.state.status === 1 ?
+                            styles.isClicked : styles.notClicked]}/>
                 </TouchableOpacity>
-                <Text style={styles.textStyle}>{this.props.up}</Text>
-                <Image source={thumbs_down} style={styles.imageStyle}/>
-                <Text style={styles.textStyle}>{this.props.down}</Text>
+                <Text style={styles.textStyle}>{this.state.up}</Text>
+                <TouchableOpacity onPress={() => {
+                    this.handleVote('down').done()
+                }}>
+                    <Image source={thumbs_down} style={[styles.imageStyle,
+                        this.state.status === -1 ?
+                            styles.isClicked : styles.notClicked]}/>
+                </TouchableOpacity>
+                <Text style={styles.textStyle}>{this.state.down}</Text>
             </View>
         )
     }

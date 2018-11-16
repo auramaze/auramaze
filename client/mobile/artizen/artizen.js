@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -10,22 +10,25 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
+            let token = await AsyncStorage.getItem('token');
+
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
+            let introInfo =
+                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
+                    method: 'GET',
+                    headers: token && {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJson = await introInfo.json();
@@ -194,7 +197,6 @@ class Artizen extends React.Component {
                                         isIntro={true} up={item.up} down={item.down}
                                         status={item.status}
                                         fontLoaded={fontLoadStatus}/>
-
                         );
                     }),
                 }
@@ -202,6 +204,10 @@ class Artizen extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {

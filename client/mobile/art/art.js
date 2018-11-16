@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -9,24 +9,36 @@ class Art extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
+
+            let token = await AsyncStorage.getItem('token');
+
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
+                method: 'GET',
+                headers: token && {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            });
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
+            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
+                method: 'GET',
+                headers: token && {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            });
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();
@@ -167,6 +179,10 @@ class Art extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
