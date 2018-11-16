@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -9,24 +9,39 @@ class Art extends React.Component {
 
     constructor(props) {
         super(props);
+        this._loadInitialState = this._loadInitialState.bind(this);
     }
 
     state = {};
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: navigation.getParam('titleName', 'No Title'),
-        };
-    };
-
-    async componentDidMount() {
+    async _loadInitialState(){
         try {
             const {navigation} = this.props;
+
+            let token = await AsyncStorage.getItem('token');
+            alert(token);
+
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+            let introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
+            let reviewInfo = introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }) : fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();
@@ -141,8 +156,10 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
 
                         );
@@ -153,8 +170,10 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
-                                        id={item.id}
+                                        itemId={artId} itemType={'art'}
+                                        textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
                                         fontLoaded={fontLoadStatus}/>
                         );
                     })
@@ -163,6 +182,10 @@ class Art extends React.Component {
         } catch (error) {
             alert(error);
         }
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     render() {
@@ -193,7 +216,7 @@ class Art extends React.Component {
         return (
             <View style={styles.mainStruct}>
                 <ScrollView>
-                    {/*<TopBar/>*/}
+
                     {this.state.art}
                     <View style={styles.mainContext}>
 

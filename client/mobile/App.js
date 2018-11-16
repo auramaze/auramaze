@@ -11,22 +11,8 @@ import TimeLine from "./timeline/timeline";
 import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
+import RecommendationStack from "./recommendation/recommendation-stack";
 
-class RecommendScreen extends React.Component {
-
-    _handlePress = () => {
-        Linking.openURL("https://dev.auramaze.org");
-        this.props.onPress && this.props.onPress();
-    };
-
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text onPress={this._handlePress}>Recommend Screen</Text>
-            </View>
-        );
-    }
-}
 
 class SettingScreen extends React.Component {
     render() {
@@ -64,7 +50,7 @@ export default class App extends React.Component {
                 TimeLine: {screen: TimeLineStack},
                 Artventure: {screen: SettingScreen},
                 Camera: {screen: CameraStack},
-                Recommend: {screen: RecommendScreen},
+                Recommend: {screen: RecommendationStack},
                 Settings: {screen: BlankUser},
             },
             {
