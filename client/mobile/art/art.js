@@ -19,26 +19,29 @@ class Art extends React.Component {
             const {navigation} = this.props;
 
             let token = await AsyncStorage.getItem('token');
+            alert(token);
 
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
+            let introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
                 method: 'GET',
-                headers: token && {
+                headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 }
-            });
+            }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
+            let reviewInfo = introInfo = token ?
+                await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
                 method: 'GET',
-                headers: token && {
+                headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 }
-            });
+            }) : fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();
