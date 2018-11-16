@@ -14,34 +14,44 @@ class Art extends React.Component {
 
     state = {};
 
-    async _loadInitialState(){
+    async _loadInitialState() {
         try {
             const {navigation} = this.props;
 
             let token = await AsyncStorage.getItem('token');
-            alert(token);
-
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId);
-            let introInfo = token ?
+            let introInfo = token && token !== 'undefined' && token !== 'null' ?
                 await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                }
-            }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction');
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/introduction', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                });
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/artizen');
-            let reviewInfo = introInfo = token ?
+            let reviewInfo = token && token !== 'undefined' && token !== 'null' ?
                 await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                }
-            }) : fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review');
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                }) : await fetch('https://apidev.auramaze.org/v1/art/' + artId + '/review', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                });
             let artInfoJson = await artInfo.json();
             let introInfoJson = await introInfo.json();
             let artizenInfoJson = await artizenInfo.json();

@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
-import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
 import ArtizenInfo from "../components/artizen-info";
@@ -22,7 +21,7 @@ class Artizen extends React.Component {
 
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
-            let introInfo = token ?
+            let introInfo = token && token !== 'undefined' && token !== 'null' ?
                 await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
                     method: 'GET',
                     headers: {
@@ -30,9 +29,19 @@ class Artizen extends React.Component {
                     }
                 }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
+            let reviewInfo = token && token !== 'undefined' && token !== 'null' ?
+                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    }
+                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review');
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJson = await introInfo.json();
             let artInfoJson = await artInfo.json();
+            let reviewInfoJson = await reviewInfo.json();
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
             artInfoJson.map((item, key) => {
@@ -199,6 +208,19 @@ class Artizen extends React.Component {
                                         fontLoaded={fontLoadStatus}/>
                         );
                     }),
+                    reviews: reviewInfoJson.map((item, key) => {
+                        return (
+                            <ReviewCard key={key}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        text={item.content.blocks[0].text}
+                                        itemId={artizenId} itemType={'artizen'}
+                                        textId={item.id} textType={'review'}
+                                        isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        );
+                    })
                 }
             ));
         } catch (error) {
@@ -268,6 +290,8 @@ class Artizen extends React.Component {
                         {this.state.isStyle ? this.state.related : null}
 
                         <View style={{height: 30}}/>
+                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
+                        {this.state.reviews}
 
                     </View>
                 </ScrollView>
