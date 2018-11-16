@@ -22,7 +22,9 @@ class Recommendation extends React.Component {
 
     async loadRecommend() {
         let fontLoaded = this.props.screenProps.fontLoaded;
-        let token = await AsyncStorage.getItem('token');
+        let token = await AsyncStorage.getItem('token').catch((err) => { alert(err); });
+
+
         fetch(`https://apidev.auramaze.org/v1/recommend`, {
             method: 'GET',
             headers: {
