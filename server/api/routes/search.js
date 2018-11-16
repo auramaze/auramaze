@@ -4,6 +4,10 @@ const router = express.Router();
 const _ = require('lodash');
 const request = require('request');
 const {query, body, validationResult} = require('express-validator/check');
+const common = require('./common');
+const s3 = common.s3;
+const rds = common.rds;
+const {auth} = require('./auth.config');
 
 /* GET text search results. */
 router.get('/', [
@@ -96,11 +100,13 @@ router.get('/', [
 /* GET image search results. */
 router.post('/', [
     body('image').exists(),
-], function (req, res, next) {
+], auth.optional, function (req, res, next) {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
+
+    const artizenId = req.payload && req.payload.id;
 
     request.post({
         url: 'http://localhost:5000/aura',
@@ -115,8 +121,31 @@ router.post('/', [
             });
         } else {
             res.json(Object.assign(body, {artizen: []}));
+
+            const buf = new Buffer(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+            const hrTime = process.hrtime();
+            const timestamp = hrTime[0] * 1000000 + hrTime[1] / 1000;
+            const filename = `${timestamp}.jpg`;
+            const path = `aura/${filename}`;
+            const artId = body.art && body.art[0] && body.art[0].id;
+            var data = {
+                Key: path,
+                Body: buf,
+                ContentEncoding: 'base64',
+                ContentType: 'image/jpeg'
+            };
+            s3.putObject(data, function (err, data) {
+                /* istanbul ignore else */
+                if (!err) {
+                    rds.query('INSERT INTO aura (image, art_id, artizen_id) VALUES (?)', [[filename, artId, artizenId]]);
+                }
+            });
         }
     });
 });
+
+function pad(n, width = 3) {
+    return ('0'.repeat(width) + String(n)).slice(String(n).length);
+}
 
 module.exports = router;

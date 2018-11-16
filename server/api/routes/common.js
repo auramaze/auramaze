@@ -8,6 +8,14 @@ const rds = mysql.createConnection({
     typeCast: (field, next) => field.type === 'JSON' ? JSON.parse(field.string()) : next(),
     multipleStatements: true
 });
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    apiVersion: '2006-03-01',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+    params: {Bucket: process.env.AWS_S3_BUCKET}
+});
 const _ = require('lodash');
 const franc = require('franc-min');
 const convert3To1 = require('iso-639-3-to-1');
@@ -18,6 +26,7 @@ function Common() {
 }
 
 Common.prototype.rds = rds;
+Common.prototype.s3 = s3;
 
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
