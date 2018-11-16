@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from "react-cookie";
 import io from 'socket.io-client'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
+import {faTimesCircle} from '@fortawesome/free-regular-svg-icons';
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
@@ -24,10 +27,24 @@ const auramazeButtonboxStyle = Object.assign({
     color: '#666666'
 }, buttonboxStyle);
 
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 class SignupModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {name: '', email: '', password: '', auramazeProcessing: false};
+        this.state = {
+            name: '',
+            email: '',
+            password: '',
+            auramazeProcessing: false,
+            displayNameMessage: false,
+            displayEmailMessage: false,
+            displayPasswordMessage: false,
+            emailExist: false
+        };
         this.signup = this.signup.bind(this);
     }
 
@@ -57,7 +74,10 @@ class SignupModal extends Component {
                 }
                 this.setState({id: '', password: '', auramazeProcessing: false});
                 window.location.reload();
-            } else {
+            } else if (response.statusCode === 400) {
+                if (body.code === 'EMAIL_EXIST') {
+                    this.setState({emailExist: true});
+                }
                 this.setState({auramazeProcessing: false});
             }
         });
@@ -80,7 +100,22 @@ class SignupModal extends Component {
                         onChange={(value) => {
                             this.setState({name: value})
                         }}
+                        onBlur={() => {
+                            this.setState({displayNameMessage: true})
+                        }}
                     />
+                    {this.state.displayNameMessage && <div className="message-container">
+                        {this.state.name.length > 0 &&
+                        <div className="font-size-xs success-message"><FontAwesomeIcon
+                            icon={faCheckCircle}
+                            size="sm"
+                        /> Name is valid</div>}
+                        {this.state.name.length === 0 &&
+                        <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> Name is required</div>}
+                    </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.email}
@@ -88,9 +123,28 @@ class SignupModal extends Component {
                         name="email"
                         placeholder="Email"
                         onChange={(value) => {
-                            this.setState({email: value})
+                            this.setState({email: value, emailExist: false})
+                        }}
+                        onBlur={() => {
+                            this.setState({displayEmailMessage: true})
                         }}
                     />
+                    {this.state.displayEmailMessage && <div className="message-container">
+                        {validateEmail(this.state.email) && !this.state.emailExist &&
+                        <div className="font-size-xs success-message"><FontAwesomeIcon
+                            icon={faCheckCircle}
+                            size="sm"
+                        /> Email is valid</div>}
+                        {!validateEmail(this.state.email) &&
+                        <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> Email is invalid</div>}
+                        {this.state.emailExist && <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> Email already exists</div>}
+                    </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.password}
@@ -100,7 +154,21 @@ class SignupModal extends Component {
                         onChange={(value) => {
                             this.setState({password: value})
                         }}
+                        onBlur={() => {
+                            this.setState({displayPasswordMessage: true})
+                        }}
                     />
+                    {this.state.displayPasswordMessage && <div className="message-container">
+                        {this.state.password.length >= 4 ?
+                            <div className="font-size-xs success-message"><FontAwesomeIcon
+                                icon={faCheckCircle}
+                                size="sm"
+                            /> Password is valid</div> :
+                            <div className="font-size-xs error-message"><FontAwesomeIcon
+                                icon={faTimesCircle}
+                                size="sm"
+                            /> Password should be longer</div>}
+                    </div>}
                     <div style={{width: '100%', height: 5}}/>
                     <Buttonbox
                         style={auramazeButtonboxStyle}
