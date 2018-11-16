@@ -18,7 +18,7 @@ class ReviewFooter extends React.Component {
         try {
             const token = await AsyncStorage.getItem('token');
             const {itemType, itemId, textType, textId} = this.props;
-            if (token === null) {
+            if (token === 'undefined') {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`https://apidev.auramaze.org/v1/${itemType}/${itemId}/${textType}/${textId}/vote`, {
@@ -28,7 +28,7 @@ class ReviewFooter extends React.Component {
                         'Accept': 'application/json',
                         "Content-Type": "application/json"
                     },
-                    body: {type}
+                    body: JSON.stringify({type})
                 }).then(function (response) {
                     if (response.ok) {
                         return response.json();
@@ -39,19 +39,11 @@ class ReviewFooter extends React.Component {
                     let newUp = this.state.up;
                     let newDown = this.state.down;
                     if (type === 'up') {
-                        if (this.state.status !== 1) {
-                            newUp++;
-                        }
-                        if (this.state.status === -1) {
-                            newDown--;
-                        }
+                        if (this.state.status !== 1) newUp++;
+                        if (this.state.status === -1) newDown--;
                     } else {
-                        if (this.state.status !== -1) {
-                            newDown++;
-                        }
-                        if (this.state.status === 1) {
-                            newUp--;
-                        }
+                        if (this.state.status !== -1) newDown++;
+                        if (this.state.status === 1) newUp--;
                     }
                     this.setState({
                         status: type === 'up' ? 1 : -1,

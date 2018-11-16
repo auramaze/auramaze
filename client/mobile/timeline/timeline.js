@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, FlatList} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
@@ -67,24 +67,32 @@ class TimeLine extends React.Component {
                 {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
                                                                    fontLoaded={this.props.screenProps.fontLoaded}/> :
                     <ScrollView keyboardDismissMode='on-drag'>
-                        {this.state.timeline.map(activity =>
+                        {this.state.timeline.map((activity, key) =>
                             activity.art_id ?
                                 <ActivityCard
+                                    key={key}
                                     fontLoaded={this.props.screenProps.fontLoaded}
                                     source={activity.author_avatar}
                                     artSource={activity.art_image && activity.art_image.default.url}
                                     artName={activity.art_name && activity.art_name.default}
-                                    name={activity.author_name && activity.author_name.default} isIntro={false}
-                                    text={activity.content.blocks.map(block => block.text).join('\n')} up={20} down={1}
+                                    name={activity.author_name && activity.author_name.default}
+                                    isIntro={false}
+                                    text={activity.content.blocks.map(block => block.text).join('\n')}
+                                    down={1}
+                                    up={20}
                                     itemType="art"
                                     textType="review" itemId={activity.artizen_id} textId={activity.id}/> :
                                 <ActivityCard
+                                    key={key}
                                     fontLoaded={this.props.screenProps.fontLoaded}
                                     source={activity.author_avatar}
                                     artizenSource={activity.artizen_avatar}
                                     artizenName={activity.artizen_name && activity.artizen_name.default}
-                                    name={activity.author_name && activity.author_name.default} isIntro={false}
-                                    text={activity.content.blocks.map(block => block.text).join('\n')} up={20} down={1}
+                                    name={activity.author_name && activity.author_name.default}
+                                    isIntro={false}
+                                    text={activity.content.blocks.map(block => block.text).join('\n')}
+                                    down={1}
+                                    up={20}
                                     itemType="artizen"
                                     textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
                     </ScrollView>
