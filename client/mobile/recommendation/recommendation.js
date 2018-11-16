@@ -22,7 +22,7 @@ class Recommendation extends React.Component {
 
     loadRecommend() {
         let fontLoaded = this.props.screenProps.fontLoaded;
-        AsyncStorage.getItem('token').then(token => {
+        AsyncStorage.getItem('token').then((token) => {
             fetch(`https://apidev.auramaze.org/v1/recommend`, {
                 method: 'GET',
                 headers: {
@@ -93,8 +93,8 @@ class Recommendation extends React.Component {
                 this.setState(previousState => ({auramazeProcessing: false}));
                 alert('There has been a problem with your fetch operation: ' + error.message);
             });
-        }, function(error) {
-            alert("hhhhhhh");
+        }).catch(error => {
+            console.log(error);
         });
     }
 
