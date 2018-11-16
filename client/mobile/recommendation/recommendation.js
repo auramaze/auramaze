@@ -93,8 +93,8 @@ class Recommendation extends React.Component {
                 this.setState(previousState => ({auramazeProcessing: false}));
                 alert('There has been a problem with your fetch operation: ' + error.message);
             });
-        }).catch(error => {
-            alert(error);
+        }, function(error) {
+            alert("hhhhhhh");
         });
     }
 
