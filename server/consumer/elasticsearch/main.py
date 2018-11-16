@@ -76,13 +76,15 @@ def upsert_art(msg_value):
         username = msg_value['after']['username']
         title = json.loads(msg_value['after']['title']) if msg_value['after']['title'] else None
         completion_year = msg_value['after']['completion_year']
+        image = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else None
 
         data = {
             'doc': {
                 'id': id,
                 'username': username,
                 'title': title,
-                'completion_year': completion_year
+                'completion_year': completion_year,
+                'image': image
             },
             'doc_as_upsert': True
         }
