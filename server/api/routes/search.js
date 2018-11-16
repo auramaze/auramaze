@@ -4,6 +4,7 @@ const router = express.Router();
 const _ = require('lodash');
 const request = require('request');
 const {query, body, validationResult} = require('express-validator/check');
+const microtime = require('microtime');
 const common = require('./common');
 const s3 = common.s3;
 const rds = common.rds;
@@ -123,9 +124,7 @@ router.post('/', [
             res.json(Object.assign(body, {artizen: []}));
 
             const buf = new Buffer(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-            const hrTime = process.hrtime();
-            const timestamp = hrTime[0] * 1000000 + hrTime[1] / 1000;
-            const filename = `${timestamp}.jpg`;
+            const filename = `${microtime.now()}.jpg`;
             const path = `aura/${filename}`;
             const artId = body.art && body.art[0] && body.art[0].id;
             var data = {
