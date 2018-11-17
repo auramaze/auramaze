@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import request from 'request';
+import {injectIntl} from "react-intl";
 import ArtizenHeader from './artizen-header';
 import SectionTitle from '../components/section-title';
 import ArtCardLayout from '../components/art-card-layout';
@@ -124,6 +125,7 @@ class Artizen extends Component {
     }
 
     render() {
+        const {intl} = this.props;
         return (<LanguageContext.Consumer>
                 {({language}) => (
                     <div className="artizen">
@@ -135,7 +137,7 @@ class Artizen extends Component {
                                 type={this.state.artizen.type}
                                 following={this.state.artizen.following}
                             />
-                            <SectionTitle sectionTitle="Introductions"/>
+                            <SectionTitle sectionTitle={intl.formatMessage({id: 'app.artizen.introductions'})}/>
                             <div className="slider-container">
                                 {this.state.introductions.length > 0 &&
                                 <Slider
@@ -167,7 +169,7 @@ class Artizen extends Component {
                                         </div>)}
                                 </Slider>}
                             </div>
-                            <SectionTitle sectionTitle="Reviews">
+                            <SectionTitle sectionTitle={intl.formatMessage({id: 'app.artizen.reviews'})}>
                                 <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
                                     this.setState({editModalShow: true});
                                 }}/>
@@ -195,7 +197,7 @@ class Artizen extends Component {
                             {this.state.arts.map(section => section.data.length > 0 &&
                                 <div key={section.type}>
                                     <SectionTitle
-                                        sectionTitle={Artizen.convertArtizenTypeToSectionTitle(section.type)}/>
+                                        sectionTitle={intl.formatMessage({id: `app.artizen.${section.type}`})}/>
                                     <ArtCardLayout
                                         arts={section.data}
                                         width={this.getArtCardLayoutWidth()}
@@ -222,4 +224,4 @@ Artizen.propTypes = {
     }),
 };
 
-export default withCookies(Artizen);
+export default withCookies(injectIntl(Artizen));

@@ -1,4 +1,8 @@
 {
+  "app.navbar.about": "关于我们",
+  "app.navbar.signup": "注册",
+  "app.navbar.login": "登录",
+  "app.navbar.logout": "退出账号",
   "app.signup.title": "注册",
   "app.signup.name": "请输入姓名",
   "app.signup.email": "请输入邮箱",
@@ -18,5 +22,21 @@
   "app.login.password": "请输入密码",
   "app.login.auramaze": "使用AuraMaze账号登录",
   "app.login.google": "使用Google账号登录",
-  "app.login.facebook": "使用Facebook账号登录"
+  "app.login.facebook": "使用Facebook账号登录",
+  "app.art.introductions": "介绍",
+  "app.art.reviews": "评论",
+  "app.art.artist": "艺术家",
+  "app.art.museum": "美术馆",
+  "app.art.exhibition": "美术展览",
+  "app.art.genre": "体裁",
+  "app.art.style": "流派",
+  "app.artizen.introductions": "介绍",
+  "app.artizen.reviews": "评论",
+  "app.artizen.artist": "作品",
+  "app.artizen.museum": "藏品",
+  "app.artizen.exhibition": "展品",
+  "app.artizen.genre": "相关艺术品",
+  "app.artizen.style": "相关艺术品",
+  "app.follow.follow": "关注",
+  "app.follow.following": "已关注"
 }

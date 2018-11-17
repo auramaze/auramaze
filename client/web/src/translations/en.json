@@ -1,4 +1,8 @@
 {
+  "app.navbar.about": "About",
+  "app.navbar.signup": "Sign up",
+  "app.navbar.login": "Log in",
+  "app.navbar.logout": "Log out",
   "app.signup.title": "Sign up",
   "app.signup.name": "Name",
   "app.signup.email": "Email",
@@ -18,5 +22,21 @@
   "app.login.password": "Password",
   "app.login.auramaze": "Log in with AuraMaze",
   "app.login.google": "Log in with Google",
-  "app.login.facebook": "Log in with Facebook"
+  "app.login.facebook": "Log in with Facebook",
+  "app.art.introductions": "Introductions",
+  "app.art.reviews": "Reviews",
+  "app.art.artist": "Artist",
+  "app.art.museum": "Museum",
+  "app.art.exhibition": "Exhibition",
+  "app.art.genre": "Genre",
+  "app.art.style": "Style",
+  "app.artizen.introductions": "Introductions",
+  "app.artizen.reviews": "Reviews",
+  "app.artizen.artist": "Artworks",
+  "app.artizen.museum": "Collections",
+  "app.artizen.exhibition": "Exhibits",
+  "app.artizen.genre": "Related Arts",
+  "app.artizen.style": "Related Arts",
+  "app.follow.follow": "Follow",
+  "app.follow.following": "Following"
 }

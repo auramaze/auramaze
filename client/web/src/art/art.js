@@ -5,6 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import request from 'request';
+import {injectIntl} from 'react-intl';
 import SectionTitle from '../components/section-title';
 import ArtizenCard from '../components/artizen-card';
 import TextCard from '../components/text-card';
@@ -108,6 +109,7 @@ class Art extends Component {
     }
 
     render() {
+        const {intl} = this.props;
         return (<LanguageContext.Consumer>
                 {({language}) => (
                     <div className="art">
@@ -116,7 +118,7 @@ class Art extends Component {
                             <div className="art-image-container">
                                 <img src={this.state.art.image && this.state.art.image.default.url} alt="image"/>
                             </div>
-                            <SectionTitle sectionTitle="Introductions"/>
+                            <SectionTitle sectionTitle={intl.formatMessage({id: 'app.art.introductions'})}/>
                             <div className="slider-container">
                                 {this.state.introductions.length > 0 &&
                                 <Slider
@@ -152,7 +154,7 @@ class Art extends Component {
                         <div className="art-left-section">
                             {this.state.artizens.map(section => section.data.length > 0 &&
                                 <div key={section.type}>
-                                    <SectionTitle sectionTitle={Art.convertArtizenTypeToSectionTitle(section.type)}/>
+                                    <SectionTitle sectionTitle={intl.formatMessage({id: `app.art.${section.type}`})}/>
                                     {section.data.map(artizen =>
                                         <ArtizenCard
                                             key={artizen.id}
@@ -165,7 +167,7 @@ class Art extends Component {
                                         />)}
                                 </div>
                             )}
-                            <SectionTitle sectionTitle="Reviews">
+                            <SectionTitle sectionTitle={intl.formatMessage({id: 'app.art.reviews'})}>
                                 <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
                                     this.setState({editModalShow: true});
                                 }}/>
@@ -206,4 +208,4 @@ Art.propTypes = {
     }),
 };
 
-export default withCookies(Art);
+export default withCookies(injectIntl(Art));

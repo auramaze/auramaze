@@ -9,6 +9,7 @@ import {ModalContext, WindowContext} from '../app';
 import {lockBody, unlockBody} from '../utils';
 import {withCookies} from "react-cookie";
 import {removeCookies} from "../utils";
+import {FormattedMessage} from "react-intl";
 
 const scroll = Scroll.animateScroll;
 
@@ -48,32 +49,26 @@ class NavbarMobile extends Component {
                                                     e.preventDefault();
                                                     this.hideNavbarMobile();
                                                     scroll.scrollTo(windowHeight);
-                                                }}>About</Link> :
-                                                <HashLink to="/#about" onClick={this.hideNavbarMobile}>About</HashLink>}
-                                        </div>
-                                        <div className="nav-item-mobile">
-                                            {home ?
-                                                <Link to="#" onClick={(e) => {
-                                                    e.preventDefault();
-                                                    this.hideNavbarMobile();
-                                                    scroll.scrollToBottom();
-                                                }}>Contact</Link> :
-                                                <HashLink to="/#contact"
-                                                          onClick={this.hideNavbarMobile}>Contact</HashLink>}
+                                                }}>
+                                                    <FormattedMessage id="app.navbar.about"/>
+                                                </Link> :
+                                                <HashLink to="/#about" onClick={this.hideNavbarMobile}>
+                                                    <FormattedMessage id="app.navbar.about"/>
+                                                </HashLink>}
                                         </div>
                                         {!id && <div className="nav-item-mobile">
                                             <Link to="#" onClick={(e) => {
                                                 e.preventDefault();
                                                 this.hideNavbarMobile();
                                                 showSignupModal();
-                                            }}>Sign up</Link>
+                                            }}><FormattedMessage id="app.navbar.signup"/></Link>
                                         </div>}
                                         {!id && <div className="nav-item-mobile">
                                             <Link to="#" onClick={(e) => {
                                                 e.preventDefault();
                                                 this.hideNavbarMobile();
                                                 showLoginModal();
-                                            }}>Log in</Link>
+                                            }}><FormattedMessage id="app.navbar.login"/></Link>
                                         </div>}
                                         {id && <div className="nav-item-mobile">
                                             <Link
@@ -87,7 +82,7 @@ class NavbarMobile extends Component {
                                                 this.hideNavbarMobile();
                                                 removeCookies(cookies);
                                                 window.location.reload();
-                                            }}>Log out</Link>
+                                            }}><FormattedMessage id="app.navbar.logout"/></Link>
                                         </div>}
                                     </div>
                                 </div>

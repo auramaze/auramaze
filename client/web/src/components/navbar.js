@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {HashLink} from 'react-router-hash-link';
+import {FormattedMessage} from 'react-intl';
 import * as Scroll from 'react-scroll';
 import {ModalContext} from '../app';
 import logo from '../static/logo-white-frame.svg';
@@ -27,7 +28,7 @@ class Navbar extends Component {
                                     e.preventDefault();
                                     removeCookies(cookies);
                                     window.location.reload();
-                                }}>Log out</Link>
+                                }}><FormattedMessage id="app.navbar.logout"/></Link>
                             </div>}
                             {id && <div className="nav-item">
                                 <Link
@@ -38,29 +39,25 @@ class Navbar extends Component {
                                 <Link to="#" onClick={(e) => {
                                     e.preventDefault();
                                     showLoginModal();
-                                }}>Log in</Link>
+                                }}><FormattedMessage id="app.navbar.login"/></Link>
                             </div>}
                             {!id && <div className="nav-item">
                                 <Link to="#" onClick={(e) => {
                                     e.preventDefault();
                                     showSignupModal();
-                                }}>Sign up</Link>
+                                }}><FormattedMessage id="app.navbar.signup"/></Link>
                             </div>}
                             <div className="nav-item">
                                 {home ?
                                     <Link to="#" onClick={(e) => {
                                         e.preventDefault();
-                                        scroll.scrollToBottom();
-                                    }}>Contact</Link> :
-                                    <HashLink to="/#contact">Contact</HashLink>}
-                            </div>
-                            <div className="nav-item">
-                                {home ?
-                                    <Link to="#" onClick={(e) => {
-                                        e.preventDefault();
                                         scroll.scrollTo(document.documentElement.clientHeight);
-                                    }}>About</Link> :
-                                    <HashLink to="/#about">About</HashLink>}
+                                    }}>
+                                        <FormattedMessage id="app.navbar.about"/>
+                                    </Link> :
+                                    <HashLink to="/#about">
+                                        <FormattedMessage id="app.navbar.about"/>
+                                    </HashLink>}
                             </div>
                         </div>
                         <div className="nav-logo">
