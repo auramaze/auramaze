@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {withCookies} from 'react-cookie';
+import {FormattedMessage} from 'react-intl';
 import Buttonbox from './buttonbox';
 import google from '../icons/google.svg';
 import facebook from '../icons/facebook.svg';
@@ -27,7 +28,7 @@ const oauthInnerStyle = {
     google: {color: '#484848', display: 'inlineBlock', margin: '0 10px'},
     facebook: {color: '#ffffff', display: 'inlineBlock', margin: '0 10px'}
 };
-const providerName = {google: 'Google', facebook: 'Facebook'};
+
 const providerLogo = {google: google, facebook: facebook};
 
 class OAuthButtonbox extends Component {
@@ -110,7 +111,7 @@ class OAuthButtonbox extends Component {
                     <span style={{
                         display: 'inlineBlock',
                         verticalAlign: 'middle'
-                    }}>{signup ? 'Sign up' : 'Log in'} with {providerName[provider]}</span>
+                    }}><FormattedMessage id={`app.${signup ? 'signup' : 'login'}.${provider}`}/></span>
                 </div>
             </Buttonbox>
         );

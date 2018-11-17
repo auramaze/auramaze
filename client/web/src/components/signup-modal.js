@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from "react-cookie";
+import {injectIntl, FormattedMessage} from 'react-intl';
 import io from 'socket.io-client'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
@@ -84,19 +85,22 @@ class SignupModal extends Component {
     }
 
     render() {
+        const {intl} = this.props;
         return (
             <Modal {...this.props} style={{
                 width: '95%',
                 maxWidth: 800
             }}>
                 <div className="signup-modal-content">
-                    <p className="font-size-xl">Sign up</p>
+                    <p className="font-size-xl">
+                        <FormattedMessage id="app.signup.title"/>
+                    </p>
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.name}
                         type="text"
                         name="name"
-                        placeholder="Name"
+                        placeholder={intl.formatMessage({id: 'app.signup.name'})}
                         onChange={(value) => {
                             this.setState({name: value})
                         }}
@@ -109,19 +113,19 @@ class SignupModal extends Component {
                         <div className="font-size-xs success-message"><FontAwesomeIcon
                             icon={faCheckCircle}
                             size="sm"
-                        /> Name is valid</div>}
+                        /> <FormattedMessage id="app.signup.name_valid"/></div>}
                         {this.state.name.length === 0 &&
                         <div className="font-size-xs error-message"><FontAwesomeIcon
                             icon={faTimesCircle}
                             size="sm"
-                        /> Name is required</div>}
+                        /> <FormattedMessage id="app.signup.name_required"/></div>}
                     </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.email}
                         type="text"
                         name="email"
-                        placeholder="Email"
+                        placeholder={intl.formatMessage({id: 'app.signup.email'})}
                         onChange={(value) => {
                             this.setState({email: value, emailExist: false})
                         }}
@@ -134,23 +138,23 @@ class SignupModal extends Component {
                         <div className="font-size-xs success-message"><FontAwesomeIcon
                             icon={faCheckCircle}
                             size="sm"
-                        /> Email is valid</div>}
+                        /> <FormattedMessage id="app.signup.email_valid"/></div>}
                         {!validateEmail(this.state.email) &&
                         <div className="font-size-xs error-message"><FontAwesomeIcon
                             icon={faTimesCircle}
                             size="sm"
-                        /> Email is invalid</div>}
+                        /> <FormattedMessage id="app.signup.email_invalid"/></div>}
                         {this.state.emailExist && <div className="font-size-xs error-message"><FontAwesomeIcon
                             icon={faTimesCircle}
                             size="sm"
-                        /> Email already exists</div>}
+                        /> <FormattedMessage id="app.signup.email_exists"/></div>}
                     </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.password}
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder={intl.formatMessage({id: 'app.signup.password'})}
                         onChange={(value) => {
                             this.setState({password: value})
                         }}
@@ -163,11 +167,11 @@ class SignupModal extends Component {
                             <div className="font-size-xs success-message"><FontAwesomeIcon
                                 icon={faCheckCircle}
                                 size="sm"
-                            /> Password is valid</div> :
+                            /> <FormattedMessage id="app.signup.password_valid"/></div> :
                             <div className="font-size-xs error-message"><FontAwesomeIcon
                                 icon={faTimesCircle}
                                 size="sm"
-                            /> Password should be longer</div>}
+                            /> <FormattedMessage id="app.signup.password_longer"/></div>}
                     </div>}
                     <div style={{width: '100%', height: 5}}/>
                     <Buttonbox
@@ -184,7 +188,7 @@ class SignupModal extends Component {
                                 style={{
                                     display: 'inlineBlock',
                                     verticalAlign: 'middle'
-                                }}>Create AuraMaze account</span>
+                                }}><FormattedMessage id="app.signup.auramaze"/></span>
                         </div>
                     </Buttonbox>
                     <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
@@ -196,4 +200,4 @@ class SignupModal extends Component {
     }
 }
 
-export default withCookies(SignupModal);
+export default withCookies(injectIntl(SignupModal));

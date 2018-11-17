@@ -1,0 +1,22 @@
+{
+  "app.signup.title": "Sign up",
+  "app.signup.name": "Name",
+  "app.signup.email": "Email",
+  "app.signup.password": "Password",
+  "app.signup.auramaze": "Create AuraMaze account",
+  "app.signup.google": "Sign up with Google",
+  "app.signup.facebook": "Sign up with Facebook",
+  "app.signup.name_valid": "Name is valid",
+  "app.signup.name_required": "Name is required",
+  "app.signup.email_valid": "Email is valid",
+  "app.signup.email_invalid": "Email is invalid",
+  "app.signup.email_exists": "Email already exists",
+  "app.signup.password_valid": "Password is valid",
+  "app.signup.password_longer": "Password should be longer",
+  "app.login.title": "Log in",
+  "app.login.id": "Username or email",
+  "app.login.password": "Password",
+  "app.login.auramaze": "Log in with AuraMaze",
+  "app.login.google": "Log in with Google",
+  "app.login.facebook": "Log in with Facebook"
+}
