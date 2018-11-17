@@ -47,3 +47,7 @@ export const removeCookies = (cookies) => {
     cookies.remove('username', {path: '/'});
     cookies.remove('token', {path: '/'});
 };
+
+export const getLocaleValue = (object, language) => {
+    return object && (language in object ? object[language] : object.default);
+};

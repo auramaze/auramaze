@@ -12,10 +12,12 @@ import TextCard from '../components/text-card';
 import SlickPrevArror from '../components/slick-prev-arrow';
 import SlickNextArror from '../components/slick-next-arrow';
 import {API_ENDPOINT} from '../common';
-import './artizen.css';
 import EditorModal from "../components/editor-modal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
+import {LanguageContext} from '../app';
+import {getLocaleValue} from '../utils';
+import './artizen.css';
 
 class Artizen extends Component {
     constructor(props) {
@@ -122,88 +124,92 @@ class Artizen extends Component {
     }
 
     render() {
-        return (
-            <div className="artizen">
-                <div className="artizen-left-section">
-                    <ArtizenHeader
-                        id={this.state.artizen.id}
-                        name={this.state.artizen.name && this.state.artizen.name.default}
-                        avatar={this.state.artizen.avatar}
-                        type={this.state.artizen.type}
-                        following={this.state.artizen.following}
-                    />
-                    <SectionTitle sectionTitle="Introductions"/>
-                    <div className="slider-container">
-                        {this.state.introductions.length > 0 &&
-                        <Slider
-                            dots
-                            infinite
-                            speed={500}
-                            slidesToShow={1}
-                            slidesToScroll={1}
-                            prevArrow={<SlickPrevArror/>}
-                            nextArrow={<SlickNextArror/>}
-                        >
-                            {this.state.introductions.map(introduction =>
-                                <div className="slide-container" key={introduction.id}>
-                                    <TextCard
-                                        key={introduction.id}
-                                        authorId={introduction.author_id}
-                                        authorUsername={introduction.author_username}
-                                        authorName={introduction.author_name && introduction.author_name.default}
-                                        authorAvatar={introduction.author_avatar}
-                                        itemType="artizen"
-                                        itemId={introduction.artizen_id}
-                                        textType="introduction"
-                                        textId={introduction.id}
-                                        content={introduction.content}
-                                        up={introduction.up}
-                                        down={introduction.down}
-                                        status={introduction.status}
-                                    />
-                                </div>)}
-                        </Slider>}
-                    </div>
-                    <SectionTitle sectionTitle="Reviews">
-                        <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
-                            this.setState({editModalShow: true});
-                        }}/>
-                    </SectionTitle>
-                    {this.state.reviews.map(review =>
-                        <TextCard
-                            key={review.id}
-                            style={{margin: 20}}
-                            authorId={review.author_id}
-                            authorUsername={review.author_username}
-                            authorName={review.author_name && review.author_name.default}
-                            authorAvatar={review.author_avatar}
-                            itemType="artizen"
-                            itemId={review.artizen_id}
-                            textType="review"
-                            textId={review.id}
-                            rating={review.rating}
-                            content={review.content}
-                            up={review.up}
-                            down={review.down}
-                            status={review.status}
-                        />)}
-                </div>
-                <div className="artizen-right-section" ref={this.artSection}>
-                    {this.state.arts.map(section => section.data.length > 0 &&
-                        <div key={section.type}>
-                            <SectionTitle sectionTitle={Artizen.convertArtizenTypeToSectionTitle(section.type)}/>
-                            <ArtCardLayout
-                                arts={section.data}
-                                width={this.getArtCardLayoutWidth()}
-                                columns={this.getArtCardLayoutColumns()}
+        return (<LanguageContext.Consumer>
+                {({language}) => (
+                    <div className="artizen">
+                        <div className="artizen-left-section">
+                            <ArtizenHeader
+                                id={this.state.artizen.id}
+                                name={getLocaleValue(this.state.artizen.name, language)}
+                                avatar={this.state.artizen.avatar}
+                                type={this.state.artizen.type}
+                                following={this.state.artizen.following}
                             />
+                            <SectionTitle sectionTitle="Introductions"/>
+                            <div className="slider-container">
+                                {this.state.introductions.length > 0 &&
+                                <Slider
+                                    dots
+                                    infinite
+                                    speed={500}
+                                    slidesToShow={1}
+                                    slidesToScroll={1}
+                                    prevArrow={<SlickPrevArror/>}
+                                    nextArrow={<SlickNextArror/>}
+                                >
+                                    {this.state.introductions.map(introduction =>
+                                        <div className="slide-container" key={introduction.id}>
+                                            <TextCard
+                                                key={introduction.id}
+                                                authorId={introduction.author_id}
+                                                authorUsername={introduction.author_username}
+                                                authorName={getLocaleValue(introduction.author_name, language)}
+                                                authorAvatar={introduction.author_avatar}
+                                                itemType="artizen"
+                                                itemId={introduction.artizen_id}
+                                                textType="introduction"
+                                                textId={introduction.id}
+                                                content={introduction.content}
+                                                up={introduction.up}
+                                                down={introduction.down}
+                                                status={introduction.status}
+                                            />
+                                        </div>)}
+                                </Slider>}
+                            </div>
+                            <SectionTitle sectionTitle="Reviews">
+                                <FontAwesomeIcon icon={faEdit} size="20" style={{cursor: 'pointer'}} onClick={() => {
+                                    this.setState({editModalShow: true});
+                                }}/>
+                            </SectionTitle>
+                            {this.state.reviews.map(review =>
+                                <TextCard
+                                    key={review.id}
+                                    style={{margin: 20}}
+                                    authorId={review.author_id}
+                                    authorUsername={review.author_username}
+                                    authorName={getLocaleValue(review.author_name, language)}
+                                    authorAvatar={review.author_avatar}
+                                    itemType="artizen"
+                                    itemId={review.artizen_id}
+                                    textType="review"
+                                    textId={review.id}
+                                    rating={review.rating}
+                                    content={review.content}
+                                    up={review.up}
+                                    down={review.down}
+                                    status={review.status}
+                                />)}
                         </div>
-                    )}
-                </div>
-                <EditorModal show={this.state.editModalShow} handleClose={() => {
-                    this.setState({editModalShow: false})
-                }} itemType="artizen" itemId={this.state.artizen.id} itemName={this.state.artizen.name} textType="review"/>
-            </div>
+                        <div className="artizen-right-section" ref={this.artSection}>
+                            {this.state.arts.map(section => section.data.length > 0 &&
+                                <div key={section.type}>
+                                    <SectionTitle
+                                        sectionTitle={Artizen.convertArtizenTypeToSectionTitle(section.type)}/>
+                                    <ArtCardLayout
+                                        arts={section.data}
+                                        width={this.getArtCardLayoutWidth()}
+                                        columns={this.getArtCardLayoutColumns()}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <EditorModal show={this.state.editModalShow} handleClose={() => {
+                            this.setState({editModalShow: false})
+                        }} itemType="artizen" itemId={this.state.artizen.id} itemName={this.state.artizen.name}
+                                     textType="review"/>
+                    </div>)}
+            </LanguageContext.Consumer>
         );
     }
 }

@@ -4,11 +4,13 @@ import {withCookies} from 'react-cookie';
 import ReactStars from "react-stars";
 import {convertToRaw, EditorState} from "draft-js";
 import Modal from './modal';
-import {ModalContext} from "../app";
+import {ModalContext, WindowContext} from "../app";
 import {API_ENDPOINT} from "../common";
 import {removeCookies} from "../utils";
 import RichEditor from './rich-editor';
 import Buttonbox from './buttonbox'
+import {LanguageContext} from '../app';
+import {getLocaleValue} from '../utils';
 import './editor-modal.css';
 
 const cancelButtonboxStyle = {
@@ -68,48 +70,52 @@ class EditorModal extends Component {
         const {show, handleClose, itemName, textType, ...props} = this.props;
         const {editorState} = this.state;
 
-        return (<ModalContext.Consumer>
-                {({showLoginModal}) => (
-                    <div>
-                        <Modal
-                            {...props}
-                            show={show}
-                            handleClose={handleClose}
-                            hideCloseButton
-                            style={{
-                                width: '95%',
-                                maxWidth: 800
-                            }}
-                        >
-                            <div className="editor-modal">
-                                <RichEditor
-                                    placeholder={`Write ${textType === 'introduction' ? 'an' : 'a'} ${textType}${itemName && ` ${textType === 'introduction' ? 'to' : 'for'} "${itemName.default}"`}...`}
-                                    editorState={editorState}
-                                    onChange={(editorState) => {
-                                        this.setState({editorState});
+        return (
+            <LanguageContext.Consumer>
+                {({language}) => (
+                    <ModalContext.Consumer>
+                        {({showLoginModal}) => (
+                            <div>
+                                <Modal
+                                    {...props}
+                                    show={show}
+                                    handleClose={handleClose}
+                                    hideCloseButton
+                                    style={{
+                                        width: '95%',
+                                        maxWidth: 800
                                     }}
-                                />
-                                <div className="editor-modal-footer">
-                                    <Buttonbox
-                                        style={cancelButtonboxStyle}
-                                        onClick={handleClose}
-                                    >
-                                        <span className="font-size-xs">Cancel</span>
-                                    </Buttonbox>
-                                    <div style={{display: 'inline-block', width: '5%'}}/>
-                                    <Buttonbox
-                                        style={submitButtonboxStyle}
-                                        onClick={() => {
-                                            this.handleSubmit(showLoginModal)
-                                        }}
-                                    >
-                                        <span className="font-size-xs">Submit</span>
-                                    </Buttonbox>
-                                </div>
-                            </div>
-                        </Modal>
-                    </div>)}
-            </ModalContext.Consumer>
+                                >
+                                    <div className="editor-modal">
+                                        <RichEditor
+                                            placeholder={`Write ${textType === 'introduction' ? 'an' : 'a'} ${textType}${itemName && ` ${textType === 'introduction' ? 'to' : 'for'} "${getLocaleValue(itemName, language)}"`}...`}
+                                            editorState={editorState}
+                                            onChange={(editorState) => {
+                                                this.setState({editorState});
+                                            }}
+                                        />
+                                        <div className="editor-modal-footer">
+                                            <Buttonbox
+                                                style={cancelButtonboxStyle}
+                                                onClick={handleClose}
+                                            >
+                                                <span className="font-size-xs">Cancel</span>
+                                            </Buttonbox>
+                                            <div style={{display: 'inline-block', width: '5%'}}/>
+                                            <Buttonbox
+                                                style={submitButtonboxStyle}
+                                                onClick={() => {
+                                                    this.handleSubmit(showLoginModal)
+                                                }}
+                                            >
+                                                <span className="font-size-xs">Submit</span>
+                                            </Buttonbox>
+                                        </div>
+                                    </div>
+                                </Modal>
+                            </div>)}
+                    </ModalContext.Consumer>)}
+            </LanguageContext.Consumer>
         );
     }
 }

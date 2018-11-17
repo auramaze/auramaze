@@ -12,6 +12,8 @@ import {WindowContext} from "../app";
 import {API_ENDPOINT} from "../common";
 import {unlockBody} from "../utils";
 import TextVote from "./text-vote";
+import {LanguageContext} from '../app';
+import {getLocaleValue} from '../utils';
 import './text-modal.css';
 
 class TextModal extends Component {
@@ -49,50 +51,55 @@ class TextModal extends Component {
         const {author_id, author_username, author_name, author_avatar, rating, content, up, down, status} = this.state.text;
 
         return (
-            <WindowContext.Consumer>
-                {({windowHeight}) => (
-                    <Modal {...props} show={this.state.show} handleClose={() => {
-                        history.push(`/${itemType}/${itemId}`);
-                    }} style={{
-                        width: '95%',
-                        maxWidth: 800
-                    }}>
-                        <div className="text-modal">
-                            <div className="text-modal-title">
-                                <Link to={`/artizen/${author_username || author_id}`}>
-                                    {author_avatar ?
-                                        <img src={author_avatar} alt="avatar" className="text-modal-avatar"/> :
-                                        <div className="text-modal-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
-                                </Link>
-                                <span className="text-modal-name">{author_name && author_name.default}</span>
-                                {this.state.audio && <div className="text-modal-audio">
-                                    <FontAwesomeIcon icon={faHeadphonesAlt} size="lg"/>
-                                </div>}
-                            </div>
-                            <div className="text-modal-content">
-                                <Scrollbars autoHeight autoHeightMax={windowHeight - 200}>
-                                    {textType === 'review' && rating &&
-                                    <div className="react-stars-container">
-                                        <ReactStars
-                                            count={5}
-                                            value={rating}
-                                            size={18}
-                                            edit={false}
-                                            color2={'#ffd700'}
-                                        />
+            <LanguageContext.Consumer>
+                {({language}) => (
+                    <WindowContext.Consumer>
+                        {({windowHeight}) => (
+                            <Modal {...props} show={this.state.show} handleClose={() => {
+                                history.push(`/${itemType}/${itemId}`);
+                            }} style={{
+                                width: '95%',
+                                maxWidth: 800
+                            }}>
+                                <div className="text-modal">
+                                    <div className="text-modal-title">
+                                        <Link to={`/artizen/${author_username || author_id}`}>
+                                            {author_avatar ?
+                                                <img src={author_avatar} alt="avatar" className="text-modal-avatar"/> :
+                                                <div className="text-modal-avatar"
+                                                     style={{backgroundColor: '#cdcdcd'}}/>}
+                                        </Link>
+                                        <span className="text-modal-name">{getLocaleValue(author_name, language)}</span>
+                                        {this.state.audio && <div className="text-modal-audio">
+                                            <FontAwesomeIcon icon={faHeadphonesAlt} size="lg"/>
+                                        </div>}
                                     </div>
-                                    }
-                                    {content && <Editor
-                                        editorState={EditorState.createWithContent(convertFromRaw(content))}
-                                        readOnly
-                                    />}
-                                </Scrollbars>
-                            </div>
-                            <TextVote itemType={itemType} itemId={itemId} textType={textType} textId={textId} up={up}
-                                      down={down} status={status}/>
-                        </div>
-                    </Modal>)}
-            </WindowContext.Consumer>
+                                    <div className="text-modal-content">
+                                        <Scrollbars autoHeight autoHeightMax={windowHeight - 400}>
+                                            {textType === 'review' && rating &&
+                                            <div className="react-stars-container">
+                                                <ReactStars
+                                                    count={5}
+                                                    value={rating}
+                                                    size={18}
+                                                    edit={false}
+                                                    color2={'#ffd700'}
+                                                />
+                                            </div>
+                                            }
+                                            {content && <Editor
+                                                editorState={EditorState.createWithContent(convertFromRaw(content))}
+                                                readOnly
+                                            />}
+                                        </Scrollbars>
+                                    </div>
+                                    <TextVote itemType={itemType} itemId={itemId} textType={textType} textId={textId}
+                                              up={up}
+                                              down={down} status={status}/>
+                                </div>
+                            </Modal>)}
+                    </WindowContext.Consumer>)}
+            </LanguageContext.Consumer>
         );
     }
 }
