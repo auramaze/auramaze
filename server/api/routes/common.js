@@ -157,6 +157,11 @@ Common.prototype.updateItem = (group, id, item, callback) => {
         sql = `UPDATE art SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
         parameters = columns.map(column => conversion[column](item[column]));
     } else {
+        if (item.password) {
+            const {salt, hash} = generateSaltHash(item.password);
+            item.salt = salt;
+            item.hash = hash;
+        }
         const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash'];
         const conversion = {
             username: username => username,
@@ -236,11 +241,13 @@ Common.prototype.toAuthJSON = (user) => {
     };
 };
 
-Common.prototype.generateSaltHash = (password) => {
+const generateSaltHash = (password) => {
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
     return {salt, hash};
 };
+
+Common.prototype.generateSaltHash = generateSaltHash;
 
 
 module.exports = new Common();
