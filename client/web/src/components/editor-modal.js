@@ -37,20 +37,20 @@ const submitButtonboxStyle = {
 class EditorModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        this.state = {rating: null, editorState: EditorState.createEmpty()};
     }
 
     handleSubmit = (showLoginModal) => {
         const {itemType, itemId, textType, handleClose, cookies} = this.props;
         const token = cookies.get('token');
         if (token) {
-            const {editorState} = this.state;
+            const {editorState, rating} = this.state;
             request.post({
                 url: `${API_ENDPOINT}/${itemType}/${itemId}/${textType}`,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
-                body: {content: convertToRaw(editorState.getCurrentContent())},
+                body: {content: convertToRaw(editorState.getCurrentContent()), rating},
                 json: true
             }, (error, response, body) => {
                 if (response && response.statusCode === 200) {
@@ -90,8 +90,12 @@ class EditorModal extends Component {
                                         <RichEditor
                                             placeholder={`Write ${textType === 'introduction' ? 'an' : 'a'} ${textType}${itemName && ` ${textType === 'introduction' ? 'to' : 'for'} "${getLocaleValue(itemName, language)}"`}...`}
                                             editorState={editorState}
+                                            rating={this.state.rating}
                                             onChange={(editorState) => {
                                                 this.setState({editorState});
+                                            }}
+                                            onRate={(rating) => {
+                                                this.setState({rating});
                                             }}
                                         />
                                         <div className="editor-modal-footer">
