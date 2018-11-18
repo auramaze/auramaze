@@ -95,7 +95,7 @@ class LogInPage extends React.Component {
                     <Input placeholder='Email or username'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(id) => this.setState(previousState => ({id: id}))}/>
-                    <Input placeholder='Password'
+                    <Input placeholder='Password' secureTextEntry={true}
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                            onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
                 </View>
