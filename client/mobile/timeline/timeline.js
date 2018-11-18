@@ -111,8 +111,8 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={1}
-                                        up={20}
+                                        down={activity.down}
+                                        up={activity.up}
                                         itemType="art"
                                         textType="review" itemId={activity.artizen_id} textId={activity.id}/> :
                                     <ActivityCard
@@ -124,8 +124,8 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={1}
-                                        up={20}
+                                        down={activity.down}
+                                        up={activity.up}
                                         itemType="artizen"
                                         textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
                         </ScrollView> : null
