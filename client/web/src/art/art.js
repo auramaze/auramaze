@@ -15,9 +15,10 @@ import EditorModal from '../components/editor-modal';
 import {API_ENDPOINT} from '../common';
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {LanguageContext} from '../app';
+import {LanguageContext, VoteContext} from '../app';
 import {getLocaleValue} from '../utils';
 import './art.css';
+import {withRouter} from "react-router-dom";
 
 class Art extends Component {
     constructor(props) {
@@ -45,6 +46,7 @@ class Art extends Component {
 
     updateArt(artId) {
         const token = this.props.cookies.get('token');
+        const {vote, updateVote} = this.props;
 
         this.setState({
             art: {},
@@ -80,6 +82,11 @@ class Art extends Component {
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
+                            const newVote = introductions.reduce((acc, cur) => {
+                                acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
+                                return acc;
+                            }, {});
+                            updateVote(Object.assign(vote, newVote));
                             this.setState({introductions: introductions});
                         }
                     });
@@ -92,6 +99,11 @@ class Art extends Component {
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
+                            const newVote = reviews.reduce((acc, cur) => {
+                                acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
+                                return acc;
+                            }, {});
+                            updateVote(Object.assign(vote, newVote));
                             this.setState({reviews: reviews});
                         }
                     });
@@ -208,4 +220,8 @@ Art.propTypes = {
     }),
 };
 
-export default withCookies(injectIntl(Art));
+export default withCookies(injectIntl(React.forwardRef((props, ref) => (
+    <VoteContext.Consumer>
+        {({vote, updateVote}) => <Art {...props} vote={vote} updateVote={updateVote} ref={ref}/>}
+    </VoteContext.Consumer>)
+)));

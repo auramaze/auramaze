@@ -7,6 +7,7 @@ import {faThumbsDown as faThumbsDownSolid} from '@fortawesome/free-solid-svg-ico
 import {faThumbsUp as faThumbsUpRegular} from '@fortawesome/free-regular-svg-icons';
 import {faThumbsDown as faThumbsDownRegular} from '@fortawesome/free-regular-svg-icons';
 import {ModalContext} from '../app';
+import {VoteContext} from '../app';
 import {API_ENDPOINT} from "../common";
 import {removeCookies} from "../utils";
 import './text-vote.css';
@@ -14,20 +15,15 @@ import './text-vote.css';
 class TextVote extends Component {
     constructor(props) {
         super(props);
-        this.state = {up: props.up, down: props.down, status: props.status};
         this.handleVote = this.handleVote.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
-        const {up, down, status} = this.props;
-        if (up !== prevProps.up || down !== prevProps.down || status !== prevProps.status) {
-            this.setState({up, down, status});
-        }
-    }
-
-    handleVote(type, showLoginModal) {
+    handleVote(type, vote, updateVote, showLoginModal) {
         const {itemType, itemId, textType, textId, cookies} = this.props;
-        const {status} = this.state;
+        const status = vote[textId] && vote[textId].status || 0;
+        let up = vote[textId] && vote[textId].up || 0;
+        let down = vote[textId] && vote[textId].down || 0;
+
         if ((status === 1 && type === 'up') || (status === -1 && type === 'down')) {
             return;
         }
@@ -43,28 +39,22 @@ class TextVote extends Component {
                 json: true
             }, (error, response, body) => {
                 if (response && response.statusCode === 200) {
-                    let newUp = this.state.up;
-                    let newDown = this.state.down;
                     if (type === 'up') {
-                        if (this.state.status !== 1) {
-                            newUp++;
+                        if (status !== 1) {
+                            up++;
                         }
-                        if (this.state.status === -1) {
-                            newDown--;
+                        if (status === -1) {
+                            down--;
                         }
                     } else {
-                        if (this.state.status !== -1) {
-                            newDown++;
+                        if (status !== -1) {
+                            down++;
                         }
-                        if (this.state.status === 1) {
-                            newUp--;
+                        if (status === 1) {
+                            up--;
                         }
                     }
-                    this.setState({
-                        status: type === 'up' ? 1 : -1,
-                        up: newUp,
-                        down: newDown
-                    });
+                    updateVote(Object.assign(vote, {[textId]: {up: up, down: down, status: type === 'up' ? 1 : -1}}));
                 } else if (response.statusCode === 401) {
                     removeCookies(cookies);
                     showLoginModal();
@@ -76,30 +66,34 @@ class TextVote extends Component {
     }
 
     render() {
+        const {textId} = this.props;
         return (<ModalContext.Consumer>
                 {({showLoginModal}) => (
-                    <div className="text-vote">
-                        <FontAwesomeIcon
-                            style={{cursor: this.state.status === 1 ? 'default' : 'pointer'}}
-                            onClick={() => {
-                                this.handleVote('up', showLoginModal);
-                            }}
-                            className="text-vote-icon"
-                            icon={this.state.status === 1 ? faThumbsUpSolid : faThumbsUpRegular}
-                            size="lg"
-                        />
-                        <span>{this.state.up}</span>
-                        <FontAwesomeIcon
-                            style={{cursor: this.state.status === -1 ? 'default' : 'pointer'}}
-                            onClick={() => {
-                                this.handleVote('down', showLoginModal);
-                            }}
-                            className="text-vote-icon"
-                            icon={this.state.status === -1 ? faThumbsDownSolid : faThumbsDownRegular}
-                            size="lg"
-                        />
-                        <span>{this.state.down}</span>
-                    </div>)}
+                    <VoteContext.Consumer>
+                        {({vote, updateVote}) => (
+                            <div className="text-vote">
+                                <FontAwesomeIcon
+                                    style={{cursor: vote[textId] && vote[textId].status === 1 ? 'default' : 'pointer'}}
+                                    onClick={() => {
+                                        this.handleVote('up', vote, updateVote, showLoginModal);
+                                    }}
+                                    className="text-vote-icon"
+                                    icon={vote[textId] && vote[textId].status === 1 ? faThumbsUpSolid : faThumbsUpRegular}
+                                    size="lg"
+                                />
+                                <span>{vote[textId] && vote[textId].up || 0}</span>
+                                <FontAwesomeIcon
+                                    style={{cursor: vote[textId] && vote[textId].status === -1 ? 'default' : 'pointer'}}
+                                    onClick={() => {
+                                        this.handleVote('down', vote, updateVote, showLoginModal);
+                                    }}
+                                    className="text-vote-icon"
+                                    icon={vote[textId] && vote[textId].status === -1 ? faThumbsDownSolid : faThumbsDownRegular}
+                                    size="lg"
+                                />
+                                <span>{vote[textId] && vote[textId].down || 0}</span>
+                            </div>)}
+                    </VoteContext.Consumer>)}
             </ModalContext.Consumer>
         );
     }

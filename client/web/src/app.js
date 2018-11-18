@@ -27,6 +27,7 @@ const messages = {
 export const LanguageContext = React.createContext();
 export const ModalContext = React.createContext();
 export const WindowContext = React.createContext();
+export const VoteContext = React.createContext();
 
 const HomeNavbar = (props) => {
     return (
@@ -74,6 +75,10 @@ class App extends Component {
             });
         };
 
+        this.updateVote = (vote) => {
+            this.setState({vote});
+        };
+
         let language = props.cookies.get('language') || window.navigator.language;
         if (typeof language === 'string') {
             language = language.slice(0, 2);
@@ -91,7 +96,9 @@ class App extends Component {
             showSignupModal: this.showSignupModal,
             hideSignupModal: this.hideSignupModal,
             showLoginModal: this.showLoginModal,
-            hideLoginModal: this.hideLoginModal
+            hideLoginModal: this.hideLoginModal,
+            vote: {},
+            updateVote: this.updateVote
         };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
@@ -125,7 +132,7 @@ class App extends Component {
     }
 
     render() {
-        const {language, windowWidth, windowHeight, signupModalShow, loginModalShow, showSignupModal, hideSignupModal, showLoginModal, hideLoginModal} = this.state;
+        const {language, windowWidth, windowHeight, signupModalShow, loginModalShow, showSignupModal, hideSignupModal, showLoginModal, hideLoginModal, vote, updateVote} = this.state;
         return (
             <IntlProvider locale={language} messages={messages[language]}>
                 <LanguageContext.Provider value={{language}}>
@@ -138,30 +145,33 @@ class App extends Component {
                             showLoginModal,
                             hideLoginModal
                         }}>
-                            <Router>
-                                <div>
-                                    <Route exact path="/" component={Home}/>
-                                    <Route path="/search" component={Search}/>
-                                    <Route path="/recommend" component={Recommend}/>
-                                    <Route path="/art/:artId" component={Art}/>
-                                    <Route path="/artizen/:artizenId" component={Artizen}/>
-                                    <Route path="/:itemType(art|artizen)/:itemId/:textType(introduction|review)/:textId"
-                                           component={TextModal}/>
-                                    <Switch>
+                            <VoteContext.Provider value={{vote, updateVote}}>
+                                <Router>
+                                    <div>
+                                        <Route exact path="/" component={Home}/>
+                                        <Route path="/search" component={Search}/>
+                                        <Route path="/recommend" component={Recommend}/>
+                                        <Route path="/art/:artId" component={Art}/>
+                                        <Route path="/artizen/:artizenId" component={Artizen}/>
                                         <Route
-                                            exact
-                                            path="/"
-                                            render={windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
-                                        />
-                                        <Route
-                                            path='/'
-                                            component={windowWidth > 768 ? Navbar : NavbarMobile}
-                                        />
-                                    </Switch>
-                                </div>
-                            </Router>
-                            <SignupModal show={signupModalShow} handleClose={hideSignupModal}/>
-                            <LoginModal show={loginModalShow} handleClose={hideLoginModal}/>
+                                            path="/:itemType(art|artizen)/:itemId/:textType(introduction|review)/:textId"
+                                            component={TextModal}/>
+                                        <Switch>
+                                            <Route
+                                                exact
+                                                path="/"
+                                                render={windowWidth > 768 ? HomeNavbar : HomeNavbarMobile}
+                                            />
+                                            <Route
+                                                path='/'
+                                                component={windowWidth > 768 ? Navbar : NavbarMobile}
+                                            />
+                                        </Switch>
+                                    </div>
+                                </Router>
+                                <SignupModal show={signupModalShow} handleClose={hideSignupModal}/>
+                                <LoginModal show={loginModalShow} handleClose={hideLoginModal}/>
+                            </VoteContext.Provider>
                         </ModalContext.Provider>
                     </WindowContext.Provider>
                 </LanguageContext.Provider>

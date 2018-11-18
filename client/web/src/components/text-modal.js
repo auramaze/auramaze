@@ -8,7 +8,7 @@ import {faHeadphonesAlt} from "@fortawesome/free-solid-svg-icons";
 import ReactStars from "react-stars";
 import {convertFromRaw, Editor, EditorState} from "draft-js";
 import Modal from './modal';
-import {WindowContext} from "../app";
+import {WindowContext, VoteContext} from "../app";
 import {API_ENDPOINT} from "../common";
 import {unlockBody} from "../utils";
 import TextVote from "./text-vote";
@@ -24,6 +24,7 @@ class TextModal extends Component {
 
     componentDidMount() {
         const {itemType, itemId, textType, textId} = this.props.match.params;
+        const {vote, updateVote} = this.props;
 
         const token = this.props.cookies.get('token');
 
@@ -35,6 +36,8 @@ class TextModal extends Component {
             json: true
         }, (error, response, text) => {
             if (response && response.statusCode === 200) {
+                const newVote = (({up, down, status}) => ({up, down, status}))(text);
+                updateVote(Object.assign(vote, {[text.id]: newVote}));
                 this.setState({text: text, show: true});
             }
         });
@@ -104,4 +107,8 @@ class TextModal extends Component {
     }
 }
 
-export default withRouter(withCookies(TextModal));
+export default withRouter(withCookies(React.forwardRef((props, ref) => (
+    <VoteContext.Consumer>
+        {({vote, updateVote}) => <TextModal {...props} vote={vote} updateVote={updateVote} ref={ref}/>}
+    </VoteContext.Consumer>)
+)));

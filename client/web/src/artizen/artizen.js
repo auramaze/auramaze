@@ -16,7 +16,7 @@ import {API_ENDPOINT} from '../common';
 import EditorModal from "../components/editor-modal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
-import {LanguageContext} from '../app';
+import {LanguageContext, VoteContext} from '../app';
 import {getLocaleValue} from '../utils';
 import './artizen.css';
 
@@ -46,6 +46,7 @@ class Artizen extends Component {
 
     updateArtizen(artizenId) {
         const token = this.props.cookies.get('token');
+        const {vote, updateVote} = this.props;
 
         this.setState({
             artizen: {},
@@ -85,6 +86,11 @@ class Artizen extends Component {
                         json: true
                     }, (error, response, introductions) => {
                         if (response && response.statusCode === 200) {
+                            const newVote = introductions.reduce((acc, cur) => {
+                                acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
+                                return acc;
+                            }, {});
+                            updateVote(Object.assign(vote, newVote));
                             this.setState({introductions: introductions});
                         }
                     });
@@ -97,6 +103,11 @@ class Artizen extends Component {
                         json: true
                     }, (error, response, reviews) => {
                         if (response && response.statusCode === 200) {
+                            const newVote = reviews.reduce((acc, cur) => {
+                                acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
+                                return acc;
+                            }, {});
+                            updateVote(Object.assign(vote, newVote));
                             this.setState({reviews: reviews});
                         }
                     });
@@ -224,4 +235,8 @@ Artizen.propTypes = {
     }),
 };
 
-export default withCookies(injectIntl(Artizen));
+export default withCookies(injectIntl(React.forwardRef((props, ref) => (
+    <VoteContext.Consumer>
+        {({vote, updateVote}) => <Artizen {...props} vote={vote} updateVote={updateVote} ref={ref}/>}
+    </VoteContext.Consumer>)
+)));
