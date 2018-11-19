@@ -113,8 +113,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         # try for every possible combination of transformations; if all_orientations=False,
         # this will only take one iteration
-        result = []
-
+        transformed_records = []
         for transform in orientations:
             # compose all functions and apply on signature
             transformed_img = transform[0](transform[1](img))
@@ -124,19 +123,9 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
             # generate the signature
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
+            transformed_records.append(transformed_record)
 
-            l = self.search_single_record(transformed_record)
-            result.extend(l)
-
-        ids = set()
-        result = sorted(result, key=itemgetter('dist'))
-        unique = []
-        for item in result:
-            if 'id' in item and item['id'] not in ids:
-                unique.append(item)
-                ids.add(item['id'])
-
-        return unique
+        return self.search_multiple_records(transformed_records)
 
     def search_single_record(self, rec, pre_filter=None):
         path = rec.pop('path')
@@ -179,6 +168,63 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         formatted_res = filter(lambda y: y['dist'] < self.distance_cutoff, formatted_res)
 
         return formatted_res
+
+    def search_multiple_records(self, rec_arr, pre_filter=None):
+        request = []
+        signatures = []
+        for rec in rec_arr:
+            path = rec.pop('path')
+            signatures.append(rec.pop('signature'))
+            if 'metadata' in rec:
+                rec.pop('metadata')
+
+            # build the 'should' list
+            should = [{'term': {'image.default.' + word: rec[word]}} for word in rec]
+            body = {
+                'query': {
+                    'bool': {'should': should}
+                },
+                '_source': {'excludes': ['simple_word_*']},
+                'size': self.size
+            }
+
+            if pre_filter is not None:
+                body['query']['bool']['filter'] = pre_filter
+
+            head = {'index': self.index, 'type': self.doc_type}
+            request.extend([head, body])
+
+        responses = self.es.msearch(body=request)['responses']
+
+        result = []
+
+        for response, signature in zip(responses, signatures):
+            res = response['hits']['hits']
+            sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
+
+            if sigs.size == 0:
+                continue
+
+            dists = normalized_distance(sigs, np.array(signature))
+
+            formatted_res = [{**x['_source'], '_score': x['_score']}
+                             for x in res]
+
+            for i, row in enumerate(formatted_res):
+                row['dist'] = dists[i]
+            formatted_res = filter(lambda y: y['dist'] < self.distance_cutoff, formatted_res)
+
+            result.extend(formatted_res)
+
+        ids = set()
+        result = sorted(result, key=itemgetter('dist'))
+        unique = []
+        for item in result:
+            if 'id' in item and item['id'] not in ids:
+                unique.append(item)
+                ids.add(item['id'])
+
+        return unique
 
     def update_image(self, id, image_dict, refresh_after=False):
         """Update image property in Elasticsearch
