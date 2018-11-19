@@ -263,7 +263,10 @@ router.post('/:id/follow', [
 
 /* GET all introductions of artizen. */
 router.get('/:id/introduction', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -284,7 +287,10 @@ router.get('/:id/introduction', [
 
 /* GET one introduction of artizen. */
 router.get('/:id/introduction/:textId', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
@@ -390,7 +396,10 @@ router.post('/:id/introduction/:textId/vote', [
 
 /* GET all reviews of artizen. */
 router.get('/:id/review', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -411,7 +420,10 @@ router.get('/:id/review', [
 
 /* GET one review of artizen. */
 router.get('/:id/review/:textId', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);

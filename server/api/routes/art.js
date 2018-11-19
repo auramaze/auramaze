@@ -294,9 +294,10 @@ router.delete('/:id', oneOf([
 });
 
 /* GET all introductions of art. */
-router.get('/:id/introduction', [
+router.get('/:id/introduction', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-], auth.optional, (req, res, next) => {
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
@@ -316,7 +317,10 @@ router.get('/:id/introduction', [
 
 /* GET one introduction of art. */
 router.get('/:id/introduction/:textId', [
-    param('id').isInt().isLength({min: 8, max: 8}),
+    oneOf([
+        param('id').isInt().isLength({min: 8, max: 8}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
@@ -421,9 +425,10 @@ router.post('/:id/introduction/:textId/vote', [
 });
 
 /* GET all reviews of art. */
-router.get('/:id/review', [
+router.get('/:id/review', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-], auth.optional, (req, res, next) => {
+    param('id').custom(common.validateUsername).withMessage('Invalid username')
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
@@ -443,7 +448,10 @@ router.get('/:id/review', [
 
 /* GET one review of art. */
 router.get('/:id/review/:textId', [
-    param('id').isInt().isLength({min: 8, max: 8}),
+    oneOf([
+        param('id').isInt().isLength({min: 8, max: 8}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
