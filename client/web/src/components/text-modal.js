@@ -5,11 +5,17 @@ import {Link, withRouter} from 'react-router-dom';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHeadphonesAlt} from "@fortawesome/free-solid-svg-icons";
+import {
+    FacebookShareButton,
+    TwitterShareButton,
+    FacebookIcon,
+    TwitterIcon
+} from 'react-share';
 import ReactStars from "react-stars";
 import {convertFromRaw, Editor, EditorState} from "draft-js";
 import Modal from './modal';
 import {WindowContext, VoteContext} from "../app";
-import {API_ENDPOINT} from "../common";
+import {WEB_URL, API_ENDPOINT} from "../common";
 import {unlockBody} from "../utils";
 import TextVote from "./text-vote";
 import {LanguageContext} from '../app';
@@ -51,6 +57,7 @@ class TextModal extends Component {
     render() {
         const {history, ...props} = this.props;
         const {itemType, itemId, textType, textId} = this.props.match.params;
+        const {pathname} = this.props.location;
         const {author_id, author_username, author_name, author_avatar, rating, content, up, down, status} = this.state.text;
 
         return (
@@ -73,9 +80,24 @@ class TextModal extends Component {
                                                      style={{backgroundColor: '#cdcdcd'}}/>}
                                         </Link>
                                         <span className="text-modal-name">{getLocaleValue(author_name, language)}</span>
-                                        {this.state.audio && <div className="text-modal-audio">
-                                            <FontAwesomeIcon icon={faHeadphonesAlt} size="lg"/>
-                                        </div>}
+                                        <div className="text-modal-share">
+                                            <FacebookShareButton
+                                                url={new URL(pathname, WEB_URL)}
+                                                quote={"AuraMaze"}
+                                                className="text-modal-share-button">
+                                                <FacebookIcon
+                                                    size={32}
+                                                    round/>
+                                            </FacebookShareButton>
+                                            <TwitterShareButton
+                                                url={new URL(pathname, WEB_URL)}
+                                                title={"AuraMaze"}
+                                                className="text-modal-share-button">
+                                                <TwitterIcon
+                                                    size={32}
+                                                    round/>
+                                            </TwitterShareButton>
+                                        </div>
                                     </div>
                                     <div className="text-modal-content">
                                         <Scrollbars autoHeight autoHeightMax={windowHeight - 400}>

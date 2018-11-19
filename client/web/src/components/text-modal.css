@@ -13,6 +13,7 @@
     margin: 0 10px;
     overflow: hidden;
     white-space: nowrap;
+    clear: both;
 }
 
 .text-modal-avatar {
@@ -32,6 +33,20 @@
     line-height: 40px;
     font-size: 15px;
     font-family: 'CenturyGothic', serif;
+}
+
+.text-modal-share {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+    line-height: 40px;
+    float: right;
+}
+
+.text-modal-share-button {
+    display: inline-block;
+    margin: 4px;
+    cursor: pointer;
 }
 
 .text-modal-audio {
