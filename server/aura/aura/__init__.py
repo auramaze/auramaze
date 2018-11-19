@@ -123,7 +123,7 @@ def aura():
     else:
         return None, 400
     # start = time.time()
-    results = search_image(ses, raw)
+    results = search_image_sync(ses, raw)
     # end = time.time()
     # print(end - start)
     return jsonify({'art': results})
