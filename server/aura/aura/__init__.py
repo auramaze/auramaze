@@ -30,9 +30,8 @@ def worker(q, ses, results):
         if results['best'] is None:
             l = ses.search_image(painting, all_orientations=True, bytestream=True)
             if len(l):
-                min_dist_index, min_dist_item = min(enumerate(l), key=lambda item: item[1]['dist'])
-                if min_dist_item['dist'] < 0.3:
-                    results['best'] = min_dist_item
+                if l[0]['dist'] < 0.3:
+                    results['best'] = l[0]
                 results['list'].extend(l)
         q.task_done()
 
@@ -93,9 +92,8 @@ def search_image_sync(ses, raw):
         l = ses.search_image(painting, all_orientations=True, bytestream=True)
         # print('end-{}'.format(time.time()))
         if len(l):
-            min_dist_index, min_dist_item = min(enumerate(l), key=lambda item: item[1]['dist'])
-            if min_dist_item['dist'] < 0.3:
-                return [min_dist_item]
+            if l[0]['dist'] < 0.3:
+                return l[:1]
             results.extend(l)
 
     results = sorted(results, key=itemgetter('dist'))
@@ -125,7 +123,7 @@ def aura():
     else:
         return None, 400
     # start = time.time()
-    results = search_image_sync(ses, raw)
+    results = search_image(ses, raw)
     # end = time.time()
     # print(end - start)
     return jsonify({'art': results})
