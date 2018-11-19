@@ -170,6 +170,7 @@ class Artizen extends Component {
                                                 authorAvatar={introduction.author_avatar}
                                                 itemType="artizen"
                                                 itemId={introduction.artizen_id}
+                                                itemUsername={introduction.artizen_username}
                                                 textType="introduction"
                                                 textId={introduction.id}
                                                 content={introduction.content}
@@ -195,6 +196,7 @@ class Artizen extends Component {
                                     authorAvatar={review.author_avatar}
                                     itemType="artizen"
                                     itemId={review.artizen_id}
+                                    itemUsername={review.artizen_username}
                                     textType="review"
                                     textId={review.id}
                                     rating={review.rating}

@@ -152,6 +152,7 @@ class Art extends Component {
                                                 authorAvatar={introduction.author_avatar}
                                                 itemType="art"
                                                 itemId={introduction.art_id}
+                                                itemUsername={introduction.art_username}
                                                 textType="introduction"
                                                 textId={introduction.id}
                                                 content={introduction.content}
@@ -194,6 +195,7 @@ class Art extends Component {
                                     authorAvatar={review.author_avatar}
                                     itemType="art"
                                     itemId={review.art_id}
+                                    itemUsername={review.art_username}
                                     textType="review"
                                     textId={review.id}
                                     rating={review.rating}
