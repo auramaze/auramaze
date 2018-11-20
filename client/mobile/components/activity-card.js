@@ -97,20 +97,6 @@ class ActivityCard extends React.Component {
                             style={styles.avatarStyle}/>
                     </View>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    {this.props.isIntro ? <TouchableOpacity onPress={() => {
-                        Expo.Speech.isSpeakingAsync().then((result) => {
-                            if (result) {
-                                Expo.Speech.stop();
-                            } else {
-                                Expo.Speech.speak(this.props.text);
-                            }
-                        });
-                    }}>
-                        {this.state.isSpeaking && this.props.isIntro ?
-                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
-                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                    </TouchableOpacity> : null}
-
                 </View>
                 {this.props.artSource ?
                     <AutoHeightImage style={styles.imageStyle} width={Dimensions.get('window').width}
