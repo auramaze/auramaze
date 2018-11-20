@@ -51,7 +51,6 @@ class ReviewFooter extends React.Component {
                         down: newDown
                     });
                 }).catch(function (error) {
-                    this.setState(previousState => ({auramazeProcessing: false}));
                     alert('There has been a problem with your fetch operation: ' + error.message);
                 });
             }
