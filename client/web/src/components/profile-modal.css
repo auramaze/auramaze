@@ -1,0 +1,26 @@
+.signup-modal-content {
+    padding: 8%;
+    box-sizing: border-box;
+}
+
+.signup-modal-content p {
+    text-align: center;
+}
+
+.signup-modal-button {
+    height: 20px;
+}
+
+.message-container {
+    margin: -10px 0;
+}
+
+.error-message {
+    color: #bc1010;
+    padding: 0 10px;
+}
+
+.success-message {
+    color: #148f0a;
+    padding: 0 10px;
+}
