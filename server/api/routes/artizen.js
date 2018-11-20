@@ -196,7 +196,16 @@ router.post('/:id', oneOf([
     common.updateItem('artizen', req.params.id, req.body, (err, data) => {
         /* istanbul ignore if */
         if (err) {
-            next(err);
+            /* istanbul ignore else */
+            if (err.code === 'ER_DUP_ENTRY') {
+                const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
+                res.status(400).json({
+                    code: `${key.toUpperCase()}_EXIST`,
+                    message: `${key} already exists: ${req.body[key]}`
+                });
+            } else {
+                next(err);
+            }
         } else {
             res.json({
                 message: `Update artizen success: ${req.params.id}`
