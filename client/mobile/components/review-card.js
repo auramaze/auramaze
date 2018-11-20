@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import getRNDraftJSBlocks from 'react-native-draftjs-render';
 import ReviewFooter from "./review-footer";
 import headphone from "../assets/icons/headphones-alt-solid.png"
 import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
@@ -83,7 +84,7 @@ class ReviewCard extends React.Component {
                             if (result) {
                                 Expo.Speech.stop();
                             } else {
-                                Expo.Speech.speak(this.props.text);
+                                Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
                             }
                         });
                     }}>
@@ -93,7 +94,9 @@ class ReviewCard extends React.Component {
                     </TouchableOpacity> : null}
 
                 </View>
-                <Text style={styles.bodyText}>{this.props.text}</Text>
+                <View style={styles.bodyText}>{getRNDraftJSBlocks({
+                    contentState: this.props.content
+                })}</View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>

@@ -9,10 +9,12 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "draft-js": "^0.10.5",
     "expo": "^30.0.1",
-    "react": "16.3.1",
+    "react": "^16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-auto-height-image": "^1.0.5",
+    "react-native-draftjs-render": "^2.8.3",
     "react-native-elements": "^1.0.0-beta7",
     "react-native-hr-plus": "^1.0.6",
     "react-navigation": "^2.18.2",

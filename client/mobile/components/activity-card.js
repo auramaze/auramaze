@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import getRNDraftJSBlocks from 'react-native-draftjs-render';
 import ReviewFooter from "./review-footer";
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from "../assets/icons/no-image-artizen.png";
@@ -48,7 +49,7 @@ class ActivityCard extends React.Component {
                 borderColor: '#666666', borderWidth: 1,
             },
             artizenNameStyle: {
-                fontSize: 25,
+                fontSize: 21,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginTop: 15,
@@ -123,7 +124,9 @@ class ActivityCard extends React.Component {
                             </Text>
                         </View>
                     </TouchableOpacity>}
-                <Text style={styles.bodyText}>{this.props.text}</Text>
+                <View style={styles.bodyText}>{getRNDraftJSBlocks({
+                    contentState: this.props.content
+                })}</View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>
