@@ -1,13 +1,13 @@
-.signup-modal-content {
+.profile-modal-content {
     padding: 8%;
     box-sizing: border-box;
 }
 
-.signup-modal-content p {
+.profile-modal-content p {
     text-align: center;
 }
 
-.signup-modal-button {
+.profile-modal-button {
     height: 20px;
 }
 

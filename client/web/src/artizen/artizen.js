@@ -5,7 +5,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import request from 'request';
-import {injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
 import SectionTitle from '../components/section-title';
 import ArtCardLayout from '../components/art-card-layout';
 import TextCard from '../components/text-card';
@@ -24,6 +24,19 @@ import genre from "../icons/genre.svg";
 import style from "../icons/style.svg";
 import critic from "../icons/critic.svg";
 import './artizen.css';
+import Buttonbox from "../components/buttonbox";
+import ProfileModal from "../components/profile-modal";
+
+const profileStyle = {
+    margin: '10px auto',
+    width: 150,
+    height: 36,
+    borderRadius: 18,
+    border: 'solid 2px #666666',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#ffffff',
+    color: '#666666',
+};
 
 class Artizen extends Component {
     constructor(props) {
@@ -33,7 +46,8 @@ class Artizen extends Component {
             arts: [],
             introductions: [],
             reviews: [],
-            editModalShow: false
+            editModalShow: false,
+            profileModalShow: false
         };
         this.artSection = React.createRef();
         this.updateArtizen = this.updateArtizen.bind(this);
@@ -179,6 +193,15 @@ class Artizen extends Component {
                                 </div>}
                                 {(!authId || parseInt(authId) !== parseInt(this.state.artizen.id)) &&
                                 <Follow id={this.state.artizen.id} status={Boolean(this.state.artizen.following)}/>}
+                                {(authId && parseInt(authId) === parseInt(this.state.artizen.id)) &&
+                                <Buttonbox
+                                    style={profileStyle}
+                                    onClick={() => {
+                                        this.setState({profileModalShow: true});
+                                    }}
+                                >
+                                    <span className="font-size-xs"><FormattedMessage id="app.artizen.profile"/></span>
+                                </Buttonbox>}
                             </div>
                             <SectionTitle sectionTitle={intl.formatMessage({id: 'app.artizen.introductions'})}/>
                             <div className="slider-container">
@@ -255,6 +278,11 @@ class Artizen extends Component {
                             this.setState({editModalShow: false})
                         }} itemType="artizen" itemId={this.state.artizen.id} itemName={this.state.artizen.name}
                                      textType="review"/>
+                        <ProfileModal id={this.state.artizen.id} username={this.state.artizen.username}
+                                      name={this.state.artizen.name} email={this.state.artizen.email}
+                                      show={this.state.profileModalShow} handleClose={() => {
+                            this.setState({profileModalShow: false})
+                        }}/>
                     </div>)}
             </LanguageContext.Consumer>
         );

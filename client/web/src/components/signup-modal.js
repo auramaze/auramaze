@@ -13,6 +13,7 @@ import auramaze from '../static/logo-white-frame.svg';
 import './signup-modal.css';
 import {API_ENDPOINT, API_URL} from "../common";
 import OAuthButtonbox from "./oauth-buttonbox";
+import {validateEmail, validatePassword} from "../utils";
 
 const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
@@ -27,11 +28,6 @@ const auramazeButtonboxStyle = Object.assign({
     backgroundColor: '#cdcdcd',
     color: '#666666'
 }, buttonboxStyle);
-
-function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
 
 class SignupModal extends Component {
     constructor(props) {
@@ -163,7 +159,7 @@ class SignupModal extends Component {
                         }}
                     />
                     {this.state.displayPasswordMessage && <div className="message-container">
-                        {this.state.password.length >= 4 ?
+                        {validatePassword(this.state.password) ?
                             <div className="font-size-xs success-message"><FontAwesomeIcon
                                 icon={faCheckCircle}
                                 size="sm"
