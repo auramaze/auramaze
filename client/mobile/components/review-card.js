@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {withNavigation} from 'react-navigation';
 import ReviewFooter from "./review-footer";
 import headphone from "../assets/icons/headphones-alt-solid.png"
 import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
@@ -66,11 +67,16 @@ class ReviewCard extends React.Component {
         return (
             <View style={styles.cardStyle}>
                 <View style={styles.header}>
-                    <View style={styles.avatarHolder}>
-                        <Image
-                            source={{uri: this.props.source}}
-                            style={styles.imageStyle}/>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.push('Artizen', {
+                            artizenId: this.props.authorId
+                        })}>
+                        <View style={styles.avatarHolder}>
+                            <Image
+                                source={{uri: this.props.source}}
+                                style={styles.imageStyle}/>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
                     {this.props.isIntro ? <TouchableOpacity onPress={() => {
                         Expo.Speech.isSpeakingAsync().then((result) => {
@@ -97,4 +103,4 @@ class ReviewCard extends React.Component {
 
 }
 
-export default ReviewCard;
+export default withNavigation(ReviewCard);

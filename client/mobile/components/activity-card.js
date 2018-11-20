@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {withNavigation} from 'react-navigation';
 import ReviewFooter from "./review-footer";
-import headphone from "../assets/icons/headphones-alt-solid.png"
-import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from "../assets/icons/no-image-artizen.png";
 
@@ -91,24 +90,39 @@ class ActivityCard extends React.Component {
         return (
             <View style={styles.cardStyle}>
                 <View style={styles.header}>
-                    <View style={styles.avatarHolder}>
-                        <Image
-                            source={this.props.source ? {uri: this.props.source} : noImage}
-                            style={styles.avatarStyle}/>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.push('Artizen', {
+                            artizenId: this.props.authorId
+                        })}>
+                        <View style={styles.avatarHolder}>
+                            <Image
+                                source={this.props.source ? {uri: this.props.source} : noImage}
+                                style={styles.avatarStyle}/>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
                 </View>
-                {this.props.artSource ?
-                    <AutoHeightImage style={styles.imageStyle} width={Dimensions.get('window').width}
-                                     source={{uri: this.props.artSource}}/> :
-                    <View style={styles.artizenViewStyle}>
-                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
-                                         style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
-                                         source={this.props.artizenSource ? {uri: this.props.artizenSource} : noImage}/>
-                        <Text style={styles.artizenNameStyle}>
-                            {this.props.artizenName}
-                        </Text>
-                    </View>}
+                {this.props.artId ?
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.push('Art', {
+                            artId: this.props.artId
+                        })}>
+                        <AutoHeightImage style={styles.imageStyle} width={Dimensions.get('window').width}
+                                         source={{uri: this.props.artSource}}/>
+                    </TouchableOpacity> :
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.push('Artizen', {
+                            artizenId: this.props.artizenId
+                        })}>
+                        <View style={styles.artizenViewStyle}>
+                            <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
+                                             style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
+                                             source={this.props.artizenSource ? {uri: this.props.artizenSource} : noImage}/>
+                            <Text style={styles.artizenNameStyle}>
+                                {this.props.artizenName}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>}
                 <Text style={styles.bodyText}>{this.props.text}</Text>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
@@ -119,4 +133,4 @@ class ActivityCard extends React.Component {
 
 }
 
-export default ActivityCard;
+export default withNavigation(ActivityCard);

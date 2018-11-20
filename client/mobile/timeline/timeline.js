@@ -104,7 +104,9 @@ class TimeLine extends React.Component {
                                     <ActivityCard
                                         key={key}
                                         fontLoaded={this.props.screenProps.fontLoaded}
+                                        authorId={activity.author_id}
                                         source={activity.author_avatar}
+                                        artId={activity.art_id}
                                         artSource={activity.art_image && activity.art_image.default.url}
                                         artName={activity.art_name && activity.art_name.default}
                                         name={activity.author_name && activity.author_name.default}
@@ -118,7 +120,9 @@ class TimeLine extends React.Component {
                                     <ActivityCard
                                         key={key}
                                         fontLoaded={this.props.screenProps.fontLoaded}
+                                        authorId={activity.author_id}
                                         source={activity.author_avatar}
+                                        artizenId={activity.artizen_id}
                                         artizenSource={activity.artizen_avatar}
                                         artizenName={activity.artizen_name && activity.artizen_name.default}
                                         name={activity.author_name && activity.author_name.default}

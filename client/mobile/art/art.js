@@ -164,6 +164,7 @@ class Art extends React.Component {
 
                             <ReviewCard key={key}
                                         name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
                                         itemId={artId} itemType={'art'}
@@ -178,6 +179,7 @@ class Art extends React.Component {
                         return (
                             <ReviewCard key={key}
                                         name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
                                         itemId={artId} itemType={'art'}

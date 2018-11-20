@@ -199,6 +199,7 @@ class Artizen extends React.Component {
                         return (
                             <ReviewCard key={introInfoKey}
                                         name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
                                         itemId={artizenId} itemType={'artizen'}
@@ -212,6 +213,7 @@ class Artizen extends React.Component {
                         return (
                             <ReviewCard key={key}
                                         name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         text={item.content.blocks[0].text}
                                         itemId={artizenId} itemType={'artizen'}
