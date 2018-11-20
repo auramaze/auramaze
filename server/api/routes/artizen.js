@@ -239,6 +239,13 @@ router.post('/:id/follow', [
 
     const {payload: {id}} = req;
 
+    if (parseInt(id) === parseInt(req.params.id)) {
+        return res.status(400).json({
+            code: 'SELF_FOLLOW',
+            message: `Artizens cannot follow themselves: ${req.params.id}`
+        });
+    }
+
     let sql, parameters;
 
     if (req.body.type) {
