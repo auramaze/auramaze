@@ -30,7 +30,7 @@ def update_signature(msg_value):
     image_dict = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else None
     try:
         ses.update_image(id, image_dict)
-    except UnicodeEncodeError:
+    except UnicodeEncodeError as e:
         print('Invalid image url: {}: {}'.format(msg_value, e), flush=True)
     except (HTTPError, NotFoundError):
         pass
