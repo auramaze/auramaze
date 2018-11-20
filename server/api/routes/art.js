@@ -405,7 +405,7 @@ router.post('/:id/introduction/:textId/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
