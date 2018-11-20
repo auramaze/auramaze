@@ -6,7 +6,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import request from 'request';
 import {injectIntl} from "react-intl";
-import ArtizenHeader from './artizen-header';
 import SectionTitle from '../components/section-title';
 import ArtCardLayout from '../components/art-card-layout';
 import TextCard from '../components/text-card';
@@ -18,6 +17,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {LanguageContext, VoteContext} from '../app';
 import {getLocaleValue} from '../utils';
+import Follow from "../components/follow";
+import artist from "../icons/artist.svg";
+import museum from "../icons/museum.svg";
+import genre from "../icons/genre.svg";
+import style from "../icons/style.svg";
+import critic from "../icons/critic.svg";
 import './artizen.css';
 
 class Artizen extends Component {
@@ -135,19 +140,46 @@ class Artizen extends Component {
         return this.artSection.current.clientWidth - 40;
     }
 
+    static convertArtizenTypeToIcon(artizenType) {
+        const artizenTypeToIcon = {
+            artist, museum, genre, style, critic
+        };
+        return artizenTypeToIcon[artizenType];
+    }
+
     render() {
-        const {intl} = this.props;
+        const {intl, cookies} = this.props;
+        const authId = cookies.get('id');
         return (<LanguageContext.Consumer>
                 {({language}) => (
                     <div className="artizen">
                         <div className="artizen-left-section">
-                            <ArtizenHeader
-                                id={this.state.artizen.id}
-                                name={getLocaleValue(this.state.artizen.name, language)}
-                                avatar={this.state.artizen.avatar}
-                                type={this.state.artizen.type}
-                                following={this.state.artizen.following}
-                            />
+                            <div className="artizen-header">
+                                {this.state.artizen.avatar ?
+                                    <div className="artizen-header-avatar">
+                                        <img
+                                            src={this.state.artizen.avatar}
+                                            alt="avatar"
+                                            className="artizen-header-avatar-img"
+                                        />
+                                    </div> :
+                                    <div className="artizen-header-avatar" style={{backgroundColor: '#cdcdcd'}}/>}
+                                <div
+                                    className="artizen-header-name">{getLocaleValue(this.state.artizen.name, language)}</div>
+                                {this.state.artizen.type && this.state.artizen.type.length > 0 &&
+                                <div className="artizen-badges">
+                                    {this.state.artizen.type.map(type =>
+                                        <img
+                                            key={type}
+                                            title={type}
+                                            alt={type}
+                                            src={Artizen.convertArtizenTypeToIcon(type)}
+                                            className="artizen-badge"
+                                        />)}
+                                </div>}
+                                {(!authId || parseInt(authId) !== parseInt(this.state.artizen.id)) &&
+                                <Follow id={this.state.artizen.id} status={Boolean(this.state.artizen.following)}/>}
+                            </div>
                             <SectionTitle sectionTitle={intl.formatMessage({id: 'app.artizen.introductions'})}/>
                             <div className="slider-container">
                                 {this.state.introductions.length > 0 &&
