@@ -143,8 +143,4 @@ router.post('/', [
     });
 });
 
-function pad(n, width = 3) {
-    return ('0'.repeat(width) + String(n)).slice(String(n).length);
-}
-
 module.exports = router;
