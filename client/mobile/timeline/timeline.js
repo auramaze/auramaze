@@ -111,7 +111,7 @@ class TimeLine extends React.Component {
                                         artName={activity.art_name && activity.art_name.default}
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
-                                        text={activity.content.blocks.map(block => block.text).join('\n')}
+                                        content={activity.content}
                                         up={activity.up}
                                         down={activity.down}
                                         status={activity.status}
@@ -127,7 +127,7 @@ class TimeLine extends React.Component {
                                         artizenName={activity.artizen_name && activity.artizen_name.default}
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
-                                        text={activity.content.blocks.map(block => block.text).join('\n')}
+                                        content={activity.content}
                                         up={activity.up}
                                         down={activity.down}
                                         status={activity.status}

@@ -166,7 +166,7 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
-                                        text={item.content.blocks[0].text}
+                                        content={item.content}
                                         itemId={artId} itemType={'art'}
                                         textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
@@ -181,7 +181,7 @@ class Art extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
-                                        text={item.content.blocks[0].text}
+                                        content={item.content}
                                         itemId={artId} itemType={'art'}
                                         textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}
