@@ -5,7 +5,7 @@ import museum from '../icons/museum.svg';
 import genre from '../icons/genre.svg';
 import style from '../icons/style.svg';
 import critic from '../icons/critic.svg';
-
+import {withCookies} from "react-cookie";
 import './artizen-header.css';
 
 class ArtizenHeader extends Component {
@@ -17,7 +17,9 @@ class ArtizenHeader extends Component {
     }
 
     render() {
-        const {id, avatar, name, type, following, ...props} = this.props;
+        const {id, avatar, name, type, following, cookies, ...props} = this.props;
+        const authId = cookies.get('id');
+
         return (
             <div className="artizen-header" {...props}>
                 {avatar ?
@@ -41,10 +43,10 @@ class ArtizenHeader extends Component {
                             className="artizen-badge"
                         />)}
                 </div>}
-                <Follow id={id} status={Boolean(following)}/>
+                {(!authId || parseInt(authId) !== parseInt(id)) && <Follow id={id} status={Boolean(following)}/>}
             </div>
         );
     }
 }
 
-export default ArtizenHeader;
+export default withCookies(ArtizenHeader);
