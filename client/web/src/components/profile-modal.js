@@ -124,7 +124,7 @@ class ProfileModal extends Component {
                                 name="name"
                                 placeholder={intl.formatMessage({id: 'app.profile.name'})}
                                 onChange={(value) => {
-                                    this.setState({name: value})
+                                    this.setState({name: {default: value}})
                                 }}
                                 onBlur={() => {
                                     this.setState({displayNameMessage: true})
