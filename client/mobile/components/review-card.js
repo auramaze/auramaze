@@ -56,7 +56,7 @@ class ReviewCard extends React.Component {
             bodyText: {
                 fontSize: 18,
                 lineHeight: 28,
-                paddingHorizontal: 10,
+                padding: 10,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
             },

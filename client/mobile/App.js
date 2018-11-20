@@ -23,10 +23,17 @@ class SettingScreen extends React.Component {
     }
 }
 
+export const VoteContext = React.createContext();
+
 export default class App extends React.Component {
 
     state = {
         fontLoaded: false,
+        vote: {},
+        updateVote: (vote) => {
+            // console.log(vote);
+            this.setState({vote});
+        }
     };
 
     async componentDidMount() {
@@ -84,7 +91,7 @@ export default class App extends React.Component {
 
                         if (routeName === 'Artventure') {
                             return <Image source={journal}
-                                   style={[styles.imageStyle, styles.artventureStyle]}/>
+                                          style={[styles.imageStyle, styles.artventureStyle]}/>
                         }
 
                         if (routeName === 'Recommend') {
@@ -123,8 +130,12 @@ export default class App extends React.Component {
             }
         );
 
+        const {fontLoaded, vote, updateVote} = this.state;
+
         return (
-            <MyNavi screenProps={{fontLoaded: this.state.fontLoaded}}/>
+            <VoteContext.Provider value={{vote, updateVote}}>
+                <MyNavi screenProps={{fontLoaded}}/>
+            </VoteContext.Provider>
         );
     }
 }

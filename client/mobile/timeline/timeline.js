@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
 import {Constants} from 'expo';
+import {VoteContext} from '../App';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
 import ActivityCard from "../components/activity-card"
@@ -15,6 +16,7 @@ class TimeLine extends React.Component {
     }
 
     componentDidMount() {
+        // console.log('componentDidMount');
         // fetch('https://apidev.auramaze.org/v1/timeline', {
         //     method: 'GET',
         //     headers: {
@@ -44,8 +46,9 @@ class TimeLine extends React.Component {
     async _loadInitialState() {
         try {
             let token = await AsyncStorage.getItem('token');
+            const {vote, updateVote} = this.props;
 
-            let recommendInfo = token && token !== 'undefined' && token !== 'null' ?
+            let timeline = token && token !== 'undefined' && token !== 'null' ?
                 await fetch('https://apidev.auramaze.org/v1/timeline', {
                     method: 'GET',
                     headers: {
@@ -55,14 +58,21 @@ class TimeLine extends React.Component {
                     },
                 }) : null;
 
-            if (!recommendInfo) {
+            if (!timeline) {
                 this.setState(previousState => ({
                     timeline: 'undefined'
                 }));
             } else {
-                let recommendInfoJson = await recommendInfo.json();
+                let timelineJson = await timeline.json();
+                const newVote = timelineJson.reduce((acc, cur) => {
+                    acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
+                    return acc;
+                }, {});
+                // console.log('update');
+                updateVote(Object.assign(vote, newVote));
+
                 this.setState(previousState => ({
-                    timeline: recommendInfoJson
+                    timeline: timelineJson
                 }));
             }
 
@@ -78,6 +88,11 @@ class TimeLine extends React.Component {
             {searchResult: info}
         ));
     };
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     console.log(JSON.stringify(nextProps.vote) !== JSON.stringify(this.props.vote));
+    //     return JSON.stringify(nextProps.vote) !== JSON.stringify(this.props.vote);
+    // }
 
     render() {
 
@@ -111,10 +126,8 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={activity.down}
-                                        up={activity.up}
                                         itemType="art"
-                                        textType="review" itemId={activity.artizen_id} textId={activity.id}/> :
+                                        textType="review" itemId={activity.art_id} textId={activity.id}/> :
                                     <ActivityCard
                                         key={key}
                                         fontLoaded={this.props.screenProps.fontLoaded}
@@ -124,8 +137,6 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={activity.down}
-                                        up={activity.up}
                                         itemType="artizen"
                                         textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
                         </ScrollView> : null
@@ -136,4 +147,18 @@ class TimeLine extends React.Component {
     }
 }
 
-export default TimeLine;
+class TimeLineWrapper extends React.Component {
+    componentDidMount() {
+        console.log('componentDidMount');
+    }
+    render() {
+        return (
+            <VoteContext.Consumer>
+                {({vote, updateVote}) =>
+                    <TimeLine {...this.props} vote={vote} updateVote={updateVote}/>
+                }
+            </VoteContext.Consumer>
+        );
+    }
+}
+export default TimeLineWrapper;
