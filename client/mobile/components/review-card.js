@@ -84,7 +84,7 @@ class ReviewCard extends React.Component {
                             if (result) {
                                 Expo.Speech.stop();
                             } else {
-                                Expo.Speech.speak(this.props.text);
+                                Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
                             }
                         });
                     }}>
