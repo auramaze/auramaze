@@ -80,7 +80,6 @@ class TimeLine extends React.Component {
     };
 
     render() {
-
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
@@ -111,10 +110,11 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={activity.down}
                                         up={activity.up}
+                                        down={activity.down}
+                                        status={activity.status}
                                         itemType="art"
-                                        textType="review" itemId={activity.artizen_id} textId={activity.id}/> :
+                                        textType="review" itemId={activity.art_id} textId={activity.id}/> :
                                     <ActivityCard
                                         key={key}
                                         fontLoaded={this.props.screenProps.fontLoaded}
@@ -124,8 +124,9 @@ class TimeLine extends React.Component {
                                         name={activity.author_name && activity.author_name.default}
                                         isIntro={false}
                                         text={activity.content.blocks.map(block => block.text).join('\n')}
-                                        down={activity.down}
                                         up={activity.up}
+                                        down={activity.down}
+                                        status={activity.status}
                                         itemType="artizen"
                                         textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
                         </ScrollView> : null

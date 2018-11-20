@@ -124,7 +124,7 @@ class ActivityCard extends React.Component {
                         </Text>
                     </View>}
                 <Text style={styles.bodyText}>{this.props.text}</Text>
-                <ReviewFooter up={this.props.up} down={this.props.down}
+                <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>
             </View>
