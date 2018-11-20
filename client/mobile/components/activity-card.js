@@ -49,7 +49,7 @@ class ActivityCard extends React.Component {
                 borderColor: '#666666', borderWidth: 1,
             },
             artizenNameStyle: {
-                fontSize: 25,
+                fontSize: 21,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginTop: 15,
