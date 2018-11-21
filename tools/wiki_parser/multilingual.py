@@ -1,22 +1,19 @@
 import json
 import requests
 
-if __name__ == '__main__':
-    for group in ['artists', 'museums', 'genres', 'styles']:
-        artizens = json.load(open('wiki-{}-joined.json'.format(group)))
-        for artizen in artizens:
-            if artizen['wikipedia']:
-                html = artizen['wikipedia']['html']
-                if html:
-                    payload = {'html': html}
-                    r = requests.post('http://localhost:8000/html-to-content', json=payload)
-                    try:
-                        artizen['wikipedia']['content'] = r.json()
-                    except:
-                        print(json.dumps(payload))
-                        print(html)
-                        exit(0)
-                else:
-                    artizen['wikipedia']['content'] = None
+from bs4 import BeautifulSoup
 
-        json.dump(artizens, open('wiki-{}-draftjs.json'.format(group), 'w'), indent=4)
+def get_zh_url(en_url):
+    r = requests.get(en_url)
+    html_doc = r.text
+
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    zh_link = soup.find(attrs={"lang": "zh", "class": "interlanguage-link-target"})
+    if zh_link:
+        zh_url = zh_link['href']
+        if requests.get(zh_url).status_code == 200:
+            return zh_url
+    return None
+
+if __name__ == '__main__':
+    print(get_zh_url('https://en.wikipedia.org/wiki/Vincent_van_Gogh'))
