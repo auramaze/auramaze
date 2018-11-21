@@ -1225,10 +1225,10 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).get('/v1/art/artid/introduction')
-                    .expect(400)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.errors);
+                        assert(res.body.length === 0);
                     })
                     .end(done);
             });
@@ -1357,10 +1357,10 @@ describe('Test api', function () {
             it('should report invalid id', done => {
                 request(app).get('/v1/artizen/artizenid/introduction')
                     .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .expect(400)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.errors);
+                        assert(res.body.length===0);
                     })
                     .end(done);
             });
@@ -1516,10 +1516,10 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).get('/v1/art/artid/review')
-                    .expect(400)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.errors);
+                        assert(res.body.length===0);
                     })
                     .end(done);
             });
@@ -1676,10 +1676,10 @@ describe('Test api', function () {
             });
             it('should report invalid id', done => {
                 request(app).get('/v1/artizen/artizenid/review')
-                    .expect(400)
+                    .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.errors);
+                        assert(res.body.length===0);
                     })
                     .end(done);
             });
