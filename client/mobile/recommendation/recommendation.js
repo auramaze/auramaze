@@ -1,29 +1,57 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, FlatList, AsyncStorage} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    Dimensions,
+    TouchableOpacity,
+    Text,
+    FlatList,
+    AsyncStorage,
+    RefreshControl
+} from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
 import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
+import TitleBar from "../components/title-bar";
 
 
 class Recommendation extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}};
+        this.state = {
+            searchResult: {hasSearched: false}, recommendation: 'undefined', refreshing: false,
+            haveArtizen: false,
+            recommendArtizen: [],
+            haveArt: false,
+            recommendArt: []
+        };
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
-        this.loadRecommend = this.loadRecommend.bind(this);
+        this._loadRecommend = this._loadRecommend.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
     }
 
     async componentDidMount() {
-        this.loadRecommend().done();
+        this._loadRecommend().done();
     }
 
-    async loadRecommend() {
-        let fontLoaded = this.props.screenProps.fontLoaded;
-        let token = await AsyncStorage.getItem('token').catch((err) => { alert(err); });
+    _onRefresh = () => {
+        this.setState({
+            refreshing: true, recommendation: 'undefined'
+        });
+        this._loadRecommend().then(() => {
+            this.setState({refreshing: false});
+        });
+    };
 
+    async _loadRecommend() {
+        let fontLoaded = this.props.screenProps.fontLoaded;
+        let token = await AsyncStorage.getItem('token').catch((err) => {
+            alert(err);
+        });
 
         fetch(`https://apidev.auramaze.org/v1/recommend`, {
             method: 'GET',
@@ -62,11 +90,12 @@ class Recommendation extends React.Component {
             while (artizenArray.length > 0)
                 artizenArrays.push(artizenArray.splice(0, size));
 
-            this.setState({
+            this.setState(previousState => ({
+                recommendation: 'defined',
                 haveArtizen: returnArtizen,
-                searchArtizen: artizenArrays,
+                recommendArtizen: artizenArrays,
                 haveArt: returnArt,
-                searchArt: responseJson.art.map((item, key) => {
+                recommendArt: responseJson.art.map((item, key) => {
                     return (
                         <TouchableOpacity
                             key={key}
@@ -85,12 +114,7 @@ class Recommendation extends React.Component {
                         </TouchableOpacity>
                     );
                 })
-            });
-            this.updateSearchStatus({
-                hasSearched: true,
-                searchArt: this.state.searchArt, haveArt: this.state.haveArt,
-                searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
-            })
+            }));
         }).catch(function (error) {
             this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
@@ -120,10 +144,36 @@ class Recommendation extends React.Component {
                               navigation={this.props.navigation}
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                                   fontLoaded={this.props.screenProps.fontLoaded}/> :
-                    null}
+                {this.state.searchResult.hasSearched ?
+                    <SearchPage searchResult={this.state.searchResult}
+                                fontLoaded={this.props.screenProps.fontLoaded}/> :
+                    this.state.recommendation !== 'undefined' ?
+                        <ScrollView keyboardDismissMode='on-drag'
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.refreshing}
+                                            onRefresh={this._onRefresh}
+                                        />
+                                    }>
+                            {this.state.haveArtizen ?
+                                <View style={{marginHorizontal: 5}}>
+                                    <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                                </View> : null}
+                            <FlatList data={this.state.recommendArtizen}
+                                      horizontal={true}
+                                      showsHorizontalScrollIndicator={false}
+                                      renderItem={({item}) => SearchPage.renderRow(item)}
+                                      keyExtractor={(item, index) => index.toString()}/>
 
+                            {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
+                            {this.state.haveArt ?
+                                <View style={{marginHorizontal: 5}}>
+                                    <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                                </View> : null}
+                            <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                                {this.state.recommendArt}
+                            </View>
+                        </ScrollView> : null}
             </View>
         );
     }

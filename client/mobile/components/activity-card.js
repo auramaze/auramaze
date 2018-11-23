@@ -77,14 +77,16 @@ class ActivityCard extends React.Component {
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
             },
+            bodyView: {
+                paddingHorizontal: 10,
+                paddingBottom: 10
+            },
             bodyText: {
                 fontSize: 18,
                 lineHeight: 28,
-                paddingHorizontal: 10,
-                paddingBottom: 10,
                 color: '#666666',
-                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
-            },
+                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin'
+            }
         });
 
 
@@ -124,9 +126,13 @@ class ActivityCard extends React.Component {
                             </Text>
                         </View>
                     </TouchableOpacity>}
-                <View style={styles.bodyText}>{getRNDraftJSBlocks({
-                    contentState: this.props.content
-                })}</View>
+                <View style={styles.bodyView}>
+                    <Text style={styles.bodyText}>
+                        {getRNDraftJSBlocks({
+                            contentState: this.props.content
+                        })}
+                    </Text>
+                </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>
