@@ -85,11 +85,10 @@ class ReviewCard extends React.Component {
                     {this.props.isIntro ?
                         <TouchableOpacity onPress={() => {
                             Expo.Speech.isSpeakingAsync().then((result) => {
+                                this.setState(previousState => ({isSpeaking: !previousState.isSpeaking}));
                                 if (result) {
-                                    this.setState({isSpeaking: false});
                                     Expo.Speech.stop();
                                 } else {
-                                    this.setState({isSpeaking: true});
                                     Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
                                 }
                             });
