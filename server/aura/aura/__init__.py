@@ -10,12 +10,13 @@ from operator import itemgetter
 from queue import Queue
 from threading import Thread
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionTimeout
 from .elasticsearch_driver import AuraMazeSignatureES
 from .photo import Photo
 
 app = Flask(__name__)
 
-es = Elasticsearch([os.getenv('ES_HOST')])
+es = Elasticsearch([os.getenv('ES_HOST')], timeout=15)
 ses = AuraMazeSignatureES(es, distance_cutoff=0.5)
 num_trials = 6
 num_workers = 3
@@ -123,7 +124,10 @@ def aura():
     else:
         return None, 400
     # start = time.time()
-    results = search_image_sync(ses, raw)
+    try:
+        results = search_image_sync(ses, raw)
+    except ConnectionTimeout:
+        results = []
     # end = time.time()
     # print(end - start)
     return jsonify({'art': results})
