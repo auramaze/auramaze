@@ -128,16 +128,29 @@ class CameraScreen extends React.Component {
 
                                 <Animated.Image
                                     style={{
-                                    tintColor: 'white', width: 80,
-                                    height: 80, transform: [{rotate: spin}]
-                                }}
+                                        tintColor: 'white', width: 80,
+                                        height: 80, transform: [{rotate: spin}]
+                                    }}
                                     source={loading}/>
                             </View> : null}
 
                             <View style={{
                                 flex: 1,
+                                position: 'absolute',
+                                width: Dimensions.get('window').width,
+                                height: Dimensions.get('window').height,
+                                borderColor: 'black',
+                                borderLeftWidth: Dimensions.get('window').width * 1 / 9,
+                                borderRightWidth: Dimensions.get('window').width * 1 / 9,
+                                borderTopWidth: Dimensions.get('window').height * 1 / 9,
+                                borderBottomWidth: Dimensions.get('window').height * 0.8 / 3,
+                                opacity: 0.6
+                            }}/>
+
+                            <View style={{
+                                flex: 1,
                                 alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: 40,
+                                left: 0, right: 0, bottom: 25,
                             }}>
                                 <TouchableOpacity
                                     onPress={this.takePicture}
