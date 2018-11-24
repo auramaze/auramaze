@@ -7,19 +7,29 @@ from tqdm import tqdm as tqdm
 
 class WikiParser:
 
-    def __init__(self):
+    def __init__(self, lang='EN'):
         self.dict = {}
+        self.lang = lang
 
     def _parse(self, user_name, text):
         wiki_dic = {}
         soup = BeautifulSoup(text, 'html.parser')
+
+        for section in soup.find_all('h2'):
+            print(section.span.text)
+        return 
+
+
         for table in soup.find_all("table"):
             table.decompose()
         text = str(soup)
 
         start_title = text.find("<title")
         end_start_title = text.find(">", start_title+1)
-        stop_title = text.find(" - Wikipedia", end_start_title + 1)
+        if self.lang == 'CN':
+            stop_title = text.find(" - 维基百科", end_start_title + 1)
+        else:
+            stop_title = text.find(" - Wikipedia", end_start_title + 1)
         title = text[end_start_title + 1 : stop_title]
         wiki_dic["title"] = title
 
@@ -60,18 +70,22 @@ class WikiParser:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='wikipedia parser')
-    parser.add_argument('-in', '--input_path', action='store', required=True, type=str, help='specify input path')
-    parser.add_argument('-out', '--output_path', action='store', required=True, type=str, help='specify output json path')
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description='wikipedia parser')
+    # parser.add_argument('-in', '--input_path', action='store', required=True, type=str, help='specify input path')
+    # parser.add_argument('-out', '--output_path', action='store', required=True, type=str, help='specify output json path')
+    # args = parser.parse_args()
 
-    driver = WikiParser()
+    for type in ['artist', 'museum', 'style', 'genre']:
+        input_path = 'wiki-html/{}-html'.format(type)
+        output_path = 'wiki-json/wiki-{}-1.json'.format(type)
 
-    for file in tqdm(glob.glob(os.path.join(args.input_path, '*'))):
-        input_path = os.path.join(args.input_path, os.path.basename(file))
-        driver.process(input_path)
+        driver = WikiParser()
 
-    driver.save(args.output_path)
+        for file in tqdm(glob.glob(os.path.join(input_path, '*'))):
+            html_path = os.path.join(input_path, os.path.basename(file))
+            driver.process(html_path)
+
+        # driver.save(output_path)
 
 
 if __name__ == '__main__':

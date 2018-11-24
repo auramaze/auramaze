@@ -27,7 +27,7 @@ def join(org_file, new_file, output_path):
         wiki = new_dict.get(org_dict[i]['username'], None)
         if wiki == '':
             wiki = None
-        link = org_dict[i]['wikipediaLink']
+        link = org_dict[i]['wikipedia_url']
         try:
             url = link.split('//')[1]
         except IndexError:
