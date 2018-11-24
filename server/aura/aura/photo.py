@@ -55,7 +55,7 @@ class Photo:
 
                 for i in range(len(contour)):
                     approx = cv2.approxPolyDP(contour[i], cv2.arcLength(contour[i], True) * self.approx, True)
-                    if len(approx) == 4 and abs(cv2.contourArea(approx)) > 1000 and cv2.isContourConvex(approx):
+                    if len(approx) == 4 and abs(cv2.contourArea(approx)) > 10000 and cv2.isContourConvex(approx):
                         maxCosine = 0.0
                         for j in range(2, 5):
                             cosine = abs(self.angle(approx[j % 4], approx[j - 2], approx[j - 1]))

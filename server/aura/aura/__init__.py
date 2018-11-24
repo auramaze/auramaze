@@ -16,7 +16,7 @@ from .photo import Photo
 
 app = Flask(__name__)
 
-es = Elasticsearch([os.getenv('ES_HOST')], timeout=15)
+es = Elasticsearch([os.getenv('ES_HOST')])
 ses = AuraMazeSignatureES(es, distance_cutoff=0.5)
 num_trials = 6
 num_workers = 3
