@@ -55,13 +55,16 @@ class ReviewCard extends React.Component {
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
             },
+            bodyView: {
+                paddingHorizontal: 10,
+                paddingBottom: 10
+            },
             bodyText: {
                 fontSize: 18,
                 lineHeight: 28,
-                padding: 10,
                 color: '#666666',
-                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
-            },
+                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin'
+            }
         });
 
 
@@ -79,24 +82,31 @@ class ReviewCard extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    {this.props.isIntro ? <TouchableOpacity onPress={() => {
-                        Expo.Speech.isSpeakingAsync().then((result) => {
-                            if (result) {
-                                Expo.Speech.stop();
-                            } else {
-                                Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
-                            }
-                        });
-                    }}>
-                        {this.state.isSpeaking && this.props.isIntro ?
-                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
-                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                    </TouchableOpacity> : null}
+                    {this.props.isIntro ?
+                        <TouchableOpacity onPress={() => {
+                            Expo.Speech.isSpeakingAsync().then((result) => {
+                                if (result) {
+                                    this.setState({isSpeaking: false});
+                                    Expo.Speech.stop();
+                                } else {
+                                    this.setState({isSpeaking: true});
+                                    Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
+                                }
+                            });
+                        }}>
+                            {this.state.isSpeaking && this.props.isIntro ?
+                                <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
+                                <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
+                        </TouchableOpacity> : null}
 
                 </View>
-                <View style={styles.bodyText}>{getRNDraftJSBlocks({
-                    contentState: this.props.content
-                })}</View>
+                <View style={styles.bodyView}>
+                    <Text style={styles.bodyText}>
+                        {getRNDraftJSBlocks({
+                            contentState: this.props.content
+                        })}
+                    </Text>
+                </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>
