@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
+import {StyleSheet, View, ScrollView, AsyncStorage, RefreshControl} from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
@@ -10,36 +10,21 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined'};
+        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined', refreshing: false};
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
     }
 
     componentDidMount() {
-        // fetch('https://apidev.auramaze.org/v1/timeline', {
-        //     method: 'GET',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         "Content-Type": "application/json",
-        //         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAwMDAxLCJleHAiOjE1NDc0MzgzMjEsImlhdCI6MTU0MjI1NDMyMX0.7th4ihcbPQovSOwe23R-NWs5QuuN1LTesI_Xuzi-H7o'
-        //     },
-        // }).then(function (response) {
-        //     if (response.ok) {
-        //         return response.json();
-        //     } else {
-        //         Promise.reject(response.json());
-        //         throw new Error('Get timeline fail.');
-        //
-        //     }
-        // }).then((responseJson) => {
-        //         this.setState(previousState => ({
-        //             timeline: responseJson
-        //         }));
-        //     }
-        // ).catch(function (error) {
-        //     alert('There has been a problem with your fetch operation: ' + error.message);
-        // });
         this._loadInitialState().done();
     }
+
+    _onRefresh = () => {
+        this.setState({refreshing: true});
+        this._loadInitialState().then(() => {
+            this.setState({refreshing: false});
+        });
+    };
 
     async _loadInitialState() {
         try {
@@ -65,8 +50,6 @@ class TimeLine extends React.Component {
                     timeline: recommendInfoJson
                 }));
             }
-
-
         } catch (error) {
             alert(error);
         }
@@ -98,7 +81,13 @@ class TimeLine extends React.Component {
                 {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
                                                                    fontLoaded={this.props.screenProps.fontLoaded}/> :
                     this.state.timeline !== 'undefined' ?
-                        <ScrollView keyboardDismissMode='on-drag'>
+                        <ScrollView keyboardDismissMode='on-drag'
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.refreshing}
+                                            onRefresh={this._onRefresh}
+                                        />
+                                    }>
                             {this.state.timeline.map((activity, key) =>
                                 activity.art_id ?
                                     <ActivityCard

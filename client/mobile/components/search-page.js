@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, FlatList} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, FlatList, RefreshControl} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
 
@@ -9,11 +9,10 @@ class SearchPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {searchArtizen: []};
-        this.renderRow = this.renderRow.bind(this);
+        SearchPage.renderRow = SearchPage.renderRow.bind(this);
     }
 
-
-    renderRow(item) {
+    static renderRow(item) {
         return (
             <View style={{margin: 5}}>
                 <View style={{
@@ -58,9 +57,7 @@ class SearchPage extends React.Component {
             }
         });
 
-
         return (
-
             <View style={styles.mainContext}>
                 <ScrollView keyboardDismissMode='on-drag'>
                     {this.props.searchResult.haveArtizen ?
@@ -70,7 +67,7 @@ class SearchPage extends React.Component {
                     <FlatList data={this.props.searchResult.searchArtizen}
                               horizontal={true}
                               showsHorizontalScrollIndicator={false}
-                              renderItem={({item}) => this.renderRow(item)}
+                              renderItem={({item}) => SearchPage.renderRow(item)}
                               keyExtractor={(item, index) => index.toString()}/>
 
                     {this.props.searchResult.haveArtizen ? <View style={{height: 20}}/> : null}
