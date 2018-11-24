@@ -5,9 +5,12 @@ import json
 
 prev = 3
 next = 4
-index = 0
+index = 1
 
-fault = json.load(open('wiki-art_{}-{}.4.json'.format(index, prev)))
+try:
+    fault = json.load(open('wiki-art_{}-{}.4.json'.format(index, prev)))
+except FileNotFoundError:
+    fault = {}
 status = json.load(open('wiki-art_{}-{}.5.json'.format(index, prev)))
 arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 
