@@ -46,7 +46,7 @@ class ArtizenCard extends React.Component {
             <View style={styles.cardStyle}>
                 <View style={styles.avatarHolder}>
                     <Image
-                        source={this.props.source? {uri: this.props.source} : noImage}
+                        source={this.props.source ? {uri: this.props.source} : noImage}
                         style={styles.imageStyle}/>
                 </View>
                 <Text numberOfLines={1} style={styles.headerText}>{this.props.name}</Text>

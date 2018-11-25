@@ -6,6 +6,7 @@ import ReviewFooter from "./review-footer";
 import headphone from "../assets/icons/headphones-alt-solid.png"
 import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
 import AutoHeightImage from 'react-native-auto-height-image';
+import noImage from "../assets/icons/no-image-artizen.png";
 
 class ReviewCard extends React.Component {
 
@@ -77,7 +78,7 @@ class ReviewCard extends React.Component {
                         })}>
                         <View style={styles.avatarHolder}>
                             <Image
-                                source={{uri: this.props.source}}
+                                source={this.props.source ? {uri: this.props.source} : noImage}
                                 style={styles.imageStyle}/>
                         </View>
                     </TouchableOpacity>

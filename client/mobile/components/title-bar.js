@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import edit from "../assets/icons/edit-regular.png"
-import headphone_gif from "../assets/icons/headphones-alt-solid.gif";
 import AutoHeightImage from "react-native-auto-height-image";
 
 class TitleBar extends React.Component {
@@ -35,7 +34,9 @@ class TitleBar extends React.Component {
                 <Text style={styles.headerText}>
                     {this.props.titleText}
                 </Text>
-                <AutoHeightImage width={25} source={edit} style={styles.editStyle}/>
+                {this.props.couldEdit ?
+                    <AutoHeightImage width={25} source={edit} style={styles.editStyle}/> : null}
+
             </View>
         );
     }

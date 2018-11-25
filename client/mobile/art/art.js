@@ -83,8 +83,7 @@ class Art extends React.Component {
                             })
                         }
                     ));
-                }
-                else if (item.type === "museum") {
+                } else if (item.type === "museum") {
                     this.setState(previousState => (
                         {
                             hasMuseums: true,
@@ -106,8 +105,7 @@ class Art extends React.Component {
                             })
                         }
                     ));
-                }
-                else if (item.type === "genre") {
+                } else if (item.type === "genre") {
                     this.setState(previousState => (
                         {
                             hasGenres: true,
@@ -129,8 +127,7 @@ class Art extends React.Component {
                             })
                         }
                     ));
-                }
-                else if (item.type === "style") {
+                } else if (item.type === "style") {
                     this.setState(previousState => (
                         {
                             hasStyles: true,
@@ -235,20 +232,20 @@ class Art extends React.Component {
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
                         {this.state.introductions}
 
-                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.artists}
 
-                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.hasMuseums ? <TitleBar titleText={"Museum"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.museums}
 
-                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.hasGenres ? <TitleBar titleText={"Genre"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.genres}
 
-                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : <View/>}
+                        {this.state.hasStyles ? <TitleBar titleText={"Style"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.styles}
 
                         <View style={{height: 30}}/>
-                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
+                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus} couldEdit={true}/>
                         {this.state.reviews}
 
                     </View>
