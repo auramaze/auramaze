@@ -78,7 +78,7 @@ router.get('/:id/art', [
         return res.status(400).json({errors: errors.array()});
     }
     const page = parseInt(req.query.page) >= 0 ? parseInt(req.query.page) : 0;
-    const size = 20;
+    const size = 10;
 
     // Get all available types
     rds.query(`SELECT artizen.id, archive.type FROM archive INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE artizen.${isNaN(parseInt(req.params.id)) ? 'username' : 'id'}=? GROUP BY archive.type`, [isNaN(parseInt(req.params.id)) ? req.params.id.toString() : parseInt(req.params.id)], (err, result, fields) => {

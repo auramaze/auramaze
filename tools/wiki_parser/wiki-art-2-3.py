@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 prev = 2
 next = 3
-index = 1
+index = 2
 
 meta_dir = '/Users/zianke/Google Drive/University of Michigan/EECS 441/wikiart/meta'
 excludes = ['artists.json', 'museums.json', 'genres.json', 'styles.json']

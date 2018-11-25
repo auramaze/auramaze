@@ -119,7 +119,8 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             transformed_img = transform[0](transform[1](img))
             # print(transformed_img.shape)
             # im = Image.fromarray(np.stack((np.multiply(transformed_img, 255),) * 3, axis=-1).astype('uint8'))
-            # im.show()
+            # import time
+            # im.save('{}.jpg'.format(time.time()))
 
             # generate the signature
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)

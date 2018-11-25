@@ -34,7 +34,7 @@ router.get('/', [
                 '_source': {
                     'excludes': ['image.*.simple_word_*', 'image.*.signature']
                 },
-                'size': 20,
+                'size': 10,
                 'query': {
                     'bool': {
                         'should': [
