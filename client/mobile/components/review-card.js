@@ -83,7 +83,7 @@ class ReviewCard extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    {this.props.isIntro ?
+                    {this.props.isIntro && this.props.content ?
                         <TouchableOpacity onPress={() => {
                             Expo.Speech.isSpeakingAsync().then((result) => {
                                 this.setState(previousState => ({isSpeaking: !previousState.isSpeaking}));
@@ -101,11 +101,12 @@ class ReviewCard extends React.Component {
 
                 </View>
                 <View style={styles.bodyView}>
+                    {this.props.content &&
                     <Text style={styles.bodyText}>
                         {getRNDraftJSBlocks({
                             contentState: this.props.content
                         })}
-                    </Text>
+                    </Text>}
                 </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
