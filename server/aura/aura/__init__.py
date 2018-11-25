@@ -12,6 +12,7 @@ from threading import Thread
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionTimeout
 from urllib3.exceptions import ReadTimeoutError
+from socket import timeout
 from .elasticsearch_driver import AuraMazeSignatureES
 from .photo import Photo
 
@@ -127,7 +128,7 @@ def aura():
     # start = time.time()
     try:
         results = search_image_sync(ses, raw)
-    except (ConnectionTimeout, ReadTimeoutError):
+    except (ConnectionTimeout, ReadTimeoutError, timeout):
         results = []
     # end = time.time()
     # print(end - start)

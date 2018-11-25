@@ -15,7 +15,7 @@ class Photo:
         self.approx = approx
         image = Image.open(io.BytesIO(raw))
         width, height = image.size
-        if (max(width, height) > self.resize):
+        if max(width, height) != self.resize:
             ratio = min(self.resize / float(width), self.resize / float(height))
             image = image.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
         self.image = image
@@ -55,7 +55,9 @@ class Photo:
 
                 for i in range(len(contour)):
                     approx = cv2.approxPolyDP(contour[i], cv2.arcLength(contour[i], True) * self.approx, True)
-                    if len(approx) == 4 and abs(cv2.contourArea(approx)) > 10000 and cv2.isContourConvex(approx):
+                    if len(approx) == 4 \
+                            and 30000 < abs(cv2.contourArea(approx)) < self.image.size[0] * self.image.size[1] * 0.95 \
+                            and cv2.isContourConvex(approx):
                         maxCosine = 0.0
                         for j in range(2, 5):
                             cosine = abs(self.angle(approx[j % 4], approx[j - 2], approx[j - 1]))
@@ -63,9 +65,19 @@ class Photo:
                         if maxCosine < 0.3:
                             box = tuple((it[0][0], it[0][1]) for it in approx)
                             sorted_box = tuple(sorted(box))
-                            if sorted_box not in record:
+                            if not self.sorted_box_in_record(sorted_box, record):
                                 record.add(sorted_box)
                                 yield box
+
+    @staticmethod
+    def sorted_box_in_record(sorted_box, record):
+        for box in record:
+            abs_sum = 0
+            for a, b in zip(box, sorted_box):
+                abs_sum += abs(a[0] - b[0]) + abs(a[1] - b[1])
+            if abs_sum <= 15:
+                return True
+        return False
 
     def generate_paintings(self):
         for box in self.boxes:

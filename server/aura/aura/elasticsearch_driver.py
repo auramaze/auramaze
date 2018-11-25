@@ -114,13 +114,16 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         # try for every possible combination of transformations; if all_orientations=False,
         # this will only take one iteration
         transformed_records = []
+        # i = 0
         for transform in orientations:
             # compose all functions and apply on signature
             transformed_img = transform[0](transform[1](img))
-            # print(transformed_img.shape)
-            # im = Image.fromarray(np.stack((np.multiply(transformed_img, 255),) * 3, axis=-1).astype('uint8'))
-            # import time
-            # im.save('{}.jpg'.format(time.time()))
+            # i += 1
+            # if i == 1:
+            #     # print(transformed_img.shape)
+            #     im = Image.fromarray(np.stack((np.multiply(transformed_img, 255),) * 3, axis=-1).astype('uint8'))
+            #     import time
+            #     im.save('{}.jpg'.format(time.time()))
 
             # generate the signature
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
