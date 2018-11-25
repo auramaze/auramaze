@@ -22,7 +22,8 @@ class ActivityCard extends React.Component {
                 shadowColor: '#000',
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
-                marginTop: 15,
+                marginTop: 10,
+                marginBottom: 30,
                 padding: 10,
             },
             imageStyle: {
@@ -127,11 +128,14 @@ class ActivityCard extends React.Component {
                         </View>
                     </TouchableOpacity>}
                 <View style={styles.bodyView}>
-                    <Text style={styles.bodyText}>
-                        {getRNDraftJSBlocks({
-                            contentState: this.props.content
-                        })}
-                    </Text>
+                    {/*<Text style={styles.bodyText}>*/}
+                        {/*{getRNDraftJSBlocks({*/}
+                            {/*contentState: this.props.content*/}
+                        {/*})}*/}
+                    {/*</Text>*/}
+                    {getRNDraftJSBlocks({
+                        contentState: this.props.content
+                    })}
                 </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}

@@ -57,7 +57,7 @@ class ReviewCard extends React.Component {
             },
             bodyView: {
                 paddingHorizontal: 10,
-                paddingBottom: 10
+                paddingVertical: 10
             },
             bodyText: {
                 fontSize: 18,

@@ -66,7 +66,11 @@ class TimeLine extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
-                paddingTop: Constants.statusBarHeight,
+                paddingTop: Constants.statusBarHeight
+            },
+            backPage: {
+                backgroundColor: '#cdcdcd',
+                marginBottom: 40
             }
         });
 
@@ -74,56 +78,60 @@ class TimeLine extends React.Component {
         return (
             <View style={styles.mainStruct}>
 
-                <TopSearchBar updateSearchStatus={this.updateSearchStatus}
-                              navigation={this.props.navigation}
-                              fontLoaded={this.props.screenProps.fontLoaded}/>
+                <View style={styles.backPage}>
 
-                {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                                   fontLoaded={this.props.screenProps.fontLoaded}/> :
-                    this.state.timeline !== 'undefined' ?
-                        <ScrollView keyboardDismissMode='on-drag'
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this._onRefresh}
-                                        />
-                                    }>
-                            {this.state.timeline.map((activity, key) =>
-                                activity.art_id ?
-                                    <ActivityCard
-                                        key={key}
-                                        fontLoaded={this.props.screenProps.fontLoaded}
-                                        authorId={activity.author_id}
-                                        source={activity.author_avatar}
-                                        artId={activity.art_id}
-                                        artSource={activity.art_image && activity.art_image.default.url}
-                                        artName={activity.art_name && activity.art_name.default}
-                                        name={activity.author_name && activity.author_name.default}
-                                        isIntro={false}
-                                        content={activity.content}
-                                        up={activity.up}
-                                        down={activity.down}
-                                        status={activity.status}
-                                        itemType="art"
-                                        textType="review" itemId={activity.art_id} textId={activity.id}/> :
-                                    <ActivityCard
-                                        key={key}
-                                        fontLoaded={this.props.screenProps.fontLoaded}
-                                        authorId={activity.author_id}
-                                        source={activity.author_avatar}
-                                        artizenId={activity.artizen_id}
-                                        artizenSource={activity.artizen_avatar}
-                                        artizenName={activity.artizen_name && activity.artizen_name.default}
-                                        name={activity.author_name && activity.author_name.default}
-                                        isIntro={false}
-                                        content={activity.content}
-                                        up={activity.up}
-                                        down={activity.down}
-                                        status={activity.status}
-                                        itemType="artizen"
-                                        textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
-                        </ScrollView> : null
-                }
+                    <TopSearchBar updateSearchStatus={this.updateSearchStatus}
+                                  navigation={this.props.navigation}
+                                  fontLoaded={this.props.screenProps.fontLoaded}/>
+
+                    {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
+                                                                       fontLoaded={this.props.screenProps.fontLoaded}/> :
+                        this.state.timeline !== 'undefined' ?
+                            <ScrollView keyboardDismissMode='on-drag'
+                                        refreshControl={
+                                            <RefreshControl
+                                                refreshing={this.state.refreshing}
+                                                onRefresh={this._onRefresh}
+                                            />
+                                        }>
+                                {this.state.timeline.map((activity, key) =>
+                                    activity.art_id ?
+                                        <ActivityCard
+                                            key={key}
+                                            fontLoaded={this.props.screenProps.fontLoaded}
+                                            authorId={activity.author_id}
+                                            source={activity.author_avatar}
+                                            artId={activity.art_id}
+                                            artSource={activity.art_image && activity.art_image.default.url}
+                                            artName={activity.art_name && activity.art_name.default}
+                                            name={activity.author_name && activity.author_name.default}
+                                            isIntro={false}
+                                            content={activity.content}
+                                            up={activity.up}
+                                            down={activity.down}
+                                            status={activity.status}
+                                            itemType="art"
+                                            textType="review" itemId={activity.art_id} textId={activity.id}/> :
+                                        <ActivityCard
+                                            key={key}
+                                            fontLoaded={this.props.screenProps.fontLoaded}
+                                            authorId={activity.author_id}
+                                            source={activity.author_avatar}
+                                            artizenId={activity.artizen_id}
+                                            artizenSource={activity.artizen_avatar}
+                                            artizenName={activity.artizen_name && activity.artizen_name.default}
+                                            name={activity.author_name && activity.author_name.default}
+                                            isIntro={false}
+                                            content={activity.content}
+                                            up={activity.up}
+                                            down={activity.down}
+                                            status={activity.status}
+                                            itemType="artizen"
+                                            textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
+                            </ScrollView> : null
+                    }
+
+                </View>
 
             </View>
         );
