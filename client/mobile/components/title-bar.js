@@ -4,6 +4,7 @@ import edit from "../assets/icons/edit-regular.png";
 import cross from "../assets/icons/times-solid.png";
 import AutoHeightImage from "react-native-auto-height-image";
 import {Input} from "react-native-elements";
+import {convertTextToDraftjsContent} from "../utils";
 
 class TitleBar extends React.Component {
 
@@ -39,7 +40,7 @@ class TitleBar extends React.Component {
                         'Accept': 'application/json',
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({content: this.state.review, rating: null})
+                    body: JSON.stringify({content: convertTextToDraftjsContent(this.state.review), rating: null})
                 }).then(function (response) {
                     if (response.ok) {
                         return response.json();

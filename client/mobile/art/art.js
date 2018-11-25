@@ -254,7 +254,7 @@ class Art extends React.Component {
                                   reloadFunc={this._loadInitialState}
                                   couldEdit={true}/>
                         {this.state.reviews}
-
+                        <View style={{height: 300}}/>
                     </View>
                 </ScrollView>
             </View>
