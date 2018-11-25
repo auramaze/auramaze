@@ -11,6 +11,7 @@ from queue import Queue
 from threading import Thread
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionTimeout
+from urllib3.exceptions import ReadTimeoutError
 from .elasticsearch_driver import AuraMazeSignatureES
 from .photo import Photo
 
@@ -126,7 +127,7 @@ def aura():
     # start = time.time()
     try:
         results = search_image_sync(ses, raw)
-    except ConnectionTimeout:
+    except (ConnectionTimeout, ReadTimeoutError):
         results = []
     # end = time.time()
     # print(end - start)
