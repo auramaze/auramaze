@@ -195,6 +195,7 @@ class Artizen extends React.Component {
 
             this.setState(previousState => (
                 {
+                    artizenId: artizenId,
                     artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
                                           url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
                                           id={artizenInfoJson.id}
@@ -304,7 +305,13 @@ class Artizen extends React.Component {
                         {this.state.isStyle ? this.state.related : null}
 
                         <View style={{height: 30}}/>
-                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus}/>
+                        <TitleBar titleText={"Reviews"}
+                                  fontLoaded={fontLoadStatus}
+                                  itemType={"artizen"}
+                                  textType={"review"}
+                                  itemId={this.state.artizenId}
+                                  reloadFunc={this._loadInitialState}
+                                  couldEdit={true}/>
                         {this.state.reviews}
 
                     </View>

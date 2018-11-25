@@ -12,7 +12,7 @@ class Art extends React.Component {
         this._loadInitialState = this._loadInitialState.bind(this);
     }
 
-    state = {};
+    state = {artId: 0, reviews: []};
 
     async _loadInitialState() {
         try {
@@ -154,6 +154,7 @@ class Art extends React.Component {
 
             this.setState(previousState => (
                 {
+                    artId: artId,
                     art: <ArtInfo fontLoaded={fontLoadStatus}
                                   url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
                     introductions: introInfoJson.map((item, key) => {
@@ -245,7 +246,13 @@ class Art extends React.Component {
                         {this.state.styles}
 
                         <View style={{height: 30}}/>
-                        <TitleBar titleText={"Reviews"} fontLoaded={fontLoadStatus} couldEdit={true}/>
+                        <TitleBar titleText={"Reviews"}
+                                  fontLoaded={fontLoadStatus}
+                                  itemType={"art"}
+                                  textType={"review"}
+                                  itemId={this.state.artId}
+                                  reloadFunc={this._loadInitialState}
+                                  couldEdit={true}/>
                         {this.state.reviews}
 
                     </View>

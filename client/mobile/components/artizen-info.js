@@ -81,7 +81,7 @@ class ArtizenInfo extends React.Component {
                 fontSize: 30, marginTop: 15
             },
             textFollowStyle: {
-                fontSize: 20, marginVertical: 3, marginHorizontal: 17,
+                fontSize: 20, marginVertical: 5, marginHorizontal: 17,
             }
         });
 
