@@ -18,9 +18,17 @@ class Artizen extends React.Component {
         try {
             const {navigation} = this.props;
             let token = await AsyncStorage.getItem('token');
+            let myId = await AsyncStorage.getItem('id');
 
             const artizenId = navigation.getParam('artizenId', 0);
-            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
+            let artizenInfo = token && token !== 'undefined' && token !== 'null' ?
+                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
+
             let introInfo = token && token !== 'undefined' && token !== 'null' ?
                 await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
                     method: 'GET',
@@ -189,6 +197,9 @@ class Artizen extends React.Component {
                 {
                     artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
                                           url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
+                                          id={artizenInfoJson.id}
+                                          myId={myId}
+                                          isFollowing={artizenInfoJson.following ? artizenInfoJson.following : 0}
                                           isArtist={this.state.isArtist}
                                           isMuseum={this.state.isMuseum}
                                           isExhibition={this.state.isExhibition}
@@ -244,7 +255,8 @@ class Artizen extends React.Component {
                 // paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
-                margin: 20,
+                marginHorizontal: 20,
+                marginBottom: 20,
                 flex: 1, flexDirection: 'column',
             },
             headerText: {

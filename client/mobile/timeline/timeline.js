@@ -3,7 +3,7 @@ import {StyleSheet, View, ScrollView, AsyncStorage, RefreshControl} from 'react-
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
-import ActivityCard from "../components/activity-card"
+import ActivityCard from "../components/activity-card";
 
 
 class TimeLine extends React.Component {
@@ -78,7 +78,7 @@ class TimeLine extends React.Component {
         return (
             <View style={styles.mainStruct}>
 
-                <View style={styles.backPage}>
+                <View style={!this.state.searchResult.hasSearched ? styles.backPage : null}>
 
                     <TopSearchBar updateSearchStatus={this.updateSearchStatus}
                                   navigation={this.props.navigation}
