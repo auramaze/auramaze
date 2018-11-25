@@ -2,6 +2,7 @@ import React from 'react';
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
 import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
+import artventure from './assets/icons/artventure.png';
 import compass from './assets/icons/compass.png';
 import journal from './assets/icons/journal.png';
 import camera from './assets/icons/camera.png';
@@ -12,12 +13,16 @@ import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
 import RecommendationStack from "./recommendation/recommendation-stack";
+import AutoHeightImage from "react-native-auto-height-image";
 
 class SettingScreen extends React.Component {
     render() {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Text>Artventure Screen</Text>
+                <AutoHeightImage style={{marginVertical: 100}}
+                                 width={100}
+                                 source={artventure}/>
+                <Text>Artventure page, still in constructing.</Text>
             </View>
         );
     }
