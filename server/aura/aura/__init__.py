@@ -125,7 +125,7 @@ def aura():
         return None, 400
     # start = time.time()
     try:
-        results = search_image(ses, raw)
+        results = search_image_sync(ses, raw)
     except ConnectionTimeout:
         results = []
     # end = time.time()
