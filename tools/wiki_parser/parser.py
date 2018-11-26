@@ -7,7 +7,7 @@ from tqdm import tqdm as tqdm
 
 class WikiParser:
 
-    def __init__(self, lang='EN'):
+    def __init__(self, lang='en'):
         self.dict = {}
         self.lang = lang
 
@@ -27,7 +27,7 @@ class WikiParser:
             table.decompose()
 
         title = soup.find('title').get_text()
-        if self.lang == 'CN':
+        if self.lang == 'zh':
             stop_title = title.find(' - 维基百科')
         else:
             stop_title = title.find(' - Wikipedia')
@@ -86,8 +86,8 @@ class WikiParser:
         self.dict[user_name] = wiki_doc
 
     def save(self, output_path):
-        with open(output_path, 'w') as f:
-            json.dump(self.dict, f, indent=4)
+        with open(output_path, 'w', encoding='utf8') as f:
+            json.dump(self.dict, f, indent=4, ensure_ascii=False)
 
     def process(self, input_path):
         user_name = os.path.basename(input_path).split('.')[0]
@@ -104,10 +104,22 @@ def main():
     # args = parser.parse_args()
 
     for type in ['artist', 'museum', 'style', 'genre']:
+        # en version
         input_path = 'wiki-html/{}-html'.format(type)
-        output_path = 'wiki-json/wiki-{}-1.json'.format(type)
+        output_path = 'wiki-json/wiki-{}-en.json'.format(type)
 
         driver = WikiParser()
+
+        for file in tqdm(glob.glob(os.path.join(input_path, '*'))):
+            html_path = os.path.join(input_path, os.path.basename(file))
+            driver.process(html_path)
+
+        driver.save(output_path)
+        # zh version
+        input_path = 'wiki-html/{}-html-zh'.format(type)
+        output_path = 'wiki-json/wiki-{}-zh.json'.format(type)
+
+        driver = WikiParser('zh')
 
         for file in tqdm(glob.glob(os.path.join(input_path, '*'))):
             html_path = os.path.join(input_path, os.path.basename(file))
