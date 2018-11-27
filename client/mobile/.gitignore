@@ -2,3 +2,5 @@ node_modules/**/*
 .expo/*
 npm-debug.*
 temp.json
+app.json
+.env
