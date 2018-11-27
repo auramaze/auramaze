@@ -1,5 +1,5 @@
 '''
-Filter wikipedia url with status 1 or 2
+Download en wiki
 '''
 import json
 import requests
