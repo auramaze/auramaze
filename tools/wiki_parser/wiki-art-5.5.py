@@ -1,5 +1,5 @@
 '''
-Add multilingual wikipedia url
+Download multilingual wiki
 '''
 
 import json
