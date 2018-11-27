@@ -36,7 +36,7 @@ router.get('/', [
                         if (result.length) {
                             const q = result.map(item => item.name && item.name.default).join(' ');
                             request.post({
-                                url: `${process.env.ESROOT}/art/_search`,
+                                url: `${process.env.ES_HOST}/art/_search`,
                                 body: {
                                     'from': req.query.from,
                                     '_source': {

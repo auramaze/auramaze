@@ -20,17 +20,24 @@ router.get('/', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    let results = {'art': [], 'artizen': []};
+    const query = req.query.q;
+    const from = req.query.from || 0;
+    const size = 10;
+    const results = {
+        'art': [],
+        'artizen': [],
+    };
 
     const search = _.after(Object.keys(results).length, () => {
+        results.next = `${process.env.API_ENDPOINT}/search?q=${encodeURIComponent(query)}&from=${from + size}`;
         res.json(results);
     });
 
     for (let index in results) {
         request.post({
-            url: `${process.env.ESROOT}/${index}/_search`,
+            url: `${process.env.ES_HOST}/${index}/_search`,
             body: {
-                'from': req.query.from,
+                'from': from,
                 '_source': {
                     'excludes': ['image.*.simple_word_*', 'image.*.signature']
                 },
@@ -40,7 +47,7 @@ router.get('/', [
                         'should': [
                             {
                                 'multi_match': {
-                                    'query': req.query.q,
+                                    'query': query,
                                     'fields': ['title.*', 'artist.*', 'museum.*', 'genre.*', 'style.*', 'name.*'],
                                     'fuzziness': 'AUTO',
                                     'prefix_length': 0,
@@ -49,14 +56,14 @@ router.get('/', [
                             },
                             {
                                 'multi_match': {
-                                    'query': req.query.q,
+                                    'query': query,
                                     'fields': ['introduction.*'],
                                     'operator': 'and'
                                 }
                             },
                             {
                                 'multi_match': {
-                                    'query': req.query.q,
+                                    'query': query,
                                     'fields': ['completion_year', 'username'],
                                     'operator': 'and'
                                 }
