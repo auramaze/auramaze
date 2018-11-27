@@ -1,7 +1,11 @@
 import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from "react-cookie";
+import {injectIntl, FormattedMessage} from 'react-intl';
 import io from 'socket.io-client'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
+import {faTimesCircle} from '@fortawesome/free-regular-svg-icons';
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
@@ -9,6 +13,7 @@ import auramaze from '../static/logo-white-frame.svg';
 import './signup-modal.css';
 import {API_ENDPOINT, API_URL} from "../common";
 import OAuthButtonbox from "./oauth-buttonbox";
+import {validateEmail, validatePassword} from "../utils";
 
 const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
@@ -27,7 +32,16 @@ const auramazeButtonboxStyle = Object.assign({
 class SignupModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {name: '', email: '', password: '', auramazeProcessing: false};
+        this.state = {
+            name: '',
+            email: '',
+            password: '',
+            auramazeProcessing: false,
+            displayNameMessage: false,
+            displayEmailMessage: false,
+            displayPasswordMessage: false,
+            emailExist: false
+        };
         this.signup = this.signup.bind(this);
     }
 
@@ -57,50 +71,104 @@ class SignupModal extends Component {
                 }
                 this.setState({id: '', password: '', auramazeProcessing: false});
                 window.location.reload();
-            } else {
+            } else if (response.statusCode === 400) {
+                if (body.code === 'EMAIL_EXIST') {
+                    this.setState({emailExist: true});
+                }
                 this.setState({auramazeProcessing: false});
             }
         });
     }
 
     render() {
+        const {intl} = this.props;
         return (
             <Modal {...this.props} style={{
                 width: '95%',
                 maxWidth: 800
             }}>
                 <div className="signup-modal-content">
-                    <p className="font-size-xl">Sign up</p>
+                    <p className="font-size-xl">
+                        <FormattedMessage id="app.signup.title"/>
+                    </p>
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.name}
                         type="text"
                         name="name"
-                        placeholder="Name"
+                        placeholder={intl.formatMessage({id: 'app.signup.name'})}
                         onChange={(value) => {
                             this.setState({name: value})
                         }}
+                        onBlur={() => {
+                            this.setState({displayNameMessage: true})
+                        }}
                     />
+                    {this.state.displayNameMessage && <div className="message-container">
+                        {this.state.name.length > 0 &&
+                        <div className="font-size-xs success-message"><FontAwesomeIcon
+                            icon={faCheckCircle}
+                            size="sm"
+                        /> <FormattedMessage id="app.signup.name_valid"/></div>}
+                        {this.state.name.length === 0 &&
+                        <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> <FormattedMessage id="app.signup.name_required"/></div>}
+                    </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.email}
                         type="text"
                         name="email"
-                        placeholder="Email"
+                        placeholder={intl.formatMessage({id: 'app.signup.email'})}
                         onChange={(value) => {
-                            this.setState({email: value})
+                            this.setState({email: value, emailExist: false})
+                        }}
+                        onBlur={() => {
+                            this.setState({displayEmailMessage: true})
                         }}
                     />
+                    {this.state.displayEmailMessage && <div className="message-container">
+                        {validateEmail(this.state.email) && !this.state.emailExist &&
+                        <div className="font-size-xs success-message"><FontAwesomeIcon
+                            icon={faCheckCircle}
+                            size="sm"
+                        /> <FormattedMessage id="app.signup.email_valid"/></div>}
+                        {!validateEmail(this.state.email) &&
+                        <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> <FormattedMessage id="app.signup.email_invalid"/></div>}
+                        {this.state.emailExist && <div className="font-size-xs error-message"><FontAwesomeIcon
+                            icon={faTimesCircle}
+                            size="sm"
+                        /> <FormattedMessage id="app.signup.email_exists"/></div>}
+                    </div>}
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.password}
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder={intl.formatMessage({id: 'app.signup.password'})}
                         onChange={(value) => {
                             this.setState({password: value})
                         }}
+                        onBlur={() => {
+                            this.setState({displayPasswordMessage: true})
+                        }}
                     />
+                    {this.state.displayPasswordMessage && <div className="message-container">
+                        {validatePassword(this.state.password) ?
+                            <div className="font-size-xs success-message"><FontAwesomeIcon
+                                icon={faCheckCircle}
+                                size="sm"
+                            /> <FormattedMessage id="app.signup.password_valid"/></div> :
+                            <div className="font-size-xs error-message"><FontAwesomeIcon
+                                icon={faTimesCircle}
+                                size="sm"
+                            /> <FormattedMessage id="app.signup.password_longer"/></div>}
+                    </div>}
                     <div style={{width: '100%', height: 5}}/>
                     <Buttonbox
                         style={auramazeButtonboxStyle}
@@ -116,7 +184,7 @@ class SignupModal extends Component {
                                 style={{
                                     display: 'inlineBlock',
                                     verticalAlign: 'middle'
-                                }}>Create AuraMaze account</span>
+                                }}><FormattedMessage id="app.signup.auramaze"/></span>
                         </div>
                     </Buttonbox>
                     <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
@@ -128,4 +196,4 @@ class SignupModal extends Component {
     }
 }
 
-export default withCookies(SignupModal);
+export default withCookies(injectIntl(SignupModal));

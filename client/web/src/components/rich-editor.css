@@ -1,9 +1,18 @@
+@import '../fonts/fonts.css';
+
 .RichEditor-root {
     background: #fff;
     border: 1px solid #ddd;
-    font-family: 'Georgia', serif;
+    font-family: 'SegoeUI', serif;
     font-size: 14px;
     padding: 15px;
+}
+
+.RichEditor-rating > div {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    font-size: 16px;
 }
 
 .RichEditor-editor {

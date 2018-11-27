@@ -17,6 +17,7 @@ const artRouter = require('./routes/art');
 const artizenRouter = require('./routes/artizen');
 const searchRouter = require('./routes/search');
 const recommendRouter = require('./routes/recommend');
+const timelineRouter = require('./routes/timeline');
 const slideRouter = require('./routes/slide');
 const authRouter = require('./routes/auth');
 const passportInit = require('./routes/passport.init');
@@ -48,6 +49,7 @@ app.use('/v1/art', artRouter);
 app.use('/v1/artizen', artizenRouter);
 app.use('/v1/search', searchRouter);
 app.use('/v1/recommend', recommendRouter);
+app.use('/v1/timeline', timelineRouter);
 app.use('/v1/slide', slideRouter);
 app.use('/v1/auth', authRouter);
 

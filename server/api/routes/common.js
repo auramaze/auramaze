@@ -8,6 +8,14 @@ const rds = mysql.createConnection({
     typeCast: (field, next) => field.type === 'JSON' ? JSON.parse(field.string()) : next(),
     multipleStatements: true
 });
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    apiVersion: '2006-03-01',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+    params: {Bucket: process.env.AWS_S3_BUCKET}
+});
 const _ = require('lodash');
 const franc = require('franc-min');
 const convert3To1 = require('iso-639-3-to-1');
@@ -18,6 +26,7 @@ function Common() {
 }
 
 Common.prototype.rds = rds;
+Common.prototype.s3 = s3;
 
 // Check if username satisfies variants
 Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
@@ -61,12 +70,22 @@ Common.prototype.batchGetItems = (group, id, callback) => {
 Common.prototype.getTexts = (group, itemId, textType, authId, callback) => {
     let sql, parameters;
 
-    if (authId) {
-        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-        parameters = [authId, itemId, textType];
+    if (isNaN(parseInt(itemId))) {
+        if (authId) {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [authId, itemId, textType];
+        } else {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [itemId, textType];
+        }
     } else {
-        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-        parameters = [itemId, textType];
+        if (authId) {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [authId, itemId, textType];
+        } else {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [itemId, textType];
+        }
     }
 
     rds.query(sql, parameters, callback);
@@ -76,12 +95,22 @@ Common.prototype.getTexts = (group, itemId, textType, authId, callback) => {
 Common.prototype.getText = (group, itemId, textType, textId, authId, callback) => {
     let sql, parameters;
 
-    if (authId) {
-        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-        parameters = [authId, textId, itemId, textType];
+    if (isNaN(parseInt(itemId))) {
+        if (authId) {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [authId, textId, itemId, textType];
+        } else {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [textId, itemId, textType];
+        }
     } else {
-        sql = `SELECT text.*, artizen.username as author_username, artizen.name as author_name, artizen.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen ON text.author_id=artizen.id LEFT JOIN vote ON text.id=vote.text_id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-        parameters = [textId, itemId, textType];
+        if (authId) {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [authId, textId, itemId, textType];
+        } else {
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            parameters = [textId, itemId, textType];
+        }
     }
 
     rds.query(sql, parameters, callback);
@@ -148,6 +177,11 @@ Common.prototype.updateItem = (group, id, item, callback) => {
         sql = `UPDATE art SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
         parameters = columns.map(column => conversion[column](item[column]));
     } else {
+        if (item.password) {
+            const {salt, hash} = generateSaltHash(item.password);
+            item.salt = salt;
+            item.hash = hash;
+        }
         const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash'];
         const conversion = {
             username: username => username,
@@ -227,11 +261,13 @@ Common.prototype.toAuthJSON = (user) => {
     };
 };
 
-Common.prototype.generateSaltHash = (password) => {
+const generateSaltHash = (password) => {
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
     return {salt, hash};
 };
+
+Common.prototype.generateSaltHash = generateSaltHash;
 
 
 module.exports = new Common();

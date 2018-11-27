@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Editor, EditorState, RichUtils} from 'draft-js';
 import './rich-editor.css';
+import ReactStars from "react-stars";
 
 class RichEditor extends React.Component {
     constructor(props) {
@@ -66,6 +67,22 @@ class RichEditor extends React.Component {
                     editorState={editorState}
                     onToggle={this.toggleInlineStyle}
                 />
+                <div className="RichEditor-rating">
+                    <div>
+                        Rating (optional):
+                    </div>
+                    <div>
+                        <ReactStars
+                            count={5}
+                            half={false}
+                            value={this.props.rating}
+                            size={18}
+                            color2={'#ffd700'}
+                            onChange={this.props.onRate}
+                        />
+                    </div>
+                </div>
+
                 <div className={className} onClick={this.focus}>
                     <Editor
                         blockStyleFn={getBlockStyle}
@@ -119,8 +136,8 @@ class StyleButton extends React.Component {
 
         return (
             <span className={className} onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
+                {this.props.label}
+                </span>
         );
     }
 }

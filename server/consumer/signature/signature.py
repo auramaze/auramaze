@@ -14,6 +14,8 @@ from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from elasticsearch import Elasticsearch
 from elasticsearch_driver import AuraMazeSignatureES
+from urllib.error import HTTPError
+from elasticsearch.exceptions import NotFoundError
 
 ES_HOST = os.getenv('ES_HOST')
 KAFKA_HOST = os.getenv('KAFKA_HOST')
@@ -26,7 +28,12 @@ def update_signature(msg_value):
     '''
     id = msg_value['after']['id']
     image_dict = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else None
-    ses.update_image(id, image_dict)
+    try:
+        ses.update_image(id, image_dict)
+    except UnicodeEncodeError as e:
+        print('Invalid image url: {}: {}'.format(msg_value, e), flush=True)
+    except (HTTPError, NotFoundError):
+        pass
 
 
 es = Elasticsearch([ES_HOST])

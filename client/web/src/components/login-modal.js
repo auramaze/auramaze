@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from 'react-cookie';
+import {injectIntl, FormattedMessage} from 'react-intl';
 import io from 'socket.io-client'
 import Modal from './modal';
 import Inputbox from './inputbox';
@@ -65,19 +66,22 @@ class LoginModal extends Component {
     }
 
     render() {
+        const {intl} = this.props;
         return (
             <Modal {...this.props} style={{
                 width: '95%',
                 maxWidth: 800
             }}>
                 <div className="login-modal-content">
-                    <p className="font-size-xl">Log in</p>
+                    <p className="font-size-xl">
+                        <FormattedMessage id="app.login.title"/>
+                    </p>
                     <Inputbox
                         style={inputboxStyle}
                         value={this.state.id}
                         type="text"
                         name="id"
-                        placeholder="Email or username"
+                        placeholder={intl.formatMessage({id: 'app.login.id'})}
                         onChange={(value) => {
                             this.setState({id: value})
                         }}
@@ -87,7 +91,7 @@ class LoginModal extends Component {
                         value={this.state.password}
                         type="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder={intl.formatMessage({id: 'app.login.password'})}
                         onChange={(value) => {
                             this.setState({password: value})
                         }}
@@ -107,7 +111,7 @@ class LoginModal extends Component {
                                 style={{
                                     display: 'inlineBlock',
                                     verticalAlign: 'middle'
-                                }}>Log in with AuraMaze</span>
+                                }}><FormattedMessage id="app.login.auramaze"/></span>
                         </div>
                     </Buttonbox>
                     <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
@@ -119,4 +123,4 @@ class LoginModal extends Component {
     }
 }
 
-export default withCookies(LoginModal);
+export default withCookies(injectIntl(LoginModal));

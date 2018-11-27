@@ -196,7 +196,16 @@ router.post('/:id', oneOf([
     common.updateItem('artizen', req.params.id, req.body, (err, data) => {
         /* istanbul ignore if */
         if (err) {
-            next(err);
+            /* istanbul ignore else */
+            if (err.code === 'ER_DUP_ENTRY') {
+                const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
+                res.status(400).json({
+                    code: `${key.toUpperCase()}_EXIST`,
+                    message: `${key} already exists: ${req.body[key]}`
+                });
+            } else {
+                next(err);
+            }
         } else {
             res.json({
                 message: `Update artizen success: ${req.params.id}`
@@ -239,6 +248,13 @@ router.post('/:id/follow', [
 
     const {payload: {id}} = req;
 
+    if (parseInt(id) === parseInt(req.params.id)) {
+        return res.status(400).json({
+            code: 'SELF_FOLLOW',
+            message: `Artizens cannot follow themselves: ${req.params.id}`
+        });
+    }
+
     let sql, parameters;
 
     if (req.body.type) {
@@ -263,7 +279,10 @@ router.post('/:id/follow', [
 
 /* GET all introductions of artizen. */
 router.get('/:id/introduction', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -284,7 +303,10 @@ router.get('/:id/introduction', [
 
 /* GET one introduction of artizen. */
 router.get('/:id/introduction/:textId', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
@@ -354,9 +376,9 @@ router.post('/:id/introduction', [
 });
 
 /* Vote for one introduction of artizen. */
-router.post('/:id/introduction/:text_id/vote', [
+router.post('/:id/introduction/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -369,20 +391,20 @@ router.post('/:id/introduction/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} introduction ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} introduction ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} introduction ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} introduction ${req.params.textId}`,
             });
         }
     });
@@ -390,7 +412,10 @@ router.post('/:id/introduction/:text_id/vote', [
 
 /* GET all reviews of artizen. */
 router.get('/:id/review', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
@@ -411,7 +436,10 @@ router.get('/:id/review', [
 
 /* GET one review of artizen. */
 router.get('/:id/review/:textId', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     param('textId').isInt().isLength({min: 10, max: 10}),
 ], auth.optional, (req, res, next) => {
     const errors = validationResult(req);
@@ -487,9 +515,9 @@ router.post('/:id/review', [
 });
 
 /* Vote for one review of artizen. */
-router.post('/:id/review/:text_id/vote', [
+router.post('/:id/review/:textId/vote', [
     param('id').isInt().isLength({min: 9, max: 9}),
-    param('text_id').isInt().isLength({min: 10, max: 10}),
+    param('textId').isInt().isLength({min: 10, max: 10}),
     oneOf([
         body('type').equals('up'),
         body('type').equals('down')
@@ -502,20 +530,20 @@ router.post('/:id/review/:text_id/vote', [
 
     const {payload: {id}} = req;
 
-    common.voteText(req.params.text_id, id, req.body.type, (err, result, fields) => {
+    common.voteText(req.params.textId, id, req.body.type, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code.startsWith('ER_NO_REFERENCED_ROW')) {
                 res.status(404).json({
                     code: 'TEXT_NOT_FOUND',
-                    message: `Text not found: ${req.params.id} review ${req.params.text_id}`
+                    message: `Text not found: ${req.params.id} review ${req.params.textId}`
                 });
             } else {
                 next(err);
             }
         } else {
             res.json({
-                message: `Vote success: ${req.params.id} review ${req.params.text_id}`,
+                message: `Vote success: ${req.params.id} review ${req.params.textId}`,
             });
         }
     });

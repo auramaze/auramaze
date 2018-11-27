@@ -24,6 +24,29 @@ AWS_RDS_DATABASE = os.getenv('AWS_RDS_DATABASE')
 es = Elasticsearch([ES_HOST])
 
 
+class DB:
+    def __init__(self):
+        self.conn = None
+
+    def connect(self):
+        self.conn = MySQLdb.connect(host=AWS_RDS_HOST,
+                                    user=AWS_RDS_USER,
+                                    passwd=AWS_RDS_PASSWORD,
+                                    db=AWS_RDS_DATABASE,
+                                    charset='utf8')
+        self.conn.autocommit(True)
+
+    def execute(self, *args):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(*args)
+        except (AttributeError, MySQLdb.OperationalError):
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(*args)
+        return cursor
+
+
 def send_post_request(index, id, data):
     '''
     Send post request with requests
@@ -32,6 +55,7 @@ def send_post_request(index, id, data):
     :return: None
     '''
     r = es.update(index=index, doc_type='_doc', id=id, body=data)
+
 
 def send_delete_request(index, id):
     '''
@@ -52,13 +76,15 @@ def upsert_art(msg_value):
         username = msg_value['after']['username']
         title = json.loads(msg_value['after']['title']) if msg_value['after']['title'] else None
         completion_year = msg_value['after']['completion_year']
+        image = json.loads(msg_value['after']['image']) if msg_value['after']['image'] else None
 
         data = {
             'doc': {
                 'id': id,
                 'username': username,
                 'title': title,
-                'completion_year': completion_year
+                'completion_year': completion_year,
+                'image': image
             },
             'doc_as_upsert': True
         }
@@ -154,8 +180,7 @@ def update_relation(msg_value):
         else:
             raise KeyError("Should not update archive")
 
-        cur = db.cursor()
-        cur.execute(
+        cur = db.execute(
             'SELECT artizen.name FROM archive INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE archive.art_id=%s AND archive.type=%s',
             [art_id, type])
         relations = list(map(lambda item: json.loads(item[0]), cur.fetchall()))
@@ -206,14 +231,12 @@ def update_introduction(msg_value):
 
         column = 'art_id' if art_id else 'artizen_id'
 
-        cur = db.cursor()
-        cur.execute(
+        cur = db.execute(
             'SELECT language, content FROM text WHERE {}=%s AND type=0 AND valid AND content IS NOT NULL'.format(
                 column),
             [art_id if art_id else artizen_id])
         introductions = list(
             map(lambda item: dict([(item[0], convert_content_to_plain_text(json.loads(item[1])))]), cur.fetchall()))
-        cur.close()
 
         data = {
             'doc': {
@@ -242,12 +265,7 @@ c = AvroConsumer({
 
 c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.archive', 'aurora.auramaze.text'])
 
-db = MySQLdb.connect(host=AWS_RDS_HOST,
-                     user=AWS_RDS_USER,
-                     passwd=AWS_RDS_PASSWORD,
-                     db=AWS_RDS_DATABASE,
-                     charset='utf8')
-db.autocommit(True)
+db = DB()
 
 while True:
     try:
@@ -293,5 +311,4 @@ while True:
     except (TypeError, KeyError) as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
 
-db.close()
 c.close()

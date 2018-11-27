@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {withCookies} from 'react-cookie';
 import request from "request";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheckCircle, faThumbsDown as faThumbsDownRegular} from '@fortawesome/free-regular-svg-icons';
+import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import Buttonbox from './buttonbox';
 import {ModalContext} from '../app';
 import {API_ENDPOINT} from "../common";
 import {removeCookies} from "../utils";
-import {faThumbsDown as faThumbsDownSolid} from "@fortawesome/free-solid-svg-icons";
+import {FormattedMessage} from "react-intl";
 
 const followStyle = {
     margin: '10px auto',
@@ -92,7 +92,7 @@ class Follow extends Component {
                                     <FontAwesomeIcon
                                         icon={faCheckCircle}
                                         size="sm"
-                                    /> Following</span>
+                                    /> <FormattedMessage id="app.follow.following"/></span>
                             </Buttonbox> :
                             <Buttonbox
                                 style={followStyle}
@@ -100,7 +100,7 @@ class Follow extends Component {
                                     this.handleFollow(!status, showLoginModal);
                                 }}
                             >
-                                <span className="font-size-xs">Follow</span>
+                                <span className="font-size-xs"><FormattedMessage id="app.follow.follow"/></span>
                             </Buttonbox>}
 
                     </div>)}

@@ -47,3 +47,16 @@ export const removeCookies = (cookies) => {
     cookies.remove('username', {path: '/'});
     cookies.remove('token', {path: '/'});
 };
+
+export const getLocaleValue = (object, language) => {
+    return object && (language in object ? object[language] : object.default);
+};
+
+export const validateEmail = (email) => {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+};
+
+export const validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
+
+export const validatePassword = password => Boolean(password.match(/^[A-Za-z0-9#?!@$%^&*-]{4,}$/));

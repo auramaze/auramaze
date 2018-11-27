@@ -104,7 +104,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
                 rec = dict(filter(lambda item: item[0] == 'signature' or item[0].startswith('simple_word_'), rec.items()))
                 image_dict[key] = {**image_dict[key], **rec}
         self.es.update(index=self.index, doc_type=self.doc_type, id=id,
-                       body={'doc': {'image': image_dict}, 'doc_as_upsert': True},
+                       body={'doc': {'image': image_dict}, 'doc_as_upsert': False},
                        refresh=refresh_after)
 
     def insert_single_record(self, rec, refresh_after=False):

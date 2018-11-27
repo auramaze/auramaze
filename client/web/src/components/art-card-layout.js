@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {generateHighlightContent} from '../utils';
 import ArtCard from './art-card';
+import {LanguageContext} from '../app';
+import {getLocaleValue} from '../utils';
 import './art-card-layout.css';
 
 class ArtCardLayout extends Component {
@@ -72,36 +74,38 @@ class ArtCardLayout extends Component {
     }
 
     render() {
-        return (
-            <div style={{whiteSpace: 'nowrap', width: this.props.width, overflowX: 'hidden'}}>
-                {this.state.images.map((column, index) =>
-                    <div
-                        key={index}
-                        style={{display: 'inline-block', verticalAlign: 'top'}}
-                    >
-                        {
-                            column.map((art, index) =>
-                                <ArtCard
-                                    key={index}
-                                    style={{
-                                        width: ArtCardLayout.getArtCardWidth(this.props.width, this.props.columns),
-                                        margin: 20
-                                    }}
-                                    id={art.id}
-                                    image={art.image && art.image.default && art.image.default.url}
-                                    artist={art.artist && art.artist.default}
-                                    completionYear={art.completion_year}
-                                    title={art.title && art.title.default}
-                                    avatar={art.avatar}
-                                    abstract={generateHighlightContent(art._highlight)}
-                                    extended={this.props.extended}
-                                />
-                            )
-                        }
+        return (<LanguageContext.Consumer>
+                {({language}) => (
+                    <div style={{whiteSpace: 'nowrap', width: this.props.width, overflowX: 'hidden'}}>
+                        {this.state.images.map((column, index) =>
+                            <div
+                                key={index}
+                                style={{display: 'inline-block', verticalAlign: 'top'}}
+                            >
+                                {
+                                    column.map((art, index) =>
+                                        <ArtCard
+                                            key={index}
+                                            style={{
+                                                width: ArtCardLayout.getArtCardWidth(this.props.width, this.props.columns),
+                                                margin: 20
+                                            }}
+                                            id={art.id}
+                                            image={art.image && art.image.default && art.image.default.url}
+                                            artist={getLocaleValue(art.artist, language)}
+                                            completionYear={art.completion_year}
+                                            title={getLocaleValue(art.title, language)}
+                                            avatar={art.avatar}
+                                            abstract={generateHighlightContent(art._highlight)}
+                                            extended={this.props.extended}
+                                        />
+                                    )
+                                }
 
-                    </div>
-                )}
-            </div>
+                            </div>
+                        )}
+                    </div>)}
+            </LanguageContext.Consumer>
         );
     }
 }
