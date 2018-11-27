@@ -23,13 +23,22 @@ router.get('/', [
     const query = req.query.q;
     const from = parseInt(req.query.from) || 0;
     const size = 10;
+    const total = {
+        'art': 10000,
+        'artizen': 10000,
+    };
     const results = {
         'art': [],
         'artizen': [],
     };
 
     const search = _.after(Object.keys(results).length, () => {
-        results.next = `${process.env.API_ENDPOINT}/search?q=${encodeURIComponent(query)}&from=${from + size}`;
+        const next = from+size;
+        if (next >= total.art && next >= total.artizen) {
+            results.next = null;
+        } else {
+            results.next = `${process.env.API_ENDPOINT}/search?q=${encodeURIComponent(query)}&from=${from + size}`;
+        }
         res.json(results);
     });
 
@@ -99,6 +108,7 @@ router.get('/', [
                     _score: item._score,
                     _highlight: item.highlight
                 }));
+                total[index] = body.hits.total;
                 search();
             }
         });
