@@ -80,7 +80,8 @@ class Art extends Component {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true
-                    }, (error, response, introductions) => {
+                    }, (error, response, texts) => {
+                        const introductions = texts.data;
                         if (response && response.statusCode === 200) {
                             const newVote = introductions.reduce((acc, cur) => {
                                 acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
@@ -97,7 +98,8 @@ class Art extends Component {
                             'Authorization': `Bearer ${token}`
                         },
                         json: true
-                    }, (error, response, reviews) => {
+                    }, (error, response, texts) => {
+                        const reviews = texts.data;
                         if (response && response.statusCode === 200) {
                             const newVote = reviews.reduce((acc, cur) => {
                                 acc[cur.id] = (({up, down, status}) => ({up, down, status}))(cur);
