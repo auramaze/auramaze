@@ -5,6 +5,7 @@ import getRNDraftJSBlocks from 'react-native-draftjs-render';
 import ReviewFooter from "./review-footer";
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from "../assets/icons/no-image-artizen.png";
+import Moment from 'react-moment';
 
 class ActivityCard extends React.Component {
 
@@ -73,10 +74,16 @@ class ActivityCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: this.props.isIntro ? 195 : 225,
+                fontSize: 20,
+                width: 150,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
+            },
+            timeText: {
+                fontSize: 20,
+                color: '#aeaeae',
+                fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin'
             },
             bodyView: {
                 paddingHorizontal: 10,
@@ -105,6 +112,7 @@ class ActivityCard extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
+                    <Moment fromNow style={styles.timeText} element={Text}>{this.props.created}</Moment>
                 </View>
                 {this.props.artId ?
                     <TouchableOpacity
@@ -128,11 +136,6 @@ class ActivityCard extends React.Component {
                         </View>
                     </TouchableOpacity>}
                 <View style={styles.bodyView}>
-                    {/*<Text style={styles.bodyText}>*/}
-                        {/*{getRNDraftJSBlocks({*/}
-                            {/*contentState: this.props.content*/}
-                        {/*})}*/}
-                    {/*</Text>*/}
                     {getRNDraftJSBlocks({
                         contentState: this.props.content
                     })}

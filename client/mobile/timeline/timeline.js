@@ -55,7 +55,6 @@ class TimeLine extends React.Component {
         }
     }
 
-
     updateSearchStatus = (info) => {
         this.setState(previousState => (
             {searchResult: info}
@@ -105,11 +104,11 @@ class TimeLine extends React.Component {
                                             artSource={activity.art_image && activity.art_image.default.url}
                                             artName={activity.art_name && activity.art_name.default}
                                             name={activity.author_name && activity.author_name.default}
-                                            isIntro={false}
                                             content={activity.content}
                                             up={activity.up}
                                             down={activity.down}
                                             status={activity.status}
+                                            created={activity.created}
                                             itemType="art"
                                             textType="review" itemId={activity.art_id} textId={activity.id}/> :
                                         <ActivityCard
@@ -121,11 +120,11 @@ class TimeLine extends React.Component {
                                             artizenSource={activity.artizen_avatar}
                                             artizenName={activity.artizen_name && activity.artizen_name.default}
                                             name={activity.author_name && activity.author_name.default}
-                                            isIntro={false}
                                             content={activity.content}
                                             up={activity.up}
                                             down={activity.down}
                                             status={activity.status}
+                                            created={activity.created}
                                             itemType="artizen"
                                             textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
                             </ScrollView> : null
