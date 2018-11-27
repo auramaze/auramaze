@@ -21,8 +21,6 @@ class ActivityCard extends React.Component {
                 flexDirection: 'column',
                 backgroundColor: '#ffffff',
                 shadowColor: '#000',
-                shadowOffset: {width: 0, height: 2},
-                shadowOpacity: 0.2,
                 marginTop: 10,
                 marginBottom: 30,
                 padding: 10,
