@@ -21,7 +21,7 @@ router.get('/', [
     }
 
     const query = req.query.q;
-    const from = req.query.from || 0;
+    const from = parseInt(req.query.from) || 0;
     const size = 10;
     const results = {
         'art': [],
