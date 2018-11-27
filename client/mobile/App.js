@@ -50,7 +50,7 @@ export default class App extends React.Component {
 
         const MyNavi = createBottomTabNavigator(
             {
-                TimeLine: {screen: TimeLineStack},
+                Timeline: {screen: TimeLineStack},
                 Artventure: {screen: SettingScreen},
                 Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendationStack},
@@ -65,8 +65,12 @@ export default class App extends React.Component {
                                 tintColor: tintColor
                             },
                             cameraStyle: {tintColor: '#fff'},
-                            artventureStyle: {marginLeft: -lengthBasis * 12},
-                            recommendationStyle: {marginRight: -lengthBasis * 12},
+                            artventureStyle: {
+                                // marginLeft: -lengthBasis * 12
+                            },
+                            recommendationStyle: {
+                                // marginRight: -lengthBasis * 12
+                            },
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
                                 width: lengthBasis * 65,
@@ -81,10 +85,8 @@ export default class App extends React.Component {
                         const {routeName} = navigation.state;
 
                         if (routeName === 'Camera') {
-                            return <View style={[styles.cameraHolder]}>
-                                <Image source={camera}
-                                       style={[styles.imageStyle, styles.cameraStyle]}/>
-                            </View>
+                            return <Image source={camera}
+                                          style={[styles.imageStyle]}/>
                         }
 
                         if (routeName === 'Artventure') {
@@ -98,7 +100,7 @@ export default class App extends React.Component {
                         }
 
                         let iconName = '';
-                        if (routeName === 'TimeLine') iconName = compass;
+                        if (routeName === 'Timeline') iconName = compass;
                         else if (routeName === 'Settings') iconName = lines;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
@@ -108,7 +110,7 @@ export default class App extends React.Component {
                 tabBarOptions: {
                     activeTintColor: 'tomato',
                     inactiveTintColor: '#666666',
-                    showLabel: false,
+                    showLabel: true,
                     tabStyle: {
                         // borderColor: 'black',
                         // borderWidth: 1

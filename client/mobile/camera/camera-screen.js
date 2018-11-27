@@ -30,9 +30,6 @@ class CameraScreen extends React.Component {
     handleMountError = ({message}) => console.error(message);
 
     takePicture = async () => {
-        // const dim = Dimensions.get('window');
-        // alert('width: '+ dim.width);
-        // alert('height: '+ dim.height);
 
         if (this.camera) {
 

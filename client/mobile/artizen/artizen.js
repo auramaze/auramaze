@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableOpacity, AsyncStorage} from 'react-native';
 import ReviewCard from "../components/review-card";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
@@ -21,31 +21,28 @@ class Artizen extends React.Component {
             let myId = await AsyncStorage.getItem('id');
 
             const artizenId = navigation.getParam('artizenId', 0);
-            let artizenInfo = token && token !== 'undefined' && token !== 'null' ?
-                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId);
+            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`
+                } : null
+            });
 
-            let introInfo = token && token !== 'undefined' && token !== 'null' ?
-                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction');
+            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`
+                } : null
+            });
             let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
-            let reviewInfo = token && token !== 'undefined' && token !== 'null' ?
-                await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json"
-                    }
-                }) : await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review');
+            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review', {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJson = await introInfo.json();
             let artInfoJson = await artInfo.json();
