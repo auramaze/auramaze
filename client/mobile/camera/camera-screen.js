@@ -3,7 +3,7 @@ import {
     Text, View, TouchableOpacity, Image, Dimensions, Animated,
     Easing
 } from 'react-native';
-import {Camera, Permissions} from 'expo';
+import {Camera, Permissions, ImageManipulator} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
 import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -35,9 +35,18 @@ class CameraScreen extends React.Component {
 
             this.setState({imageProcessing: true});
 
-            this.camera.takePictureAsync({base64: true, quality: 0.01, skipProcessing: true})
-                .then((photo) => {
-                    let dataJson = {'image': photo.base64};
+            this.camera.takePictureAsync({quality: 0.01, skipProcessing: true})
+                .then(async (photo) => {
+
+                    const manipResult = await ImageManipulator.manipulate(
+                        photo.uri,
+                        [{resize: {width: 800, height: 600}}],
+                        {base64: true}
+                    );
+
+                    let dataJson = {'image': manipResult.base64};
+
+                    alert(JSON.stringify(dataJson).length);
 
                     fetch('https://apidev.auramaze.org/v1/search', {
                         method: 'POST',
