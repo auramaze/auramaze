@@ -13,6 +13,7 @@ import google from '../assets/icons/google.png';
 import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
+import config from '../app.json';
 
 class LogInPage extends React.Component {
 
@@ -22,6 +23,7 @@ class LogInPage extends React.Component {
         this._logAuraMaze = this._logAuraMaze.bind(this);
         this._setLogInData = this._setLogInData.bind(this);
         this._logIn = this._logIn.bind(this);
+        this._logFacebook = this._logFacebook.bind(this);
     }
 
     checkValid() {
@@ -70,6 +72,31 @@ class LogInPage extends React.Component {
             this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
+    };
+
+    _logFacebook = async () => {
+        try {
+            const {
+                type,
+                token,
+                expires,
+                permissions,
+                declinedPermissions,
+            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.expo.facebookAppId, {
+                permissions: ['public_profile'],
+            });
+            if (type === 'success') {
+                // Get the user's name using Facebook's Graph API
+                const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+                const profile = await response.json();
+                alert(`Hi ${profile.name}!`);
+                console.log(profile);
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({ message }) {
+            alert(`Facebook Login Error: ${message}`);
+        }
     };
 
     _setLogInData = async (responseJson) => {
@@ -122,7 +149,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={this._logIn}
+                    onPress={this._logFacebook}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>
