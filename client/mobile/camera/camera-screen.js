@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Text, View, TouchableOpacity, Image, Dimensions, Animated,
+    Text, View, TouchableOpacity, Platform, Dimensions, Animated,
     Easing
 } from 'react-native';
 import {Camera, Permissions, ImageManipulator} from 'expo';
@@ -113,7 +113,11 @@ class CameraScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <Camera
-                        style={{width: this.state.windowWidth, height: this.state.windowHeight}}
+                        style={{
+                            height: this.state.windowHeight,
+                            width: Platform.OS === 'ios' ?
+                                this.state.windowHeight * 9 / 16 : this.state.windowHeight * 3 / 4
+                        }}
                         type={this.state.type}
                         onMountError={this.handleMountError}
                         pictureSize={"High"}
@@ -155,21 +159,21 @@ class CameraScreen extends React.Component {
                                 opacity: 0.6
                             }}/>
 
-                            <View style={{
-                                flex: 1,
-                                alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: this.state.windowWidth * 1 / 5,
-                            }}>
-                                <TouchableOpacity
-                                    onPress={this.takePicture}
-                                    style={{alignSelf: 'center'}}
-                                >
-                                    <AutoHeightImage width={75} style={{tintColor: 'white'}}
-                                                     source={camera_button}/>
-                                </TouchableOpacity>
-                            </View>
                         </View>
                     </Camera>
+
+                    <View style={{
+                        alignItems: 'center', position: 'absolute',
+                        left: 0, right: 0, bottom: this.state.windowWidth * 1 / 14,
+                    }}>
+                        <TouchableOpacity
+                            onPress={this.takePicture}
+                            style={{alignSelf: 'center'}}
+                        >
+                            <AutoHeightImage width={75} style={{tintColor: 'white'}}
+                                             source={camera_button}/>
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
             );
