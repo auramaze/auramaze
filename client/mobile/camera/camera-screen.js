@@ -18,7 +18,9 @@ class CameraScreen extends React.Component {
 
     state = {
         hasCameraPermission: null,
-        type: Camera.Constants.Type.back
+        type: Camera.Constants.Type.back,
+        windowHeight: Dimensions.get('window').height,
+        windowWidth: Dimensions.get('window').width
     };
 
     async componentDidMount() {
@@ -111,7 +113,7 @@ class CameraScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <Camera
-                        style={{flex: 1}}
+                        style={{width: this.state.windowWidth, height: this.state.windowHeight}}
                         type={this.state.type}
                         onMountError={this.handleMountError}
                         pictureSize={"High"}
@@ -143,20 +145,20 @@ class CameraScreen extends React.Component {
                             <View style={{
                                 flex: 1,
                                 position: 'absolute',
-                                width: Dimensions.get('window').width,
-                                height: Dimensions.get('window').height,
+                                width: this.state.windowWidth,
+                                height: this.state.windowHeight,
                                 borderColor: 'black',
-                                borderLeftWidth: Dimensions.get('window').width * 1 / 9,
-                                borderRightWidth: Dimensions.get('window').width * 1 / 9,
-                                borderTopWidth: Dimensions.get('window').height * 1 / 9,
-                                borderBottomWidth: Dimensions.get('window').height * 0.8 / 3,
+                                borderLeftWidth: this.state.windowWidth * 1 / 9,
+                                borderRightWidth: this.state.windowWidth * 1 / 9,
+                                borderTopWidth: this.state.windowHeight * 1 / 9,
+                                borderBottomWidth: this.state.windowHeight * 0.8 / 3,
                                 opacity: 0.6
                             }}/>
 
                             <View style={{
                                 flex: 1,
                                 alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: 25,
+                                left: 0, right: 0, bottom: this.state.windowWidth * 1 / 5,
                             }}>
                                 <TouchableOpacity
                                     onPress={this.takePicture}
