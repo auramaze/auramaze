@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
@@ -71,13 +72,14 @@ router.get('/:id/art', [
         param('id').isInt().isLength({min: 9, max: 9}),
         param('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
-    query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/)
+    query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/),
+    query('from').optional().isInt()
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    const page = parseInt(req.query.page) >= 0 ? parseInt(req.query.page) : 0;
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
     const size = 10;
 
     // Get all available types
@@ -93,7 +95,7 @@ router.get('/:id/art', [
                 let multitype = false;
                 if (req.query.type) {
                     sql = 'SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?';
-                    parameters = [parseInt(id), req.query.type, size, page * size];
+                    parameters = [parseInt(id), req.query.type, size, from];
                 } else {
                     const types = result.map(item => item.type);
                     if (types.length > 1) {
@@ -102,7 +104,7 @@ router.get('/:id/art', [
                     sql = Array(types.length).fill('SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?').join(';');
                     parameters = [];
                     for (let type of types) {
-                        parameters.push(parseInt(id), type, size, page * size);
+                        parameters.push(parseInt(id), type, size, from);
                     }
                 }
                 rds.query(sql, parameters, (err, result, fields) => {
@@ -125,7 +127,7 @@ router.get('/:id/art', [
                         result = Object.keys(result).map(key => ({
                             type: key,
                             data: result[key],
-                            next: `/${req.params.id}/art?type=${key}&page=${page + 1}`
+                            next: `${process.env.API_ENDPOINT}/artizen/${req.params.id}/art?type=${key}&from=${from + size}`
                         }));
                         res.json(result);
                     }

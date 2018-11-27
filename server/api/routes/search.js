@@ -21,7 +21,7 @@ router.get('/', [
     }
 
     const query = req.query.q;
-    const from = parseInt(req.query.from) || 0;
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
     const size = 10;
     const total = {
         'art': 10000,
@@ -33,7 +33,7 @@ router.get('/', [
     };
 
     const search = _.after(Object.keys(results).length, () => {
-        const next = from+size;
+        const next = from + size;
         if (next >= total.art && next >= total.artizen) {
             results.next = null;
         } else {
