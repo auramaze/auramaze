@@ -14,7 +14,7 @@ exports.facebook = (req, res, next) => {
     const {id, name, picture} = req.body;
     const avatar = picture && picture.data && picture.data.url;
     rds.query('INSERT INTO artizen (facebook, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
-        [[id, name, avatar]],
+        [[id, JSON.stringify({default: name}), avatar]],
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
