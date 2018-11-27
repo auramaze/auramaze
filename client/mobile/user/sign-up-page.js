@@ -13,6 +13,7 @@ import google from '../assets/icons/google.png';
 import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
+import config from "../app";
 
 class SignUpPage extends React.Component {
 
@@ -66,11 +67,83 @@ class SignUpPage extends React.Component {
         });
     };
 
+    _logFacebook = async () => {
+        try {
+            const {
+                type,
+                token,
+                expires,
+                permissions,
+                declinedPermissions,
+            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.expo.facebookAppId, {
+                permissions: ['public_profile']
+            });
+            if (type === 'success') {
+                // Get the user's name using Facebook's Graph API
+                const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
+                const profile = await response.json();
+                const auth = await fetch('https://apidev.auramaze.org/v1/auth/facebook/mobile', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setSignUpData(authJson);
+                } else {
+                    throw new Error('Facebook auth fail.');
+                }
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({message}) {
+            alert(`Facebook Login Error: ${message}`);
+        }
+    };
+
+    _logGoogle = async () => {
+        try {
+            const result = await Expo.Google.logInAsync({
+                androidClientId: config.expo.googleAndroidClientId,
+                iosClientId: config.expo.googleIosClientId,
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                    headers: { Authorization: `Bearer ${result.accessToken}`},
+                });
+                const profile = await response.json();
+                const auth = await fetch('https://apidev.auramaze.org/v1/auth/google/mobile', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setSignUpData(authJson);
+                } else {
+                    throw new Error('Google auth fail.');
+                }
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({message}) {
+            alert(`Google Login Error: ${message}`);
+        }
+    };
+
     _setSignUpData = async (responseJson) => {
         this.setState(previousState => ({auramazeProcessing: false}));
         await AsyncStorage.multiSet([
             ['isAuthorized', 'true'],
-            ['username', 'username', responseJson.username ?
+            ['username', responseJson.username ?
                 responseJson.username.toString() : "undefined"],
             ['token', responseJson.token.toString()],
             ['id', responseJson.id.toString()]])
@@ -117,7 +190,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={this._logIn}
+                    onPress={this._logGoogle}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>
@@ -125,7 +198,7 @@ class SignUpPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={this._logIn}
+                    onPress={this._logFacebook}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Sign up with Facebook</Text>

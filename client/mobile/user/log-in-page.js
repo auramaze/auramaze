@@ -106,8 +106,43 @@ class LogInPage extends React.Component {
             } else {
                 // type === 'cancel'
             }
-        } catch ({ message }) {
+        } catch ({message}) {
             alert(`Facebook Login Error: ${message}`);
+        }
+    };
+
+    _logGoogle = async () => {
+        try {
+            const result = await Expo.Google.logInAsync({
+                androidClientId: config.expo.googleAndroidClientId,
+                iosClientId: config.expo.googleIosClientId,
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                    headers: { Authorization: `Bearer ${result.accessToken}`},
+                });
+                const profile = await response.json();
+                const auth = await fetch('https://apidev.auramaze.org/v1/auth/google/mobile', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setLogInData(authJson);
+                } else {
+                    throw new Error('Google auth fail.');
+                }
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({message}) {
+            alert(`Google Login Error: ${message}`);
         }
     };
 
@@ -153,7 +188,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={this._logIn}
+                    onPress={this._logGoogle}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
