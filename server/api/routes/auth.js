@@ -30,7 +30,7 @@ router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
 
 // Routes that are triggered on the mobile client
-// router.post('/google/mobile', authMobile.google);
+router.post('/google/mobile', [body('id').isInt()], authMobile.google);
 router.post('/facebook/mobile', [body('id').isInt()], authMobile.facebook);
 
 // Sign up with email
