@@ -48,8 +48,6 @@ class CameraScreen extends React.Component {
 
                     let dataJson = {'image': manipResult.base64};
 
-                    alert(JSON.stringify(dataJson).length);
-
                     fetch('https://apidev.auramaze.org/v1/search', {
                         method: 'POST',
                         headers: {
@@ -132,20 +130,6 @@ class CameraScreen extends React.Component {
                                 flexDirection: 'row',
                             }}>
 
-                            {this.state.imageProcessing ? <View style={{
-                                flex: 1,
-                                alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, top: 225,
-                            }}>
-
-                                <Animated.Image
-                                    style={{
-                                        tintColor: 'white', width: 80,
-                                        height: 80, transform: [{rotate: spin}]
-                                    }}
-                                    source={loading}/>
-                            </View> : null}
-
                             <View style={{
                                 flex: 1,
                                 position: 'absolute',
@@ -161,6 +145,20 @@ class CameraScreen extends React.Component {
 
                         </View>
                     </Camera>
+
+                    {this.state.imageProcessing ? <View style={{
+                        flex: 1,
+                        alignItems: 'center', position: 'absolute',
+                        left: 0, right: 0, top: this.state.windowWidth * 4 / 7,
+                    }}>
+
+                        <Animated.Image
+                            style={{
+                                tintColor: 'white', width: 80,
+                                height: 80, transform: [{rotate: spin}]
+                            }}
+                            source={loading}/>
+                    </View> : null}
 
                     <View style={{
                         alignItems: 'center', position: 'absolute',
