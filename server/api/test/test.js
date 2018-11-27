@@ -1218,17 +1218,17 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(!res.body.map(item => parseInt(item.id)).includes(text_id));
+                                assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
                             })
                             .end(done);
                     });
             });
-            it('should report invalid id', done => {
+            it('should accept username', done => {
                 request(app).get('/v1/art/artid/introduction')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.length === 0);
+                        assert(res.body.data.length === 0);
                     })
                     .end(done);
             });
@@ -1349,18 +1349,18 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(!res.body.map(item => parseInt(item.id)).includes(text_id));
+                                assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
                             })
                             .end(done);
                     });
             });
-            it('should report invalid id', done => {
+            it('should accept username', done => {
                 request(app).get('/v1/artizen/artizenid/introduction')
                     .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.length===0);
+                        assert(res.body.data.length===0);
                     })
                     .end(done);
             });
@@ -1509,17 +1509,17 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.art_id)).includes(10000003));
+                                assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.art_id)).includes(10000003));
                             })
                             .end(done);
                     });
             });
-            it('should report invalid id', done => {
+            it('should accept usernmae', done => {
                 request(app).get('/v1/art/artid/review')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.length===0);
+                        assert(res.body.data.length===0);
                     })
                     .end(done);
             });
@@ -1669,17 +1669,17 @@ describe('Test api', function () {
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(res => {
-                                assert(res.body.map(item => parseInt(item.id)).includes(text_id) && res.body.map(item => parseInt(item.artizen_id)).includes(100000011));
+                                assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.artizen_id)).includes(100000011));
                             })
                             .end(done);
                     });
             });
-            it('should report invalid id', done => {
+            it('should accept username', done => {
                 request(app).get('/v1/artizen/artizenid/review')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.length===0);
+                        assert(res.body.data.length===0);
                     })
                     .end(done);
             });

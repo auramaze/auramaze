@@ -33,11 +33,11 @@ router.get('/', [
     };
 
     const search = _.after(Object.keys(results).length, () => {
-        const next = from + size;
-        if (next >= total.art && next >= total.artizen) {
+        const nextFrom = from + size;
+        if (nextFrom >= total.art && nextFrom >= total.artizen) {
             results.next = null;
         } else {
-            results.next = `${process.env.API_ENDPOINT}/search?q=${encodeURIComponent(query)}&from=${from + size}`;
+            results.next = `${process.env.API_ENDPOINT}/search?q=${encodeURIComponent(query)}&from=${nextFrom}`;
         }
         res.json(results);
     });

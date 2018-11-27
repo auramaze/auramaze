@@ -296,16 +296,19 @@ router.delete('/:id', oneOf([
 /* GET all introductions of art. */
 router.get('/:id/introduction', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('id').custom(common.validateUsername).withMessage('Invalid username')
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
 ]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('art', req.params.id, 0, authId, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 0, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -427,16 +430,19 @@ router.post('/:id/introduction/:textId/vote', [
 /* GET all reviews of art. */
 router.get('/:id/review', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('id').custom(common.validateUsername).withMessage('Invalid username')
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
 ]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('art', req.params.id, 1, authId, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 1, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
