@@ -89,8 +89,20 @@ class LogInPage extends React.Component {
                 // Get the user's name using Facebook's Graph API
                 const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
                 const profile = await response.json();
-                alert(`Hi ${profile.name}!`);
-                console.log(profile);
+                const auth = await fetch('https://apidev.auramaze.org/v1/auth/facebook/mobile', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setLogInData(authJson);
+                } else {
+                    throw new Error('Facebook auth fail.');
+                }
             } else {
                 // type === 'cancel'
             }
