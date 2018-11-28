@@ -14,6 +14,7 @@ import {OrderedSet} from 'immutable';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
 import ActivityCard from "../components/activity-card";
+import config from "../config.json";
 
 
 class TimeLine extends React.Component {
@@ -41,7 +42,7 @@ class TimeLine extends React.Component {
             const token = await AsyncStorage.getItem('token');
 
             if (token && token !== 'undefined' && token !== 'null') {
-                const timelineInfo = await fetch('https://apidev.auramaze.org/v1/timeline', {
+                const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',

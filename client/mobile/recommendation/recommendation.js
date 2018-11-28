@@ -16,6 +16,7 @@ import SearchPage from "../components/search-page";
 import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
+import config from "../config.json";
 
 
 class Recommendation extends React.Component {
@@ -53,7 +54,7 @@ class Recommendation extends React.Component {
             alert(err);
         });
 
-        fetch(`https://apidev.auramaze.org/v1/recommend`, {
+        fetch(`${config.API_ENDPOINT}/recommend`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

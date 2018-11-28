@@ -7,6 +7,7 @@ import {Camera, Permissions, ImageManipulator} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
 import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
+import config from "../config.json";
 
 class CameraScreen extends React.Component {
 
@@ -47,7 +48,7 @@ class CameraScreen extends React.Component {
                     );
 
                     let dataJson = {'image': manipResult.base64};
-                    fetch('https://apidev.auramaze.org/v1/search', {
+                    fetch(`${config.API_ENDPOINT}/search`, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',

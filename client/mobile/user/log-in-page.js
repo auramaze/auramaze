@@ -54,7 +54,7 @@ class LogInPage extends React.Component {
             id: this.state.id,
             password: this.state.password
         });
-        fetch('https://apidev.auramaze.org/v1/auth/login', {
+        fetch(`${config.API_ENDPOINT}/auth/login`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -82,14 +82,14 @@ class LogInPage extends React.Component {
                 expires,
                 permissions,
                 declinedPermissions,
-            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.facebookAppId, {
+            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
                 permissions: ['public_profile']
             });
             if (type === 'success') {
                 // Get the user's name using Facebook's Graph API
                 const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
                 const profile = await response.json();
-                const auth = await fetch('https://apidev.auramaze.org/v1/auth/facebook/mobile', {
+                const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook/mobile`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -114,17 +114,17 @@ class LogInPage extends React.Component {
     _logGoogle = async () => {
         try {
             const result = await Expo.Google.logInAsync({
-                androidClientId: config.googleAndroidClientId,
-                iosClientId: config.googleIosClientId,
+                androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
+                iosClientId: config.GOOGLE_IOS_CLIENT_ID,
                 scopes: ['profile', 'email'],
             });
 
             if (result.type === 'success') {
                 const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-                    headers: { Authorization: `Bearer ${result.accessToken}`},
+                    headers: {Authorization: `Bearer ${result.accessToken}`},
                 });
                 const profile = await response.json();
-                const auth = await fetch('https://apidev.auramaze.org/v1/auth/google/mobile', {
+                const auth = await fetch(`${config.API_ENDPOINT}/auth/google/mobile`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',

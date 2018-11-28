@@ -5,6 +5,7 @@ import ReviewCard from "../components/review-card";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
 import ArtizenInfo from "../components/artizen-info";
+import config from "../config.json";
 
 class Artizen extends React.Component {
 
@@ -22,21 +23,21 @@ class Artizen extends React.Component {
             let myId = await AsyncStorage.getItem('id');
 
             const artizenId = navigation.getParam('artizenId', 0);
-            let artizenInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId, {
+            let artizenInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}`, {
                 method: 'GET',
                 headers: token && token !== 'undefined' && token !== 'null' ? {
                     'Authorization': `Bearer ${token}`
                 } : null
             });
 
-            let introInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/introduction', {
+            let introInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/introduction`, {
                 method: 'GET',
                 headers: token && token !== 'undefined' && token !== 'null' ? {
                     'Authorization': `Bearer ${token}`
                 } : null
             });
-            let artInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/art');
-            let reviewInfo = await fetch('https://apidev.auramaze.org/v1/artizen/' + artizenId + '/review', {
+            let artInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/art`);
+            let reviewInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/review`, {
                 method: 'GET',
                 headers: token && token !== 'undefined' && token !== 'null' ? {
                     'Authorization': `Bearer ${token}`,

@@ -5,6 +5,7 @@ import cross from "../assets/icons/times-solid.png";
 import AutoHeightImage from "react-native-auto-height-image";
 import {Input} from "react-native-elements";
 import {convertTextToDraftjsContent} from "../utils";
+import config from "../config.json";
 
 class TitleBar extends React.Component {
 
@@ -33,7 +34,7 @@ class TitleBar extends React.Component {
             if (token === 'undefined') {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`https://apidev.auramaze.org/v1/${itemType}/${itemId}/${textType}`, {
+                fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

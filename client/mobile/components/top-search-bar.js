@@ -4,6 +4,7 @@ import {SearchBar} from 'react-native-elements';
 import ArtCard from "../components/art-card";
 import ArtizenCard from "../components/artizen-card";
 import Art from "../art/art";
+import config from "../config.json";
 
 
 class TopSearchBar extends React.Component {
@@ -15,7 +16,7 @@ class TopSearchBar extends React.Component {
 
     async searchAuraMaze(searchItem) {
         try {
-            let response = await fetch('https://apidev.auramaze.org/v1/search?q=' + searchItem);
+            let response = await fetch(`${config.API_ENDPOINT}/search?q=${encodeURIComponent(searchItem)}`);
             let responseJson = await response.json();
             let returnArtizen = responseJson.artizen.length >= 1;
             let returnArt = responseJson.art.length >= 1;
