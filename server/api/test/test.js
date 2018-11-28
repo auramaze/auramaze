@@ -1689,67 +1689,67 @@ describe('Test api', function () {
     describe('Search api', () => {
         describe('Search artizen', () => {
             it('should get artizen data', done => {
-                request(app).get('/v1/search?q=marina')
+                request(app).get('/v1/search?index=artizen&q=marina')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'marina'));
+                        assert(res.body.data && res.body.data.some(e => e.username === 'marina'));
                     })
                     .end(done);
             });
 
             it('should support artizen fuzzy query', done => {
-                request(app).get('/v1/search?q=marunu')
+                request(app).get('/v1/search?index=artizen&q=maruna')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'marina'));
+                        assert(res.body.data && res.body.data.some(e => e.username === 'marina'));
                     })
                     .end(done);
             });
 
             it('should support query with multiple word', done => {
-                request(app).get('/v1/search?q=van gogh')
+                request(app).get('/v1/search?index=artizen&q=van gogh')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'vincent-van-gogh'));
+                        assert(res.body.data && res.body.data.some(e => e.username === 'vincent-van-gogh'));
                     })
                     .end(done);
             });
 
             it('should get art data', done => {
-                request(app).get('/v1/search?q=met')
+                request(app).get('/v1/search?&index=art&q=met')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.length >= 0);
+                        assert(res.body.data && res.body.data.length >= 0);
                     })
                     .end(done);
             });
 
             it('should support artizen name in Chinese', done => {
-                request(app).get('/v1/search?q=' + encodeURIComponent('达芬奇'))
+                request(app).get('/v1/search?index=artizen&q=' + encodeURIComponent('达芬奇'))
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen && res.body.artizen.some(e => e.username === 'leonardo-da-vinci'));
+                        assert(res.body.data && res.body.data.some(e => e.username === 'leonardo-da-vinci'));
                     })
                     .end(done);
             });
 
             it('should return empty', done => {
-                request(app).get('/v1/search?q=marina&from=1999')
+                request(app).get('/v1/search?index=artizen&q=marina&from=1999')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.artizen.length === 0 && res.body.artizen.length === 0);
+                        assert(res.body.data.length === 0);
                     })
                     .end(done);
             });
 
             it('should report invalid query', done => {
-                request(app).get('/v1/search?q=')
+                request(app).get('/v1/search?index=art&q=')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -1759,7 +1759,7 @@ describe('Test api', function () {
             });
 
             it('should report invalid from', done => {
-                request(app).get('/v1/search?q=marina&from=a')
+                request(app).get('/v1/search?index=artizen&q=marina&from=a')
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .expect(res => {
@@ -1771,62 +1771,62 @@ describe('Test api', function () {
 
         describe('Search art', () => {
             it('should get art data', done => {
-                request(app).get('/v1/search?q=musician')
+                request(app).get('/v1/search?index=art&q=musician')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.length >= 1);
+                        assert(res.body.data && res.body.data.length >= 1);
                     })
                     .end(done);
             });
 
             it('should support search for completion year', done => {
-                request(app).get('/v1/search?q=1787')
+                request(app).get('/v1/search?index=art&q=1787')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.some(e => e.id === 10000005));
+                        assert(res.body.data && res.body.data.some(e => e.id === 10000005));
                     })
                     .end(done);
             });
 
 
             it('should support art name in Chinese', done => {
-                request(app).get('/v1/search?q=' + encodeURIComponent('奴隶'))
+                request(app).get('/v1/search?index=art&q=' + encodeURIComponent('奴隶'))
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.some(e => e.id === 10000004));
+                        assert(res.body.data && res.body.data.some(e => e.id === 10000004));
                     })
                     .end(done);
             });
 
             it('should support fuzzy', done => {
-                request(app).get('/v1/search?q=vanitus')
+                request(app).get('/v1/search?index=art&q=vanitus')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.length >= 1);
+                        assert(res.body.data && res.body.data.length >= 1);
                     })
                     .end(done);
             });
 
             it('should support operator and', done => {
-                request(app).get('/v1/search?q=globe+skull+candle+tazza')
+                request(app).get('/v1/search?index=art&q=globe+skull+candle+tazza')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                        assert(res.body.data && res.body.data.some(e => e.id === 10000477));
                     })
                     .end(done);
             });
 
             it('should support fuzzy with multiple word', done => {
-                request(app).get('/v1/search?q=glube+skall+ceedle+tazza')
+                request(app).get('/v1/search?index=art&q=glube+skall+ceedle+tazza')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.art && res.body.art.some(e => e.id === 10000477));
+                        assert(res.body.data && res.body.data.some(e => e.id === 10000477));
                     })
                     .end(done);
             });

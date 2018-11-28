@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const _ = require('lodash');
 const request = require('request');
 const {query, body, validationResult, oneOf} = require('express-validator/check');
 const microtime = require('microtime');
