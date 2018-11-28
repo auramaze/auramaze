@@ -132,4 +132,4 @@ def aura():
         results = []
     # end = time.time()
     # print(end - start)
-    return jsonify({'art': results})
+    return jsonify({'data': results})
