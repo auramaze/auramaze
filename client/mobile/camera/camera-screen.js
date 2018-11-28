@@ -47,9 +47,6 @@ class CameraScreen extends React.Component {
                     );
 
                     let dataJson = {'image': manipResult.base64};
-
-                    alert(JSON.stringify(dataJson).length);
-
                     fetch('https://apidev.auramaze.org/v1/search', {
                         method: 'POST',
                         headers: {

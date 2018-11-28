@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, TouchableOpacity, AsyncStorage} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableOpacity, AsyncStorage, Text, Dimensions} from 'react-native';
 import ReviewCard from "../components/review-card";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
@@ -12,7 +12,7 @@ class Artizen extends React.Component {
         this._loadInitialState = this._loadInitialState.bind(this);
     }
 
-    state = {introductions: [], reviews: []};
+    state = {introductions: [], reviews: [], nextReview: null};
 
     async _loadInitialState() {
         try {
@@ -212,7 +212,8 @@ class Artizen extends React.Component {
                                         status={item.status}
                                         fontLoaded={fontLoadStatus}/>
                         );
-                    })
+                    }),
+                    nextReview: reviewInfoJsonRaw.next
                 }
             ));
         } catch (error) {
@@ -248,6 +249,21 @@ class Artizen extends React.Component {
                 borderBottomWidth: 1,
                 padding: 5,
             },
+            nextButton: {
+                marginTop: 20,
+                borderWidth: 2,
+                borderColor: '#666666',
+                borderRadius: 20,
+                backgroundColor: 'white',
+                width: Dimensions.get('window').width * 2 / 3,
+                marginHorizontal: 40
+            },
+            textNextStyle: {
+                fontSize: 20, marginVertical: 5, marginHorizontal: 17,
+                color: '#666666',
+                fontFamily: this.props.screenProps.fontLoaded ? ('century-gothic-regular') : 'Cochin',
+                textAlign: 'center'
+            }
         });
 
         return (
@@ -304,6 +320,17 @@ class Artizen extends React.Component {
                                   reloadFunc={this._loadInitialState}
                                   couldEdit={true}/>
                         {this.state.reviews}
+                        <TouchableOpacity
+                            onPress={() => {
+                                alert("aha")
+                            }}>
+                            {this.state.nextReview ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
                         <View style={{height: 300}}/>
                     </View>
                 </ScrollView>
@@ -311,6 +338,5 @@ class Artizen extends React.Component {
         );
     }
 }
-
 
 export default Artizen;

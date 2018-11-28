@@ -1,5 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, AsyncStorage, RefreshControl} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    AsyncStorage,
+    RefreshControl,
+    Dimensions,
+    Text,
+    TouchableOpacity
+} from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
@@ -10,7 +19,7 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined', refreshing: false};
+        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined', refreshing: false, next: null};
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
@@ -44,7 +53,7 @@ class TimeLine extends React.Component {
                 this.setState({timeline: 'undefined'});
             } else {
                 let recommendInfoJson = await recommendInfo.json();
-                this.setState({timeline: recommendInfoJson.data});
+                this.setState({timeline: recommendInfoJson.data, next: recommendInfoJson.next});
             }
         } catch (error) {
             console.log(error);
@@ -59,7 +68,7 @@ class TimeLine extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
-                paddingTop: Constants.statusBarHeight
+                paddingTop: Constants.statusBarHeight,
             },
             backPage: {
                 backgroundColor: '#cdcdcd',
@@ -78,15 +87,14 @@ class TimeLine extends React.Component {
 
                     {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
                                                                        fontLoaded={this.props.screenProps.fontLoaded}/> :
-                        this.state.timeline !== 'undefined' ?
-                            <ScrollView keyboardDismissMode='on-drag'
-                                        refreshControl={
-                                            <RefreshControl
-                                                refreshing={this.state.refreshing}
-                                                onRefresh={this._onRefresh}
-                                            />
-                                        }>
-                                {this.state.timeline.map((activity, key) =>
+                        <ScrollView keyboardDismissMode='on-drag'
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.refreshing}
+                                            onRefresh={this._onRefresh}
+                                        />
+                                    }>
+                            {this.state.timeline !== 'undefined' ? this.state.timeline.map((activity, key) =>
                                     activity.art_id ?
                                         <ActivityCard
                                             key={key}
@@ -119,12 +127,12 @@ class TimeLine extends React.Component {
                                             status={activity.status}
                                             created={activity.created}
                                             itemType="artizen"
-                                            textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
-                            </ScrollView> : null
+                                            textType="review" itemId={activity.artizen_id} textId={activity.id}/>)
+                                : <View style={{height: Dimensions.get('window').height}}/>}
+                            <View style={{height: 50}}/>
+                        </ScrollView>
                     }
-
                 </View>
-
             </View>
         );
     }
