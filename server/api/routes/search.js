@@ -90,16 +90,16 @@ router.get('/', [
                 message: 'Error in Elasticsearch service'
             });
         } else {
-            const results = {};
-            results.data = body.hits.hits.map(item => Object.assign(item._source, {
-                _score: item._score,
-                _highlight: item.highlight
-            }));
+            const results = {
+                data: body.hits.hits.map(item => Object.assign(item._source, {
+                    _score: item._score,
+                    _highlight: item.highlight
+                })),
+                next: null
+            };
             const total = body.hits.total;
             const nextFrom = from + size;
-            if (nextFrom >= total) {
-                results.next = null;
-            } else {
+            if (nextFrom < total) {
                 results.next = `${process.env.API_ENDPOINT}/search?index=${index}&q=${encodeURIComponent(query)}&from=${nextFrom}`;
             }
             res.json(results);
