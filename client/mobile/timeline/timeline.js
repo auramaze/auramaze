@@ -10,6 +10,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import {Constants} from 'expo';
+import {OrderedSet} from 'immutable';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
 import ActivityCard from "../components/activity-card";
@@ -19,7 +20,7 @@ class TimeLine extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined', refreshing: false, next: null};
+        this.state = {searchResult: {hasSearched: false}, timeline: OrderedSet(), refreshing: false, next: null};
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
@@ -37,23 +38,21 @@ class TimeLine extends React.Component {
 
     async _loadInitialState() {
         try {
-            let token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token');
 
-            let recommendInfo = token && token !== 'undefined' && token !== 'null' ?
-                await fetch('https://apidev.auramaze.org/v1/timeline', {
+            if (token && token !== 'undefined' && token !== 'null') {
+                const timelineInfo = await fetch('https://apidev.auramaze.org/v1/timeline', {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
                         "Content-Type": "application/json",
                         'Authorization': `Bearer ${token}`
                     },
-                }) : null;
-
-            if (!recommendInfo) {
-                this.setState({timeline: 'undefined'});
+                });
+                const timelineInfoJson = await timelineInfo.json();
+                this.setState({timeline: OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
             } else {
-                let recommendInfoJson = await recommendInfo.json();
-                this.setState({timeline: recommendInfoJson.data, next: recommendInfoJson.next});
+                this.setState({timeline: OrderedSet(), next: null});
             }
         } catch (error) {
             console.log(error);
@@ -94,10 +93,10 @@ class TimeLine extends React.Component {
                                             onRefresh={this._onRefresh}
                                         />
                                     }>
-                            {this.state.timeline !== 'undefined' ? this.state.timeline.map((activity, key) =>
+                            {this.state.timeline.size ? this.state.timeline.map(activity =>
                                     activity.art_id ?
                                         <ActivityCard
-                                            key={key}
+                                            key={activity.id}
                                             fontLoaded={this.props.screenProps.fontLoaded}
                                             authorId={activity.author_id}
                                             source={activity.author_avatar}
@@ -113,7 +112,7 @@ class TimeLine extends React.Component {
                                             itemType="art"
                                             textType="review" itemId={activity.art_id} textId={activity.id}/> :
                                         <ActivityCard
-                                            key={key}
+                                            key={activity.id}
                                             fontLoaded={this.props.screenProps.fontLoaded}
                                             authorId={activity.author_id}
                                             source={activity.author_avatar}
