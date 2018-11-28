@@ -47,7 +47,7 @@ class TimeLine extends React.Component {
             } else {
                 let recommendInfoJson = await recommendInfo.json();
                 this.setState(previousState => ({
-                    timeline: recommendInfoJson
+                    timeline: recommendInfoJson.data
                 }));
             }
         } catch (error) {
@@ -72,7 +72,6 @@ class TimeLine extends React.Component {
                 marginBottom: 40
             }
         });
-
 
         return (
             <View style={styles.mainStruct}>

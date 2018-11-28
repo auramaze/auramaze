@@ -12,7 +12,7 @@ class Artizen extends React.Component {
         this._loadInitialState = this._loadInitialState.bind(this);
     }
 
-    state = {};
+    state = {introductions: [], reviews: []};
 
     async _loadInitialState() {
         try {
@@ -44,9 +44,11 @@ class Artizen extends React.Component {
                 } : null
             });
             let artizenInfoJson = await artizenInfo.json();
-            let introInfoJson = await introInfo.json();
             let artInfoJson = await artInfo.json();
-            let reviewInfoJson = await reviewInfo.json();
+            let introInfoJsonRaw = await introInfo.json();
+            let reviewInfoJsonRaw = await reviewInfo.json();
+            let introInfoJson = introInfoJsonRaw.data;
+            let reviewInfoJson = reviewInfoJsonRaw.data;
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
             artInfoJson.map((item, key) => {
@@ -204,20 +206,7 @@ class Artizen extends React.Component {
                                           isStyle={this.state.isStyle}
                                           isGenre={this.state.isGenre}
                                           isCritic={this.state.isCritic}/>,
-                    introductions: introInfoJson.map((item, introInfoKey) => {
-                        return (
-                            <ReviewCard key={introInfoKey}
-                                        name={item.author_name ? item.author_name.default : ""}
-                                        authorId={item.author_id}
-                                        source={item.author_avatar ? item.author_avatar : ""}
-                                        content={item.content}
-                                        itemId={artizenId} itemType={'artizen'}
-                                        textId={item.id} textType={'introduction'}
-                                        isIntro={true} up={item.up} down={item.down}
-                                        status={item.status}
-                                        fontLoaded={fontLoadStatus}/>
-                        );
-                    }),
+                    introductions: introInfoJson,
                     reviews: reviewInfoJson.map((item, key) => {
                         return (
                             <ReviewCard key={key}
@@ -277,7 +266,20 @@ class Artizen extends React.Component {
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
-                        {this.state.introductions}
+                        {this.state.introductions.map((item, introInfoKey) => {
+                            return (
+                                <ReviewCard key={introInfoKey}
+                                            name={item.author_name ? item.author_name.default : ""}
+                                            authorId={item.author_id}
+                                            source={item.author_avatar ? item.author_avatar : ""}
+                                            content={item.content}
+                                            itemId={this.state.artizenId} itemType={'artizen'}
+                                            textId={item.id} textType={'introduction'}
+                                            isIntro={true} up={item.up} down={item.down}
+                                            status={item.status}
+                                            fontLoaded={fontLoadStatus}/>
+                            );
+                        })}
 
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isArtist ? this.state.artworks : null}
