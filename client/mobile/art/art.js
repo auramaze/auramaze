@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
+import {OrderedSet} from 'immutable';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
@@ -12,7 +13,7 @@ class Art extends React.Component {
         this._loadInitialState = this._loadInitialState.bind(this);
     }
 
-    state = {artId: 0, introductions: [], reviews: []};
+    state = {artId: 0, introductions: OrderedSet(), reviews: OrderedSet()};
 
     async _loadInitialState() {
         try {
@@ -151,8 +152,8 @@ class Art extends React.Component {
                     artId: artId,
                     art: <ArtInfo fontLoaded={fontLoadStatus}
                                   url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
-                    introductions: introInfoJson,
-                    reviews: reviewInfoJson
+                    introductions: OrderedSet(introInfoJson),
+                    reviews: OrderedSet(reviewInfoJson)
                 }
             ));
         } catch (error) {
@@ -197,21 +198,18 @@ class Art extends React.Component {
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
-                        {this.state.introductions.map((item, key) => {
-                            return (
-
-                                <ReviewCard key={key}
-                                            name={item.author_name ? item.author_name.default : ""}
-                                            authorId={item.author_id}
-                                            source={item.author_avatar ? item.author_avatar : ""}
-                                            content={item.content}
-                                            itemId={this.state.artId} itemType={'art'}
-                                            textId={item.id} textType={'introduction'}
-                                            isIntro={true} up={item.up} down={item.down}
-                                            status={item.status}
-                                            fontLoaded={fontLoadStatus}/>
-                            );
-                        })}
+                        {this.state.introductions.map(item => (
+                            <ReviewCard key={item.id}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        content={item.content}
+                                        itemId={this.state.artId} itemType={'art'}
+                                        textId={item.id} textType={'introduction'}
+                                        isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        ))}
 
                         {this.state.hasArtists ? <TitleBar titleText={"Artist"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.artists}
@@ -233,20 +231,18 @@ class Art extends React.Component {
                                   itemId={this.state.artId}
                                   reloadFunc={this._loadInitialState}
                                   couldEdit={true}/>
-                        {this.state.reviews.map((item, key) => {
-                            return (
-                                <ReviewCard key={key}
-                                            name={item.author_name ? item.author_name.default : ""}
-                                            authorId={item.author_id}
-                                            source={item.author_avatar ? item.author_avatar : ""}
-                                            content={item.content}
-                                            itemId={this.state.artId} itemType={'art'}
-                                            textId={item.id} textType={'review'}
-                                            isIntro={false} up={item.up} down={item.down}
-                                            status={item.status}
-                                            fontLoaded={fontLoadStatus}/>
-                            );
-                        })}
+                        {this.state.reviews.map(item => (
+                            <ReviewCard key={item.id}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        content={item.content}
+                                        itemId={this.state.artId} itemType={'art'}
+                                        textId={item.id} textType={'review'}
+                                        isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        ))}
                         <View style={{height: 300}}/>
                     </View>
                 </ScrollView>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, TouchableOpacity, AsyncStorage, Text, Dimensions} from 'react-native';
+import {OrderedSet} from 'immutable';
 import ReviewCard from "../components/review-card";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
@@ -12,7 +13,7 @@ class Artizen extends React.Component {
         this._loadInitialState = this._loadInitialState.bind(this);
     }
 
-    state = {introductions: [], reviews: [], nextReview: null};
+    state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
 
     async _loadInitialState() {
         try {
@@ -198,21 +199,8 @@ class Artizen extends React.Component {
                                           isStyle={this.state.isStyle}
                                           isGenre={this.state.isGenre}
                                           isCritic={this.state.isCritic}/>,
-                    introductions: introInfoJson,
-                    reviews: reviewInfoJson.map((item, key) => {
-                        return (
-                            <ReviewCard key={key}
-                                        name={item.author_name ? item.author_name.default : ""}
-                                        authorId={item.author_id}
-                                        source={item.author_avatar ? item.author_avatar : ""}
-                                        content={item.content}
-                                        itemId={artizenId} itemType={'artizen'}
-                                        textId={item.id} textType={'review'}
-                                        isIntro={false} up={item.up} down={item.down}
-                                        status={item.status}
-                                        fontLoaded={fontLoadStatus}/>
-                        );
-                    }),
+                    introductions: OrderedSet(introInfoJson),
+                    reviews: OrderedSet(reviewInfoJson),
                     nextReview: reviewInfoJsonRaw.next
                 }
             ));
@@ -274,20 +262,18 @@ class Artizen extends React.Component {
                     <View style={styles.mainContext}>
 
                         <TitleBar titleText={"Introduction"} fontLoaded={fontLoadStatus}/>
-                        {this.state.introductions.map((item, introInfoKey) => {
-                            return (
-                                <ReviewCard key={introInfoKey}
-                                            name={item.author_name ? item.author_name.default : ""}
-                                            authorId={item.author_id}
-                                            source={item.author_avatar ? item.author_avatar : ""}
-                                            content={item.content}
-                                            itemId={this.state.artizenId} itemType={'artizen'}
-                                            textId={item.id} textType={'introduction'}
-                                            isIntro={true} up={item.up} down={item.down}
-                                            status={item.status}
-                                            fontLoaded={fontLoadStatus}/>
-                            );
-                        })}
+                        {this.state.introductions.map((item) => (
+                            <ReviewCard key={item.id}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        content={item.content}
+                                        itemId={this.state.artizenId} itemType={'artizen'}
+                                        textId={item.id} textType={'introduction'}
+                                        isIntro={true} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        ))}
 
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isArtist ? this.state.artworks : null}
@@ -319,7 +305,18 @@ class Artizen extends React.Component {
                                   itemId={this.state.artizenId}
                                   reloadFunc={this._loadInitialState}
                                   couldEdit={true}/>
-                        {this.state.reviews}
+                        {this.state.reviews.map((item) => (
+                            <ReviewCard key={item.id}
+                                        name={item.author_name ? item.author_name.default : ""}
+                                        authorId={item.author_id}
+                                        source={item.author_avatar ? item.author_avatar : ""}
+                                        content={item.content}
+                                        itemId={this.state.artizenId} itemType={'artizen'}
+                                        textId={item.id} textType={'review'}
+                                        isIntro={false} up={item.up} down={item.down}
+                                        status={item.status}
+                                        fontLoaded={fontLoadStatus}/>
+                        ))}
                         <TouchableOpacity
                             onPress={() => {
                                 alert("aha")
