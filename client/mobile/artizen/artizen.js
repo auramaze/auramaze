@@ -98,98 +98,90 @@ class Artizen extends React.Component {
                         })
                     }
                 ));
-                (item.type === "critic") && this.setState(previousState => (
-                    {
-                        isCritic: true,
-                        related: item.data.map((criticItem, criticKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={criticKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: criticItem.id,
-                                        titleName: criticItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={criticItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
-                                        compYear={criticItem.completionYear ? criticItem.completionYear : ""}
-                                        id={criticItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
-                (item.type === "exhibition") && this.setState(previousState => (
-                    {
-                        isExhibition: true,
-                        exhibits: item.data.map((exhibitItem, exhibitKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={exhibitKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: exhibitItem.id,
-                                        titleName: exhibitItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={exhibitItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
-                                        compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
-                                        id={exhibitItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
-                (item.type === "genre") && this.setState(previousState => (
-                    {
-                        isGenre: true,
-                        related: item.data.map((genreItem, genreKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={genreKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: genreItem.id,
-                                        titleName: genreItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={genreItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
-                                        compYear={genreItem.completionYear ? genreItem.completionYear : ""}
-                                        id={genreItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
-                (item.type === "style") && this.setState(previousState => (
-                    {
-                        isStyle: true,
-                        related: item.data.map((styleItem, styleKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={styleKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: styleItem.id,
-                                        titleName: styleItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={styleItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
-                                        compYear={styleItem.completionYear ? styleItem.completionYear : ""}
-                                        id={styleItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
+                (item.type === "critic") && this.setState({
+                    isCritic: true,
+                    related: item.data.map((criticItem, criticKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={criticKey}
+                                onPress={() => this.props.navigation.push('Art', {
+                                    artId: criticItem.id,
+                                    titleName: criticItem.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={criticItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
+                                    compYear={criticItem.completionYear ? criticItem.completionYear : ""}
+                                    id={criticItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "exhibition") && this.setState({
+                    isExhibition: true,
+                    exhibits: item.data.map((exhibitItem, exhibitKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={exhibitKey}
+                                onPress={() => this.props.navigation.push('Art', {
+                                    artId: exhibitItem.id,
+                                    titleName: exhibitItem.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={exhibitItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
+                                    compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
+                                    id={exhibitItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "genre") && this.setState({
+                    isGenre: true,
+                    related: item.data.map((genreItem, genreKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={genreKey}
+                                onPress={() => this.props.navigation.push('Art', {
+                                    artId: genreItem.id,
+                                    titleName: genreItem.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={genreItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
+                                    compYear={genreItem.completionYear ? genreItem.completionYear : ""}
+                                    id={genreItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "style") && this.setState({
+                    isStyle: true,
+                    related: item.data.map((styleItem, styleKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={styleKey}
+                                onPress={() => this.props.navigation.push('Art', {
+                                    artId: styleItem.id,
+                                    titleName: styleItem.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={styleItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
+                                    compYear={styleItem.completionYear ? styleItem.completionYear : ""}
+                                    id={styleItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
             });
 
             this.setState(previousState => (

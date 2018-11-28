@@ -41,24 +41,18 @@ class TimeLine extends React.Component {
                 }) : null;
 
             if (!recommendInfo) {
-                this.setState(previousState => ({
-                    timeline: 'undefined'
-                }));
+                this.setState({timeline: 'undefined'});
             } else {
                 let recommendInfoJson = await recommendInfo.json();
-                this.setState(previousState => ({
-                    timeline: recommendInfoJson.data
-                }));
+                this.setState({timeline: recommendInfoJson.data});
             }
         } catch (error) {
-            alert(error);
+            console.log(error);
         }
     }
 
     updateSearchStatus = (info) => {
-        this.setState(previousState => (
-            {searchResult: info}
-        ));
+        this.setState({searchResult: info});
     };
 
     render() {

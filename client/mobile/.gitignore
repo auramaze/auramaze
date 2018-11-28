@@ -3,4 +3,5 @@ node_modules/**/*
 npm-debug.*
 temp.json
 app.json
+config.json
 .env

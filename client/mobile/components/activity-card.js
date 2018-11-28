@@ -134,7 +134,7 @@ class ActivityCard extends React.Component {
                         </View>
                     </TouchableOpacity>}
                 <View style={styles.bodyView}>
-                    {getRNDraftJSBlocks({
+                    {this.props.content && getRNDraftJSBlocks({
                         contentState: this.props.content
                     })}
                 </View>

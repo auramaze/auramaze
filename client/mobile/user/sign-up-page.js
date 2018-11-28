@@ -13,7 +13,7 @@ import google from '../assets/icons/google.png';
 import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
-import config from "../app";
+import config from "../config.json";
 
 class SignUpPage extends React.Component {
 
@@ -75,7 +75,7 @@ class SignUpPage extends React.Component {
                 expires,
                 permissions,
                 declinedPermissions,
-            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.expo.facebookAppId, {
+            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.facebookAppId, {
                 permissions: ['public_profile']
             });
             if (type === 'success') {
@@ -107,8 +107,8 @@ class SignUpPage extends React.Component {
     _logGoogle = async () => {
         try {
             const result = await Expo.Google.logInAsync({
-                androidClientId: config.expo.googleAndroidClientId,
-                iosClientId: config.expo.googleIosClientId,
+                androidClientId: config.googleAndroidClientId,
+                iosClientId: config.googleIosClientId,
                 scopes: ['profile', 'email'],
             });
 
