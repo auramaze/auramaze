@@ -371,7 +371,7 @@ describe('Test api', function () {
 
         describe('GET artizen relations', () => {
             it('should return related arts of artizen', done => {
-                request(app).get('/v1/artizen/metmuseum/art').expect(200)
+                request(app).get('/v1/artizen/nga/art').expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
                         assert(res.body.length && res.body[0].next);
