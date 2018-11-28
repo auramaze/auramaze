@@ -8,6 +8,7 @@ import exhibition from '../assets/icons/artizen-type/exhibition.png';
 import genre from '../assets/icons/artizen-type/genre.png';
 import museum from '../assets/icons/artizen-type/museum.png';
 import style from '../assets/icons/artizen-type/style.png';
+import config from "../config.json";
 
 class ArtizenInfo extends React.Component {
 
@@ -24,7 +25,7 @@ class ArtizenInfo extends React.Component {
             if (token === 'undefined') {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`https://apidev.auramaze.org/v1/artizen/${id}/follow`, {
+                fetch(`${config.API_ENDPOINT}/artizen/${id}/follow`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
