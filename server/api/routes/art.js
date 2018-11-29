@@ -293,6 +293,40 @@ router.delete('/:id', oneOf([
     });
 });
 
+/* Follow an art. */
+router.post('/:id/follow', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+    body('type').isBoolean()
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    let sql, parameters;
+
+    if (req.body.type) {
+        sql = 'REPLACE INTO follow (user_id, art_id) VALUES (?)';
+        parameters = [[id, req.params.id]];
+    } else {
+        sql = 'DELETE FROM follow WHERE user_id=? AND art_id=?';
+        parameters = [id, req.params.id];
+    }
+
+    rds.query(sql, parameters, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Follow success: ${req.params.id} ${req.body.type}`,
+            });
+        }
+    });
+});
+
 /* GET all introductions of art. */
 router.get('/:id/introduction', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
