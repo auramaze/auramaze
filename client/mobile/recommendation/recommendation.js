@@ -50,7 +50,7 @@ class Recommendation extends React.Component {
 
     async _loadRecommend() {
         let fontLoaded = this.props.screenProps.fontLoaded;
-        let token = await AsyncStorage.getItem('token').catch((err) => {
+        let token = await AsyncStorage.getItem('token', null).catch((err) => {
             alert(err);
         });
 
@@ -67,9 +67,10 @@ class Recommendation extends React.Component {
             } else {
                 throw new Error('Get recommendation.');
             }
-        }).then((responseJson) => {
+        }).then((responseJsonRaw) => {
+            let responseJson = responseJsonRaw.data;
             let returnArtizen = responseJson.artizen.length >= 1;
-            let returnArt = responseJson.art.length >= 1;
+            let returnArt = responseJson.length >= 1;
             let artizenArray = [];
 
             responseJson.artizen.map((item, key) => {
@@ -93,10 +94,11 @@ class Recommendation extends React.Component {
 
             this.setState(previousState => ({
                 recommendation: 'defined',
+                recommendNext: responseJsonRaw.next,
                 haveArtizen: returnArtizen,
                 recommendArtizen: artizenArrays,
                 haveArt: returnArt,
-                recommendArt: responseJson.art.map((item, key) => {
+                recommendArt: responseJson.map((item, key) => {
                     return (
                         <TouchableOpacity
                             key={key}

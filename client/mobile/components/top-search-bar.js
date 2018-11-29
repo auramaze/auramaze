@@ -16,12 +16,14 @@ class TopSearchBar extends React.Component {
 
     async searchAuraMaze(searchItem) {
         try {
-            let response = await fetch(`${config.API_ENDPOINT}/search?q=${encodeURIComponent(searchItem)}`);
-            let responseJson = await response.json();
-            let returnArtizen = responseJson.artizen.length >= 1;
-            let returnArt = responseJson.art.length >= 1;
+            let responseArt = await fetch(`${config.API_ENDPOINT}/search?index=art&q=${encodeURIComponent(searchItem)}`);
+            let responseArtizen = await fetch(`${config.API_ENDPOINT}/search?index=artizen&q=${encodeURIComponent(searchItem)}`);
+            let responseArtJson = await responseArt.json();
+            let responseArtizenJson = await responseArtizen.json();
+            let returnArt = responseArtJson.data.length >= 1;
+            let returnArtizen = responseArtizenJson.data.length >= 1;
             let artizenArray = [];
-            responseJson.artizen.map((item, key) => {
+            responseArtizenJson.data.map((item, key) => {
                 artizenArray.push(
                     <TouchableOpacity key={key}
                                       onPress={() => this.props.navigation.navigate('Artizen', {
@@ -41,10 +43,12 @@ class TopSearchBar extends React.Component {
                 artizenArrays.push(artizenArray.splice(0, size));
 
             this.setState({
+                nextArt: responseArtJson.next,
+                nextArtizen: responseArtizenJson.next,
+                haveArt: returnArt,
                 haveArtizen: returnArtizen,
                 searchArtizen: artizenArrays,
-                haveArt: returnArt,
-                searchArt: responseJson.art.map((item, key) => {
+                searchArt: responseArtJson.data.map((item, key) => {
                     return (
                         <TouchableOpacity
                             key={key}
@@ -68,6 +72,7 @@ class TopSearchBar extends React.Component {
                 hasSearched: true,
                 searchArt: this.state.searchArt, haveArt: this.state.haveArt,
                 searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
+                nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
             })
         } catch (error) {
             alert(error);
@@ -77,9 +82,7 @@ class TopSearchBar extends React.Component {
     render() {
 
         let onClear = () => {
-            this.setState(previousState => (
-                {term: '', searchArt: '', searchArtizen: [], haveArtizen: false, haveArt: false}
-            ));
+            this.setState({term: '', searchArt: '', searchArtizen: [], haveArtizen: false, haveArt: false});
             this.props.updateSearchStatus({
                 hasSearched: false
             });
@@ -95,12 +98,11 @@ class TopSearchBar extends React.Component {
                 this.search.clear();
                 return
             }
-            this.searchAuraMaze(this.state.term);
+            this.searchAuraMaze(this.state.term).done();
         };
 
 
         return (
-
             <SearchBar
                 ref={search => this.search = search}
                 containerStyle={{backgroundColor: '#fff'}}
@@ -109,8 +111,7 @@ class TopSearchBar extends React.Component {
                 placeholder='Search'
                 cancelButtonTitle="Cancel"
                 value={this.state.term}
-                onChangeText={(term) => (
-                    this.setState({term: term}))}
+                onChangeText={(term) => (this.setState({term: term}))}
                 onClear={onClear}
                 onSubmitEditing={onEnd}
                 onCancel={onCancel}/>

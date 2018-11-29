@@ -18,7 +18,6 @@ import config from "../config.json";
 
 
 class TimeLine extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {searchResult: {hasSearched: false}, timeline: OrderedSet(), refreshing: false, next: null};
@@ -39,7 +38,7 @@ class TimeLine extends React.Component {
 
     async _loadInitialState() {
         try {
-            const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token', null);
 
             if (token && token !== 'undefined' && token !== 'null') {
                 const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, {
