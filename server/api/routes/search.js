@@ -116,7 +116,7 @@ router.post('/', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const artizenId = req.payload && req.payload.id;
+    const userId = req.payload && req.payload.id;
 
     request.post({
         url: 'http://localhost:5000/aura',
@@ -145,7 +145,7 @@ router.post('/', [
             s3.putObject(data, function (err, data) {
                 /* istanbul ignore else */
                 if (!err) {
-                    rds.query('INSERT INTO aura (image, art_id, artizen_id) VALUES (?)', [[filename, artId, artizenId]]);
+                    rds.query('INSERT INTO aura (image, art_id, user_id) VALUES (?)', [[filename, artId, userId]]);
                 }
             });
         }
