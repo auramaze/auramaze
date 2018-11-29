@@ -25,9 +25,6 @@
                 },
                 "introduction": {
                     "properties": {
-                        "default": {
-                            "type": "text"
-                        },
                         "en": {
                             "type": "text",
                             "analyzer": "english"
