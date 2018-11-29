@@ -11,8 +11,13 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
-        this._loadInitialState = this._loadInitialState.bind(this);
         this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
+        this._loadInitialState = this._loadInitialState.bind(this);
+        this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
+    }
+
+    async componentDidMount() {
+        this._loadInitialState().done();
     }
 
     async _loadInitialState() {
@@ -205,8 +210,30 @@ class Artizen extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        this._loadInitialState().done();
+    async loadMoreReviewHandler() {
+        try {
+            const {navigation} = this.props;
+            let token = await AsyncStorage.getItem('token', null);
+
+            const artizenId = navigation.getParam('artizenId', 0);
+
+            let reviewInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/review`, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let reviewInfoJsonRaw = await reviewInfo.json();
+            let reviewInfoJson = reviewInfoJsonRaw.data;
+            this.setState(previousState => ({
+                reviews: previousState.reviews.union(OrderedSet(reviewInfoJson)),
+                nextReview: reviewInfoJsonRaw.next
+            }));
+        } catch (error) {
+            alert(error);
+        }
     }
 
     render() {
@@ -314,9 +341,7 @@ class Artizen extends React.Component {
                                         fontLoaded={fontLoadStatus}/>
                         ))}
                         <TouchableOpacity
-                            onPress={() => {
-                                alert("aha")
-                            }}>
+                            onPress={this.loadMoreReviewHandler}>
                             {this.state.nextReview ?
                                 <View style={styles.nextButton}>
                                     <Text style={[styles.textStyle, styles.textNextStyle]}>
