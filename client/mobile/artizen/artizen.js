@@ -212,11 +212,7 @@ class Artizen extends React.Component {
 
     async loadMoreReviewHandler() {
         try {
-            const {navigation} = this.props;
             let token = await AsyncStorage.getItem('token', null);
-
-            const artizenId = navigation.getParam('artizenId', 0);
-
             let reviewInfo = await fetch(this.state.nextReview, {
                 method: 'GET',
                 headers: token && token !== 'undefined' && token !== 'null' ? {

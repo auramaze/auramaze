@@ -8,7 +8,6 @@ import journal from './assets/icons/journal.png';
 import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
 import lines from './assets/icons/lines.png';
-import TimeLine from "./timeline/timeline";
 import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
 import BlankUser from "./user/blank-user";
@@ -65,12 +64,6 @@ export default class App extends React.Component {
                                 tintColor: tintColor
                             },
                             cameraStyle: {tintColor: '#fff'},
-                            artventureStyle: {
-                                // marginLeft: -lengthBasis * 12
-                            },
-                            recommendationStyle: {
-                                // marginRight: -lengthBasis * 12
-                            },
                             cameraHolder: {
                                 flex: 1, flexDirection: 'row',
                                 width: lengthBasis * 65,
@@ -84,23 +77,11 @@ export default class App extends React.Component {
 
                         const {routeName} = navigation.state;
 
-                        if (routeName === 'Camera') {
-                            return <Image source={camera}
-                                          style={[styles.imageStyle]}/>
-                        }
-
-                        if (routeName === 'Artventure') {
-                            return <Image source={journal}
-                                   style={[styles.imageStyle, styles.artventureStyle]}/>
-                        }
-
-                        if (routeName === 'Recommend') {
-                            return <Image source={recommendation}
-                                          style={[styles.imageStyle, styles.recommendationStyle]}/>
-                        }
-
                         let iconName = '';
                         if (routeName === 'Timeline') iconName = compass;
+                        else if (routeName === 'Artventure') iconName = journal;
+                        else if (routeName === 'Camera') iconName = camera;
+                        else if (routeName === 'Recommend') iconName = recommendation;
                         else if (routeName === 'Settings') iconName = lines;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
