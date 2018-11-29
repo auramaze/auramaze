@@ -217,7 +217,7 @@ class Artizen extends React.Component {
 
             const artizenId = navigation.getParam('artizenId', 0);
 
-            let reviewInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/review`, {
+            let reviewInfo = await fetch(this.state.nextReview, {
                 method: 'GET',
                 headers: token && token !== 'undefined' && token !== 'null' ? {
                     'Authorization': `Bearer ${token}`,
