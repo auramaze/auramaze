@@ -398,7 +398,7 @@ router.post('/:id/introduction', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -538,7 +538,7 @@ router.post('/:id/review', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
