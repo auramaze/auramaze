@@ -128,7 +128,7 @@ class TimeLine extends React.Component {
                                             itemType="artizen"
                                             textType="review" itemId={activity.artizen_id} textId={activity.id}/>)
                                 : <View style={{height: Dimensions.get('window').height}}/>}
-                            <View style={{height: 50}}/>
+                            <View style={{height: 5}}/>
                         </ScrollView>
                     }
                 </View>

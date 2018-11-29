@@ -69,15 +69,14 @@ class SearchPage extends React.Component {
                               showsHorizontalScrollIndicator={false}
                               renderItem={({item}) => SearchPage.renderRow(item)}
                               keyExtractor={(item, index) => index.toString()}/>
-
                     {this.props.searchResult.haveArtizen ? <View style={{height: 20}}/> : null}
+
                     {this.props.searchResult.haveArt ?
                         <View style={{marginHorizontal: 5}}>
                             <TitleBar titleText={"Art"} fontLoaded={this.props.fontLoaded}/>
                         </View> : null}
-                    <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                        {this.props.searchResult.searchArt}
-                    </View>
+                    {this.props.searchResult.searchArt}
+                    <View style={{height: 140}}/>
                 </ScrollView>
             </View>
 
