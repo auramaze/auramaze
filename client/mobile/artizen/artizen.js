@@ -25,6 +25,15 @@ class Artizen extends React.Component {
         this._loadInitialState().done();
     }
 
+    _fetchInfo = (url, token) => fetch(url, {
+        method: 'GET',
+        headers: token && token !== 'undefined' && token !== 'null' ? {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        } : null
+    });
+
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
@@ -136,16 +145,6 @@ class Artizen extends React.Component {
             alert(error);
         }
     }
-
-
-    _fetchInfo = (url, token) => fetch(url, {
-        method: 'GET',
-        headers: token && token !== 'undefined' && token !== 'null' ? {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        } : null
-    });
 
     async loadMoreCollectionHandler() {
         try {
