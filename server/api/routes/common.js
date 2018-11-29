@@ -41,14 +41,14 @@ Common.prototype.getItem = (group, id, authId, callback) => {
         sql = `SELECT * FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
         if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON followee_id=artizen.id WHERE follower_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON artizen_id=artizen.id WHERE user_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
             parameters = [authId, id.toString(), id.toString()];
         }
     } else {
         sql = `SELECT * FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
         if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE follower_id=? AND followee_id=?) AS following FROM artizen WHERE artizen.id=?';
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE user_id=? AND artizen_id=?) AS following FROM artizen WHERE artizen.id=?';
             parameters = [authId, parseInt(id), parseInt(id)];
         }
     }
