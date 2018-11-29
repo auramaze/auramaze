@@ -13,6 +13,7 @@ class Artizen extends React.Component {
         super(props);
         this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
         this._loadInitialState = this._loadInitialState.bind(this);
+        this._fetchInfo = this._fetchInfo.bind(this);
         this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
         this.loadMoreCollectionHandler = this.loadMoreCollectionHandler.bind(this);
         this.loadMoreArtworkHandler = this.loadMoreArtworkHandler.bind(this);
@@ -20,7 +21,7 @@ class Artizen extends React.Component {
         this.loadMoreRelatedHandler = this.loadMoreRelatedHandler.bind(this);
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         this._loadInitialState().done();
     }
 
@@ -57,8 +58,6 @@ class Artizen extends React.Component {
             let artInfoJson = await artInfo.json();
             let introInfoJsonRaw = await introInfo.json();
             let reviewInfoJsonRaw = await reviewInfo.json();
-            let introInfoJson = introInfoJsonRaw.data;
-            let reviewInfoJson = reviewInfoJsonRaw.data;
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
             artInfoJson.map((item) => {
@@ -108,8 +107,8 @@ class Artizen extends React.Component {
                                       isStyle={this.state.isStyle}
                                       isGenre={this.state.isGenre}
                                       isCritic={this.state.isCritic}/>,
-                introductions: OrderedSet(introInfoJson),
-                reviews: OrderedSet(reviewInfoJson),
+                introductions: OrderedSet(introInfoJsonRaw.data),
+                reviews: OrderedSet(reviewInfoJsonRaw.data),
                 nextReview: reviewInfoJsonRaw.next
             });
         } catch (error) {
@@ -138,17 +137,20 @@ class Artizen extends React.Component {
         }
     }
 
+
+    _fetchInfo = (url, token) => fetch(url, {
+        method: 'GET',
+        headers: token && token !== 'undefined' && token !== 'null' ? {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        } : null
+    });
+
     async loadMoreCollectionHandler() {
         try {
             let token = await AsyncStorage.getItem('token', null);
-            let collectionInfo = await fetch(this.state.nextCollection, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let collectionInfo = await this._fetchInfo(this.state.nextCollection, token);
             let collectionInfoJsonRaw = await collectionInfo.json();
             this.setState(previousState => ({
                 collections: previousState.collections.union(OrderedSet(collectionInfoJsonRaw[0].data)),
@@ -162,14 +164,7 @@ class Artizen extends React.Component {
     async loadMoreExhibitionHandler() {
         try {
             let token = await AsyncStorage.getItem('token', null);
-            let exhibitionInfo = await fetch(this.state.nextExhibition, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let exhibitionInfo = await this._fetchInfo(this.state.nextExhibition, token);
             let exhibitionInfoJsonRaw = await exhibitionInfo.json();
             this.setState(previousState => ({
                 exhibits: previousState.exhibits.union(OrderedSet(exhibitionInfoJsonRaw[0].data)),
@@ -183,14 +178,7 @@ class Artizen extends React.Component {
     async loadMoreRelatedHandler() {
         try {
             let token = await AsyncStorage.getItem('token', null);
-            let relatedInfo = await fetch(this.state.nextRelated, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let relatedInfo = await this._fetchInfo(this.state.nextRelated, token);
             let relatedInfoJsonRaw = await relatedInfo.json();
             this.setState(previousState => ({
                 related: previousState.related.union(OrderedSet(relatedInfoJsonRaw[0].data)),
@@ -204,14 +192,7 @@ class Artizen extends React.Component {
     async loadMoreReviewHandler() {
         try {
             let token = await AsyncStorage.getItem('token', null);
-            let reviewInfo = await fetch(this.state.nextReview, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let reviewInfo = await this._fetchInfo(this.state.nextReview, token);
             let reviewInfoJsonRaw = await reviewInfo.json();
             this.setState(previousState => ({
                 reviews: previousState.reviews.union(OrderedSet(reviewInfoJsonRaw.data)),
@@ -283,6 +264,7 @@ class Artizen extends React.Component {
                                         fontLoaded={fontLoadStatus}/>
                         ))}
 
+
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isArtist ? this.state.artworks.map((item) => {
                             return (
@@ -312,6 +294,7 @@ class Artizen extends React.Component {
                                 </View> : null}
                         </TouchableOpacity>
 
+
                         {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isMuseum ? this.state.collections.map((item) => {
                             return (
@@ -340,6 +323,7 @@ class Artizen extends React.Component {
                                     </Text>
                                 </View> : null}
                         </TouchableOpacity>
+
 
                         {this.state.isExhibition ?
                             <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : null}
@@ -371,6 +355,7 @@ class Artizen extends React.Component {
                                 </View> : null}
                         </TouchableOpacity>
 
+
                         {this.state.isCritic ?
                             <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isCritic ? this.state.related.map((item) => {
@@ -391,6 +376,7 @@ class Artizen extends React.Component {
                                 </TouchableOpacity>
                             )
                         }) : null}
+
 
                         {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
@@ -413,6 +399,7 @@ class Artizen extends React.Component {
                             )
                         }) : null}
 
+
                         {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
                         {this.state.isStyle ? this.state.related.map((item) => {
@@ -434,6 +421,7 @@ class Artizen extends React.Component {
                             )
                         }) : null}
 
+
                         <TouchableOpacity
                             onPress={this.loadMoreRelatedHandler}>
                             {this.state.nextRelated ?
@@ -443,6 +431,7 @@ class Artizen extends React.Component {
                                     </Text>
                                 </View> : null}
                         </TouchableOpacity>
+
 
                         <View style={{height: 30}}/>
                         <TitleBar titleText={"Reviews"}
