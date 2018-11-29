@@ -61,28 +61,11 @@ class Artizen extends React.Component {
             let reviewInfoJson = reviewInfoJsonRaw.data;
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
-            artInfoJson.map((item, key) => {
+            artInfoJson.map((item) => {
                 (item.type === "artist") && this.setState({
                     isArtist: true,
                     nextArtwork: item.next,
-                    artworks: item.data.map((artItem, artKey) => {
-                        return (
-                            <TouchableOpacity
-                                key={artKey}
-                                onPress={() => this.props.navigation.push('Art', {
-                                    artId: artItem.id,
-                                    titleName: artItem.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={artItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
-                                    compYear={artItem.completionYear ? artItem.completionYear : ""}
-                                    id={artItem.id}
-                                    fontLoaded={fontLoadStatus}/>
-                            </TouchableOpacity>
-                        )
-                    })
+                    artworks: OrderedSet(item.data)
                 });
                 (item.type === "museum") && this.setState({
                     isMuseum: true,
@@ -92,24 +75,7 @@ class Artizen extends React.Component {
                 (item.type === "critic") && this.setState({
                     isCritic: true,
                     nextRelated: item.next,
-                    related: item.data.map((criticItem, criticKey) => {
-                        return (
-                            <TouchableOpacity
-                                key={criticKey}
-                                onPress={() => this.props.navigation.push('Art', {
-                                    artId: criticItem.id,
-                                    titleName: criticItem.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={criticItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={criticItem.image && criticItem.image.default ? criticItem.image.default.url : ""}
-                                    compYear={criticItem.completionYear ? criticItem.completionYear : ""}
-                                    id={criticItem.id}
-                                    fontLoaded={fontLoadStatus}/>
-                            </TouchableOpacity>
-                        )
-                    })
+                    related: OrderedSet(item.data)
                 });
                 (item.type === "exhibition") && this.setState({
                     isExhibition: true,
@@ -119,46 +85,12 @@ class Artizen extends React.Component {
                 (item.type === "genre") && this.setState({
                     isGenre: true,
                     nextRelated: item.next,
-                    related: item.data.map((genreItem, genreKey) => {
-                        return (
-                            <TouchableOpacity
-                                key={genreKey}
-                                onPress={() => this.props.navigation.push('Art', {
-                                    artId: genreItem.id,
-                                    titleName: genreItem.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={genreItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={genreItem.image && genreItem.image.default ? genreItem.image.default.url : ""}
-                                    compYear={genreItem.completionYear ? genreItem.completionYear : ""}
-                                    id={genreItem.id}
-                                    fontLoaded={fontLoadStatus}/>
-                            </TouchableOpacity>
-                        )
-                    })
+                    related: OrderedSet(item.data)
                 });
                 (item.type === "style") && this.setState({
                     isStyle: true,
                     nextRelated: item.next,
-                    related: item.data.map((styleItem, styleKey) => {
-                        return (
-                            <TouchableOpacity
-                                key={styleKey}
-                                onPress={() => this.props.navigation.push('Art', {
-                                    artId: styleItem.id,
-                                    titleName: styleItem.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={styleItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={styleItem.image && styleItem.image.default ? styleItem.image.default.url : ""}
-                                    compYear={styleItem.completionYear ? styleItem.completionYear : ""}
-                                    id={styleItem.id}
-                                    fontLoaded={fontLoadStatus}/>
-                            </TouchableOpacity>
-                        )
-                    })
+                    related: OrderedSet(item.data)
                 });
             });
 
@@ -352,7 +284,24 @@ class Artizen extends React.Component {
                         ))}
 
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
-                        {this.state.isArtist ? this.state.artworks : null}
+                        {this.state.isArtist ? this.state.artworks.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
                         <TouchableOpacity
                             onPress={this.loadMoreArtworkHandler}>
                             {this.state.nextArtwork ?
@@ -424,15 +373,66 @@ class Artizen extends React.Component {
 
                         {this.state.isCritic ?
                             <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : null}
-                        {this.state.isCritic ? this.state.related : null}
+                        {this.state.isCritic ? this.state.related.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
 
                         {this.state.isGenre ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
-                        {this.state.isGenre ? this.state.related : null}
+                        {this.state.isGenre ? this.state.related.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
 
                         {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
-                        {this.state.isStyle ? this.state.related : null}
+                        {this.state.isStyle ? this.state.related.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
 
                         <TouchableOpacity
                             onPress={this.loadMoreRelatedHandler}>
