@@ -19,8 +19,7 @@ class Art extends React.Component {
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
-
-            let token = await AsyncStorage.getItem('token');
+            let token = await AsyncStorage.getItem('token', null);
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}`, {
                 method: 'GET',

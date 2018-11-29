@@ -50,7 +50,7 @@ class Recommendation extends React.Component {
 
     async _loadRecommend() {
         let fontLoaded = this.props.screenProps.fontLoaded;
-        let token = await AsyncStorage.getItem('token').catch((err) => {
+        let token = await AsyncStorage.getItem('token', null).catch((err) => {
             alert(err);
         });
 

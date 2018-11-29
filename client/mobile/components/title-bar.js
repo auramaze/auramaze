@@ -17,7 +17,7 @@ class TitleBar extends React.Component {
     }
 
     async _handleTouchEdit() {
-        const token = await AsyncStorage.getItem('token');
+        const token = await AsyncStorage.getItem('token', null);
         if (token === 'undefined') {
             alert('Please log in to use this function!')
         } else {
@@ -29,7 +29,7 @@ class TitleBar extends React.Component {
 
     async _handleSubmit() {
         try {
-            const token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token', null);
             const {itemType, itemId, textType} = this.props;
             if (token === 'undefined') {
                 alert('Please log in to use this function!')

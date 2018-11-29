@@ -12,15 +12,14 @@ class Artizen extends React.Component {
     constructor(props) {
         super(props);
         this._loadInitialState = this._loadInitialState.bind(this);
+        this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
     }
-
-    state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
 
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
-            let token = await AsyncStorage.getItem('token');
-            let myId = await AsyncStorage.getItem('id');
+            let token = await AsyncStorage.getItem('token', null);
+            let myId = await AsyncStorage.getItem('id', null);
 
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}`, {
@@ -77,29 +76,27 @@ class Artizen extends React.Component {
                         })
                     }
                 ));
-                (item.type === "museum") && this.setState(previousState => (
-                    {
-                        isMuseum: true,
-                        collections: item.data.map((museumItem, museumKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={museumKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: museumItem.id,
-                                        titleName: museumItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={museumItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
-                                        compYear={museumItem.completionYear ? museumItem.completionYear : ""}
-                                        id={museumItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
+                (item.type === "museum") && this.setState({
+                    isMuseum: true,
+                    collections: item.data.map((museumItem, museumKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={museumKey}
+                                onPress={() => this.props.navigation.push('Art', {
+                                    artId: museumItem.id,
+                                    titleName: museumItem.title.default,
+                                })}>
+                                <ArtCard
+                                    artName={museumItem.title.default}
+                                    artistName={artizenInfoJson.name.default}
+                                    source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
+                                    compYear={museumItem.completionYear ? museumItem.completionYear : ""}
+                                    id={museumItem.id}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
                 (item.type === "critic") && this.setState({
                     isCritic: true,
                     related: item.data.map((criticItem, criticKey) => {
@@ -186,25 +183,23 @@ class Artizen extends React.Component {
                 });
             });
 
-            this.setState(previousState => (
-                {
-                    artizenId: artizenId,
-                    artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
-                                          url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
-                                          id={artizenInfoJson.id}
-                                          myId={myId}
-                                          isFollowing={artizenInfoJson.following ? artizenInfoJson.following : 0}
-                                          isArtist={this.state.isArtist}
-                                          isMuseum={this.state.isMuseum}
-                                          isExhibition={this.state.isExhibition}
-                                          isStyle={this.state.isStyle}
-                                          isGenre={this.state.isGenre}
-                                          isCritic={this.state.isCritic}/>,
-                    introductions: OrderedSet(introInfoJson),
-                    reviews: OrderedSet(reviewInfoJson),
-                    nextReview: reviewInfoJsonRaw.next
-                }
-            ));
+            this.setState({
+                artizenId: artizenId,
+                artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
+                                      url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
+                                      id={artizenInfoJson.id}
+                                      myId={myId}
+                                      isFollowing={artizenInfoJson.following ? artizenInfoJson.following : 0}
+                                      isArtist={this.state.isArtist}
+                                      isMuseum={this.state.isMuseum}
+                                      isExhibition={this.state.isExhibition}
+                                      isStyle={this.state.isStyle}
+                                      isGenre={this.state.isGenre}
+                                      isCritic={this.state.isCritic}/>,
+                introductions: OrderedSet(introInfoJson),
+                reviews: OrderedSet(reviewInfoJson),
+                nextReview: reviewInfoJsonRaw.next
+            });
         } catch (error) {
             alert(error);
         }
