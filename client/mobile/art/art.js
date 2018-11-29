@@ -11,16 +11,19 @@ class Art extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {artId: 0, introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
         this._loadInitialState = this._loadInitialState.bind(this);
+        this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
     }
 
-    state = {artId: 0, introductions: OrderedSet(), reviews: OrderedSet()};
+    async componentDidMount() {
+        this._loadInitialState().done();
+    }
 
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
-
-            let token = await AsyncStorage.getItem('token');
+            let token = await AsyncStorage.getItem('token', null);
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}`, {
                 method: 'GET',
@@ -148,22 +151,39 @@ class Art extends React.Component {
                 }
             });
 
-            this.setState(previousState => (
-                {
-                    artId: artId,
-                    art: <ArtInfo fontLoaded={fontLoadStatus}
-                                  url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
-                    introductions: OrderedSet(introInfoJson),
-                    reviews: OrderedSet(reviewInfoJson)
-                }
-            ));
+            this.setState({
+                artId: artId,
+                art: <ArtInfo fontLoaded={fontLoadStatus}
+                              url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
+                introductions: OrderedSet(introInfoJson),
+                reviews: OrderedSet(reviewInfoJson),
+                nextReview: reviewInfoJsonRaw.next
+            });
         } catch (error) {
             alert(error);
         }
     }
 
-    async componentDidMount() {
-        this._loadInitialState().done();
+    async loadMoreReviewHandler() {
+        try {
+            let token = await AsyncStorage.getItem('token', null);
+            let reviewInfo = await fetch(this.state.nextReview, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let reviewInfoJsonRaw = await reviewInfo.json();
+            let reviewInfoJson = reviewInfoJsonRaw.data;
+            this.setState(previousState => ({
+                reviews: previousState.reviews.union(OrderedSet(reviewInfoJson)),
+                nextReview: reviewInfoJsonRaw.next
+            }));
+        } catch (error) {
+            alert(error);
+        }
     }
 
     render() {
@@ -244,6 +264,15 @@ class Art extends React.Component {
                                         status={item.status}
                                         fontLoaded={fontLoadStatus}/>
                         ))}
+                        <TouchableOpacity
+                            onPress={this.loadMoreReviewHandler}>
+                            {this.state.nextReview ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
                         <View style={{height: 300}}/>
                     </View>
                 </ScrollView>
