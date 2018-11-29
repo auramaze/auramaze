@@ -122,8 +122,6 @@ def aura():
     try:
         raw = base64.b64decode(request.json['image'])
         results = search_image_sync(ses, raw)
-    except (KeyError, OSError, binascii.Error):
-        return jsonify({'data': []}), 400
     except (ConnectionTimeout, ReadTimeoutError, socket.timeout):
         results = []
     # end = time.time()
