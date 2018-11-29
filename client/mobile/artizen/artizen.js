@@ -14,6 +14,10 @@ class Artizen extends React.Component {
         this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
         this._loadInitialState = this._loadInitialState.bind(this);
         this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
+        this.loadMoreCollectionHandler = this.loadMoreCollectionHandler.bind(this);
+        this.loadMoreArtworkHandler = this.loadMoreArtworkHandler.bind(this);
+        this.loadMoreExhibitionHandler = this.loadMoreExhibitionHandler.bind(this);
+        this.loadMoreRelatedHandler = this.loadMoreRelatedHandler.bind(this);
     }
 
     async componentDidMount() {
@@ -58,52 +62,36 @@ class Artizen extends React.Component {
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
             artInfoJson.map((item, key) => {
-                (item.type === "artist") && this.setState(previousState => (
-                    {
-                        isArtist: true,
-                        artworks: item.data.map((artItem, artKey) => {
-                            return (
-                                <TouchableOpacity
-                                    key={artKey}
-                                    onPress={() => this.props.navigation.push('Art', {
-                                        artId: artItem.id,
-                                        titleName: artItem.title.default,
-                                    })}>
-                                    <ArtCard
-                                        artName={artItem.title.default}
-                                        artistName={artizenInfoJson.name.default}
-                                        source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
-                                        compYear={artItem.completionYear ? artItem.completionYear : ""}
-                                        id={artItem.id}
-                                        fontLoaded={fontLoadStatus}/>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                ));
-                (item.type === "museum") && this.setState({
-                    isMuseum: true,
-                    collections: item.data.map((museumItem, museumKey) => {
+                (item.type === "artist") && this.setState({
+                    isArtist: true,
+                    nextArtwork: item.next,
+                    artworks: item.data.map((artItem, artKey) => {
                         return (
                             <TouchableOpacity
-                                key={museumKey}
+                                key={artKey}
                                 onPress={() => this.props.navigation.push('Art', {
-                                    artId: museumItem.id,
-                                    titleName: museumItem.title.default,
+                                    artId: artItem.id,
+                                    titleName: artItem.title.default,
                                 })}>
                                 <ArtCard
-                                    artName={museumItem.title.default}
+                                    artName={artItem.title.default}
                                     artistName={artizenInfoJson.name.default}
-                                    source={museumItem.image && museumItem.image.default ? museumItem.image.default.url : ""}
-                                    compYear={museumItem.completionYear ? museumItem.completionYear : ""}
-                                    id={museumItem.id}
+                                    source={artItem.image && artItem.image.default ? artItem.image.default.url : ""}
+                                    compYear={artItem.completionYear ? artItem.completionYear : ""}
+                                    id={artItem.id}
                                     fontLoaded={fontLoadStatus}/>
                             </TouchableOpacity>
                         )
                     })
                 });
+                (item.type === "museum") && this.setState({
+                    isMuseum: true,
+                    nextCollection: item.next,
+                    collections: OrderedSet(item.data)
+                });
                 (item.type === "critic") && this.setState({
                     isCritic: true,
+                    nextRelated: item.next,
                     related: item.data.map((criticItem, criticKey) => {
                         return (
                             <TouchableOpacity
@@ -125,27 +113,12 @@ class Artizen extends React.Component {
                 });
                 (item.type === "exhibition") && this.setState({
                     isExhibition: true,
-                    exhibits: item.data.map((exhibitItem, exhibitKey) => {
-                        return (
-                            <TouchableOpacity
-                                key={exhibitKey}
-                                onPress={() => this.props.navigation.push('Art', {
-                                    artId: exhibitItem.id,
-                                    titleName: exhibitItem.title.default,
-                                })}>
-                                <ArtCard
-                                    artName={exhibitItem.title.default}
-                                    artistName={artizenInfoJson.name.default}
-                                    source={exhibitItem.image && exhibitItem.image.default ? exhibitItem.image.default.url : ""}
-                                    compYear={exhibitItem.completionYear ? exhibitItem.completionYear : ""}
-                                    id={exhibitItem.id}
-                                    fontLoaded={fontLoadStatus}/>
-                            </TouchableOpacity>
-                        )
-                    })
+                    nextExhibition: item.next,
+                    exhibits: OrderedSet(item.data)
                 });
                 (item.type === "genre") && this.setState({
                     isGenre: true,
+                    nextRelated: item.next,
                     related: item.data.map((genreItem, genreKey) => {
                         return (
                             <TouchableOpacity
@@ -167,6 +140,7 @@ class Artizen extends React.Component {
                 });
                 (item.type === "style") && this.setState({
                     isStyle: true,
+                    nextRelated: item.next,
                     related: item.data.map((styleItem, styleKey) => {
                         return (
                             <TouchableOpacity
@@ -190,6 +164,7 @@ class Artizen extends React.Component {
 
             this.setState({
                 artizenId: artizenId,
+                artizenName: artizenInfoJson.name.default,
                 artizen: <ArtizenInfo fontLoaded={fontLoadStatus}
                                       url={artizenInfoJson.avatar} title={artizenInfoJson.name.default}
                                       id={artizenInfoJson.id}
@@ -210,6 +185,90 @@ class Artizen extends React.Component {
         }
     }
 
+    async loadMoreArtworkHandler() {
+        try {
+            let token = await AsyncStorage.getItem('token', null);
+            let artworkInfo = await fetch(this.state.nextArtwork, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let artworkInfoJsonRaw = await artworkInfo.json();
+            this.setState(previousState => ({
+                artworks: previousState.artworks.union(OrderedSet(artworkInfoJsonRaw[0].data)),
+                nextArtwork: artworkInfoJsonRaw[0].next
+            }));
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    async loadMoreCollectionHandler() {
+        try {
+            let token = await AsyncStorage.getItem('token', null);
+            let collectionInfo = await fetch(this.state.nextCollection, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let collectionInfoJsonRaw = await collectionInfo.json();
+            this.setState(previousState => ({
+                collections: previousState.collections.union(OrderedSet(collectionInfoJsonRaw[0].data)),
+                nextCollection: collectionInfoJsonRaw[0].next
+            }));
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    async loadMoreExhibitionHandler() {
+        try {
+            let token = await AsyncStorage.getItem('token', null);
+            let exhibitionInfo = await fetch(this.state.nextExhibition, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let exhibitionInfoJsonRaw = await exhibitionInfo.json();
+            this.setState(previousState => ({
+                exhibits: previousState.exhibits.union(OrderedSet(exhibitionInfoJsonRaw[0].data)),
+                nextExhibition: exhibitionInfoJsonRaw[0].next
+            }));
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    async loadMoreRelatedHandler() {
+        try {
+            let token = await AsyncStorage.getItem('token', null);
+            let relatedInfo = await fetch(this.state.nextRelated, {
+                method: 'GET',
+                headers: token && token !== 'undefined' && token !== 'null' ? {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                } : null
+            });
+            let relatedInfoJsonRaw = await relatedInfo.json();
+            this.setState(previousState => ({
+                related: previousState.related.union(OrderedSet(relatedInfoJsonRaw[0].data)),
+                nextRelated: relatedInfoJsonRaw[0].next
+            }));
+        } catch (error) {
+            alert(error);
+        }
+    }
+
     async loadMoreReviewHandler() {
         try {
             let token = await AsyncStorage.getItem('token', null);
@@ -222,9 +281,8 @@ class Artizen extends React.Component {
                 } : null
             });
             let reviewInfoJsonRaw = await reviewInfo.json();
-            let reviewInfoJson = reviewInfoJsonRaw.data;
             this.setState(previousState => ({
-                reviews: previousState.reviews.union(OrderedSet(reviewInfoJson)),
+                reviews: previousState.reviews.union(OrderedSet(reviewInfoJsonRaw.data)),
                 nextReview: reviewInfoJsonRaw.next
             }));
         } catch (error) {
@@ -239,7 +297,6 @@ class Artizen extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
-                // paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 marginHorizontal: 20,
@@ -296,13 +353,74 @@ class Artizen extends React.Component {
 
                         {this.state.isArtist ? <TitleBar titleText={"Artworks"} fontLoaded={fontLoadStatus}/> : null}
                         {this.state.isArtist ? this.state.artworks : null}
+                        <TouchableOpacity
+                            onPress={this.loadMoreArtworkHandler}>
+                            {this.state.nextArtwork ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
 
                         {this.state.isMuseum ? <TitleBar titleText={"Collections"} fontLoaded={fontLoadStatus}/> : null}
-                        {this.state.isMuseum ? this.state.collections : null}
+                        {this.state.isMuseum ? this.state.collections.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
+                        <TouchableOpacity
+                            onPress={this.loadMoreCollectionHandler}>
+                            {this.state.nextCollection ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
 
                         {this.state.isExhibition ?
                             <TitleBar titleText={"Exhibits"} fontLoaded={fontLoadStatus}/> : null}
-                        {this.state.isExhibition ? this.state.exhibits : null}
+                        {this.state.isExhibition ? this.state.exhibits.map((item) => {
+                            return (
+                                <TouchableOpacity
+                                    key={item.id}
+                                    onPress={() => this.props.navigation.push('Art', {
+                                        artId: item.id,
+                                        titleName: item.title.default,
+                                    })}>
+                                    <ArtCard
+                                        artName={item.title.default}
+                                        artistName={this.state.artizenName}
+                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        compYear={item.completionYear ? item.completionYear : ""}
+                                        id={item.id}
+                                        fontLoaded={fontLoadStatus}/>
+                                </TouchableOpacity>
+                            )
+                        }) : null}
+                        <TouchableOpacity
+                            onPress={this.loadMoreExhibitionHandler}>
+                            {this.state.nextExhibition ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
 
                         {this.state.isCritic ?
                             <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> : null}
@@ -315,6 +433,16 @@ class Artizen extends React.Component {
                         {this.state.isStyle ? <TitleBar titleText={"Related Arts"} fontLoaded={fontLoadStatus}/> :
                             <View/>}
                         {this.state.isStyle ? this.state.related : null}
+
+                        <TouchableOpacity
+                            onPress={this.loadMoreRelatedHandler}>
+                            {this.state.nextRelated ?
+                                <View style={styles.nextButton}>
+                                    <Text style={[styles.textStyle, styles.textNextStyle]}>
+                                        Load More
+                                    </Text>
+                                </View> : null}
+                        </TouchableOpacity>
 
                         <View style={{height: 30}}/>
                         <TitleBar titleText={"Reviews"}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
-import {Dimensions, Image, StyleSheet, Text, View, Linking} from "react-native";
+import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
 import artventure from './assets/icons/artventure.png';
 import compass from './assets/icons/compass.png';
 import journal from './assets/icons/journal.png';
@@ -92,10 +92,6 @@ export default class App extends React.Component {
                     activeTintColor: 'tomato',
                     inactiveTintColor: '#666666',
                     showLabel: true,
-                    tabStyle: {
-                        // borderColor: 'black',
-                        // borderWidth: 1
-                    },
                     style: {
                         height: 60,
                         backgroundColor: '#ffffff',

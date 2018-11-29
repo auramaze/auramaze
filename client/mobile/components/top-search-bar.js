@@ -72,6 +72,7 @@ class TopSearchBar extends React.Component {
                 hasSearched: true,
                 searchArt: this.state.searchArt, haveArt: this.state.haveArt,
                 searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
+                nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
             })
         } catch (error) {
             alert(error);
@@ -81,9 +82,7 @@ class TopSearchBar extends React.Component {
     render() {
 
         let onClear = () => {
-            this.setState(previousState => (
-                {term: '', searchArt: '', searchArtizen: [], haveArtizen: false, haveArt: false}
-            ));
+            this.setState({term: '', searchArt: '', searchArtizen: [], haveArtizen: false, haveArt: false});
             this.props.updateSearchStatus({
                 hasSearched: false
             });
@@ -99,12 +98,11 @@ class TopSearchBar extends React.Component {
                 this.search.clear();
                 return
             }
-            this.searchAuraMaze(this.state.term);
+            this.searchAuraMaze(this.state.term).done();
         };
 
 
         return (
-
             <SearchBar
                 ref={search => this.search = search}
                 containerStyle={{backgroundColor: '#fff'}}
@@ -113,8 +111,7 @@ class TopSearchBar extends React.Component {
                 placeholder='Search'
                 cancelButtonTitle="Cancel"
                 value={this.state.term}
-                onChangeText={(term) => (
-                    this.setState({term: term}))}
+                onChangeText={(term) => (this.setState({term: term}))}
                 onClear={onClear}
                 onSubmitEditing={onEnd}
                 onCancel={onCancel}/>
