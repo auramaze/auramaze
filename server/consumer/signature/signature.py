@@ -42,6 +42,7 @@ ses = AuraMazeSignatureES(es)
 c = AvroConsumer({
     'bootstrap.servers': '{}:9092'.format(KAFKA_HOST),
     'group.id': '3',
+    'enable.auto.commit': False,
     'schema.registry.url': 'http://{}:8081'.format(KAFKA_HOST)})
 
 c.subscribe(['aurora.auramaze.art'])
@@ -73,7 +74,11 @@ while True:
     try:
         if msg_value['op'] in ['c', 'u']:
             update_signature(msg_value)
+        c.commit(message=msg)
     except (TypeError, KeyError) as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
+    except Exception as e:
+        print('Uncaught exception: {}: {}'.format(msg_value, e), flush=True)
+        break
 
 c.close()

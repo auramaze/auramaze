@@ -253,6 +253,7 @@ def convert_content_to_plain_text(content):
 c = AvroConsumer({
     'bootstrap.servers': '{}:9092'.format(KAFKA_HOST),
     'group.id': '2',
+    'enable.auto.commit': False,
     'schema.registry.url': 'http://{}:8081'.format(KAFKA_HOST)})
 
 c.subscribe(['aurora.auramaze.art', 'aurora.auramaze.artizen', 'aurora.auramaze.archive', 'aurora.auramaze.text'])
@@ -300,7 +301,11 @@ while True:
         elif msg_value['source']['table'] == 'text':
             if msg_value['op'] in ['c', 'u', 'd']:
                 update_introduction(msg_value)
+        c.commit(message=msg)
     except (TypeError, KeyError) as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
+    except Exception as e:
+        print('Uncaught exception: {}: {}'.format(msg_value, e), flush=True)
+        break
 
 c.close()
