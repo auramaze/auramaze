@@ -23,7 +23,7 @@ class Recommendation extends React.Component {
         super(props);
         this.state = {
             searchResult: {hasSearched: false}, recommendation: 'undefined', refreshing: false,
-            recommendArt: OrderedSet([]), recommendNext: null, hasLoaded: false
+            recommendArt: OrderedSet([]), recommendNext: null
         };
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
         this._loadRecommend = this._loadRecommend.bind(this);
@@ -44,9 +44,6 @@ class Recommendation extends React.Component {
     };
 
     async _loadRecommend() {
-        this.setState({
-            hasLoaded: false
-        });
         let fontLoaded = this.props.screenProps.fontLoaded;
         let token = await AsyncStorage.getItem('token', null).catch((err) => {
             alert(err);
@@ -90,8 +87,7 @@ class Recommendation extends React.Component {
             this.setState({
                 recommendation: 'defined',
                 recommendNext: responseJsonRaw.next,
-                recommendArt: OrderedSet(artArray),
-                hasLoaded: true
+                recommendArt: OrderedSet(artArray)
             });
         }).catch(function (error) {
             alert('There has been a problem with your fetch operation: ' + error.message);
@@ -102,32 +98,6 @@ class Recommendation extends React.Component {
     updateSearchStatus = (info) => {
         this.setState({searchResult: info});
     };
-
-    async loadMoreHandler() {
-        if (!this.state.hasLoaded) return;
-        this.setState({
-            hasLoaded: false
-        });
-        try {
-            let token = await AsyncStorage.getItem('token', null);
-            let recommendInfo = await fetch(this.state.recommendNext, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                }
-            });
-            let recommendInfoJsonRaw = await recommendInfo.json();
-            this.setState(previousState => ({
-                recommendArt: previousState.recommendArt.union(OrderedSet(recommendInfoJsonRaw.data)),
-                recommendNext: recommendInfoJsonRaw.next,
-                hasLoaded: true
-            }));
-        } catch (error) {
-            alert(error);
-        }
-    }
 
     render() {
 
@@ -158,14 +128,12 @@ class Recommendation extends React.Component {
                                 }>
                         {this.state.recommendArt ?
                             <View style={{marginHorizontal: 5}}>
-                                <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                                <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
                             </View> : null}
                         this.state.recommendation !== 'undefined' ? <View
                         style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
                         <FlatList data={this.state.recommendArt.toArray()}
                                   renderItem={({item}) => item}
-                                  onEndReached={this.loadMoreHandler}
-                                  onEndThreshold={0}
                                   keyExtractor={(item, index) => index.toString()}/>
                     </View>: null
                     </ScrollView>}

@@ -65,7 +65,6 @@ class CameraScreen extends React.Component {
                         }
                     }).then((responseJson) => {
                             this.setState({imageProcessing: false});
-                            // alert(JSON.stringify(responseJson));
                             let resultArt = responseJson.data;
                             if (resultArt.length >= 1) {
                                 this.props.navigation.navigate('Art', {

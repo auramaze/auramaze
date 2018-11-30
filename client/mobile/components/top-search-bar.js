@@ -1,17 +1,19 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, FlatList} from 'react-native';
+import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, FlatList, AsyncStorage} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import ArtCard from "../components/art-card";
 import ArtizenCard from "../components/artizen-card";
 import Art from "../art/art";
 import config from "../config.json";
+import {OrderedSet} from 'immutable';
 
 
 class TopSearchBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchArtizen: []};
+        this.state = {searchArtizen: OrderedSet([]), searchArt: OrderedSet([])};
+        this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
     }
 
     async searchAuraMaze(searchItem) {
@@ -22,6 +24,7 @@ class TopSearchBar extends React.Component {
             let responseArtizenJson = await responseArtizen.json();
             let returnArt = responseArtJson.data.length >= 1;
             let returnArtizen = responseArtizenJson.data.length >= 1;
+            let artArray = [];
             let artizenArray = [];
             responseArtizenJson.data.map((item, key) => {
                 artizenArray.push(
@@ -38,6 +41,23 @@ class TopSearchBar extends React.Component {
                     </TouchableOpacity>)
             });
 
+            responseArtJson.data.map((item, key) => {
+                artArray.push(
+                    <TouchableOpacity key={key}
+                                      onPress={() => this.props.navigation.navigate('Art', {
+                                          artId: item.id,
+                                          titleName: item.title.default,
+                                      })}>
+                        <ArtCard artName={item.title.default}
+                                 artistName={item.artist ? item.artist.default : ""}
+                                 source={item.image && item.image.default ? item.image.default.url : null}
+                                 compYear={item.completionYear ? item.completionYear : ""}
+                                 id={item.id}
+                                 fontLoaded={this.props.fontLoaded}
+                        />
+                    </TouchableOpacity>)
+            });
+
             let artizenArrays = [], size = 2;
             while (artizenArray.length > 0)
                 artizenArrays.push(artizenArray.splice(0, size));
@@ -47,33 +67,30 @@ class TopSearchBar extends React.Component {
                 nextArtizen: responseArtizenJson.next,
                 haveArt: returnArt,
                 haveArtizen: returnArtizen,
-                searchArtizen: artizenArrays,
-                searchArt: responseArtJson.data.map((item, key) => {
-                    return (
-                        <TouchableOpacity
-                            key={key}
-                            onPress={() => this.props.navigation.navigate('Art', {
-                                artId: item.id,
-                                titleName: item.title.default,
-                            })}>
-                            <ArtCard
-                                artName={item.title.default}
-                                artistName={item.artist ? item.artist.default : ""}
-                                source={item.image && item.image.default ? item.image.default.url : null}
-                                compYear={item.completionYear ? item.completionYear : ""}
-                                id={item.id}
-                                fontLoaded={this.props.fontLoaded}
-                            />
-                        </TouchableOpacity>
-                    );
-                })
+                searchArtizen: OrderedSet(artizenArrays),
+                searchArt: OrderedSet(artArray)
             });
             this.props.updateSearchStatus({
                 hasSearched: true,
                 searchArt: this.state.searchArt, haveArt: this.state.haveArt,
                 searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
                 nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
+                loadMoreArtHandler: this.loadMoreArtHandler
             })
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    async loadMoreArtHandler() {
+        alert("aha");
+        try {
+            let responseArt = await fetch(this.state.nextArt);
+            let responseArtJsonRaw = await responseArt.json();
+            this.setState(previousState => ({
+                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
+                nextArt: responseArtJsonRaw.next,
+            }));
         } catch (error) {
             alert(error);
         }

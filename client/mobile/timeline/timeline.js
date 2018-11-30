@@ -68,17 +68,20 @@ class TimeLine extends React.Component {
             mainStruct: {
                 flex: 1,
                 paddingTop: Constants.statusBarHeight,
+                height: Dimensions.get('window').height
             },
             backPage: {
                 backgroundColor: '#cdcdcd',
-                marginBottom: 40
+                marginBottom: 40,
+                height: Dimensions.get('window').height
             }
         });
 
         return (
             <View style={styles.mainStruct}>
 
-                <View style={!this.state.searchResult.hasSearched ? styles.backPage : null}>
+                <View style={!this.state.searchResult.hasSearched ? styles.backPage :
+                    {height: Dimensions.get('window').height}}>
 
                     <TopSearchBar updateSearchStatus={this.updateSearchStatus}
                                   navigation={this.props.navigation}

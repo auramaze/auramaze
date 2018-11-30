@@ -40,6 +40,7 @@ class SearchPage extends React.Component {
         const styles = StyleSheet.create({
             mainContext: {
                 paddingHorizontal: 15, justifyContent: 'center',
+                height: Dimensions.get('window').height
             },
             headerText: {
                 fontSize: 20,
@@ -59,12 +60,12 @@ class SearchPage extends React.Component {
 
         return (
             <View style={styles.mainContext}>
-                <ScrollView keyboardDismissMode='on-drag'>
+                <ScrollView keyboardDismissMode='on-drag' style={{height: Dimensions.get('window').height}}>
                     {this.props.searchResult.haveArtizen ?
                         <View style={{marginHorizontal: 5}}>
                             <TitleBar titleText={"Artizen"} fontLoaded={this.props.fontLoaded}/>
                         </View> : null}
-                    <FlatList data={this.props.searchResult.searchArtizen}
+                    <FlatList data={this.props.searchResult.searchArtizen.toArray()}
                               horizontal={true}
                               showsHorizontalScrollIndicator={false}
                               renderItem={({item}) => SearchPage.renderRow(item)}
@@ -75,11 +76,14 @@ class SearchPage extends React.Component {
                         <View style={{marginHorizontal: 5}}>
                             <TitleBar titleText={"Art"} fontLoaded={this.props.fontLoaded}/>
                         </View> : null}
-                    {this.props.searchResult.searchArt}
+                    <FlatList data={this.props.searchResult.searchArt.toArray()}
+                              renderItem={({item}) => item}
+                              onEndReached={this.props.searchResult.loadMoreArtHandler}
+                              onEndThreshold={0}
+                              keyExtractor={(item, index) => index.toString()}/>
                     <View style={{height: 140}}/>
                 </ScrollView>
             </View>
-
         );
     }
 }
