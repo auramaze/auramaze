@@ -13,7 +13,6 @@ import {
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import SearchPage from "../components/search-page";
-import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
@@ -120,24 +119,25 @@ class Recommendation extends React.Component {
                 {this.state.searchResult.hasSearched ?
                     <SearchPage searchResult={this.state.searchResult}
                                 fontLoaded={this.props.screenProps.fontLoaded}/> :
-                    this.state.recommendation !== 'undefined' ?
-                        <ScrollView keyboardDismissMode='on-drag'
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this._onRefresh}
-                                        />
-                                    }>
-                            {this.state.recommendArt ?
-                                <View style={{marginHorizontal: 5}}>
-                                    <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                                </View> : null}
-                            <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                                <FlatList data={this.state.recommendArt}
-                                          renderItem={({item}) => item}
-                                          keyExtractor={(item, index) => index.toString()}/>
-                            </View>
-                        </ScrollView> : null}
+
+                    <ScrollView keyboardDismissMode='on-drag'
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh}
+                                    />
+                                }>
+                        {this.state.recommendArt ?
+                            <View style={{marginHorizontal: 5}}>
+                                <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </View> : null}
+                        this.state.recommendation !== 'undefined' ? <View
+                        style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                        <FlatList data={this.state.recommendArt}
+                                  renderItem={({item}) => item}
+                                  keyExtractor={(item, index) => index.toString()}/>
+                    </View>: null
+                    </ScrollView>}
             </View>
         );
     }
