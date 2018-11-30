@@ -15,6 +15,7 @@ services:
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
      - ADVERTISED_HOST_NAME=ec2-34-232-80-64.compute-1.amazonaws.com
+     - KAFKA_NUM_PARTITIONS=4
   schema-registry:
     image: confluentinc/cp-schema-registry
     ports:
