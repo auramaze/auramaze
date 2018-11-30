@@ -11,7 +11,7 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
+        this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null, nextRelated: null};
         this._loadInitialState = this._loadInitialState.bind(this);
         this._fetchInfo = this._fetchInfo.bind(this);
         this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);

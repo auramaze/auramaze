@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, FlatList, RefreshControl} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
+import {OrderedSet} from 'immutable';
 
 
 class SearchPage extends React.Component {
@@ -58,27 +59,35 @@ class SearchPage extends React.Component {
             }
         });
 
+        const {navigation} = this.props;
+        const haveArtizen = navigation.getParam('haveArtizen', false);
+        const haveArt = navigation.getParam('haveArt', false);
+        const searchArtizen = navigation.getParam('searchArtizen', OrderedSet([]));
+        const searchArt = navigation.getParam('searchArt', OrderedSet([]));
+        const loadMoreArtHandler = navigation.getParam('loadMoreArtHandler', null);
+        let fontLoadStatus = this.props.screenProps.fontLoaded;
+
         return (
             <View style={styles.mainContext}>
                 <ScrollView keyboardDismissMode='on-drag' style={{height: Dimensions.get('window').height}}>
-                    {this.props.searchResult.haveArtizen ?
+                    {haveArtizen ?
                         <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Artizen"} fontLoaded={this.props.fontLoaded}/>
+                            <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
                         </View> : null}
-                    <FlatList data={this.props.searchResult.searchArtizen.toArray()}
+                    <FlatList data={searchArtizen.toArray()}
                               horizontal={true}
                               showsHorizontalScrollIndicator={false}
                               renderItem={({item}) => SearchPage.renderRow(item)}
                               keyExtractor={(item, index) => index.toString()}/>
-                    {this.props.searchResult.haveArtizen ? <View style={{height: 20}}/> : null}
+                    {haveArtizen ? <View style={{height: 20}}/> : null}
 
-                    {this.props.searchResult.haveArt ?
+                    {haveArt ?
                         <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Art"} fontLoaded={this.props.fontLoaded}/>
+                            <TitleBar titleText={"Art"} fontLoaded={fontLoadStatus}/>
                         </View> : null}
-                    <FlatList data={this.props.searchResult.searchArt.toArray()}
+                    <FlatList data={searchArt.toArray()}
                               renderItem={({item}) => item}
-                              onEndReached={this.props.searchResult.loadMoreArtHandler}
+                              onEndReached={loadMoreArtHandler}
                               onEndThreshold={0}
                               keyExtractor={(item, index) => index.toString()}/>
                     <View style={{height: 140}}/>

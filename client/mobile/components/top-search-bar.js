@@ -70,20 +70,21 @@ class TopSearchBar extends React.Component {
                 searchArtizen: OrderedSet(artizenArrays),
                 searchArt: OrderedSet(artArray)
             });
-            this.props.updateSearchStatus({
-                hasSearched: true,
-                searchArt: this.state.searchArt, haveArt: this.state.haveArt,
-                searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
-                nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
-                loadMoreArtHandler: this.loadMoreArtHandler
-            })
+            this.props.navigation.navigate('SearchPage',
+                {
+                    hasSearched: true,
+                    searchArt: this.state.searchArt, haveArt: this.state.haveArt,
+                    searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
+                    nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
+                    loadMoreArtHandler: this.loadMoreArtHandler
+                })
         } catch (error) {
             alert(error);
         }
     }
 
     async loadMoreArtHandler() {
-        alert("aha");
+        // alert("aha");
         try {
             let responseArt = await fetch(this.state.nextArt);
             let responseArtJsonRaw = await responseArt.json();

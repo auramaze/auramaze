@@ -11,7 +11,6 @@ import {
 import {Constants} from 'expo';
 import {OrderedSet} from 'immutable';
 import TopSearchBar from "../components/top-search-bar";
-import SearchPage from "../components/search-page";
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
@@ -22,10 +21,9 @@ class Recommendation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchResult: {hasSearched: false}, recommendation: 'undefined', refreshing: false,
+            recommendation: 'undefined', refreshing: false,
             recommendArt: OrderedSet([]), recommendNext: null
         };
-        this.updateSearchStatus = this.updateSearchStatus.bind(this);
         this._loadRecommend = this._loadRecommend.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
@@ -95,10 +93,6 @@ class Recommendation extends React.Component {
 
     }
 
-    updateSearchStatus = (info) => {
-        this.setState({searchResult: info});
-    };
-
     render() {
 
         const styles = StyleSheet.create({
@@ -111,32 +105,27 @@ class Recommendation extends React.Component {
         return (
             <View style={styles.mainStruct}>
 
-                <TopSearchBar updateSearchStatus={this.updateSearchStatus}
-                              navigation={this.props.navigation}
+                <TopSearchBar navigation={this.props.navigation}
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                {this.state.searchResult.hasSearched ?
-                    <SearchPage searchResult={this.state.searchResult}
-                                fontLoaded={this.props.screenProps.fontLoaded}/> :
-
-                    <ScrollView keyboardDismissMode='on-drag'
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.refreshing}
-                                        onRefresh={this._onRefresh}
-                                    />
-                                }>
-                        {this.state.recommendArt ?
-                            <View style={{marginHorizontal: 5}}>
-                                <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                            </View> : null}
-                        this.state.recommendation !== 'undefined' ? <View
-                        style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                        <FlatList data={this.state.recommendArt.toArray()}
-                                  renderItem={({item}) => item}
-                                  keyExtractor={(item, index) => index.toString()}/>
-                    </View>: null
-                    </ScrollView>}
+                <ScrollView keyboardDismissMode='on-drag'
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                />
+                            }>
+                    {this.state.recommendArt ?
+                        <View style={{marginHorizontal: 5}}>
+                            <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                        </View> : null}
+                    this.state.recommendation !== 'undefined' ? <View
+                    style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                    <FlatList data={this.state.recommendArt.toArray()}
+                              renderItem={({item}) => item}
+                              keyExtractor={(item, index) => index.toString()}/>
+                </View>: null
+                </ScrollView>
             </View>
         );
     }
