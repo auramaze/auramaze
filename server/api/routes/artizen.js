@@ -96,6 +96,7 @@ router.get('/:id/art', [
                 let multitype = false;
                 let types = [];
                 if (req.query.type) {
+                    types = [req.query.type];
                     sql = 'SELECT SQL_CALC_FOUND_ROWS art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
                     parameters = [parseInt(id), req.query.type, size, from];
                 } else {
@@ -121,7 +122,7 @@ router.get('/:id/art', [
                             // Merge multiple query results
                             result = [].concat.apply([], result.filter((item, index) => index % 2 === 0));
                         } else {
-                            total[req.query.type] = result[1][0].total;
+                            total[types[0]] = result[1][0].total;
                             result = result[0];
                         }
 
