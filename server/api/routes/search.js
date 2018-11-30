@@ -124,12 +124,17 @@ router.post('/', [
         json: true
     }, (error, response, body) => {
         /* istanbul ignore if */
-        if (error || !(response && response.statusCode === 200)) {
+        if (error || (response.statusCode !== 200 && response.statusCode !== 400)) {
             res.status(500).json({
                 code: 'AURA_ERROR',
                 message: 'Error in Aura image search'
             });
-        } else {
+        } else if (response.statusCode === 400) {
+            res.status(400).json({
+                code: 'AURA_INVALID',
+                message: 'Invalid input to Aura image search'
+            });
+        } else if (response.statusCode === 200) {
             res.json(Object.assign(body, {next: null}));
 
             const buf = new Buffer(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');

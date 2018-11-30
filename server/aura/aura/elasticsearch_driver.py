@@ -151,10 +151,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         import time
         # print('send-{}'.format(time.time()))
-        res = self.es.search(index=self.index,
+        try:
+            res = self.es.search(index=self.index,
                              doc_type=self.doc_type,
                              body=body,
                              size=self.size)['hits']['hits']
+        except KeyError:
+            res = []
         # print('receive-{}'.format(time.time()))
 
         sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
@@ -203,7 +206,10 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         result = []
 
         for response, signature in zip(responses, signatures):
-            res = response['hits']['hits']
+            try:
+                res = response['hits']['hits']
+            except KeyError:
+                res = []
             sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
 
             if sigs.size == 0:
