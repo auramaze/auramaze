@@ -33,7 +33,6 @@ class CameraScreen extends React.Component {
     handleMountError = ({message}) => console.error(message);
 
     takePicture = async () => {
-
         if (this.camera) {
 
             this.setState({imageProcessing: true});

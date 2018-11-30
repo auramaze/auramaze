@@ -25,9 +25,6 @@ class Recommendation extends React.Component {
         super(props);
         this.state = {
             searchResult: {hasSearched: false}, recommendation: 'undefined', refreshing: false,
-            haveArtizen: false,
-            recommendArtizen: [],
-            haveArt: false,
             recommendArt: []
         };
         this.updateSearchStatus = this.updateSearchStatus.bind(this);
@@ -69,66 +66,39 @@ class Recommendation extends React.Component {
             }
         }).then((responseJsonRaw) => {
             let responseJson = responseJsonRaw.data;
-            let returnArtizen = responseJson.artizen.length >= 1;
-            let returnArt = responseJson.length >= 1;
-            let artizenArray = [];
-
-            responseJson.artizen.map((item, key) => {
-                artizenArray.push(
-                    <TouchableOpacity key={key}
-                                      onPress={() => this.props.navigation.navigate('Artizen', {
-                                          artizenId: item.id,
-                                          titleName: item.name.default,
-                                      })}>
-                        <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                     source={item.avatar ? item.avatar : null}
-                                     id={item.id}
-                                     topMargin={0}
-                                     fontLoaded={fontLoaded}/>
+            let artArray = [];
+            responseJson.map((item) => {
+                artArray.push(
+                    <TouchableOpacity
+                        key={item.id}
+                        onPress={() => this.props.navigation.navigate('Art', {
+                            artId: item.id,
+                            titleName: item.title.default,
+                        })}>
+                        <ArtCard
+                            artName={item.title.default}
+                            artistName={item.artist ? item.artist.default : ""}
+                            source={item.image && item.image.default ? item.image.default.url : null}
+                            compYear={item.completionYear ? item.completionYear : ""}
+                            id={item.id}
+                            fontLoaded={fontLoaded}
+                        />
                     </TouchableOpacity>)
             });
 
-            let artizenArrays = [], size = 2;
-            while (artizenArray.length > 0)
-                artizenArrays.push(artizenArray.splice(0, size));
-
-            this.setState(previousState => ({
+            this.setState({
                 recommendation: 'defined',
                 recommendNext: responseJsonRaw.next,
-                haveArtizen: returnArtizen,
-                recommendArtizen: artizenArrays,
-                haveArt: returnArt,
-                recommendArt: responseJson.map((item, key) => {
-                    return (
-                        <TouchableOpacity
-                            key={key}
-                            onPress={() => this.props.navigation.navigate('Art', {
-                                artId: item.id,
-                                titleName: item.title.default,
-                            })}>
-                            <ArtCard
-                                artName={item.title.default}
-                                artistName={item.artist ? item.artist.default : ""}
-                                source={item.image && item.image.default ? item.image.default.url : null}
-                                compYear={item.completionYear ? item.completionYear : ""}
-                                id={item.id}
-                                fontLoaded={fontLoaded}
-                            />
-                        </TouchableOpacity>
-                    );
-                })
-            }));
+                recommendArt: artArray,
+            });
         }).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
 
     }
 
     updateSearchStatus = (info) => {
-        this.setState(previousState => (
-            {searchResult: info}
-        ));
+        this.setState({searchResult: info});
     };
 
     render() {
@@ -158,23 +128,14 @@ class Recommendation extends React.Component {
                                             onRefresh={this._onRefresh}
                                         />
                                     }>
-                            {this.state.haveArtizen ?
-                                <View style={{marginHorizontal: 5}}>
-                                    <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                                </View> : null}
-                            <FlatList data={this.state.recommendArtizen}
-                                      horizontal={true}
-                                      showsHorizontalScrollIndicator={false}
-                                      renderItem={({item}) => SearchPage.renderRow(item)}
-                                      keyExtractor={(item, index) => index.toString()}/>
-
-                            {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
-                            {this.state.haveArt ?
+                            {this.state.recommendArt ?
                                 <View style={{marginHorizontal: 5}}>
                                     <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
                                 </View> : null}
                             <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                                {this.state.recommendArt}
+                                <FlatList data={this.state.recommendArt}
+                                          renderItem={({item}) => item}
+                                          keyExtractor={(item, index) => index.toString()}/>
                             </View>
                         </ScrollView> : null}
             </View>
