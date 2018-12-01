@@ -199,7 +199,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
                 'bool': {'should': multi_should}
             },
             '_source': {'excludes': ['simple_word_*']},
-            'size': 2
+            'size': 100
         }
         if pre_filter is not None:
             bodyu['query']['bool']['filter'] = pre_filter
