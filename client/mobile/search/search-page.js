@@ -1,8 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, FlatList} from 'react-native';
+import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
 import {OrderedSet} from 'immutable';
+import ArtizenCard from "../components/artizen-card";
+import ArtCard from "../components/art-card";
 
 
 class SearchPage extends React.Component {
@@ -18,7 +20,6 @@ class SearchPage extends React.Component {
             nextArt: navigation.getParam('nextArt', null),
             nextArtizen: navigation.getParam('nextArtizen', null),
         };
-        SearchPage.renderRow = SearchPage.renderRow.bind(this);
         this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
     }
 
@@ -36,34 +37,12 @@ class SearchPage extends React.Component {
         }
     }
 
-    static renderRow(item) {
-        return (
-            <View style={{margin: 5}}>
-                <View style={{
-                    width: Dimensions.get('window').width * 300 / 375,
-                    marginTop: 10, marginHorizontal: 10,
-                    alignItems: 'center', justifyContent: 'center'
-                }}>
-                    {item[0]}
-                </View>
-                {item.length > 1 ?
-                    <View
-                        style={{
-                            width: Dimensions.get('window').width * 300 / 375, height: 100,
-                            marginHorizontal: 10, marginBottom: -20,
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
-                        {item[1]}
-                    </View> : null}
-            </View>
-        );
-    }
-
     render() {
 
         const styles = StyleSheet.create({
             mainContext: {
-                paddingHorizontal: 15, justifyContent: 'center'
+                paddingHorizontal: 15, justifyContent: 'center',
+                height: Dimensions.get('window').height
             },
             headerText: {
                 fontSize: 20,
@@ -85,26 +64,55 @@ class SearchPage extends React.Component {
 
         let dataToRender = [];
 
-        if (this.state.haveArtizen) dataToRender.push(
-            <View style={{marginHorizontal: 5}}>
-                <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
-            </View>);
-        dataToRender.push(<FlatList data={this.state.searchArtizen.toArray()}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    renderItem={({item}) => SearchPage.renderRow(item)}
-                                    keyExtractor={(item, index) => index.toString()}/>);
-        if (this.state.haveArt) dataToRender.push(
-            <View style={{marginHorizontal: 5}}>
-                <TitleBar titleText={"Art"} fontLoaded={fontLoadStatus}/>
-            </View>);
-        dataToRender.concat(this.state.searchArt.toArray());
-        alert(dataToRender.length);
+        if (this.state.searchArtizen.size) {
+            dataToRender.push(
+                <View style={{marginHorizontal: 5}}>
+                    <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
+                </View>);
+            dataToRender.push(<FlatList data={this.state.searchArtizen.toArray()}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        renderItem={({item}) => (
+                                            <TouchableOpacity key={item.id}
+                                                              onPress={() => this.props.navigation.navigate('Artizen', {
+                                                                  artizenId: item.id,
+                                                                  titleName: item.name.default,
+                                                              })}>
+                                                <ArtizenCard name={item.name.default ? item.name.default : ""}
+                                                             source={item.avatar ? item.avatar : null}
+                                                             id={item.id}
+                                                             topMargin={0}
+                                                             fontLoaded={fontLoadStatus}/>
+                                            </TouchableOpacity>)}
+                                        keyExtractor={(item, index) => index.toString()}/>);
+        }
+        if (this.state.searchArt.size) {
+            dataToRender.push(
+                <View style={{marginHorizontal: 5}}>
+                    <TitleBar titleText={"Art"} fontLoaded={fontLoadStatus}/>
+                </View>);
+            dataToRender = dataToRender.concat(this.state.searchArt.map(item => (
+                <TouchableOpacity key={item.id}
+                                  onPress={() => this.props.navigation.navigate('Art', {
+                                      artId: item.id,
+                                      titleName: item.title.default,
+                                  })}>
+                    <ArtCard artName={item.title.default}
+                             artistName={item.artist ? item.artist.default : ""}
+                             source={item.image && item.image.default ? item.image.default.url : null}
+                             compYear={item.completionYear ? item.completionYear : ""}
+                             id={item.id}
+                             fontLoaded={fontLoadStatus}
+                    />
+                </TouchableOpacity>
+            )));
+        }
+
 
         return (
             <View style={styles.mainContext}>
                 <FlatList data={dataToRender}
-                          renderItem={({item}) => item}
+                          renderItem={({item}) => (item)}
                           onEndReached={this.loadMoreArtHandler}
                           onEndThreshold={0}
                           keyExtractor={(item, index) => index.toString()}/>

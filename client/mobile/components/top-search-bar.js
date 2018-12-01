@@ -21,60 +21,17 @@ class TopSearchBar extends React.Component {
             let responseArtizen = await fetch(`${config.API_ENDPOINT}/search?index=artizen&q=${encodeURIComponent(searchItem)}`);
             let responseArtJson = await responseArt.json();
             let responseArtizenJson = await responseArtizen.json();
-            let returnArt = responseArtJson.data.length >= 1;
-            let returnArtizen = responseArtizenJson.data.length >= 1;
-            let artArray = [];
-            let artizenArray = [];
-            responseArtizenJson.data.map((item, key) => {
-                artizenArray.push(
-                    <TouchableOpacity key={key}
-                                      onPress={() => this.props.navigation.navigate('Artizen', {
-                                          artizenId: item.id,
-                                          titleName: item.name.default,
-                                      })}>
-                        <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                     source={item.avatar ? item.avatar : null}
-                                     id={item.id}
-                                     topMargin={0}
-                                     fontLoaded={this.props.fontLoaded}/>
-                    </TouchableOpacity>)
-            });
-
-            responseArtJson.data.map((item, key) => {
-                artArray.push(
-                    <TouchableOpacity key={key}
-                                      onPress={() => this.props.navigation.navigate('Art', {
-                                          artId: item.id,
-                                          titleName: item.title.default,
-                                      })}>
-                        <ArtCard artName={item.title.default}
-                                 artistName={item.artist ? item.artist.default : ""}
-                                 source={item.image && item.image.default ? item.image.default.url : null}
-                                 compYear={item.completionYear ? item.completionYear : ""}
-                                 id={item.id}
-                                 fontLoaded={this.props.fontLoaded}
-                        />
-                    </TouchableOpacity>)
-            });
-
-            let artizenArrays = [], size = 2;
-            while (artizenArray.length > 0)
-                artizenArrays.push(artizenArray.splice(0, size));
 
             this.setState({
                 nextArt: responseArtJson.next,
                 nextArtizen: responseArtizenJson.next,
-                haveArt: returnArt,
-                haveArtizen: returnArtizen,
-                searchArtizen: OrderedSet(artizenArrays),
-                searchArt: OrderedSet(artArray)
+                searchArtizen: OrderedSet(responseArtizenJson.data),
+                searchArt: OrderedSet(responseArtJson.data)
             });
             this.props.navigation.navigate('SearchPage',
                 {
                     searchArt: this.state.searchArt,
-                    haveArt: this.state.haveArt,
                     searchArtizen: this.state.searchArtizen,
-                    haveArtizen: this.state.haveArtizen,
                     nextArt: this.state.nextArt,
                     nextArtizen: this.state.nextArtizen
                 })
