@@ -129,7 +129,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
             transformed_records.append(transformed_record)
 
-        return self.search_multiple_records(transformed_records)
+        res = self.search_multiple_records(transformed_records)
+        for record in res:
+            for field in record['image']:
+                new_dict = {key: record['image'][field][key] for key in record['image'][field] if not key.startswith('simple_word') and key != 'signature'}
+                record['image'][field] = new_dict
+        print(res)
+        return res
 
     def search_single_record(self, rec, pre_filter=None):
         path = rec.pop('path')
@@ -193,7 +199,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
                 'bool': {'should': multi_should}
             },
             '_source': {'excludes': ['simple_word_*']},
-            'size': 100
+            'size': 2
         }
         if pre_filter is not None:
             bodyu['query']['bool']['filter'] = pre_filter
