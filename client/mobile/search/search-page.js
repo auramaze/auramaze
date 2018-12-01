@@ -20,17 +20,21 @@ class SearchPage extends React.Component {
             nextArt: navigation.getParam('nextArt', null),
             nextArtizen: navigation.getParam('nextArtizen', null),
         };
+        this.onEndReachedCalledDuringMomentum = true;
         this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
     }
 
     async loadMoreArtHandler() {
-        // alert("aha");
-        let responseArt = await fetch(this.state.nextArt);
-        let responseArtJsonRaw = await responseArt.json();
-        this.setState(previousState => ({
-            searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
-            nextArt: responseArtJsonRaw.next,
-        }));
+        if (!this.onEndReachedCalledDuringMomentum) {
+            alert("aha");
+            let responseArt = await fetch(this.state.nextArt);
+            let responseArtJsonRaw = await responseArt.json();
+            this.setState(previousState => ({
+                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
+                nextArt: responseArtJsonRaw.next,
+            }));
+            this.onEndReachedCalledDuringMomentum = true;
+        }
     }
 
     render() {
@@ -108,7 +112,10 @@ class SearchPage extends React.Component {
                 <FlatList data={dataToRender}
                           renderItem={({item}) => (item)}
                           onEndReached={this.loadMoreArtHandler}
-                          onEndThreshold={0}
+                          onEndThreshold={1}
+                          onMomentumScrollBegin={() => {
+                              this.onEndReachedCalledDuringMomentum = false;
+                          }}
                           keyExtractor={(item, index) => index.toString()}/>
             </View>
         );
