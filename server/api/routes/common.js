@@ -252,13 +252,13 @@ Common.prototype.detectLanguage = (content) => {
 
 
 const generateJWT = (user) => {
-    const today = new Date();
-    const expirationDate = new Date(today);
-    expirationDate.setDate(today.getDate() + 60);
+    // const today = new Date();
+    // const expirationDate = new Date(today);
+    // expirationDate.setDate(today.getDate() + 60);
 
     return jwt.sign({
         id: parseInt(user.id),
-        exp: parseInt(expirationDate.getTime() / 1000, 10),
+        // exp: parseInt(expirationDate.getTime() / 1000, 10),
     }, process.env.SECRET);
 };
 
