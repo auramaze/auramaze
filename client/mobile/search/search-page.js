@@ -20,20 +20,32 @@ class SearchPage extends React.Component {
             nextArt: navigation.getParam('nextArt', null),
             nextArtizen: navigation.getParam('nextArtizen', null),
         };
-        this.onEndReachedCalledDuringMomentum = true;
+        this.onArtEndReachedCalledDuringMomentum = true;
         this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
+        this.loadMoreArtizenHandler = this.loadMoreArtizenHandler.bind(this);
     }
 
     async loadMoreArtHandler() {
-        if (!this.onEndReachedCalledDuringMomentum) {
-            alert("aha");
-            let responseArt = await fetch(this.state.nextArt);
-            let responseArtJsonRaw = await responseArt.json();
+        if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt) {
+            const responseArt = await fetch(this.state.nextArt);
+            const responseArtJsonRaw = await responseArt.json();
             this.setState(previousState => ({
                 searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
                 nextArt: responseArtJsonRaw.next,
             }));
-            this.onEndReachedCalledDuringMomentum = true;
+            this.onArtEndReachedCalledDuringMomentum = true;
+        }
+    }
+
+    async loadMoreArtizenHandler() {
+        if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen) {
+            const responseArtizen = await fetch(this.state.nextArtizen);
+            const responseArtizenJsonRaw = await responseArtizen.json();
+            this.setState(previousState => ({
+                searchArtizen: previousState.searchArtizen.union(OrderedSet(responseArtizenJsonRaw.data)),
+                nextArtizen: responseArtizenJsonRaw.next,
+            }));
+            this.onArtizenEndReachedCalledDuringMomentum = true;
         }
     }
 
@@ -68,7 +80,8 @@ class SearchPage extends React.Component {
                 <View style={{marginHorizontal: 5}}>
                     <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
                 </View>);
-            dataToRender.push(<FlatList data={this.state.searchArtizen.toArray()}
+            dataToRender.push(<FlatList style={{paddingVertical: 20}}
+                                        data={this.state.searchArtizen.toArray()}
                                         horizontal={true}
                                         showsHorizontalScrollIndicator={false}
                                         renderItem={({item}) => (
@@ -83,6 +96,11 @@ class SearchPage extends React.Component {
                                                              topMargin={0}
                                                              fontLoaded={fontLoadStatus}/>
                                             </TouchableOpacity>)}
+                                        onEndReached={this.loadMoreArtizenHandler}
+                                        onEndThreshold={1}
+                                        onMomentumScrollBegin={() => {
+                                            this.onArtizenEndReachedCalledDuringMomentum = false;
+                                        }}
                                         keyExtractor={(item, index) => index.toString()}/>);
         }
         if (this.state.searchArt.size) {
@@ -114,7 +132,7 @@ class SearchPage extends React.Component {
                           onEndReached={this.loadMoreArtHandler}
                           onEndThreshold={1}
                           onMomentumScrollBegin={() => {
-                              this.onEndReachedCalledDuringMomentum = false;
+                              this.onArtEndReachedCalledDuringMomentum = false;
                           }}
                           keyExtractor={(item, index) => index.toString()}/>
             </View>
