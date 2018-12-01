@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, FlatList, AsyncStorage} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import ArtCard from "../components/art-card";
 import ArtizenCard from "../components/artizen-card";
@@ -100,9 +100,12 @@ class TopSearchBar extends React.Component {
     render() {
 
         let onClear = () => {
-            this.setState({term: '', searchArt: '', searchArtizen: [], haveArtizen: false, haveArt: false});
-            this.props.updateSearchStatus({
-                hasSearched: false
+            this.setState({
+                term: '',
+                searchArtizen: OrderedSet([]),
+                searchArt: OrderedSet([]),
+                haveArtizen: false,
+                haveArt: false
             });
             this.search.focus();
         };
