@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
-import {OrderedSet} from 'immutable';
+import {OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
 
@@ -15,8 +15,8 @@ class SearchPage extends React.Component {
         this.state = {
             haveArtizen: navigation.getParam('haveArtizen', false),
             haveArt: navigation.getParam('haveArt', false),
-            searchArtizen: navigation.getParam('searchArtizen', OrderedSet([])),
-            searchArt: navigation.getParam('searchArt', OrderedSet([])),
+            searchArtizen: navigation.getParam('searchArtizen', new OrderedSet([])),
+            searchArt: navigation.getParam('searchArt', new OrderedSet([])),
             nextArt: navigation.getParam('nextArt', null),
             nextArtizen: navigation.getParam('nextArtizen', null),
         };
@@ -30,7 +30,7 @@ class SearchPage extends React.Component {
             const responseArt = await fetch(this.state.nextArt);
             const responseArtJsonRaw = await responseArt.json();
             this.setState(previousState => ({
-                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
+                searchArt: previousState.searchArt.union(responseArtJsonRaw.data),
                 nextArt: responseArtJsonRaw.next,
             }));
             this.onArtEndReachedCalledDuringMomentum = true;
@@ -42,7 +42,7 @@ class SearchPage extends React.Component {
             const responseArtizen = await fetch(this.state.nextArtizen);
             const responseArtizenJsonRaw = await responseArtizen.json();
             this.setState(previousState => ({
-                searchArtizen: previousState.searchArtizen.union(OrderedSet(responseArtizenJsonRaw.data)),
+                searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),
                 nextArtizen: responseArtizenJsonRaw.next,
             }));
             this.onArtizenEndReachedCalledDuringMomentum = true;
