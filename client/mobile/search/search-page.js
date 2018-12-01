@@ -24,17 +24,13 @@ class SearchPage extends React.Component {
     }
 
     async loadMoreArtHandler() {
-        alert("aha");
-        try {
-            let responseArt = await fetch(this.state.nextArt);
-            let responseArtJsonRaw = await responseArt.json();
-            this.setState(previousState => ({
-                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
-                nextArt: responseArtJsonRaw.next,
-            }));
-        } catch (error) {
-            alert(error);
-        }
+        // alert("aha");
+        let responseArt = await fetch(this.state.nextArt);
+        let responseArtJsonRaw = await responseArt.json();
+        this.setState(previousState => ({
+            searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
+            nextArt: responseArtJsonRaw.next,
+        }));
     }
 
     render() {
@@ -42,7 +38,6 @@ class SearchPage extends React.Component {
         const styles = StyleSheet.create({
             mainContext: {
                 paddingHorizontal: 15, justifyContent: 'center',
-                height: Dimensions.get('window').height
             },
             headerText: {
                 fontSize: 20,
@@ -107,7 +102,6 @@ class SearchPage extends React.Component {
                 </TouchableOpacity>
             )));
         }
-
 
         return (
             <View style={styles.mainContext}>
