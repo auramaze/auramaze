@@ -97,7 +97,6 @@ class SearchPage extends React.Component {
                                                              fontLoaded={fontLoadStatus}/>
                                             </TouchableOpacity>)}
                                         onEndReached={this.loadMoreArtizenHandler}
-                                        onEndThreshold={1}
                                         onMomentumScrollBegin={() => {
                                             this.onArtizenEndReachedCalledDuringMomentum = false;
                                         }}
@@ -130,7 +129,6 @@ class SearchPage extends React.Component {
                 <FlatList data={dataToRender}
                           renderItem={({item}) => (item)}
                           onEndReached={this.loadMoreArtHandler}
-                          onEndThreshold={1}
                           onMomentumScrollBegin={() => {
                               this.onArtEndReachedCalledDuringMomentum = false;
                           }}
