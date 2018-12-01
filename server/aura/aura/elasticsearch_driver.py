@@ -177,8 +177,8 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         return formatted_res
 
     def search_multiple_records(self, rec_arr, pre_filter=None):
-        request = []
         signatures = []
+        multi_should = []
         for rec in rec_arr:
             path = rec.pop('path')
             signatures.append(rec.pop('signature'))
@@ -187,27 +187,27 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
             # build the 'should' list
             should = [{'term': {'image.default.' + word: rec[word]}} for word in rec]
-            body = {
-                'query': {
-                    'bool': {'should': should}
-                },
-                '_source': {'excludes': ['simple_word_*']},
-                'size': self.size
-            }
+            multi_should = multi_should + should
+        bodyu = {
+            'query': {
+                'bool': {'should': multi_should}
+            },
+            '_source': {'excludes': ['simple_word_*']},
+            'size': 100
+        }
+        if pre_filter is not None:
+            bodyu['query']['bool']['filter'] = pre_filter
 
-            if pre_filter is not None:
-                body['query']['bool']['filter'] = pre_filter
-
-            head = {'index': self.index, 'type': self.doc_type}
-            request.extend([head, body])
-
-        responses = self.es.msearch(body=request)['responses']
+        import time
+        print('send-{}'.format(time.time()))
+        responses = self.es.search(index=self.index, body=bodyu)
+        print('receive-{}'.format(time.time()))
 
         result = []
 
-        for response, signature in zip(responses, signatures):
+        for signature in signatures:
             try:
-                res = response['hits']['hits']
+                res = responses['hits']['hits']
             except KeyError:
                 res = []
             sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
