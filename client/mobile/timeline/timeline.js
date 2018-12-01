@@ -84,10 +84,6 @@ class TimeLine extends React.Component {
             this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
         }
         this.setState({refreshing: false});
-
-        // const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, body);
-        // const timelineInfoJson = await timelineInfo.json();
-        // this.setState({timeline: OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
     }
 
     async loadMoreTimelineHandler() {
