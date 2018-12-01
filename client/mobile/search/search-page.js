@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, FlatList, RefreshControl} from 'react-native';
+import {StyleSheet, View, Dimensions, FlatList} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
 import {OrderedSet} from 'immutable';
@@ -9,8 +9,31 @@ class SearchPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {searchArtizen: []};
+        const {navigation} = this.props;
+        this.state = {
+            haveArtizen: navigation.getParam('haveArtizen', false),
+            haveArt: navigation.getParam('haveArt', false),
+            searchArtizen: navigation.getParam('searchArtizen', OrderedSet([])),
+            searchArt: navigation.getParam('searchArt', OrderedSet([])),
+            nextArt: navigation.getParam('nextArt', null),
+            nextArtizen: navigation.getParam('nextArtizen', null),
+        };
         SearchPage.renderRow = SearchPage.renderRow.bind(this);
+        this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
+    }
+
+    async loadMoreArtHandler() {
+        alert("aha");
+        try {
+            let responseArt = await fetch(this.state.nextArt);
+            let responseArtJsonRaw = await responseArt.json();
+            this.setState(previousState => ({
+                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
+                nextArt: responseArtJsonRaw.next,
+            }));
+        } catch (error) {
+            alert(error);
+        }
     }
 
     static renderRow(item) {
@@ -40,8 +63,7 @@ class SearchPage extends React.Component {
 
         const styles = StyleSheet.create({
             mainContext: {
-                paddingHorizontal: 15, justifyContent: 'center',
-                height: Dimensions.get('window').height
+                paddingHorizontal: 15, justifyContent: 'center'
             },
             headerText: {
                 fontSize: 20,
@@ -59,39 +81,33 @@ class SearchPage extends React.Component {
             }
         });
 
-        const {navigation} = this.props;
-        const haveArtizen = navigation.getParam('haveArtizen', false);
-        const haveArt = navigation.getParam('haveArt', false);
-        const searchArtizen = navigation.getParam('searchArtizen', OrderedSet([]));
-        const searchArt = navigation.getParam('searchArt', OrderedSet([]));
-        const loadMoreArtHandler = navigation.getParam('loadMoreArtHandler', null);
         let fontLoadStatus = this.props.screenProps.fontLoaded;
+
+        let dataToRender = [];
+
+        if (this.state.haveArtizen) dataToRender.push(
+            <View style={{marginHorizontal: 5}}>
+                <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
+            </View>);
+        dataToRender.push(<FlatList data={this.state.searchArtizen.toArray()}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({item}) => SearchPage.renderRow(item)}
+                                    keyExtractor={(item, index) => index.toString()}/>);
+        if (this.state.haveArt) dataToRender.push(
+            <View style={{marginHorizontal: 5}}>
+                <TitleBar titleText={"Art"} fontLoaded={fontLoadStatus}/>
+            </View>);
+        dataToRender.concat(this.state.searchArt.toArray());
+        alert(dataToRender.length);
 
         return (
             <View style={styles.mainContext}>
-                <ScrollView keyboardDismissMode='on-drag' style={{height: Dimensions.get('window').height}}>
-                    {haveArtizen ?
-                        <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Artizen"} fontLoaded={fontLoadStatus}/>
-                        </View> : null}
-                    <FlatList data={searchArtizen.toArray()}
-                              horizontal={true}
-                              showsHorizontalScrollIndicator={false}
-                              renderItem={({item}) => SearchPage.renderRow(item)}
-                              keyExtractor={(item, index) => index.toString()}/>
-                    {haveArtizen ? <View style={{height: 20}}/> : null}
-
-                    {haveArt ?
-                        <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Art"} fontLoaded={fontLoadStatus}/>
-                        </View> : null}
-                    <FlatList data={searchArt.toArray()}
-                              renderItem={({item}) => item}
-                              onEndReached={loadMoreArtHandler}
-                              onEndThreshold={0}
-                              keyExtractor={(item, index) => index.toString()}/>
-                    <View style={{height: 140}}/>
-                </ScrollView>
+                <FlatList data={dataToRender}
+                          renderItem={({item}) => item}
+                          onEndReached={this.loadMoreArtHandler}
+                          onEndThreshold={0}
+                          keyExtractor={(item, index) => index.toString()}/>
             </View>
         );
     }

@@ -13,7 +13,6 @@ class TopSearchBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {searchArtizen: OrderedSet([]), searchArt: OrderedSet([])};
-        this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
     }
 
     async searchAuraMaze(searchItem) {
@@ -72,26 +71,13 @@ class TopSearchBar extends React.Component {
             });
             this.props.navigation.navigate('SearchPage',
                 {
-                    hasSearched: true,
-                    searchArt: this.state.searchArt, haveArt: this.state.haveArt,
-                    searchArtizen: this.state.searchArtizen, haveArtizen: this.state.haveArtizen,
-                    nextArt: this.state.nextArt, nextArtizen: this.state.nextArtizen,
-                    loadMoreArtHandler: this.loadMoreArtHandler
+                    searchArt: this.state.searchArt,
+                    haveArt: this.state.haveArt,
+                    searchArtizen: this.state.searchArtizen,
+                    haveArtizen: this.state.haveArtizen,
+                    nextArt: this.state.nextArt,
+                    nextArtizen: this.state.nextArtizen
                 })
-        } catch (error) {
-            alert(error);
-        }
-    }
-
-    async loadMoreArtHandler() {
-        // alert("aha");
-        try {
-            let responseArt = await fetch(this.state.nextArt);
-            let responseArtJsonRaw = await responseArt.json();
-            this.setState(previousState => ({
-                searchArt: previousState.searchArt.union(OrderedSet(responseArtJsonRaw.data)),
-                nextArt: responseArtJsonRaw.next,
-            }));
         } catch (error) {
             alert(error);
         }
