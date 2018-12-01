@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, TouchableOpacity, Text, AsyncStorage} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableOpacity, Text, AsyncStorage} from 'react-native';
 import {OrderedSet} from 'immutable';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
@@ -55,108 +55,93 @@ class Art extends React.Component {
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJsonRaw = await introInfo.json();
             let reviewInfoJsonRaw = await reviewInfo.json();
-            let introInfoJson = introInfoJsonRaw.data;
-            let reviewInfoJson = reviewInfoJsonRaw.data;
             let fontLoadStatus = this.props.screenProps.fontLoaded;
 
-            artizenInfoJson.map((item, key) => {
-                if (item.type === "artist") {
-                    this.setState(previousState => (
-                        {
-                            hasArtists: true,
-                            artists: item.data.map((artistItem, artistKey) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={artistKey}
-                                        onPress={() => this.props.navigation.push('Artizen', {
-                                            artizenId: artistItem.id,
-                                            titleName: artistItem.name.default,
-                                        })}>
-                                        <ArtizenCard
-                                            name={artistItem.name.default}
-                                            source={artistItem.avatar}
-                                            topMargin={15}
-                                            fontLoaded={fontLoadStatus}/>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    ));
-                } else if (item.type === "museum") {
-                    this.setState(previousState => (
-                        {
-                            hasMuseums: true,
-                            museums: item.data.map((museumItem, museumKey) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={museumKey}
-                                        onPress={() => this.props.navigation.push('Artizen', {
-                                            artizenId: museumItem.id,
-                                            titleName: museumItem.name.default,
-                                        })}>
-                                        <ArtizenCard
-                                            name={museumItem.name.default}
-                                            source={museumItem.avatar}
-                                            topMargin={15}
-                                            fontLoaded={fontLoadStatus}/>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    ));
-                } else if (item.type === "genre") {
-                    this.setState(previousState => (
-                        {
-                            hasGenres: true,
-                            genres: item.data.map((genreItem, genreKey) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={genreKey}
-                                        onPress={() => this.props.navigation.push('Artizen', {
-                                            artizenId: genreItem.id,
-                                            titleName: genreItem.name.default,
-                                        })}>
-                                        <ArtizenCard
-                                            name={genreItem.name.default}
-                                            source={genreItem.avatar}
-                                            topMargin={15}
-                                            fontLoaded={fontLoadStatus}/>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    ));
-                } else if (item.type === "style") {
-                    this.setState(previousState => (
-                        {
-                            hasStyles: true,
-                            styles: item.data.map((styleItem, styleKey) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={styleKey}
-                                        onPress={() => this.props.navigation.push('Artizen', {
-                                            artizenId: styleItem.id,
-                                            titleName: styleItem.name.default,
-                                        })}>
-                                        <ArtizenCard
-                                            name={styleItem.name.default}
-                                            source={styleItem.avatar}
-                                            topMargin={15}
-                                            fontLoaded={fontLoadStatus}/>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    ));
-                }
+            artizenInfoJson.map((item) => {
+                (item.type === "artist") && this.setState({
+                    hasArtists: true,
+                    artists: item.data.map((artistItem, artistKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={artistKey}
+                                onPress={() => this.props.navigation.push('Artizen', {
+                                    artizenId: artistItem.id,
+                                    titleName: artistItem.name.default,
+                                })}>
+                                <ArtizenCard
+                                    name={artistItem.name.default}
+                                    source={artistItem.avatar}
+                                    topMargin={15}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "museum") && this.setState({
+                    hasMuseums: true,
+                    museums: item.data.map((museumItem, museumKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={museumKey}
+                                onPress={() => this.props.navigation.push('Artizen', {
+                                    artizenId: museumItem.id,
+                                    titleName: museumItem.name.default,
+                                })}>
+                                <ArtizenCard
+                                    name={museumItem.name.default}
+                                    source={museumItem.avatar}
+                                    topMargin={15}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "genre") && this.setState({
+                    hasGenres: true,
+                    genres: item.data.map((genreItem, genreKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={genreKey}
+                                onPress={() => this.props.navigation.push('Artizen', {
+                                    artizenId: genreItem.id,
+                                    titleName: genreItem.name.default,
+                                })}>
+                                <ArtizenCard
+                                    name={genreItem.name.default}
+                                    source={genreItem.avatar}
+                                    topMargin={15}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
+                (item.type === "style") && this.setState({
+                    hasStyles: true,
+                    styles: item.data.map((styleItem, styleKey) => {
+                        return (
+                            <TouchableOpacity
+                                key={styleKey}
+                                onPress={() => this.props.navigation.push('Artizen', {
+                                    artizenId: styleItem.id,
+                                    titleName: styleItem.name.default,
+                                })}>
+                                <ArtizenCard
+                                    name={styleItem.name.default}
+                                    source={styleItem.avatar}
+                                    topMargin={15}
+                                    fontLoaded={fontLoadStatus}/>
+                            </TouchableOpacity>
+                        )
+                    })
+                });
             });
 
             this.setState({
                 artId: artId,
                 art: <ArtInfo fontLoaded={fontLoadStatus}
                               url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
-                introductions: OrderedSet(introInfoJson),
-                reviews: OrderedSet(reviewInfoJson),
+                introductions: OrderedSet(introInfoJsonRaw.data),
+                reviews: OrderedSet(reviewInfoJsonRaw.data),
                 nextReview: reviewInfoJsonRaw.next
             });
         } catch (error) {
@@ -193,7 +178,6 @@ class Art extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
-                // paddingTop: Constants.statusBarHeight,
             },
             mainContext: {
                 margin: 20,

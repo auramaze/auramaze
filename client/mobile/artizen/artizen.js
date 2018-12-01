@@ -11,7 +11,7 @@ class Artizen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null};
+        this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null, nextRelated: null};
         this._loadInitialState = this._loadInitialState.bind(this);
         this._fetchInfo = this._fetchInfo.bind(this);
         this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
@@ -24,6 +24,15 @@ class Artizen extends React.Component {
     componentDidMount() {
         this._loadInitialState().done();
     }
+
+    _fetchInfo = (url, token) => fetch(url, {
+        method: 'GET',
+        headers: token && token !== 'undefined' && token !== 'null' ? {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        } : null
+    });
 
     async _loadInitialState() {
         try {
@@ -136,16 +145,6 @@ class Artizen extends React.Component {
             alert(error);
         }
     }
-
-
-    _fetchInfo = (url, token) => fetch(url, {
-        method: 'GET',
-        headers: token && token !== 'undefined' && token !== 'null' ? {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        } : null
-    });
 
     async loadMoreCollectionHandler() {
         try {
