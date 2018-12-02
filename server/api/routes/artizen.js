@@ -249,7 +249,10 @@ router.delete('/:id', oneOf([
 
 /* Follow an artizen. */
 router.get('/:id/follow', [
-    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        param('id').isInt().isLength({min: 9, max: 9}),
+        param('id').custom(common.validateUsername).withMessage('Invalid username')
+    ]),
     oneOf([
         query('group').equals('art'),
         query('group').equals('artizen'),
@@ -261,19 +264,26 @@ router.get('/:id/follow', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {payload: {id}} = req;
     const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
     const size = 10;
 
     let sql;
 
     if (req.query.group === 'art') {
-        sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, art.username, art.title, art.image FROM follow INNER JOIN art ON follow.art_id=art.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        if (isNaN(parseInt(req.params.id))) {
+            sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, art.username, art.title, art.image FROM follow INNER JOIN art ON follow.art_id=art.id INNER JOIN artizen AS user ON follow.user_id=user.id WHERE user.username=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        } else {
+            sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, art.username, art.title, art.image FROM follow INNER JOIN art ON follow.art_id=art.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        }
     } else {
-        sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, artizen.username, artizen.name, artizen.avatar FROM follow INNER JOIN artizen ON follow.artizen_id=artizen.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        if (isNaN(parseInt(req.params.id))) {
+            sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, artizen.username, artizen.name, artizen.avatar FROM follow INNER JOIN artizen ON follow.artizen_id=artizen.id INNER JOIN artizen AS user ON follow.user_id=user.id WHERE user.username=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        } else {
+            sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, artizen.username, artizen.name, artizen.avatar FROM follow INNER JOIN artizen ON follow.artizen_id=artizen.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+        }
     }
 
-    rds.query(sql, [id, size, from], (err, result, fields) => {
+    rds.query(sql, [req.params.id, size, from], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
