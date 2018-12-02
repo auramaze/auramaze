@@ -7,6 +7,7 @@ import os
 import re
 import requests
 import urllib.request
+import random
 
 import numpy as np
 from apiclient.discovery import build
@@ -21,6 +22,49 @@ data_path = '../test/meta/'
 # data_path = './'
 # data_path = '../sample-data/meta/'
 img_path = '../test/img/'
+random.seed(10)
+
+def get_new_artist_url(artist_url):
+    if artist_url == '':
+        new_artist_url = 'artist-' + str(random.randint(0, 100))
+    else:
+        new_artist_url = artist_url if str(artist_url[0]).islower() else 'artist-' + artist_url
+    if not re.match(r'^(?!.*--)[a-z][a-z0-9-]{1,900}[a-z0-9]$', new_artist_url):
+        print(new_art_url)
+        raise AssertionError
+    return new_artist_url
+
+
+def get_new_art_url(artist_url, art_url):
+    new_art_url = art_url
+    if not (str(art_url[0]).islower() or str(art_url[0]).isdigit()):
+        new_art_url = 'art-' + new_art_url
+    new_art_url = unidecode(new_art_url.replace('_', '-'))
+    new_art_url = get_new_artist_url(artist_url) + '-' + new_art_url
+    new_art_url = re.sub(r'-{2,}', '-', new_art_url)
+    new_art_url = new_art_url.strip('-')
+
+    if new_art_url == 'gustave-moreau-salome':
+        new_art_url = new_art_url + '-' + str(random.randint(0, 100))
+
+    if not re.match(r'^(?!.*--)[a-z][a-z0-9-]{1,900}[a-z0-9]$', new_art_url):
+        print(new_art_url)
+        raise AssertionError
+    return new_art_url
+
+
+def artistNewOldusername():
+    # artists_json = []
+    post_dicts = []
+    # with open(data_path + 'artists.json') as artists_json_file:
+    #     artists_json = json.load(artists_json_file)
+    with open('post/post-artist-2.json') as post_json_file:
+        post_dicts = json.load(post_json_file)
+    for i in range(len(post_dicts)):
+        # post_dicts[i]['username'] = get_new_artist_url(artists_json[i]['url'])
+        post_dicts[i]['avatar'] = 'https://s3.amazonaws.com/auramaze/avatars/{}.jpg'.format(post_dicts[i]['username'])
+    exportJSON(post_dicts, './post/', 'post-artist-2')
+
 
 def artistQuery():
     artists = []
@@ -155,15 +199,15 @@ def facebookAvatar():
     print(handle_list)
 
 
-def constructQuery():
-    queries = {}
+def artQuery():
+    queries = []
     with open(data_path + 'artists.json') as artists_json_file:
         artists_json = json.load(artists_json_file)
         for artist in artists_json:
-            # artist_name = artist['artistName']
-            artist_name = artist['name']['default']
-            # works_filename = artist['url'] + '.json'
-            works_filename = artist['username'] + '.json'
+            artist_name = artist['artistName']
+            # artist_name = artist['name']['default']
+            works_filename = artist['url'] + '.json'
+            # works_filename = artist['username'] + '.json'
             try:
                 with open(data_path + works_filename) as works_json_file:
                     works_json = json.load(works_json_file)
@@ -174,28 +218,42 @@ def constructQuery():
                         #     work_name += ' ' + work['galleryName'].split(',')[0]
                         work_dic['artist'] = artist_name
                         work_dic['query'] = artist_name + ' ' + work_name + ' wikipedia'
-                        work_dic['image'] = work['image']
+                        # work_dic['image'] = work['image']
+                        work_dic['artist_url'] = artist['url']
                         work_dic['username'] = work['url']
-                        queries[work['title']] = work_dic
+                        work_dic['title'] = work['title']
+                        queries.append(work_dic)
             except FileNotFoundError:
                 print(works_filename + ' not found.')
+    exportJSON(queries, './art_wiki/', 'art_queries')
     return queries
 
 
-def searchQuery(query):
+def searchQuery(query, original_name):
+    # service = build('customsearch', 'v1',
+    #         developerKey='AIzaSyCqI-ixGbVm-y4svD41Dahyyhs4Edz86B0')
+    #
+    # res = service.cse().list(
+    #       q=query,
+    #       cx='017007423820323933062:fhljekcpliy',
+    #     ).execute()
     service = build('customsearch', 'v1',
-            developerKey='AIzaSyCqI-ixGbVm-y4svD41Dahyyhs4Edz86B0')
+            developerKey='AIzaSyBrpwycyt_twMEqxicouX3eCa3_-tpmAP8')
 
     res = service.cse().list(
           q=query,
-          cx='017007423820323933062:fhljekcpliy',
+          cx='017498325171720530144:llryh0v3mxm',
         ).execute()
+
 
     for item in res['items']:
         if 'Wikipedia' in item['htmlTitle'] and 'jpg' not in item['htmlTitle']:
             # pprint.pprint(item)
-            return item['formattedUrl']
-    return 'NA'
+            # print(original_name.split())
+            # if original_name.split()[0] in item['htmlTitle']:
+            # pprint.pprint(item)
+            return item['formattedUrl'], item['title']
+    return 'NA', 'NA'
 
 
 def downloadWiki(title, link):
@@ -276,19 +334,30 @@ def main():
         sys.exit(1)
 
     elif args[0] == '-a':
-        queries = constructQuery()
-        art_id = 0
-        for key, value in queries.items():
-            art_id += 1
-            if art_id == 900:
-                print('stopped at ' + key)
-                break;
+        # queries = artQuery()
+        queries = []
+        with open('./art_wiki/art_queries.json', 'r') as query_file:
+            queries = json.load(query_file)
+        # queries = queries[109995:]
+        queries = queries[139995:]
+        # art_id = 0
+        # pprint.pprint(queries)
+        art_list = []
+        counter = 14
+        for value in queries:
+            new_dict = {}
+            link = ''
             try:
-                link = searchQuery(value['query'])
-            except:
-                print('limit reached.')
-                break;
-            queries[key]['wikipediaUrl'] = link
+                link, web = searchQuery(value['query'], value['title'])
+                print(value['username'], 'searched', web)
+            except Exception as e:
+                print(value['username'], str(e))
+            new_dict['wikipedia_url'] = link
+            new_dict['title'] = value['title']
+            new_dict['username'] = value['username']
+            new_dict['artist'] = value['artist']
+            new_dict['artist_url'] = value['artist_url']
+            art_list.append(new_dict)
             # if link != 'NA':
             #     raw_html = downloadWiki(link)
             #     try:
@@ -299,9 +368,14 @@ def main():
             # else:
             #     wiki_dic = {}
             # queries[key]['wiki'] = wiki_dic
-            queries[key]['id'] = format(art_id, '08')
-            queries[key]['type'] = 'art'
-        exportJSON(queries, './', 'wiki-sample-link')
+            # queries[key]['id'] = format(art_id, '08')
+            # queries[key]['type'] = 'art'
+            if len(art_list) >= 10000:
+                exportJSON(art_list, './art_wiki/', 'arts-{}'.format(counter))
+                print('arts-{}'.format(counter), len(art_list), 'exported')
+                counter += 1
+                art_list = []
+        exportJSON(art_list, './art_wiki/', 'wiki-art_{}'.format(counter))
         # pprint.pprint(queries)
 
     elif args[0] == '-i':
@@ -331,6 +405,9 @@ def main():
         others = otherQuery()
         exportJSON(others, './', 'facebook')
 
+    elif args[0] == '--postHelp':
+        artistNewOldusername()
+
     elif args[0] == '--help':
         original_json = {}
         new_json = {}
@@ -356,7 +433,7 @@ def main():
                 museum['wikipediaLink'] = 'NA'
         exportJSON(new_json, './', 'wiki-museums')
 
-    elif args[0] == '--post':
+    elif args[0] == '--createLookup':
         post_dicts = []
         jsons = ['post-artist.json', 'post-genre.json', 'post-museum.json', 'post-style.json']
         for json_name in jsons:
@@ -374,32 +451,35 @@ def main():
     elif args[0] == '--postAPI':
         post_dicts = []
         # with open('draftjs/wiki-museums-draftjs.json') as original_json_file:
-        with open('post/post-artist.json') as original_json_file:
+        with open('post/post-artists-2.json') as original_json_file:
             post_dicts = json.load(original_json_file)
         for payload in post_dicts:
             try:
+                url = 'https://api.auramaze.org/v1/artizen/{}'.format(payload['username'])
                 # r = requests.get('https://apidev.auramaze.org/v1/artizen/{}'.format(payload['username']), json=payload)
                 # res = r.json()
                 # token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAwMDEwLCJleHAiOjE1NDc0NDc1MDEsImlhdCI6MTU0MjI2MzUwMX0.rbxVNHVMJxZsAbizp092PFTrKjJ4TBmh-RJOcKDNqJg'
                 # header = {'Authorization': 'Bearer ' + token}
                 # url = 'https://apidev.auramaze.org/v1/artizen/{}/introduction'.format(res['id'])
-                url = 'https://apidev.auramaze.org/v1/artizen/{}'.format(payload['username'])
                 # if payload['wikipedia'] and payload['wikipedia']['content']:
                 #     content = {'author_id': '100000010', 'content': payload['wikipedia']['content']}
                 #     r = requests.post(url, json=content, headers=header)
                 #     print(r.status_code)
                 # else:
                 #     print(payload['username'], 'no Wikipedia')
-                img_link = 'https://s3.us-east-2.amazonaws.com/auramaze-test/artist-avatar/{}.jpg'.format(payload['username'])
-                r1 = requests.get(img_link)
+                # img_link = 'https://s3.amazonaws.com/auramaze/avatars/{}.jpg'.format(payload['username'])
+                r1 = requests.get()
                 if r1.status_code == 200:
-                    content = {'avatar': img_link}
-                    r = requests.post(url, json=content)
-                    print(payload['username'], r.status_code)
+                    r = requests.put(url, json=payload)
+                    print(payload['username'], 'with avatar', r.status_code)
                 else:
-                    print(payload['username'], 'no avatar')
+                    payload['avatar'] = ""
+                    r = requests.put(url, json=payload)
+                    print(payload['username'], 'no avatar', r.status_code)
+                # res = requests.put(url, json=payload)
+                # print(payload['username'], res.status_code)
             except Exception as e:
-                print(str(e), res)
+                print(str(e))
 
     elif args[0] == '--avatar':
         facebookAvatar()
@@ -409,10 +489,10 @@ def main():
         artists_json = []
 
         # import dictionaries
-        with open('./post/post-artist.json') as artists_json_file:
+        with open('./post/post-artist-2.json') as artists_json_file:
             artists_json = json.load(artists_json_file)
-        with open('./fastlookup/fast-artist.json') as fast_artist_json_file:
-            artist_lookup = json.load(fast_artist_json_file)
+        # with open('./fastlookup/fast-artist.json') as fast_artist_json_file:
+        #     artist_lookup = json.load(fast_artist_json_file)
         with open('./fastlookup/fast-genre.json') as fast_genre_json_file:
             genre_lookup = json.load(fast_genre_json_file)
         with open('./fastlookup/fast-museum.json') as fast_museum_json_file:
@@ -439,13 +519,12 @@ def main():
                             "width": work['width'],
                             "height": work['height']
                         }}
-                        work_dict['username'] = work['url']
+                        work_dict['username'] = get_new_art_url(artist['username'], work['url'])
 
                         # check relations
                         work_dict_relations = []
-                        if not work['artistName']:
-                            if work['artistName'] in artist_lookup:
-                                work_dict_relations.append({'artizen': artist_lookup[work['artistName']], 'type': 'artist'})
+                        if artist_name in artist_lookup:
+                            work_dict_relations.append({'artizen': artist_lookup[artist_name], 'type': 'artist'})
                         if work['genre']:
                             genres = work['genre'].split(',')
                             for genre in genres:
@@ -472,8 +551,8 @@ def main():
                         works_list = []
             except FileNotFoundError:
                 continue
-                print(works_filename + ' not found.')
-        exportJSON(works_list, './art_posts/', 'arts-{}'.format(counter))
+                # print(works_filename + ' not found.')
+        exportJSON(works_list, './art_posts_new/', 'arts-{}'.format(counter))
         print('arts-{}'.format(counter), len(works_list), 'exported')
 
 if __name__ == '__main__':
