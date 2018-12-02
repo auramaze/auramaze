@@ -71,32 +71,16 @@ class BlankUser extends React.Component {
             this.setState(previousState => ({pageIsSign: !previousState.pageIsSign}));
         };
 
-        let _checkStatus = () => {
-            AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
-                let isAuthorized = data[0][1];
-                let username = data[1][1];
-                let token = data[2][1];
-                let id = data[3][1];
-                alert("isAuthorized: " + isAuthorized
-                    + "\nusername: " + username
-                    + "\ntoken: " + token
-                    + "\nid: " + id)
-            });
-        };
-
         return (
             <DismissKeyboard>
                 <View style={styles.mainStruct}>
 
-                    <TouchableOpacity
-                        onPress={_checkStatus}>
-                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                         source={logoIcon}
-                                         style={{
-                                             marginTop: Dimensions.get('window').width * 80 / 375,
-                                             marginBottom: 30
-                                         }}/>
-                    </TouchableOpacity>
+                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                     source={logoIcon}
+                                     style={{
+                                         marginTop: Dimensions.get('window').width * 80 / 375,
+                                         marginBottom: 30
+                                     }}/>
 
                     {this.state.pageIsSign ?
                         <SignUpPage screenProps={{toLogIn: this.props.screenProps.toLogIn}}/> :

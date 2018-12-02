@@ -33,7 +33,7 @@ class UserSettings extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center', justifyContent: 'center',
             },
             signupText: {
                 color: '#666666',
@@ -83,6 +83,12 @@ class UserSettings extends React.Component {
                         style={[styles.buttonGeneral, styles.buttonEdit]}
                         underlayColor='#fff'>
                         <Text style={[styles.textGeneral, styles.textWhite]}>Edit Profile</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.buttonGeneral, styles.buttonEdit]}
+                        underlayColor='#fff'>
+                        <Text style={[styles.textGeneral, styles.textWhite]}>Change Password</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity

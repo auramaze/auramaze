@@ -103,7 +103,6 @@ class User extends React.Component {
                                 fontFamily: this.props.screenProps.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                                 fontSize: 15
                             }}
-                            // tabStyle={{padding: 0}}
                             getLabelText={({route}) => route.title}
                         />
                     }
