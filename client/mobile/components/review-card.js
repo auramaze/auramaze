@@ -102,11 +102,9 @@ class ReviewCard extends React.Component {
                 </View>
                 <View style={styles.bodyView}>
                     {this.props.content &&
-                    <Text style={styles.bodyText}>
-                        {getRNDraftJSBlocks({
-                            contentState: this.props.content
-                        })}
-                    </Text>}
+                    getRNDraftJSBlocks({
+                        contentState: this.props.content
+                    })}
                 </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
