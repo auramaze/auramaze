@@ -5,6 +5,7 @@ import getRNDraftJSBlocks from 'react-native-draftjs-render';
 import ReviewFooter from "./review-footer";
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from "../assets/icons/no-image-artizen.png";
+import Moment from 'react-moment';
 
 class ActivityCard extends React.Component {
 
@@ -20,9 +21,8 @@ class ActivityCard extends React.Component {
                 flexDirection: 'column',
                 backgroundColor: '#ffffff',
                 shadowColor: '#000',
-                shadowOffset: {width: 0, height: 2},
-                shadowOpacity: 0.2,
-                marginTop: 15,
+                marginTop: 10,
+                marginBottom: 30,
                 padding: 10,
             },
             imageStyle: {
@@ -72,19 +72,27 @@ class ActivityCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: this.props.isIntro ? 195 : 225,
+                fontSize: 20,
+                width: 150,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
             },
+            timeText: {
+                fontSize: 20,
+                color: '#aeaeae',
+                fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin'
+            },
+            bodyView: {
+                paddingHorizontal: 10,
+                paddingBottom: 10
+            },
             bodyText: {
                 fontSize: 18,
                 lineHeight: 28,
-                paddingHorizontal: 10,
-                paddingBottom: 10,
                 color: '#666666',
-                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
-            },
+                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin'
+            }
         });
 
 
@@ -102,6 +110,7 @@ class ActivityCard extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
+                    <Moment fromNow style={styles.timeText} element={Text}>{this.props.created}</Moment>
                 </View>
                 {this.props.artId ?
                     <TouchableOpacity
@@ -124,9 +133,11 @@ class ActivityCard extends React.Component {
                             </Text>
                         </View>
                     </TouchableOpacity>}
-                <View style={styles.bodyText}>{getRNDraftJSBlocks({
-                    contentState: this.props.content
-                })}</View>
+                <View style={styles.bodyView}>
+                    {this.props.content && getRNDraftJSBlocks({
+                        contentState: this.props.content
+                    })}
+                </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>

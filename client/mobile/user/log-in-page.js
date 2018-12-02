@@ -13,6 +13,7 @@ import google from '../assets/icons/google.png';
 import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
+import config from '../config.json';
 
 class LogInPage extends React.Component {
 
@@ -22,6 +23,7 @@ class LogInPage extends React.Component {
         this._logAuraMaze = this._logAuraMaze.bind(this);
         this._setLogInData = this._setLogInData.bind(this);
         this._logIn = this._logIn.bind(this);
+        this._logFacebook = this._logFacebook.bind(this);
     }
 
     checkValid() {
@@ -52,7 +54,7 @@ class LogInPage extends React.Component {
             id: this.state.id,
             password: this.state.password
         });
-        fetch('https://apidev.auramaze.org/v1/auth/login', {
+        fetch(`${config.API_ENDPOINT}/auth/login`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -70,6 +72,78 @@ class LogInPage extends React.Component {
             this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
+    };
+
+    _logFacebook = async () => {
+        try {
+            const {
+                type,
+                token,
+                expires,
+                permissions,
+                declinedPermissions,
+            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
+                permissions: ['public_profile']
+            });
+            if (type === 'success') {
+                // Get the user's name using Facebook's Graph API
+                const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
+                const profile = await response.json();
+                const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook/mobile`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setLogInData(authJson);
+                } else {
+                    throw new Error('Facebook auth fail.');
+                }
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({message}) {
+            alert(`Facebook Login Error: ${message}`);
+        }
+    };
+
+    _logGoogle = async () => {
+        try {
+            const result = await Expo.Google.logInAsync({
+                androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
+                iosClientId: config.GOOGLE_IOS_CLIENT_ID,
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                    headers: {Authorization: `Bearer ${result.accessToken}`},
+                });
+                const profile = await response.json();
+                const auth = await fetch(`${config.API_ENDPOINT}/auth/google/mobile`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(profile)
+                });
+                if (auth.ok) {
+                    const authJson = await auth.json();
+                    this._setLogInData(authJson);
+                } else {
+                    throw new Error('Google auth fail.');
+                }
+            } else {
+                // type === 'cancel'
+            }
+        } catch ({message}) {
+            alert(`Google Login Error: ${message}`);
+        }
     };
 
     _setLogInData = async (responseJson) => {
@@ -114,7 +188,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={this._logIn}
+                    onPress={this._logGoogle}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
@@ -122,7 +196,7 @@ class LogInPage extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={this._logIn}
+                    onPress={this._logFacebook}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
                     <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>

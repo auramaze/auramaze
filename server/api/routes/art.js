@@ -293,19 +293,56 @@ router.delete('/:id', oneOf([
     });
 });
 
+/* Follow an art. */
+router.post('/:id/follow', [
+    param('id').isInt().isLength({min: 8, max: 8}),
+    body('type').isBoolean()
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+
+    let sql, parameters;
+
+    if (req.body.type) {
+        sql = 'REPLACE INTO follow (user_id, art_id) VALUES (?)';
+        parameters = [[id, req.params.id]];
+    } else {
+        sql = 'DELETE FROM follow WHERE user_id=? AND art_id=?';
+        parameters = [id, req.params.id];
+    }
+
+    rds.query(sql, parameters, (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                message: `Follow success: ${req.params.id} ${req.body.type}`,
+            });
+        }
+    });
+});
+
 /* GET all introductions of art. */
 router.get('/:id/introduction', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('id').custom(common.validateUsername).withMessage('Invalid username')
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
 ]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('art', req.params.id, 0, authId, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 0, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -361,7 +398,7 @@ router.post('/:id/introduction', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -427,16 +464,19 @@ router.post('/:id/introduction/:textId/vote', [
 /* GET all reviews of art. */
 router.get('/:id/review', oneOf([
     param('id').isInt().isLength({min: 8, max: 8}),
-    param('id').custom(common.validateUsername).withMessage('Invalid username')
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
 ]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('art', req.params.id, 1, authId, (err, result, fields) => {
+    common.getTexts('art', req.params.id, 1, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -498,7 +538,7 @@ router.post('/:id/review', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), parseInt(req.params.id), null, 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {

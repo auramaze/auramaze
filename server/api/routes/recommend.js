@@ -18,7 +18,7 @@ router.get('/', [
 
     const {payload: {id}} = req;
 
-    let results = {'art': [], 'artizen': []};
+    let results = {data: [], next: null};
 
     rds.query('SELECT art_id FROM history WHERE user_id=? AND art_id IS NOT NULL ORDER BY id DESC LIMIT 50', [id], (err, result, fields) => {
         /* istanbul ignore if */
@@ -36,7 +36,7 @@ router.get('/', [
                         if (result.length) {
                             const q = result.map(item => item.name && item.name.default).join(' ');
                             request.post({
-                                url: `${process.env.ESROOT}/art/_search`,
+                                url: `${process.env.ES_HOST}/art/_search`,
                                 body: {
                                     'from': req.query.from,
                                     '_source': {
@@ -69,7 +69,7 @@ router.get('/', [
                                         message: 'Error in recommender system'
                                     });
                                 } else {
-                                    results.art = shuffle(body.hits.hits).slice(0, 10).map(item => Object.assign(item._source, {
+                                    results.data = shuffle(body.hits.hits).slice(0, 10).map(item => Object.assign(item._source, {
                                         _score: item._score,
                                     }));
                                     res.json(results);

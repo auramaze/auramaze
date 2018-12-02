@@ -114,12 +114,16 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         # try for every possible combination of transformations; if all_orientations=False,
         # this will only take one iteration
         transformed_records = []
+        # i = 0
         for transform in orientations:
             # compose all functions and apply on signature
             transformed_img = transform[0](transform[1](img))
-            # print(transformed_img.shape)
-            # im = Image.fromarray(np.stack((np.multiply(transformed_img, 255),) * 3, axis=-1).astype('uint8'))
-            # im.show()
+            # i += 1
+            # if i == 1:
+            #     # print(transformed_img.shape)
+            #     im = Image.fromarray(np.stack((np.multiply(transformed_img, 255),) * 3, axis=-1).astype('uint8'))
+            #     import time
+            #     im.save('{}.jpg'.format(time.time()))
 
             # generate the signature
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
@@ -147,10 +151,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
 
         import time
         # print('send-{}'.format(time.time()))
-        res = self.es.search(index=self.index,
+        try:
+            res = self.es.search(index=self.index,
                              doc_type=self.doc_type,
                              body=body,
                              size=self.size)['hits']['hits']
+        except KeyError:
+            res = []
         # print('receive-{}'.format(time.time()))
 
         sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
@@ -199,7 +206,10 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         result = []
 
         for response, signature in zip(responses, signatures):
-            res = response['hits']['hits']
+            try:
+                res = response['hits']['hits']
+            except KeyError:
+                res = []
             sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
 
             if sigs.size == 0:

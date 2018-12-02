@@ -11,6 +11,8 @@ class Search extends Component {
         super(props);
         this.state = {
             query: Search.getQueryFromProps(props),
+            art: [],
+            artizen: [],
             items: {art: [], artizen: []}
         };
     }
@@ -21,12 +23,22 @@ class Search extends Component {
 
     componentDidMount() {
         request.get({
-            url: `${API_ENDPOINT}/search?q=${encodeURIComponent(this.state.query)}`,
+            url: `${API_ENDPOINT}/search?index=art&q=${encodeURIComponent(this.state.query)}`,
             json: true
-        }, (error, response, items) => {
+        }, (error, response, body) => {
             if (response && response.statusCode === 200) {
                 this.setState({
-                    items: items
+                    art: body.data
+                });
+            }
+        });
+        request.get({
+            url: `${API_ENDPOINT}/search?index=artizen&q=${encodeURIComponent(this.state.query)}`,
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                this.setState({
+                    artizen: body.data
                 });
             }
         });
@@ -35,7 +47,8 @@ class Search extends Component {
     render() {
         return (
             <div className="search">
-                <ItemList key={Search.getQueryFromProps(this.props)} items={this.state.items} extended/>
+                <ItemList key={Search.getQueryFromProps(this.props)}
+                          items={{art: this.state.art, artizen: this.state.artizen}} extended/>
             </div>
         );
     }

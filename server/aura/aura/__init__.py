@@ -10,6 +10,10 @@ from operator import itemgetter
 from queue import Queue
 from threading import Thread
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionTimeout
+from urllib3.exceptions import ReadTimeoutError
+import socket
+import binascii
 from .elasticsearch_driver import AuraMazeSignatureES
 from .photo import Photo
 
@@ -114,16 +118,14 @@ def painting_hash(painting):
 
 @app.route('/aura', methods=['POST'])
 def aura():
-    if 'image' in request.json:
-        # from PIL import Image
-        # from io import BytesIO
-        # im = Image.open(BytesIO(base64.b64decode(request.json['image'])))
-        # im.save('temp.jpg','JPEG')
-        raw = base64.b64decode(request.json['image'])
-    else:
-        return None, 400
     # start = time.time()
-    results = search_image_sync(ses, raw)
+    try:
+        raw = base64.b64decode(request.json['image'])
+        results = search_image_sync(ses, raw)
+    except (KeyError, OSError, binascii.Error):
+        return jsonify({'data': []}), 400
+    except (ConnectionTimeout, ReadTimeoutError, socket.timeout):
+        results = []
     # end = time.time()
     # print(end - start)
-    return jsonify({'art': results})
+    return jsonify({'data': results})

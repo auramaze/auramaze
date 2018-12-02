@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
@@ -71,14 +72,16 @@ router.get('/:id/art', [
         param('id').isInt().isLength({min: 9, max: 9}),
         param('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
-    query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/)
+    query('type').optional().matches(/^[a-z][a-z-]*[a-z]$/),
+    query('from').optional().isInt()
 ], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    const page = parseInt(req.query.page) >= 0 ? parseInt(req.query.page) : 0;
-    const size = 20;
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
+    const total = {};
 
     // Get all available types
     rds.query(`SELECT artizen.id, archive.type FROM archive INNER JOIN artizen ON archive.artizen_id=artizen.id WHERE artizen.${isNaN(parseInt(req.params.id)) ? 'username' : 'id'}=? GROUP BY archive.type`, [isNaN(parseInt(req.params.id)) ? req.params.id.toString() : parseInt(req.params.id)], (err, result, fields) => {
@@ -91,18 +94,20 @@ router.get('/:id/art', [
                 // Get art id and type from Aurora table `archive`
                 let sql, parameters;
                 let multitype = false;
+                let types = [];
                 if (req.query.type) {
-                    sql = 'SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?';
-                    parameters = [parseInt(id), req.query.type, size, page * size];
+                    types = [req.query.type];
+                    sql = 'SELECT SQL_CALC_FOUND_ROWS art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+                    parameters = [parseInt(id), req.query.type, size, from];
                 } else {
-                    const types = result.map(item => item.type);
+                    types = result.map(item => item.type);
                     if (types.length > 1) {
                         multitype = true;
                     }
-                    sql = Array(types.length).fill('SELECT art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?').join(';');
+                    sql = Array(types.length).fill('SELECT SQL_CALC_FOUND_ROWS art.id, art.username, art.title, art.image, archive.type FROM archive INNER JOIN art ON archive.art_id=art.id WHERE artizen_id=? AND type=? ORDER BY art.username LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;').join(' ');
                     parameters = [];
                     for (let type of types) {
-                        parameters.push(parseInt(id), type, size, page * size);
+                        parameters.push(parseInt(id), type, size, from);
                     }
                 }
                 rds.query(sql, parameters, (err, result, fields) => {
@@ -111,8 +116,14 @@ router.get('/:id/art', [
                         next(err);
                     } else {
                         if (multitype) {
+                            result.filter((item, index) => index % 2 === 1).forEach((item, index) => {
+                                total[types[index]] = item[0].total;
+                            });
                             // Merge multiple query results
-                            result = [].concat.apply([], result);
+                            result = [].concat.apply([], result.filter((item, index) => index % 2 === 0));
+                        } else {
+                            total[types[0]] = result[1][0].total;
+                            result = result[0];
                         }
 
                         // Group by type
@@ -125,7 +136,7 @@ router.get('/:id/art', [
                         result = Object.keys(result).map(key => ({
                             type: key,
                             data: result[key],
-                            next: `/${req.params.id}/art?type=${key}&page=${page + 1}`
+                            next: from + size < total[key] ? `${process.env.API_ENDPOINT}/artizen/${req.params.id}/art?type=${key}&from=${from + size}` : null
                         }));
                         res.json(result);
                     }
@@ -258,10 +269,10 @@ router.post('/:id/follow', [
     let sql, parameters;
 
     if (req.body.type) {
-        sql = 'REPLACE INTO follow (follower_id, followee_id) VALUES (?)';
+        sql = 'REPLACE INTO follow (user_id, artizen_id) VALUES (?)';
         parameters = [[id, req.params.id]];
     } else {
-        sql = 'DELETE FROM follow WHERE follower_id=? AND followee_id=?';
+        sql = 'DELETE FROM follow WHERE user_id=? AND artizen_id=?';
         parameters = [id, req.params.id];
     }
 
@@ -278,20 +289,21 @@ router.post('/:id/follow', [
 });
 
 /* GET all introductions of artizen. */
-router.get('/:id/introduction', [
-    oneOf([
-        param('id').isInt().isLength({min: 9, max: 9}),
-        param('id').custom(common.validateUsername).withMessage('Invalid username')
-    ]),
-], auth.optional, (req, res, next) => {
+router.get('/:id/introduction', oneOf([
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('artizen', req.params.id, 0, authId, (err, result, fields) => {
+    common.getTexts('artizen', req.params.id, 0, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -347,7 +359,7 @@ router.post('/:id/introduction', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 0, null, req.body.content ? JSON.stringify(req.body.content) : null, language, 0]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {
@@ -411,20 +423,21 @@ router.post('/:id/introduction/:textId/vote', [
 });
 
 /* GET all reviews of artizen. */
-router.get('/:id/review', [
-    oneOf([
-        param('id').isInt().isLength({min: 9, max: 9}),
-        param('id').custom(common.validateUsername).withMessage('Invalid username')
-    ]),
-], auth.optional, (req, res, next) => {
+router.get('/:id/review', oneOf([
+    param('id').isInt().isLength({min: 9, max: 9}),
+    param('id').custom(common.validateUsername).withMessage('Invalid username'),
+    query('from').optional().isInt()
+]), auth.optional, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
 
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
     const authId = req.payload && req.payload.id;
 
-    common.getTexts('artizen', req.params.id, 1, authId, (err, result, fields) => {
+    common.getTexts('artizen', req.params.id, 1, from, size, authId, (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             next(err);
@@ -486,7 +499,7 @@ router.post('/:id/review', [
     const {payload: {id}} = req;
 
     const language = req.body.content ? common.detectLanguage(req.body.content) : null;
-    rds.query('INSERT INTO text (author_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
+    rds.query('INSERT INTO text (user_id, art_id, artizen_id, type, rating, content, language, valid) VALUES (?)', [[parseInt(id), null, parseInt(req.params.id), 1, parseInt(req.body.rating) ? parseInt(req.body.rating) : null, req.body.content ? JSON.stringify(req.body.content) : null, language, 1]], (err, result, fields) => {
         /* istanbul ignore if */
         if (err) {
             if (err.code === 'ER_INVALID_JSON_TEXT') {

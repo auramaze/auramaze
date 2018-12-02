@@ -6,6 +6,7 @@ import ReviewFooter from "./review-footer";
 import headphone from "../assets/icons/headphones-alt-solid.png"
 import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
 import AutoHeightImage from 'react-native-auto-height-image';
+import noImage from "../assets/icons/no-image-artizen.png";
 
 class ReviewCard extends React.Component {
 
@@ -55,13 +56,16 @@ class ReviewCard extends React.Component {
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
             },
+            bodyView: {
+                paddingHorizontal: 10,
+                paddingVertical: 10
+            },
             bodyText: {
                 fontSize: 18,
                 lineHeight: 28,
-                padding: 10,
                 color: '#666666',
-                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
-            },
+                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin'
+            }
         });
 
 
@@ -74,29 +78,36 @@ class ReviewCard extends React.Component {
                         })}>
                         <View style={styles.avatarHolder}>
                             <Image
-                                source={{uri: this.props.source}}
+                                source={this.props.source ? {uri: this.props.source} : noImage}
                                 style={styles.imageStyle}/>
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    {this.props.isIntro ? <TouchableOpacity onPress={() => {
-                        Expo.Speech.isSpeakingAsync().then((result) => {
-                            if (result) {
-                                Expo.Speech.stop();
-                            } else {
-                                Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
-                            }
-                        });
-                    }}>
-                        {this.state.isSpeaking && this.props.isIntro ?
-                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
-                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                    </TouchableOpacity> : null}
+                    {this.props.isIntro && this.props.content ?
+                        <TouchableOpacity onPress={() => {
+                            Expo.Speech.isSpeakingAsync().then((result) => {
+                                this.setState(previousState => ({isSpeaking: !previousState.isSpeaking}));
+                                if (result) {
+                                    Expo.Speech.stop();
+                                } else {
+                                    Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
+                                }
+                            });
+                        }}>
+                            {this.state.isSpeaking && this.props.isIntro ?
+                                <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
+                                <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
+                        </TouchableOpacity> : null}
 
                 </View>
-                <View style={styles.bodyText}>{getRNDraftJSBlocks({
-                    contentState: this.props.content
-                })}</View>
+                <View style={styles.bodyView}>
+                    {this.props.content &&
+                    <Text style={styles.bodyText}>
+                        {getRNDraftJSBlocks({
+                            contentState: this.props.content
+                        })}
+                    </Text>}
+                </View>
                 <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
                               itemType={this.props.itemType} itemId={this.props.itemId}
                               textType={this.props.textType} textId={this.props.textId}/>

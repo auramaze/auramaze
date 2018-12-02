@@ -4,6 +4,7 @@ const router = express.Router();
 const passport = require('passport');
 const {body, oneOf, validationResult} = require('express-validator/check');
 const authController = require('./auth.controller');
+const authMobile = require('./auth.mobile');
 const {auth} = require('./auth.config');
 const common = require('./common');
 const rds = common.rds;
@@ -24,9 +25,13 @@ router.use((req, res, next) => {
     next();
 });
 
-// Routes that are triggered on the client
+// Routes that are triggered on the web client
 router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
+
+// Routes that are triggered on the mobile client
+router.post('/google/mobile', [body('id').isInt()], authMobile.google);
+router.post('/facebook/mobile', [body('id').isInt()], authMobile.facebook);
 
 // Sign up with email
 router.post('/signup', [

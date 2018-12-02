@@ -7,7 +7,7 @@ if __name__ == '__main__':
     for group in ['artist', 'genre', 'style', 'museum']:
         artizens = json.load(open('wiki-json/wiki-{}-2.json'.format(group)))
         for artizen in tqdm(artizens):
-            time.sleep(0.05)
+            # time.sleep(0.05)
             for key_type in ['wikipedia', 'wikipedia_zh']:
                 if artizen[key_type]:
                     html = artizen[key_type]['html']

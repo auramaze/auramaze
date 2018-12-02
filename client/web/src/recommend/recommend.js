@@ -12,7 +12,7 @@ class Recommend extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: {art: [], artizen: []}
+            art: []
         };
     }
 
@@ -27,10 +27,10 @@ class Recommend extends Component {
                     'Authorization': `Bearer ${token}`
                 },
                 json: true
-            }, (error, response, items) => {
+            }, (error, response, body) => {
                 if (response && response.statusCode === 200) {
                     this.setState({
-                        items: items
+                        art: body.data
                     });
                 } else if (response.statusCode === 401) {
                     removeCookies(cookies);
@@ -46,7 +46,7 @@ class Recommend extends Component {
         return (
 
             <div className="recommend">
-                <ItemList items={this.state.items}/>
+                <ItemList items={{art: this.state.art}}/>
             </div>
         );
     }

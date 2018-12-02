@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity, AsyncStorage} from 'react-native';
 import thumbs_down from '../assets/icons/thumbs-down.png';
 import thumbs_up from '../assets/icons/thumbs-up.png';
+import config from "../config.json";
 
 class ReviewFooter extends React.Component {
 
@@ -21,7 +22,7 @@ class ReviewFooter extends React.Component {
             if (token === 'undefined') {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`https://apidev.auramaze.org/v1/${itemType}/${itemId}/${textType}/${textId}/vote`, {
+                fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}/${textId}/vote`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

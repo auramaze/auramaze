@@ -3,10 +3,11 @@ import {
     Text, View, TouchableOpacity, Image, Dimensions, Animated,
     Easing
 } from 'react-native';
-import {Camera, Permissions} from 'expo';
+import {Camera, Permissions, ImageManipulator} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
 import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
+import config from "../config.json";
 
 class CameraScreen extends React.Component {
 
@@ -18,7 +19,9 @@ class CameraScreen extends React.Component {
 
     state = {
         hasCameraPermission: null,
-        type: Camera.Constants.Type.back
+        type: Camera.Constants.Type.back,
+        windowHeight: Dimensions.get('window').height,
+        windowWidth: Dimensions.get('window').width
     };
 
     async componentDidMount() {
@@ -30,19 +33,21 @@ class CameraScreen extends React.Component {
     handleMountError = ({message}) => console.error(message);
 
     takePicture = async () => {
-        // const dim = Dimensions.get('window');
-        // alert('width: '+ dim.width);
-        // alert('height: '+ dim.height);
-
         if (this.camera) {
 
             this.setState({imageProcessing: true});
 
-            this.camera.takePictureAsync({base64: true, quality: 0.01, skipProcessing: true})
-                .then((photo) => {
-                    let dataJson = {'image': photo.base64};
+            this.camera.takePictureAsync({quality: 0.01, skipProcessing: true})
+                .then(async (photo) => {
 
-                    fetch('https://apidev.auramaze.org/v1/search', {
+                    const manipResult = await ImageManipulator.manipulate(
+                        photo.uri,
+                        [{resize: {width: 800, height: 600}}],
+                        {base64: true}
+                    );
+
+                    let dataJson = {'image': manipResult.base64};
+                    fetch(`${config.API_ENDPOINT}/search?index=art`, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -60,8 +65,7 @@ class CameraScreen extends React.Component {
                         }
                     }).then((responseJson) => {
                             this.setState({imageProcessing: false});
-                            // alert(JSON.stringify(responseJson));
-                            let resultArt = responseJson.art;
+                            let resultArt = responseJson.data;
                             if (resultArt.length >= 1) {
                                 this.props.navigation.navigate('Art', {
                                     artId: resultArt[0].id,
@@ -105,7 +109,7 @@ class CameraScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <Camera
-                        style={{flex: 1}}
+                        style={{width: this.state.windowWidth, height: this.state.windowHeight}}
                         type={this.state.type}
                         onMountError={this.handleMountError}
                         pictureSize={"High"}
@@ -128,16 +132,29 @@ class CameraScreen extends React.Component {
 
                                 <Animated.Image
                                     style={{
-                                    tintColor: 'white', width: 80,
-                                    height: 80, transform: [{rotate: spin}]
-                                }}
+                                        tintColor: 'white', width: 80,
+                                        height: 80, transform: [{rotate: spin}]
+                                    }}
                                     source={loading}/>
                             </View> : null}
 
                             <View style={{
                                 flex: 1,
+                                position: 'absolute',
+                                width: this.state.windowWidth,
+                                height: this.state.windowHeight,
+                                borderColor: 'black',
+                                borderLeftWidth: this.state.windowWidth * 1 / 9,
+                                borderRightWidth: this.state.windowWidth * 1 / 9,
+                                borderTopWidth: this.state.windowHeight * 1 / 9,
+                                borderBottomWidth: this.state.windowHeight * 0.8 / 3,
+                                opacity: 0.6
+                            }}/>
+
+                            <View style={{
+                                flex: 1,
                                 alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: 40,
+                                left: 0, right: 0, bottom: this.state.windowWidth * 1 / 5,
                             }}>
                                 <TouchableOpacity
                                     onPress={this.takePicture}

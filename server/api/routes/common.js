@@ -41,14 +41,14 @@ Common.prototype.getItem = (group, id, authId, callback) => {
         sql = `SELECT * FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
         if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON followee_id=artizen.id WHERE follower_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON artizen_id=artizen.id WHERE user_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
             parameters = [authId, id.toString(), id.toString()];
         }
     } else {
         sql = `SELECT * FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
         if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE follower_id=? AND followee_id=?) AS following FROM artizen WHERE artizen.id=?';
+            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE user_id=? AND artizen_id=?) AS following FROM artizen WHERE artizen.id=?';
             parameters = [authId, parseInt(id), parseInt(id)];
         }
     }
@@ -67,28 +67,39 @@ Common.prototype.batchGetItems = (group, id, callback) => {
 };
 
 // Get all introductions/reviews of item
-Common.prototype.getTexts = (group, itemId, textType, authId, callback) => {
+Common.prototype.getTexts = (group, itemId, textType, from, size, authId, callback) => {
     let sql, parameters;
 
     if (isNaN(parseInt(itemId))) {
         if (authId) {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
-            parameters = [authId, itemId, textType];
+            sql = `SELECT SQL_CALC_FOUND_ROWS text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND user_id=?) AS status FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id ORDER BY text.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;`;
+            parameters = [authId, itemId, textType, size, from];
         } else {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
-            parameters = [itemId, textType];
+            sql = `SELECT SQL_CALC_FOUND_ROWS text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id ORDER BY text.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;`;
+            parameters = [itemId, textType, size, from];
         }
     } else {
         if (authId) {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-            parameters = [authId, itemId, textType];
+            sql = `SELECT SQL_CALC_FOUND_ROWS text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND user_id=?) AS status FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id ORDER BY text.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;`;
+            parameters = [authId, itemId, textType, size, from];
         } else {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
-            parameters = [itemId, textType];
+            sql = `SELECT SQL_CALC_FOUND_ROWS text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id ORDER BY text.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;`;
+            parameters = [itemId, textType, size, from];
         }
     }
 
-    rds.query(sql, parameters, callback);
+    rds.query(sql, parameters, (err, result, fields) => {
+        if (err) {
+            callback(err, result, fields);
+        } else {
+            const nextFrom = from + size;
+            const response = {data: result[0], next: null};
+            if (nextFrom < result[1][0].total) {
+                response.next = `${process.env.API_ENDPOINT}/${group}/${itemId}/${parseInt(textType) ? 'review' : 'introduction'}?from=${nextFrom}`;
+            }
+            callback(null, response);
+        }
+    });
 };
 
 // Get one introduction/review of item
@@ -97,18 +108,18 @@ Common.prototype.getText = (group, itemId, textType, textId, authId, callback) =
 
     if (isNaN(parseInt(itemId))) {
         if (authId) {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND user_id=?) AS status FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
             parameters = [authId, textId, itemId, textType];
         } else {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND ${group}.username=? AND text.type=? AND text.valid GROUP BY text.id`;
             parameters = [textId, itemId, textType];
         }
     } else {
         if (authId) {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND artizen_id=?) AS status FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down, (SELECT status FROM vote WHERE text_id=text.id AND user_id=?) AS status FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
             parameters = [authId, textId, itemId, textType];
         } else {
-            sql = `SELECT text.*, ${group}.username as ${group}_username, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.author_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
+            sql = `SELECT text.*, ${group}.username as ${group}_username, author.id AS author_id, author.username as author_username, author.name as author_name, author.avatar as author_avatar, SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS up, SUM(CASE WHEN status=-1 THEN 1 ELSE 0 END) AS down FROM text INNER JOIN artizen AS author ON text.user_id=author.id LEFT JOIN vote ON text.id=vote.text_id INNER JOIN ${group} AS ${group} ON text.${group}_id=${group}.id WHERE text.id=? AND text.${group}_id=? AND text.type=? AND text.valid GROUP BY text.id`;
             parameters = [textId, itemId, textType];
         }
     }
@@ -118,7 +129,7 @@ Common.prototype.getText = (group, itemId, textType, textId, authId, callback) =
 
 // Vote for one introduction/review of item
 Common.prototype.voteText = (textId, authId, type, callback) => {
-    rds.query('REPLACE INTO vote (text_id, artizen_id, status) VALUES (?);', [[textId, authId, type === 'up' ? 1 : -1]], callback);
+    rds.query('REPLACE INTO vote (text_id, user_id, status) VALUES (?);', [[textId, authId, type === 'up' ? 1 : -1]], callback);
 };
 
 // Insert item data
@@ -241,13 +252,13 @@ Common.prototype.detectLanguage = (content) => {
 
 
 const generateJWT = (user) => {
-    const today = new Date();
-    const expirationDate = new Date(today);
-    expirationDate.setDate(today.getDate() + 60);
+    // const today = new Date();
+    // const expirationDate = new Date(today);
+    // expirationDate.setDate(today.getDate() + 60);
 
     return jwt.sign({
         id: parseInt(user.id),
-        exp: parseInt(expirationDate.getTime() / 1000, 10),
+        // exp: parseInt(expirationDate.getTime() / 1000, 10),
     }, process.env.SECRET);
 };
 

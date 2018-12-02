@@ -26,3 +26,64 @@ export function convertTextToDraftjsContent(text) {
         "entityMap": {}
     }
 }
+
+export class OrderedSet {
+    constructor(items = []) {
+        this.ids = new Set();
+        this.items = [];
+        for (let item of items) {
+            if (!this.ids.has(item.id.toString())) {
+                this.ids.add(item.id.toString());
+                this.items.push(item);
+            }
+        }
+    }
+
+    get size() {
+        return this.items.length;
+    }
+
+    get length() {
+        return this.items.length;
+    }
+
+    get(index) {
+        return this.items[index];
+    }
+
+    forEach(fn) {
+        this.items.forEach(fn);
+    }
+
+    map(fn) {
+        return this.items.map(fn);
+    }
+
+    union(items) {
+        for (let item of items) {
+            if (!this.ids.has(item.id.toString())) {
+                this.ids.add(item.id.toString());
+                this.items.push(item);
+            }
+        }
+        return this;
+    }
+
+    unionFront(items) {
+        for (let item of items.reverse()) {
+            if (!this.ids.has(item.id.toString())) {
+                this.ids.add(item.id.toString());
+                this.items.unshift(item);
+            }
+        }
+        return this;
+    }
+
+    toArray() {
+        return this.items;
+    }
+
+    toString() {
+        return this.items.toString();
+    }
+}

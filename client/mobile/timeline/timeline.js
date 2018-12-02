@@ -1,141 +1,186 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, AsyncStorage} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    FlatList,
+    AsyncStorage,
+    RefreshControl,
+    Dimensions,
+    Text,
+    TouchableOpacity
+} from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
-import SearchPage from "../components/search-page";
-import ActivityCard from "../components/activity-card"
+import SearchPage from "../search/search-page";
+import ActivityCard from "../components/activity-card";
+import config from "../config.json";
+import ArtizenCard from "../components/artizen-card";
+import {OrderedSet} from "../utils";
 
 
 class TimeLine extends React.Component {
-
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}, timeline: 'undefined'};
-        this.updateSearchStatus = this.updateSearchStatus.bind(this);
+        this.state = {timeline: new OrderedSet(), refreshing: false, next: null};
+        this.onEndReachedCalledDuringMomentum = true;
+        this.refreshTimelineHandler = this.refreshTimelineHandler.bind(this);
+        this.loadMoreTimelineHandler = this.loadMoreTimelineHandler.bind(this);
     }
 
     componentDidMount() {
-        // fetch('https://apidev.auramaze.org/v1/timeline', {
-        //     method: 'GET',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         "Content-Type": "application/json",
-        //         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAwMDAxLCJleHAiOjE1NDc0MzgzMjEsImlhdCI6MTU0MjI1NDMyMX0.7th4ihcbPQovSOwe23R-NWs5QuuN1LTesI_Xuzi-H7o'
-        //     },
-        // }).then(function (response) {
-        //     if (response.ok) {
-        //         return response.json();
-        //     } else {
-        //         Promise.reject(response.json());
-        //         throw new Error('Get timeline fail.');
-        //
-        //     }
-        // }).then((responseJson) => {
-        //         this.setState(previousState => ({
-        //             timeline: responseJson
-        //         }));
-        //     }
-        // ).catch(function (error) {
-        //     alert('There has been a problem with your fetch operation: ' + error.message);
-        // });
         this._loadInitialState().done();
     }
 
     async _loadInitialState() {
         try {
-            let token = await AsyncStorage.getItem('token');
+            const token = await AsyncStorage.getItem('token', null);
 
-            let recommendInfo = token && token !== 'undefined' && token !== 'null' ?
-                await fetch('https://apidev.auramaze.org/v1/timeline', {
+            if (token && token !== 'undefined' && token !== 'null') {
+                const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
                         "Content-Type": "application/json",
                         'Authorization': `Bearer ${token}`
                     },
-                }) : null;
-
-            if (!recommendInfo) {
-                this.setState(previousState => ({
-                    timeline: 'undefined'
-                }));
+                });
+                const timelineInfoJson = await timelineInfo.json();
+                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
             } else {
-                let recommendInfoJson = await recommendInfo.json();
-                this.setState(previousState => ({
-                    timeline: recommendInfoJson
-                }));
+                this.setState({timeline: new OrderedSet(), next: null});
             }
-
-
         } catch (error) {
-            alert(error);
+            console.log(error);
         }
     }
 
+    async refreshTimelineHandler() {
+        this.setState({refreshing: true});
+        const token = await AsyncStorage.getItem('token', null);
+        const body = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+        };
+        if (this.state.timeline.size) {
+            const min = this.state.timeline.toArray()[0].id;
+            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline?min=${min}`, body);
+            const timelineInfoJson = await timelineInfo.json();
 
-    updateSearchStatus = (info) => {
-        this.setState(previousState => (
-            {searchResult: info}
-        ));
-    };
+            if (timelineInfoJson.next) {
+                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+            } else {
+                this.setState(previousState => ({
+                    timeline: previousState.timeline.unionFront(timelineInfoJson.data)
+                }));
+            }
+        } else {
+            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, body);
+            const timelineInfoJson = await timelineInfo.json();
+            this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+        }
+        this.setState({refreshing: false});
+    }
+
+    async loadMoreTimelineHandler() {
+        if (!this.onEndReachedCalledDuringMomentum && this.state.next) {
+            const token = await AsyncStorage.getItem('token', null);
+            const response = await fetch(this.state.next, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            const responseJsonRaw = await response.json();
+            this.setState(previousState => ({
+                timeline: previousState.timeline.union(responseJsonRaw.data),
+                next: responseJsonRaw.next,
+            }));
+            this.onEndReachedCalledDuringMomentum = true;
+        }
+    }
 
     render() {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
                 paddingTop: Constants.statusBarHeight,
+                height: Dimensions.get('window').height
+            },
+            backPage: {
+                backgroundColor: '#cdcdcd',
+                marginBottom: 40,
+                height: Dimensions.get('window').height
             }
         });
 
-
         return (
             <View style={styles.mainStruct}>
+                <View style={styles.backPage}>
 
-                <TopSearchBar updateSearchStatus={this.updateSearchStatus}
-                              navigation={this.props.navigation}
-                              fontLoaded={this.props.screenProps.fontLoaded}/>
+                    <TopSearchBar navigation={this.props.navigation}
+                                  fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                                   fontLoaded={this.props.screenProps.fontLoaded}/> :
-                    this.state.timeline !== 'undefined' ?
-                        <ScrollView keyboardDismissMode='on-drag'>
-                            {this.state.timeline.map((activity, key) =>
-                                activity.art_id ?
-                                    <ActivityCard
-                                        key={key}
-                                        fontLoaded={this.props.screenProps.fontLoaded}
-                                        authorId={activity.author_id}
-                                        source={activity.author_avatar}
-                                        artId={activity.art_id}
-                                        artSource={activity.art_image && activity.art_image.default.url}
-                                        artName={activity.art_name && activity.art_name.default}
-                                        name={activity.author_name && activity.author_name.default}
-                                        isIntro={false}
-                                        content={activity.content}
-                                        up={activity.up}
-                                        down={activity.down}
-                                        status={activity.status}
-                                        itemType="art"
-                                        textType="review" itemId={activity.art_id} textId={activity.id}/> :
-                                    <ActivityCard
-                                        key={key}
-                                        fontLoaded={this.props.screenProps.fontLoaded}
-                                        authorId={activity.author_id}
-                                        source={activity.author_avatar}
-                                        artizenId={activity.artizen_id}
-                                        artizenSource={activity.artizen_avatar}
-                                        artizenName={activity.artizen_name && activity.artizen_name.default}
-                                        name={activity.author_name && activity.author_name.default}
-                                        isIntro={false}
-                                        content={activity.content}
-                                        up={activity.up}
-                                        down={activity.down}
-                                        status={activity.status}
-                                        itemType="artizen"
-                                        textType="review" itemId={activity.artizen_id} textId={activity.id}/>)}
-                        </ScrollView> : null
-                }
+                    {this.state.timeline.size ?
+                        <FlatList data={this.state.timeline.toArray().concat([{}])}
+                                  renderItem={({item}) => {
+                                      return (
+                                          item.art_id ?
+                                              <ActivityCard
+                                                  key={item.id}
+                                                  fontLoaded={this.props.screenProps.fontLoaded}
+                                                  authorId={item.author_id}
+                                                  source={item.author_avatar}
+                                                  artId={item.art_id}
+                                                  artSource={item.art_image && item.art_image.default.url}
+                                                  artName={item.art_name && item.art_name.default}
+                                                  name={item.author_name && item.author_name.default}
+                                                  content={item.content}
+                                                  up={item.up}
+                                                  down={item.down}
+                                                  status={item.status}
+                                                  created={item.created}
+                                                  itemType="art"
+                                                  textType="review"
+                                                  itemId={item.art_id}
+                                                  textId={item.id}/> :
+                                              item.artizen_id ?
+                                                  <ActivityCard
+                                                      key={item.id}
+                                                      fontLoaded={this.props.screenProps.fontLoaded}
+                                                      authorId={item.author_id}
+                                                      source={item.author_avatar}
+                                                      artizenId={item.artizen_id}
+                                                      artizenSource={item.artizen_avatar}
+                                                      artizenName={item.artizen_name && item.artizen_name.default}
+                                                      name={item.author_name && item.author_name.default}
+                                                      content={item.content}
+                                                      up={item.up}
+                                                      down={item.down}
+                                                      status={item.status}
+                                                      created={item.created}
+                                                      itemType="artizen"
+                                                      textType="review"
+                                                      itemId={item.artizen_id}
+                                                      textId={item.id}/> :
+                                                  <View style={{height: 200}}/>)
+                                  }}
+                                  onRefresh={this.refreshTimelineHandler}
+                                  refreshing={this.state.refreshing}
+                                  onEndReached={this.loadMoreTimelineHandler}
+                                  onMomentumScrollBegin={() => {
+                                      this.onEndReachedCalledDuringMomentum = false;
+                                  }}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        <View style={{height: Dimensions.get('window').height}}/>}
 
+                </View>
             </View>
         );
     }
