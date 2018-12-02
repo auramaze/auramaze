@@ -248,6 +248,47 @@ router.delete('/:id', oneOf([
 });
 
 /* Follow an artizen. */
+router.get('/:id/follow', [
+    param('id').isInt().isLength({min: 9, max: 9}),
+    oneOf([
+        query('group').equals('art'),
+        query('group').equals('artizen'),
+    ]),
+    query('from').optional().isInt()
+], auth.required, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {payload: {id}} = req;
+    const from = parseInt(req.query.from) > 0 ? parseInt(req.query.from) : 0;
+    const size = 10;
+
+    let sql;
+
+    if (req.query.group === 'art') {
+        sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, art.username, art.title, art.image FROM follow INNER JOIN art ON follow.art_id=art.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+    } else {
+        sql = 'SELECT SQL_CALC_FOUND_ROWS follow.*, artizen.username, artizen.name, artizen.avatar FROM follow INNER JOIN artizen ON follow.artizen_id=artizen.id WHERE follow.user_id=? ORDER BY follow.id DESC LIMIT ? OFFSET ?; SELECT FOUND_ROWS() AS total;';
+    }
+
+    rds.query(sql, [id, size, from], (err, result, fields) => {
+        /* istanbul ignore if */
+        if (err) {
+            next(err);
+        } else {
+            const total = result[1][0].total;
+            result = result[0];
+            res.json({
+                data: result,
+                next: from + size < total ? `${process.env.API_ENDPOINT}/artizen/${req.params.id}/follow?group=${req.query.group}&from=${from + size}` : null
+            });
+        }
+    });
+});
+
+/* Follow an artizen. */
 router.post('/:id/follow', [
     param('id').isInt().isLength({min: 9, max: 9}),
     body('type').isBoolean()
