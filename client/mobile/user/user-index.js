@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
+import config from "../config";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -20,12 +21,26 @@ class UserIndex extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true, id: ''};
+        this.state = {pageIsSign: true, id: this.props.id, token: this.props.token, avatar: null};
     }
 
     componentDidMount() {
-        AsyncStorage.getItem('id').then((value) => {
-            this.setState({id: value});
+        fetch(`${config.API_ENDPOINT}/artizen/${this.state.id}`, {
+            method: 'GET',
+            headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
+                'Authorization': `Bearer ${this.state.token}`
+            } : null
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Get user info fail.');
+            }
+        }).then((responseJson) => {
+                this.setState({avatar: responseJson.avatar});
+            }
+        ).catch(function (error) {
+            alert('There has been a problem with your fetch operation: ' + error.message);
         });
     };
 
@@ -49,7 +64,6 @@ class UserIndex extends React.Component {
                 paddingTop: 10,
                 paddingBottom: 10,
                 backgroundColor: 'white',
-                // borderWidth: 1,
                 borderColor: '#666666',
                 borderRadius: 5
             },
@@ -65,7 +79,7 @@ class UserIndex extends React.Component {
                 backgroundColor: '#666666',
                 borderColor: '#666666'
             },
-            textGenreal: {
+            textGeneral: {
                 textAlign: 'center',
                 paddingHorizontal: 10,
                 fontSize: 15
@@ -82,46 +96,24 @@ class UserIndex extends React.Component {
             }
         };
 
-        let _checkStatus = () => {
-            AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
-                let isAuthorized = data[0][1];
-                let username = data[1][1];
-                let token = data[2][1];
-                let id = data[3][1];
-                alert("isAuthorized: " + isAuthorized
-                    + "\nusername: " + username
-                    + "\ntoken: " + token
-                    + "\nid: " + id)
-            });
-        };
-
         return (
             <DismissKeyboard>
                 <View style={styles.mainStruct}>
 
-                    <TouchableOpacity
-                        onPress={_checkStatus}>
-                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                         source={logoIcon}
-                                         style={{
-                                             marginTop: Dimensions.get('window').width * 80 / 375,
-                                             marginBottom: 30
-                                         }}/>
-                    </TouchableOpacity>
-
-                    <Text style={styles.signupText}>
-                        Success!
-                    </Text>
-
-                    <Text style={styles.signupText}>
-                        Your id is: {this.state.id}
-                    </Text>
+                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                     source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
+                                     style={{
+                                         marginTop: Dimensions.get('window').width * 80 / 375,
+                                         marginBottom: 30
+                                     }}/>
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                        onPress={logOut}
+                        onPress={() => this.props.navigation.navigate('UserSettings', {
+                            logOut: logOut
+                        })}>
                         underlayColor='#fff'>
-                        <Text style={[styles.textGenreal, styles.textWhite]}>Log Out</Text>
+                        <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
                     </TouchableOpacity>
 
                 </View>

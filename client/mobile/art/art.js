@@ -139,7 +139,10 @@ class Art extends React.Component {
             this.setState({
                 artId: artId,
                 art: <ArtInfo fontLoaded={fontLoadStatus}
-                              url={artInfoJson.image.default.url} title={artInfoJson.title.default}/>,
+                              id={artInfoJson.id}
+                              url={artInfoJson.image.default.url}
+                              isFollowing={artInfoJson.following ? artizenInfoJson.following : 0}
+                              title={artInfoJson.title.default}/>,
                 introductions: OrderedSet(introInfoJsonRaw.data),
                 reviews: OrderedSet(reviewInfoJsonRaw.data),
                 nextReview: reviewInfoJsonRaw.next
