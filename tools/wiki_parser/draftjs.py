@@ -19,4 +19,19 @@ if __name__ == '__main__':
                 else:
                     artizen['wikipedia']['content'] = None
 
-        json.dump(artizens, open('wiki-json/wiki-{}-3.json'.format(group), 'w'), indent=4)
+            if artizen['wikipedia_zh']:
+                html = artizen['wikipedia_zh']['html']
+                if html:
+                    payload = {'html': html}
+                    r = requests.post('http://localhost:8000/html-to-content', json=payload)
+                    try:
+                        artizen['wikipedia']['content'] = r.json()
+                    except:
+                        print(json.dumps(payload))
+                        print(html)
+                        exit(0)
+                else:
+                    artizen['wikipedia']['content'] = None
+
+        with open('wiki-json/wiki-{}-3.json'.format(group), 'w', encoding='utf8') as f:
+            json.dump(artizens, f, indent=4, ensure_ascii=False)

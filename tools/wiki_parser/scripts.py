@@ -71,5 +71,6 @@ def count_word():
             for section in dict[entry]['html']:
                 print('\t', len(section['content'].split()), section['header'])
 
+
 if __name__ == '__main__':
     count_word()

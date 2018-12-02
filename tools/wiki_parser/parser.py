@@ -11,7 +11,7 @@ class WikiParser:
         self.dict = {}
         self.lang = lang
 
-    def _find_header(soup):
+    def _find_header(self, soup):
         for section in soup.find_all('h2'):
             try:
                 count = self.dict.get(section.span.text, 0)
@@ -22,6 +22,9 @@ class WikiParser:
     def _parse(self, user_name, text):
         wiki_doc = {}
         soup = BeautifulSoup(text, 'html.parser')
+
+        # self._find_header(soup)
+        # return
 
         for table in soup.find_all('table'):
             table.decompose()
@@ -61,29 +64,12 @@ class WikiParser:
             if content != '':
                 wiki_doc['html'].append({'header': header, 'content': content})
 
-        # start_introduction = text.find("<p>")
-        # stop_introduction = text.find('<div id="toctitle">', start_introduction + 1)
-        # if '<div id="toctitle">' not in text:
-        #     stop_introduction_1 = text.find('<div id="toc"')
-        #     stop_introduction_2 = text.find('<h2>')
-        #     if stop_introduction_1 == -1:
-        #         stop_introduction = stop_introduction_2
-        #     else:
-        #         stop_introduction = min(stop_introduction_1, stop_introduction_2)
-        #
-        # introduction = text[start_introduction : stop_introduction - 1]
-        # soup = BeautifulSoup(introduction, 'html.parser')
-        # for sup in soup.find_all('sup'):
-        #     sup.decompose()
-        # for link in soup.find_all('a'):
-        #     link.unwrap()
-        # for img in soup.find_all('img'):
-        #     img.decompose()
-        # introduction = ''.join([str(para) for para in soup.find_all('p')])
-        #
-        # wiki_doc["html"] = introduction
-
         self.dict[user_name] = wiki_doc
+
+    def save_count(self, output_path):
+        r_list = sorted(((v,k) for k,v in self.dict.items()), reverse=True)
+        with open(output_path, 'w', encoding='utf8') as f:
+            json.dump(r_list, f, indent=4, ensure_ascii=False)
 
     def save(self, output_path):
         with open(output_path, 'w', encoding='utf8') as f:
