@@ -27,7 +27,7 @@ class BlankUser extends React.Component {
 
     componentDidMount() {
 
-        AsyncStorage.getItem('isAuthorized').then((value) => {
+        AsyncStorage.getItem('isAuthorized', null).then((value) => {
             if (value === undefined || value === 'false') {
                 AsyncStorage.multiSet([
                     ['isAuthorized', 'false'],

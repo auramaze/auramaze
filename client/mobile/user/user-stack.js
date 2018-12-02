@@ -3,11 +3,12 @@ import {createStackNavigator} from "react-navigation";
 import Art from "../art/art";
 import Artizen from "../artizen/artizen";
 import User from "./user";
-import SearchPage from "../search/search-page";
+import UserSettings from "./user-settings";
+import UserIndex from "./user-index";
 
 const UserStack = createStackNavigator(
     {
-        TimeLine: {
+        User: {
             screen: User,
             navigationOptions: {
                 header: null
@@ -15,10 +16,11 @@ const UserStack = createStackNavigator(
         },
         Art: {screen: Art},
         Artizen: {screen: Artizen},
-        SearchPage: {screen: SearchPage}
+        UserIndex: {screen: UserIndex},
+        UserSettings: {screen: UserSettings}
     },
     {
-        initialRouteName: 'TimeLine',
+        initialRouteName: 'User',
         cardStyle: {
             backgroundColor: 'white'
         },
@@ -27,7 +29,7 @@ const UserStack = createStackNavigator(
                 backgroundColor: '#fff',
                 borderBottomWidth: 0,
                 shadowColor: 'black',
-                shadowOffset: { width: 0, height: 2 },
+                shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
                 shadowRadius: 5,
             },

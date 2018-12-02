@@ -12,10 +12,8 @@ import {
 } from 'react-native';
 import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
-import SearchPage from "../search/search-page";
 import ActivityCard from "../components/activity-card";
 import config from "../config.json";
-import ArtizenCard from "../components/artizen-card";
 import {OrderedSet} from "../utils";
 
 

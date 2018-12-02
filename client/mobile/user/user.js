@@ -1,10 +1,8 @@
 import React from 'react';
 import {
-    StyleSheet,
     View,
     Dimensions,
-    TouchableWithoutFeedback,
-    Keyboard, AsyncStorage
+    AsyncStorage
 } from 'react-native';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import UserIndex from "./user-index";
@@ -20,9 +18,9 @@ class User extends React.Component {
             hasAuthorized: false,
             index: 0,
             routes: [
-                {key: 'profile', title: 'First'},
-                {key: 'art', title: 'Second'},
-                {key: 'artizen', title: 'Third'},
+                {key: 'profile', title: 'Profile'},
+                {key: 'art', title: 'View Art'},
+                {key: 'artizen', title: 'View Artizen'},
             ],
         };
     }
@@ -53,6 +51,7 @@ class User extends React.Component {
                 ["token", 'undefined'],
                 ["id", 'undefined'],
             ]).then(this.setState({hasAuthorized: false}));
+            this.props.navigation.popToTop();
         };
 
         let _toLogIn = () => {
@@ -60,7 +59,7 @@ class User extends React.Component {
         };
 
         const ProfileRoute = () => (
-            <UserIndex screenProps={{toLogOut: _toLogOut}}/>
+            <UserIndex screenProps={{toLogOut: _toLogOut}} navigation={this.props.navigation}/>
         );
 
         const ArtRoute = () => (
@@ -98,13 +97,20 @@ class User extends React.Component {
                             {...props}
                             indicatorStyle={{backgroundColor: 'black'}}
                             style={{backgroundColor: 'white'}}
-                            labelStyle={{color: '#666666'}}
+                            labelStyle={{
+                                color: '#666666',
+                                textAlign: 'center',
+                                fontFamily: this.props.screenProps.fontLoaded ? ('century-gothic-regular') : 'Cochin',
+                                fontSize: 15
+                            }}
+                            // tabStyle={{padding: 0}}
+                            getLabelText={({route}) => route.title}
                         />
                     }
                     initialLayout={{
                         width: Dimensions.get('window').width,
                     }}
-                    style={{paddingTop: Constants.statusBarHeight,}}
+                    style={{paddingTop: Constants.statusBarHeight}}
                 />
             )
         }

@@ -24,7 +24,7 @@ class UserIndex extends React.Component {
     }
 
     componentDidMount() {
-        AsyncStorage.getItem('id').then((value) => {
+        AsyncStorage.getItem('id', null).then((value) => {
             this.setState({id: value});
         });
     };
@@ -65,7 +65,7 @@ class UserIndex extends React.Component {
                 backgroundColor: '#666666',
                 borderColor: '#666666'
             },
-            textGenreal: {
+            textGeneral: {
                 textAlign: 'center',
                 paddingHorizontal: 10,
                 fontSize: 15
@@ -119,9 +119,11 @@ class UserIndex extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                        onPress={logOut}
+                        onPress={() => this.props.navigation.navigate('UserSettings', {
+                            logOut: logOut
+                        })}>
                         underlayColor='#fff'>
-                        <Text style={[styles.textGenreal, styles.textWhite]}>Log Out</Text>
+                        <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
                     </TouchableOpacity>
 
                 </View>
