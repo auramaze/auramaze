@@ -3,17 +3,14 @@ import {
     StyleSheet,
     View,
     ScrollView,
-    Dimensions,
     TouchableOpacity,
-    Text,
     FlatList,
     AsyncStorage,
     RefreshControl
 } from 'react-native';
 import {Constants} from 'expo';
+import {OrderedSet} from 'immutable';
 import TopSearchBar from "../components/top-search-bar";
-import SearchPage from "../components/search-page";
-import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
@@ -24,13 +21,9 @@ class Recommendation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchResult: {hasSearched: false}, recommendation: 'undefined', refreshing: false,
-            haveArtizen: false,
-            recommendArtizen: [],
-            haveArt: false,
-            recommendArt: []
+            recommendation: 'undefined', refreshing: false,
+            recommendArt: OrderedSet([]), recommendNext: null
         };
-        this.updateSearchStatus = this.updateSearchStatus.bind(this);
         this._loadRecommend = this._loadRecommend.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
@@ -69,67 +62,36 @@ class Recommendation extends React.Component {
             }
         }).then((responseJsonRaw) => {
             let responseJson = responseJsonRaw.data;
-            let returnArtizen = responseJson.artizen.length >= 1;
-            let returnArt = responseJson.length >= 1;
-            let artizenArray = [];
-
-            responseJson.artizen.map((item, key) => {
-                artizenArray.push(
-                    <TouchableOpacity key={key}
-                                      onPress={() => this.props.navigation.navigate('Artizen', {
-                                          artizenId: item.id,
-                                          titleName: item.name.default,
-                                      })}>
-                        <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                     source={item.avatar ? item.avatar : null}
-                                     id={item.id}
-                                     topMargin={0}
-                                     fontLoaded={fontLoaded}/>
+            let artArray = [];
+            responseJson.map((item) => {
+                artArray.push(
+                    <TouchableOpacity
+                        key={item.id}
+                        onPress={() => this.props.navigation.navigate('Art', {
+                            artId: item.id,
+                            titleName: item.title.default,
+                        })}>
+                        <ArtCard
+                            artName={item.title.default}
+                            artistName={item.artist ? item.artist.default : ""}
+                            source={item.image && item.image.default ? item.image.default.url : null}
+                            compYear={item.completionYear ? item.completionYear : ""}
+                            id={item.id}
+                            fontLoaded={fontLoaded}
+                        />
                     </TouchableOpacity>)
             });
 
-            let artizenArrays = [], size = 2;
-            while (artizenArray.length > 0)
-                artizenArrays.push(artizenArray.splice(0, size));
-
-            this.setState(previousState => ({
+            this.setState({
                 recommendation: 'defined',
                 recommendNext: responseJsonRaw.next,
-                haveArtizen: returnArtizen,
-                recommendArtizen: artizenArrays,
-                haveArt: returnArt,
-                recommendArt: responseJson.map((item, key) => {
-                    return (
-                        <TouchableOpacity
-                            key={key}
-                            onPress={() => this.props.navigation.navigate('Art', {
-                                artId: item.id,
-                                titleName: item.title.default,
-                            })}>
-                            <ArtCard
-                                artName={item.title.default}
-                                artistName={item.artist ? item.artist.default : ""}
-                                source={item.image && item.image.default ? item.image.default.url : null}
-                                compYear={item.completionYear ? item.completionYear : ""}
-                                id={item.id}
-                                fontLoaded={fontLoaded}
-                            />
-                        </TouchableOpacity>
-                    );
-                })
-            }));
+                recommendArt: OrderedSet(artArray)
+            });
         }).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
 
     }
-
-    updateSearchStatus = (info) => {
-        this.setState(previousState => (
-            {searchResult: info}
-        ));
-    };
 
     render() {
 
@@ -143,40 +105,27 @@ class Recommendation extends React.Component {
         return (
             <View style={styles.mainStruct}>
 
-                <TopSearchBar updateSearchStatus={this.updateSearchStatus}
-                              navigation={this.props.navigation}
+                <TopSearchBar navigation={this.props.navigation}
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                {this.state.searchResult.hasSearched ?
-                    <SearchPage searchResult={this.state.searchResult}
-                                fontLoaded={this.props.screenProps.fontLoaded}/> :
-                    this.state.recommendation !== 'undefined' ?
-                        <ScrollView keyboardDismissMode='on-drag'
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this._onRefresh}
-                                        />
-                                    }>
-                            {this.state.haveArtizen ?
-                                <View style={{marginHorizontal: 5}}>
-                                    <TitleBar titleText={"Artizen"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                                </View> : null}
-                            <FlatList data={this.state.recommendArtizen}
-                                      horizontal={true}
-                                      showsHorizontalScrollIndicator={false}
-                                      renderItem={({item}) => SearchPage.renderRow(item)}
-                                      keyExtractor={(item, index) => index.toString()}/>
-
-                            {this.state.haveArtizen ? <View style={{height: 20}}/> : null}
-                            {this.state.haveArt ?
-                                <View style={{marginHorizontal: 5}}>
-                                    <TitleBar titleText={"Art"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                                </View> : null}
-                            <View style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                                {this.state.recommendArt}
-                            </View>
-                        </ScrollView> : null}
+                <ScrollView keyboardDismissMode='on-drag'
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                />
+                            }>
+                    {this.state.recommendArt ?
+                        <View style={{marginHorizontal: 5}}>
+                            <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
+                        </View> : null}
+                    this.state.recommendation !== 'undefined' ? <View
+                    style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                    <FlatList data={this.state.recommendArt.toArray()}
+                              renderItem={({item}) => item}
+                              keyExtractor={(item, index) => index.toString()}/>
+                </View>: null
+                </ScrollView>
             </View>
         );
     }

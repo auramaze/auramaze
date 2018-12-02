@@ -3,6 +3,7 @@ import {
     StyleSheet,
     View,
     ScrollView,
+    FlatList,
     AsyncStorage,
     RefreshControl,
     Dimensions,
@@ -10,31 +11,26 @@ import {
     TouchableOpacity
 } from 'react-native';
 import {Constants} from 'expo';
-import {OrderedSet} from 'immutable';
 import TopSearchBar from "../components/top-search-bar";
-import SearchPage from "../components/search-page";
+import SearchPage from "../search/search-page";
 import ActivityCard from "../components/activity-card";
 import config from "../config.json";
+import ArtizenCard from "../components/artizen-card";
+import {OrderedSet} from "../utils";
 
 
 class TimeLine extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {searchResult: {hasSearched: false}, timeline: OrderedSet(), refreshing: false, next: null};
-        this.updateSearchStatus = this.updateSearchStatus.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
+        this.state = {timeline: new OrderedSet(), refreshing: false, next: null};
+        this.onEndReachedCalledDuringMomentum = true;
+        this.refreshTimelineHandler = this.refreshTimelineHandler.bind(this);
+        this.loadMoreTimelineHandler = this.loadMoreTimelineHandler.bind(this);
     }
 
     componentDidMount() {
         this._loadInitialState().done();
     }
-
-    _onRefresh = () => {
-        this.setState({refreshing: true});
-        this._loadInitialState().then(() => {
-            this.setState({refreshing: false});
-        });
-    };
 
     async _loadInitialState() {
         try {
@@ -50,87 +46,140 @@ class TimeLine extends React.Component {
                     },
                 });
                 const timelineInfoJson = await timelineInfo.json();
-                this.setState({timeline: OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
             } else {
-                this.setState({timeline: OrderedSet(), next: null});
+                this.setState({timeline: new OrderedSet(), next: null});
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    updateSearchStatus = (info) => {
-        this.setState({searchResult: info});
-    };
+    async refreshTimelineHandler() {
+        this.setState({refreshing: true});
+        const token = await AsyncStorage.getItem('token', null);
+        const body = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
+            },
+        };
+        if (this.state.timeline.size) {
+            const min = this.state.timeline.toArray()[0].id;
+            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline?min=${min}`, body);
+            const timelineInfoJson = await timelineInfo.json();
+
+            if (timelineInfoJson.next) {
+                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+            } else {
+                this.setState(previousState => ({
+                    timeline: previousState.timeline.unionFront(timelineInfoJson.data)
+                }));
+            }
+        } else {
+            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, body);
+            const timelineInfoJson = await timelineInfo.json();
+            this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+        }
+        this.setState({refreshing: false});
+    }
+
+    async loadMoreTimelineHandler() {
+        if (!this.onEndReachedCalledDuringMomentum && this.state.next) {
+            const token = await AsyncStorage.getItem('token', null);
+            const response = await fetch(this.state.next, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            const responseJsonRaw = await response.json();
+            this.setState(previousState => ({
+                timeline: previousState.timeline.union(responseJsonRaw.data),
+                next: responseJsonRaw.next,
+            }));
+            this.onEndReachedCalledDuringMomentum = true;
+        }
+    }
 
     render() {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
                 paddingTop: Constants.statusBarHeight,
+                height: Dimensions.get('window').height
             },
             backPage: {
                 backgroundColor: '#cdcdcd',
-                marginBottom: 40
+                marginBottom: 40,
+                height: Dimensions.get('window').height
             }
         });
 
         return (
             <View style={styles.mainStruct}>
+                <View style={styles.backPage}>
 
-                <View style={!this.state.searchResult.hasSearched ? styles.backPage : null}>
-
-                    <TopSearchBar updateSearchStatus={this.updateSearchStatus}
-                                  navigation={this.props.navigation}
+                    <TopSearchBar navigation={this.props.navigation}
                                   fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                    {this.state.searchResult.hasSearched ? <SearchPage searchResult={this.state.searchResult}
-                                                                       fontLoaded={this.props.screenProps.fontLoaded}/> :
-                        <ScrollView keyboardDismissMode='on-drag'
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this._onRefresh}
-                                        />
-                                    }>
-                            {this.state.timeline.size ? this.state.timeline.map(activity =>
-                                    activity.art_id ?
-                                        <ActivityCard
-                                            key={activity.id}
-                                            fontLoaded={this.props.screenProps.fontLoaded}
-                                            authorId={activity.author_id}
-                                            source={activity.author_avatar}
-                                            artId={activity.art_id}
-                                            artSource={activity.art_image && activity.art_image.default.url}
-                                            artName={activity.art_name && activity.art_name.default}
-                                            name={activity.author_name && activity.author_name.default}
-                                            content={activity.content}
-                                            up={activity.up}
-                                            down={activity.down}
-                                            status={activity.status}
-                                            created={activity.created}
-                                            itemType="art"
-                                            textType="review" itemId={activity.art_id} textId={activity.id}/> :
-                                        <ActivityCard
-                                            key={activity.id}
-                                            fontLoaded={this.props.screenProps.fontLoaded}
-                                            authorId={activity.author_id}
-                                            source={activity.author_avatar}
-                                            artizenId={activity.artizen_id}
-                                            artizenSource={activity.artizen_avatar}
-                                            artizenName={activity.artizen_name && activity.artizen_name.default}
-                                            name={activity.author_name && activity.author_name.default}
-                                            content={activity.content}
-                                            up={activity.up}
-                                            down={activity.down}
-                                            status={activity.status}
-                                            created={activity.created}
-                                            itemType="artizen"
-                                            textType="review" itemId={activity.artizen_id} textId={activity.id}/>)
-                                : <View style={{height: Dimensions.get('window').height}}/>}
-                            <View style={{height: 50}}/>
-                        </ScrollView>
-                    }
+                    {this.state.timeline.size ?
+                        <FlatList data={this.state.timeline.toArray().concat([{}])}
+                                  renderItem={({item}) => {
+                                      return (
+                                          item.art_id ?
+                                              <ActivityCard
+                                                  key={item.id}
+                                                  fontLoaded={this.props.screenProps.fontLoaded}
+                                                  authorId={item.author_id}
+                                                  source={item.author_avatar}
+                                                  artId={item.art_id}
+                                                  artSource={item.art_image && item.art_image.default.url}
+                                                  artName={item.art_name && item.art_name.default}
+                                                  name={item.author_name && item.author_name.default}
+                                                  content={item.content}
+                                                  up={item.up}
+                                                  down={item.down}
+                                                  status={item.status}
+                                                  created={item.created}
+                                                  itemType="art"
+                                                  textType="review"
+                                                  itemId={item.art_id}
+                                                  textId={item.id}/> :
+                                              item.artizen_id ?
+                                                  <ActivityCard
+                                                      key={item.id}
+                                                      fontLoaded={this.props.screenProps.fontLoaded}
+                                                      authorId={item.author_id}
+                                                      source={item.author_avatar}
+                                                      artizenId={item.artizen_id}
+                                                      artizenSource={item.artizen_avatar}
+                                                      artizenName={item.artizen_name && item.artizen_name.default}
+                                                      name={item.author_name && item.author_name.default}
+                                                      content={item.content}
+                                                      up={item.up}
+                                                      down={item.down}
+                                                      status={item.status}
+                                                      created={item.created}
+                                                      itemType="artizen"
+                                                      textType="review"
+                                                      itemId={item.artizen_id}
+                                                      textId={item.id}/> :
+                                                  <View style={{height: 200}}/>)
+                                  }}
+                                  onRefresh={this.refreshTimelineHandler}
+                                  refreshing={this.state.refreshing}
+                                  onEndReached={this.loadMoreTimelineHandler}
+                                  onMomentumScrollBegin={() => {
+                                      this.onEndReachedCalledDuringMomentum = false;
+                                  }}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        <View style={{height: Dimensions.get('window').height}}/>}
+
                 </View>
             </View>
         );

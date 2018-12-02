@@ -3,6 +3,7 @@ import {createStackNavigator} from "react-navigation";
 import Art from "../art/art";
 import Artizen from "../artizen/artizen";
 import Recommendation from "./recommendation";
+import SearchPage from "../search/search-page";
 
 const RecommendationStack = createStackNavigator(
     {
@@ -14,6 +15,7 @@ const RecommendationStack = createStackNavigator(
         },
         Art: {screen: Art},
         Artizen: {screen: Artizen},
+        SearchPage: {screen: SearchPage}
     },
     {
         initialRouteName: 'Recommendation',

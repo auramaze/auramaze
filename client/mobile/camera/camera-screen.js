@@ -33,7 +33,6 @@ class CameraScreen extends React.Component {
     handleMountError = ({message}) => console.error(message);
 
     takePicture = async () => {
-
         if (this.camera) {
 
             this.setState({imageProcessing: true});
@@ -48,7 +47,7 @@ class CameraScreen extends React.Component {
                     );
 
                     let dataJson = {'image': manipResult.base64};
-                    fetch(`${config.API_ENDPOINT}/search`, {
+                    fetch(`${config.API_ENDPOINT}/search?index=art`, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -66,8 +65,7 @@ class CameraScreen extends React.Component {
                         }
                     }).then((responseJson) => {
                             this.setState({imageProcessing: false});
-                            // alert(JSON.stringify(responseJson));
-                            let resultArt = responseJson.art;
+                            let resultArt = responseJson.data;
                             if (resultArt.length >= 1) {
                                 this.props.navigation.navigate('Art', {
                                     artId: resultArt[0].id,
