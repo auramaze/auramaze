@@ -99,6 +99,7 @@ class User extends React.Component {
                         art: ArtRoute,
                         artizen: ArtizenRoute
                     })}
+                    swipeEnabled={false}
                     onIndexChange={index => this.setState({index})}
                     renderTabBar={props =>
                         <TabBar
