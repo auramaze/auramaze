@@ -7,7 +7,6 @@ import {
     Keyboard,
     Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
-import {withNavigation} from "react-navigation";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -104,4 +103,4 @@ class UserSettings extends React.Component {
     }
 }
 
-export default withNavigation(UserSettings);
+export default UserSettings;

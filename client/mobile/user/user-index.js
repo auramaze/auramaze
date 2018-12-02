@@ -21,31 +21,26 @@ class UserIndex extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true, id: null, avatar: null};
+        this.state = {pageIsSign: true, id: this.props.id, token: this.props.token, avatar: null};
     }
 
     componentDidMount() {
-        AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
-            let token = data[2][1];
-            let id = data[3][1];
-            this.setState({id: id});
-            fetch(`${config.API_ENDPOINT}/artizen/${id}`, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`
-                } : null
-            }).then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Get user info fail.');
-                }
-            }).then((responseJson) => {
-                    this.setState({avatar: responseJson.avatar});
-                }
-            ).catch(function (error) {
-                alert('There has been a problem with your fetch operation: ' + error.message);
-            });
+        fetch(`${config.API_ENDPOINT}/artizen/${this.state.id}`, {
+            method: 'GET',
+            headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
+                'Authorization': `Bearer ${this.state.token}`
+            } : null
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Get user info fail.');
+            }
+        }).then((responseJson) => {
+                this.setState({avatar: responseJson.avatar});
+            }
+        ).catch(function (error) {
+            alert('There has been a problem with your fetch operation: ' + error.message);
         });
     };
 

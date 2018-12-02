@@ -5,6 +5,7 @@ import Artizen from "../artizen/artizen";
 import User from "./user";
 import UserSettings from "./user-settings";
 import UserIndex from "./user-index";
+import FollowingArtizen from "./following-artizen";
 
 const UserStack = createStackNavigator(
     {
@@ -17,7 +18,8 @@ const UserStack = createStackNavigator(
         Art: {screen: Art},
         Artizen: {screen: Artizen},
         UserIndex: {screen: UserIndex},
-        UserSettings: {screen: UserSettings}
+        UserSettings: {screen: UserSettings},
+        FollowingArtizen: {screen: FollowingArtizen},
     },
     {
         initialRouteName: 'User',

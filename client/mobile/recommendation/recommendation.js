@@ -123,12 +123,12 @@ class Recommendation extends React.Component {
                         <View style={{marginHorizontal: 5}}>
                             <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
                         </View> : null}
-                    this.state.recommendation !== 'undefined' ? <View
+                    {this.state.recommendation !== 'undefined' ? <View
                     style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
                     <FlatList data={this.state.recommendArt.toArray()}
                               renderItem={({item}) => item}
                               keyExtractor={(item, index) => index.toString()}/>
-                </View>: null
+                </View>: null}
                 </ScrollView>
             </View>
         );
