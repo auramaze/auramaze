@@ -91,7 +91,7 @@ class FollowingArt extends React.Component {
                           renderItem={({item}) => (
                               <TouchableOpacity key={item.id}
                                                 onPress={() => this.props.navigation.navigate('Art', {
-                                                    artId: item.id,
+                                                    artId: item.art_id,
                                                     titleName: item.title.default,
                                                 })}>
                                   <ArtCard artName={item.title.default}

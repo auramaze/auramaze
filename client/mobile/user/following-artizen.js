@@ -91,7 +91,7 @@ class FollowingArtizen extends React.Component {
                           renderItem={({item}) => (
                               <TouchableOpacity key={item.id}
                                                 onPress={() => this.props.navigation.navigate('Artizen', {
-                                                    artizenId: item.id,
+                                                    artizenId: item.artizen_id,
                                                     titleName: item.name.default,
                                                 })}>
                                   <ArtizenCard name={item.name.default ? item.name.default : ""}
