@@ -29,7 +29,7 @@ Common.prototype.rds = rds;
 Common.prototype.s3 = s3;
 
 // Check if username satisfies variants
-Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,48}[a-z0-9]$/));
+Common.prototype.validateUsername = username => Boolean(username.match(/^(?!.*--)[a-z][a-z0-9-]{1,900}[a-z0-9]$/));
 
 // Check if password satisfies variants
 Common.prototype.validatePassword = password => Boolean(password.match(/^[A-Za-z0-9#?!@$%^&*-]{4,}$/));
