@@ -68,6 +68,7 @@ class User extends React.Component {
         const ProfileRoute = () => (
             <UserIndex id={this.state.id}
                        token={this.state.token}
+                       fontLoaded={this.props.screenProps.fontLoaded}
                        screenProps={{toLogOut: _toLogOut}}
                        navigation={this.props.navigation}/>
         );
@@ -109,7 +110,6 @@ class User extends React.Component {
                             labelStyle={{
                                 color: '#666666',
                                 textAlign: 'center',
-                                fontFamily: this.props.screenProps.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                                 fontSize: 15
                             }}
                             getLabelText={({route}) => route.title}
