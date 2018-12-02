@@ -6,14 +6,25 @@ import {
     TouchableWithoutFeedback,
     Keyboard, AsyncStorage
 } from 'react-native';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import UserIndex from "./user-index";
 import BlankUser from "./blank-user";
+import {Constants} from "expo";
 
 class User extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true, hasAuthorized: false};
+        this.state = {
+            pageIsSign: true,
+            hasAuthorized: false,
+            index: 0,
+            routes: [
+                {key: 'profile', title: 'First'},
+                {key: 'art', title: 'Second'},
+                {key: 'artizen', title: 'Third'},
+            ],
+        };
     }
 
     componentDidMount() {
@@ -48,13 +59,53 @@ class User extends React.Component {
             this.setState({hasAuthorized: true});
         };
 
+        const ProfileRoute = () => (
+            <UserIndex screenProps={{toLogOut: _toLogOut}}/>
+        );
+
+        const ArtRoute = () => (
+            <View style={{
+                backgroundColor: 'white', scene: {
+                    flex: 1,
+                }
+            }}/>
+        );
+
+        const ArtizenRoute = () => (
+            <View style={{
+                backgroundColor: 'white', scene: {
+                    flex: 1,
+                }
+            }}/>
+        );
+
         if (this.state.hasAuthorized !== true) {
             return (
                 <BlankUser screenProps={{toLogIn: _toLogIn}}/>
             );
         } else {
             return (
-                <UserIndex screenProps={{toLogOut: _toLogOut}}/>
+                <TabView
+                    navigationState={this.state}
+                    renderScene={SceneMap({
+                        profile: ProfileRoute,
+                        art: ArtRoute,
+                        artizen: ArtizenRoute
+                    })}
+                    onIndexChange={index => this.setState({index})}
+                    renderTabBar={props =>
+                        <TabBar
+                            {...props}
+                            indicatorStyle={{backgroundColor: 'black'}}
+                            style={{backgroundColor: 'white'}}
+                            labelStyle={{color: '#666666'}}
+                        />
+                    }
+                    initialLayout={{
+                        width: Dimensions.get('window').width,
+                    }}
+                    style={{paddingTop: Constants.statusBarHeight,}}
+                />
             )
         }
 
