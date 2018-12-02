@@ -32,9 +32,7 @@ def update_signature(msg_value):
     try:
         ses.update_image(id, image_dict)
     except (UnicodeEncodeError, AxisError, ValueError) as e:
-        print('Invalid image url: {}: {}'.format(msg_value, e), flush=True)
-    except (HTTPError, NotFoundError):
-        pass
+        print('Invalid image: {}: {}'.format(msg_value, e), flush=True)
 
 
 es = Elasticsearch([ES_HOST])
@@ -78,6 +76,8 @@ while True:
         c.commit(message=msg)
     except (TypeError, KeyError) as e:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
+    except (HTTPError, NotFoundError) as e:
+        print('Invalid image url: {}: {}'.format(msg_value, e), flush=True)
     except Exception as e:
         print('Uncaught exception: {}: {}'.format(msg_value, e), flush=True)
         c.close()
