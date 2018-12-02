@@ -7,12 +7,12 @@ import compass from './assets/icons/compass.png';
 import journal from './assets/icons/journal.png';
 import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
-import lines from './assets/icons/lines.png';
+import profile from './assets/icons/profile.png';
 import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
-import BlankUser from "./user/blank-user";
 import RecommendationStack from "./recommendation/recommendation-stack";
 import AutoHeightImage from "react-native-auto-height-image";
+import UserStack from "./user/user-stack";
 
 class SettingScreen extends React.Component {
     render() {
@@ -53,7 +53,7 @@ export default class App extends React.Component {
                 Artventure: {screen: SettingScreen},
                 Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendationStack},
-                Settings: {screen: BlankUser},
+                Profile: {screen: UserStack},
             },
             {
                 navigationOptions: ({navigation}) => ({
@@ -82,7 +82,7 @@ export default class App extends React.Component {
                         else if (routeName === 'Artventure') iconName = journal;
                         else if (routeName === 'Camera') iconName = camera;
                         else if (routeName === 'Recommend') iconName = recommendation;
-                        else if (routeName === 'Settings') iconName = lines;
+                        else if (routeName === 'Profile') iconName = profile;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
                     },

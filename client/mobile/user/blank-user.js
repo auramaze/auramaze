@@ -11,7 +11,6 @@ import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import SignUpPage from "./sign-up-page";
 import LogInPage from "./log-in-page";
-import UserIndex from "./user-index";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -28,7 +27,7 @@ class BlankUser extends React.Component {
 
     componentDidMount() {
 
-        AsyncStorage.getItem('isAuthorized').then((value) => {
+        AsyncStorage.getItem('isAuthorized', null).then((value) => {
             if (value === undefined || value === 'false') {
                 AsyncStorage.multiSet([
                     ['isAuthorized', 'false'],
@@ -44,8 +43,6 @@ class BlankUser extends React.Component {
     };
 
     render() {
-
-        let fontLoadStatus = this.props.screenProps.fontLoaded;
 
         const styles = StyleSheet.create({
             mainStruct: {
@@ -74,70 +71,35 @@ class BlankUser extends React.Component {
             this.setState(previousState => ({pageIsSign: !previousState.pageIsSign}));
         };
 
-        let _checkStatus = () => {
-            AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
-                let isAuthorized = data[0][1];
-                let username = data[1][1];
-                let token = data[2][1];
-                let id = data[3][1];
-                alert("isAuthorized: " + isAuthorized
-                    + "\nusername: " + username
-                    + "\ntoken: " + token
-                    + "\nid: " + id)
-            });
-        };
+        return (
+            <DismissKeyboard>
+                <View style={styles.mainStruct}>
 
-        let _toLogOut = () => {
-            AsyncStorage.multiSet([
-                ['isAuthorized', 'false'],
-                ["username", 'undefined'],
-                ["token", 'undefined'],
-                ["id", 'undefined'],
-            ]).then(this.setState({hasAuthorized: false}));
-        };
+                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                     source={logoIcon}
+                                     style={{
+                                         marginTop: Dimensions.get('window').width * 80 / 375,
+                                         marginBottom: 30
+                                     }}/>
 
-        let _toLogIn = () => {
-            this.setState({hasAuthorized: true});
-        };
+                    {this.state.pageIsSign ?
+                        <SignUpPage screenProps={{toLogIn: this.props.screenProps.toLogIn}}/> :
+                        <LogInPage screenProps={{toLogIn: this.props.screenProps.toLogIn}}/>}
 
-        if (this.state.hasAuthorized !== true) {
-            return (
-                <DismissKeyboard>
-                    <View style={styles.mainStruct}>
+                    <TouchableOpacity
+                        style={styles.signupScreenButton}
+                        onPress={_onPressButton}
+                        underlayColor='#fff'>
+                        <Text style={styles.signupText}>
+                            {this.state.pageIsSign === true ?
+                                "Already have an account? Log In" :
+                                "No account? Sign up"}
+                        </Text>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            onPress={_checkStatus}>
-                            <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                             source={logoIcon}
-                                             style={{
-                                                 marginTop: Dimensions.get('window').width * 80 / 375,
-                                                 marginBottom: 30
-                                             }}/>
-                        </TouchableOpacity>
-
-                        {this.state.pageIsSign ?
-                            <SignUpPage screenProps={{toLogIn: _toLogIn}}/> :
-                            <LogInPage screenProps={{toLogIn: _toLogIn}}/>}
-
-                        <TouchableOpacity
-                            style={styles.signupScreenButton}
-                            onPress={_onPressButton}
-                            underlayColor='#fff'>
-                            <Text style={styles.signupText}>
-                                {this.state.pageIsSign === true ?
-                                    "Already have an account? Log In" :
-                                    "No account? Sign up"}
-                            </Text>
-                        </TouchableOpacity>
-
-                    </View>
-                </DismissKeyboard>
-            );
-        } else {
-            return (
-                <UserIndex screenProps={{toLogOut: _toLogOut}}/>
-            )
-        }
+                </View>
+            </DismissKeyboard>
+        );
 
     }
 }

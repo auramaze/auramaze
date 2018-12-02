@@ -92,7 +92,7 @@ class SignUpPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setSignUpData(authJson);
+                    this._setSignUpData(authJson).done();
                 } else {
                     throw new Error('Facebook auth fail.');
                 }
@@ -127,7 +127,7 @@ class SignUpPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setSignUpData(authJson);
+                    this._setSignUpData(authJson).done();
                 } else {
                     throw new Error('Google auth fail.');
                 }
@@ -166,14 +166,14 @@ class SignUpPage extends React.Component {
                 <View style={styles.inputHolder}>
                     <Input placeholder='Name'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(username) => this.setState(previousState => ({name: username}))}/>
+                           onChangeText={(username) => this.setState({name: username})}/>
                     <Input placeholder='Email'
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(email) => this.setState(previousState => ({email: email}))}/>
+                           onChangeText={(email) => this.setState({email: email})}/>
                     <Input placeholder='Password'
                            secureTextEntry={true}
                            inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                           onChangeText={(password) => this.setState(previousState => ({password: password}))}/>
+                           onChangeText={(password) => this.setState({password: password})}/>
                 </View>
 
                 <TouchableOpacity
