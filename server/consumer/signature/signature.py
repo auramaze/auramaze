@@ -79,6 +79,7 @@ while True:
         print('Invalid message format: {}: {}'.format(msg_value, e), flush=True)
     except Exception as e:
         print('Uncaught exception: {}: {}'.format(msg_value, e), flush=True)
-        break
+        c.close()
+        raise e
 
 c.close()
