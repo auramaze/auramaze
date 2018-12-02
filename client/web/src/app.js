@@ -8,6 +8,7 @@ import Navbar from './navbar';
 import NavbarMobile from './navbar-mobile';
 import Home from './home';
 import Search from './search';
+import Privacy from './privacy';
 import Art from './art';
 import Artizen from './artizen';
 
@@ -62,6 +63,7 @@ class App extends Component {
                 <div>
                     <Route exact path="/" component={Home}/>
                     <Route path="/search" component={Search}/>
+                    <Route path="/privacy" component={Privacy}/>
                     <Route path="/art/:artId" component={Art}/>
                     <Route path="/artizen/:artizenId" component={Artizen}/>
                     <Switch>
