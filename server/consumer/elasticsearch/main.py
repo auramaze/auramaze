@@ -248,7 +248,7 @@ while True:
     if msg_value is None:
         # Tombstone message
         continue
-    print(msg_value, flush=True)
+    # print(msg_value, flush=True)
 
     try:
         if msg_value['source']['table'] == 'art':
