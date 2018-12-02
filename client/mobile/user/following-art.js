@@ -1,9 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
 import {OrderedSet} from '../utils';
-import ArtizenCard from "../components/artizen-card";
-import config from "../config";
 import ArtCard from "../components/art-card";
+import config from "../config";
 
 
 class FollowingArt extends React.Component {

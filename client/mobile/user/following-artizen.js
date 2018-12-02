@@ -9,7 +9,6 @@ class FollowingArtizen extends React.Component {
 
     constructor(props) {
         super(props);
-        const {navigation} = this.props;
         this.state = {
             id: this.props.id,
             token: this.props.token,
