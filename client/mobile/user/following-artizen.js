@@ -22,40 +22,26 @@ class FollowingArtizen extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=artizen`);
+        this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=artizen`).done();
     }
 
-    fetchArtizen(url) {
-        fetch(url, {
+    async fetchArtizen(url) {
+        const responseArtizen = await fetch(url, {
             method: 'GET',
             headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
                 'Authorization': `Bearer ${this.state.token}`
             } : null
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Get user info fail.');
-            }
-        }).then((responseJson) => {
-                this.setState(previousState => ({
-                    nextArtizen: responseJson.next,
-                    searchArtizen: previousState.searchArtizen.union(responseJson.data),
-                }));
-            }
-        ).catch(function (error) {
-            alert('There has been a problem with your fetch operation: ' + error.message);
         });
+        const responseArtizenJsonRaw = await responseArtizen.json();
+        this.setState(previousState => ({
+            searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),
+            nextArtizen: responseArtizenJsonRaw.next,
+        }));
     }
 
     async loadMoreArtizenHandler() {
         if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen) {
-            const responseArtizen = await fetch(this.state.nextArtizen);
-            const responseArtizenJsonRaw = await responseArtizen.json();
-            this.setState(previousState => ({
-                searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),
-                nextArtizen: responseArtizenJsonRaw.next,
-            }));
+            this.fetchArtizen(this.state.nextArtizen).done();
             this.onArtizenEndReachedCalledDuringMomentum = true;
         }
     }

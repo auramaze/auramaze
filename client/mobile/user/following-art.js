@@ -22,40 +22,26 @@ class FollowingArt extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchArt(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=art`);
+        this.fetchArt(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=art`).done();
     }
 
-    fetchArt(url) {
-        fetch(url, {
+    async fetchArt(url) {
+        const responseArt = await fetch(url, {
             method: 'GET',
             headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
                 'Authorization': `Bearer ${this.state.token}`
             } : null
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Get user info fail.');
-            }
-        }).then((responseJson) => {
-                this.setState(previousState => ({
-                    nextArt: responseJson.next,
-                    searchArt: previousState.searchArt.union(responseJson.data),
-                }));
-            }
-        ).catch(function (error) {
-            alert('There has been a problem with your fetch operation: ' + error.message);
         });
+        const responseArtJsonRaw = await responseArt.json();
+        this.setState(previousState => ({
+            searchArt: previousState.searchArt.union(responseArtJsonRaw.data),
+            nextArt: responseArtJsonRaw.next,
+        }));
     }
 
     async loadMoreArtHandler() {
         if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt) {
-            const responseArt = await fetch(this.state.nextArt);
-            const responseArtJsonRaw = await responseArt.json();
-            this.setState(previousState => ({
-                searchArt: previousState.searchArt.union(responseArtJsonRaw.data),
-                nextArt: responseArtJsonRaw.next,
-            }));
+            this.fetchArt(this.state.nextArt).done();
             this.onArtEndReachedCalledDuringMomentum = true;
         }
     }
