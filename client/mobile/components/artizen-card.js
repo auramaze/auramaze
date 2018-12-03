@@ -35,7 +35,7 @@ class ArtizenCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: Dimensions.get('window').width * 225 / 375,
+                fontSize: 18, width: Dimensions.get('window').width * 225 / 375,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -57,7 +57,7 @@ class ArtizenCard extends React.Component {
                             source={this.props.source ? {uri: this.props.source} : noImage}
                             style={styles.imageStyle}/>
                     </View>
-                    <Text numberOfLines={1} style={styles.headerText}>{this.props.name}</Text>
+                    <Text style={styles.headerText}>{this.props.name}</Text>
                 </View>
                 {this.props.showLoc ?
                     <View style={{borderTopColor: '#666666', borderTopWidth: 1, marginTop: 5}}>
