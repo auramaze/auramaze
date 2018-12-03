@@ -165,15 +165,6 @@ class UserIndex extends React.Component {
             textWhite: {color: 'white'},
         });
 
-        let logOut = async () => {
-            try {
-                await AsyncStorage.setItem('isAuthorized', 'false')
-                    .then(this.props.screenProps.toLogOut);
-            } catch (error) {
-                alert(error)
-            }
-        };
-
         return (
             <View style={styles.backPage}>
                 <FlatList data={[
@@ -187,9 +178,7 @@ class UserIndex extends React.Component {
                                          }}/>
                         <TouchableOpacity
                             style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                            onPress={() => this.props.navigation.navigate('UserSettings', {
-                                logOut: logOut
-                            })}
+                            onPress={() => this.props.navigation.navigate('UserSettings')}
                             underlayColor='#fff'>
                             <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
                         </TouchableOpacity>

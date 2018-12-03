@@ -13,14 +13,10 @@ import FollowingArt from "./following-art";
 import {withAuth} from "../App";
 
 class User extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
             pageIsSign: true,
-            hasAuthorized: false,
-            id: null,
-            token: null,
             index: 0,
             routes: [
                 {key: 'profile', title: 'Profile'},
@@ -31,26 +27,6 @@ class User extends React.Component {
         this._toLogIn = this._toLogIn.bind(this);
         this._toLogOut = this._toLogOut.bind(this);
     }
-
-    componentDidMount() {
-        AsyncStorage.getItem('isAuthorized', null).then((value) => {
-            if (value === undefined || value === 'false') {
-                AsyncStorage.multiSet([
-                    ['isAuthorized', 'false'],
-                    ["username", 'undefined'],
-                    ["token", 'undefined'],
-                    ["id", 'undefined'],
-                ]);
-                this.setState({hasAuthorized: false});
-            } else {
-                AsyncStorage.multiGet(['isAuthorized', 'username', 'token', 'id']).then((data) => {
-                    let token = data[2][1];
-                    let id = data[3][1];
-                    this.setState({hasAuthorized: true, id: id, token: token});
-                });
-            }
-        });
-    };
 
     _renderScene = ({route}) => {
         switch (route.key) {
@@ -79,20 +55,6 @@ class User extends React.Component {
             default:
                 return null;
         }
-    };
-
-    _toLogIn = () => {
-        this.setState({hasAuthorized: true});
-    };
-
-    _toLogOut = () => {
-        AsyncStorage.multiSet([
-            ['isAuthorized', 'false'],
-            ["username", 'undefined'],
-            ["token", 'undefined'],
-            ["id", 'undefined'],
-        ]).then(this.setState({hasAuthorized: false}));
-        this.props.navigation.popToTop();
     };
 
 
