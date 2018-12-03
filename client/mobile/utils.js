@@ -27,6 +27,10 @@ export function convertTextToDraftjsContent(text) {
     }
 }
 
+export function isAuthValid(token) {
+    return Boolean(token && token !== 'undefined' && token !== 'null');
+}
+
 export class OrderedSet {
     constructor(items = []) {
         this.ids = new Set();

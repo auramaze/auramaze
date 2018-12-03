@@ -12,6 +12,7 @@ import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
 import {OrderedSet} from "../utils";
 import ActivityCard from "../components/activity-card";
+import {isAuthValid} from "../utils";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -25,66 +26,66 @@ class UserIndex extends React.Component {
         super(props);
         this.state = {
             pageIsSign: true,
-            id: this.props.id,
-            token: this.props.token,
             avatar: null,
             timeline: new OrderedSet(),
             next: null
         };
         this.onEndReachedCalledDuringMomentum = true;
+        this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.loadTimeline = this.loadTimeline.bind(this);
         this.loadMoreTimelineHandler = this.loadMoreTimelineHandler.bind(this);
     }
 
     componentDidMount() {
-        fetch(`${config.API_ENDPOINT}/artizen/${this.state.id}`, {
-            method: 'GET',
-            headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
-                'Authorization': `Bearer ${this.state.token}`
-            } : null
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Get user info fail.');
-            }
-        }).then((responseJson) => {
-                this.setState({avatar: responseJson.avatar});
-            }
-        ).catch(function (error) {
-            alert('There has been a problem with your fetch operation: ' + error.message);
-        });
-        this.loadTimeline().done();
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchUserInfo().done();
+            this.loadTimeline().done();
+        }
     };
 
-    async loadTimeline() {
-        try {
-            const token = await AsyncStorage.getItem('token', null);
-            const id = await AsyncStorage.getItem('id', null);
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.id;
+        const {id} = this.props;
 
-            if (token && token !== 'undefined' && token !== 'null') {
-                const timelineInfo = await fetch(`${config.API_ENDPOINT}/artizen/${id}/activity`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json",
-                        'Authorization': `Bearer ${token}`
-                    },
-                });
-                const timelineInfoJson = await timelineInfo.json();
-                console.log(timelineInfoJson);
-                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
-            } else {
-                this.setState({timeline: new OrderedSet(), next: null});
-            }
-        } catch (error) {
-            console.log(error);
+        if (!isAuthValid(prevId) && isAuthValid(id)) {
+            this.fetchUserInfo().done();
+            this.loadTimeline().done();
+        }
+    }
+
+    async fetchUserInfo() {
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`);
+            const responseJson = await response.json();
+            this.setState({avatar: responseJson.avatar});
+        }
+    }
+
+    async loadTimeline() {
+        const {id, token} = this.props;
+
+        if (isAuthValid(id)) {
+            const timelineInfo = await fetch(`${config.API_ENDPOINT}/artizen/${id}/activity`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            const timelineInfoJson = await timelineInfo.json();
+            this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
         }
     }
 
     async loadMoreTimelineHandler() {
-        if (!this.onEndReachedCalledDuringMomentum && this.state.next) {
-            const token = await AsyncStorage.getItem('token', null);
+        const {id, token} = this.props;
+
+        if (!this.onEndReachedCalledDuringMomentum && this.state.next && isAuthValid(id)) {
             const response = await fetch(this.state.next, {
                 method: 'GET',
                 headers: {
@@ -170,7 +171,7 @@ class UserIndex extends React.Component {
                                 style={[styles.buttonGeneral, styles.buttonAuramaze]}
                                 onPress={() => this.props.navigation.navigate('UserSettings', {
                                     logOut: logOut
-                                })}>
+                                })}
                                 underlayColor='#fff'>
                                 <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
                             </TouchableOpacity>
@@ -212,11 +213,13 @@ class UserIndex extends React.Component {
                                     itemType="artizen"
                                     textType="review"
                                     itemId={item.artizen_id}
-                                    textId={item.id}/>))]}
+                                    textId={item.id}/>)),
+                        <View style={{height: 100}}/>]}
                               renderItem={({item}) => item}
                               onRefresh={this.refreshTimelineHandler}
                               refreshing={this.state.refreshing}
                               onEndReached={this.loadMoreTimelineHandler}
+                              onEndReachedThreshold={0}
                               onMomentumScrollBegin={() => {
                                   this.onEndReachedCalledDuringMomentum = false;
                               }}

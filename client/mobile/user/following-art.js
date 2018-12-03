@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {OrderedSet} from '../utils';
+import {isAuthValid, OrderedSet} from '../utils';
 import ArtCard from "../components/art-card";
 import config from "../config";
 
@@ -21,15 +21,29 @@ class FollowingArt extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchArt(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=art`).done();
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchArt(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`).done();
+        }
+    };
+
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.id;
+        const {id} = this.props;
+
+        if (!isAuthValid(prevId) && isAuthValid(id)) {
+            this.fetchArt(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`).done();
+        }
     }
 
     async fetchArt(url) {
+        const {id, token} = this.props;
         const responseArt = await fetch(url, {
             method: 'GET',
-            headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
-                'Authorization': `Bearer ${this.state.token}`
-            } : null
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         });
         const responseArtJsonRaw = await responseArt.json();
         this.setState(previousState => ({
@@ -72,8 +86,8 @@ class FollowingArt extends React.Component {
         return (
             <View style={styles.mainContext}>
                 <FlatList style={{paddingVertical: 20}}
-                          data={this.state.searchArt.toArray()}
-                          renderItem={({item}) => (
+                          data={this.state.searchArt.toArray().concat([{}])}
+                          renderItem={({item}) => item.id ? (
                               <TouchableOpacity key={item.id}
                                                 onPress={() => this.props.navigation.navigate('Art', {
                                                     artId: item.art_id,
@@ -86,8 +100,9 @@ class FollowingArt extends React.Component {
                                            id={item.id}
                                            fontLoaded={fontLoadStatus}
                                   />
-                              </TouchableOpacity>)}
+                              </TouchableOpacity>) : <View style={{height: 100}}/>}
                           onEndReached={this.loadMoreArtHandler}
+                          onEndReachedThreshold={0}
                           onMomentumScrollBegin={() => {
                               this.onArtEndReachedCalledDuringMomentum = false;
                           }}

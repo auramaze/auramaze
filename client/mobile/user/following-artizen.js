@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {OrderedSet} from '../utils';
+import {isAuthValid, OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import config from "../config";
 
@@ -21,15 +21,30 @@ class FollowingArtizen extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${this.props.id}/follow?group=artizen`).done();
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`).done();
+        }
+    };
+
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.id;
+        const {id} = this.props;
+
+        if (!isAuthValid(prevId) && isAuthValid(id)) {
+            this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`).done();
+        }
     }
 
     async fetchArtizen(url) {
+        const {id, token} = this.props;
+
         const responseArtizen = await fetch(url, {
             method: 'GET',
-            headers: this.state.token && this.state.token !== 'undefined' && this.state.token !== 'null' ? {
-                'Authorization': `Bearer ${this.state.token}`
-            } : null
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         });
         const responseArtizenJsonRaw = await responseArtizen.json();
         this.setState(previousState => ({
@@ -72,8 +87,8 @@ class FollowingArtizen extends React.Component {
         return (
             <View style={styles.mainContext}>
                 <FlatList style={{paddingVertical: 20}}
-                          data={this.state.searchArtizen.toArray()}
-                          renderItem={({item}) => (
+                          data={this.state.searchArtizen.toArray().concat([{}])}
+                          renderItem={({item}) => item.id ? (
                               <TouchableOpacity key={item.id}
                                                 onPress={() => this.props.navigation.navigate('Artizen', {
                                                     artizenId: item.artizen_id,
@@ -82,10 +97,11 @@ class FollowingArtizen extends React.Component {
                                   <ArtizenCard name={item.name.default ? item.name.default : ""}
                                                source={item.avatar ? item.avatar : null}
                                                id={item.id}
-                                               topMargin={0}
+                                               topMargin={10}
                                                fontLoaded={fontLoadStatus}/>
-                              </TouchableOpacity>)}
+                              </TouchableOpacity>) : <View style={{height: 100}}/>}
                           onEndReached={this.loadMoreArtizenHandler}
+                          onEndReachedThreshold={0}
                           onMomentumScrollBegin={() => {
                               this.onArtizenEndReachedCalledDuringMomentum = false;
                           }}
