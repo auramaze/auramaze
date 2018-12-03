@@ -25,7 +25,12 @@ router.get('/', [
             next(err);
         } else {
             const total = result[1][0].total;
-            result = result[0];
+            result = result[0].map(item => item.location && item.location.x && item.location.y ? Object.assign(item, {
+                location: {
+                    longitude: item.location.x,
+                    latitude: item.location.y
+                }
+            }) : item);
             res.json({
                 data: result,
                 next: from + size < total ? `${process.env.API_ENDPOINT}/explore/?longitude=${req.query.longitude}&latitude=${req.query.latitude}&from=${from + size}` : null
