@@ -6,7 +6,7 @@ import {
     FlatList,
 } from 'react-native';
 import {Constants, Location, Permissions} from 'expo';
-import {OrderedSet} from '../utils';
+import {isAuthValid, OrderedSet} from '../utils';
 import TopSearchBar from "../components/top-search-bar";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
@@ -20,11 +20,13 @@ class Explore extends React.Component {
         this.state = {
             exploreMuseum: new OrderedSet([]),
             nextMuseum: null,
+            refreshing: false
         };
         this.onExploreEndReachedCalledDuringMomentum = true;
         this._loadExplore = this._loadExplore.bind(this);
         this._loadMoreExploreHandler = this._loadMoreExploreHandler.bind(this);
         this._getLocationAsync = this._getLocationAsync.bind(this);
+        this.refreshHandler = this.refreshHandler.bind(this);
     }
 
     _getLocationAsync = async () => {
@@ -37,27 +39,36 @@ class Explore extends React.Component {
     };
 
     async componentDidMount() {
-        const locInfo = await this._getLocationAsync();
-        if (!locInfo) return;
-        this._loadExplore(`${config.API_ENDPOINT}/explore?longitude=${locInfo.coords.longitude}&latitude=${locInfo.coords.latitude}`).done();
+        this._loadExplore().done();
     }
 
-    async _loadExplore(url) {
-        const responseExplore = await fetch(url, {
-            method: 'GET',
-        });
+    async _loadExplore() {
+        const locInfo = await this._getLocationAsync();
+        if (!locInfo) return;
+        const responseExplore = await fetch(`${config.API_ENDPOINT}/explore?longitude=${locInfo.coords.longitude}&latitude=${locInfo.coords.latitude}`);
         const responseExploreJsonRaw = await responseExplore.json();
-        this.setState(previousState => ({
-            searchArtizen: previousState.exploreMuseum.union(responseExploreJsonRaw.data),
+        this.setState({
+            exploreMuseum: new OrderedSet(responseExploreJsonRaw.data),
             nextMuseum: responseExploreJsonRaw.next,
-        }));
+        });
     }
 
     async _loadMoreExploreHandler() {
         if (!this.onExploreEndReachedCalledDuringMomentum && this.state.nextMuseum) {
-            this._loadExplore(this.state.nextMuseum).done();
+            const responseExplore = await fetch(this.state.nextMuseum);
+            const responseExploreJsonRaw = await responseExplore.json();
+            this.setState(previousState => ({
+                exploreMuseum: previousState.exploreMuseum.union(responseExploreJsonRaw.data),
+                nextMuseum: responseExploreJsonRaw.next,
+            }));
             this.onExploreEndReachedCalledDuringMomentum = true;
         }
+    }
+
+    async refreshHandler() {
+        this.setState({refreshing: true});
+        this._loadExplore().done();
+        this.setState({refreshing: false});
     }
 
     render() {
@@ -103,6 +114,8 @@ class Explore extends React.Component {
                             </TouchableOpacity>)
                     ]}
                               renderItem={({item}) => item}
+                              onRefresh={this.refreshHandler}
+                              refreshing={this.state.refreshing}
                               onEndReached={this._loadMoreExploreHandler}
                               onEndReachedThreshold={0}
                               onMomentumScrollBegin={() => {
