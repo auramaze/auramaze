@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     FlatList,
 } from 'react-native';
-import {Constants} from 'expo';
+import {Constants, Location, Permissions} from 'expo';
 import {OrderedSet} from '../utils';
 import TopSearchBar from "../components/top-search-bar";
 import TitleBar from "../components/title-bar";
@@ -24,10 +24,22 @@ class Explore extends React.Component {
         this.onExploreEndReachedCalledDuringMomentum = true;
         this._loadExplore = this._loadExplore.bind(this);
         this._loadMoreExploreHandler = this._loadMoreExploreHandler.bind(this);
+        this._getLocationAsync = this._getLocationAsync.bind(this);
     }
 
+    _getLocationAsync = async () => {
+        let {status} = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            alert('Permission to access location was denied');
+            return null;
+        }
+        return await Location.getCurrentPositionAsync({});
+    };
+
     async componentDidMount() {
-        this._loadExplore(`${config.API_ENDPOINT}/explore?longitude=-83.7113&latitude=42.3241`).done();
+        const locInfo = await this._getLocationAsync();
+        if (!locInfo) return;
+        this._loadExplore(`${config.API_ENDPOINT}/explore?longitude=${locInfo.coords.longitude}&latitude=${locInfo.coords.latitude}`).done();
     }
 
     async _loadExplore(url) {
@@ -77,13 +89,15 @@ class Explore extends React.Component {
                         ...this.state.exploreMuseum.map(item =>
                             <TouchableOpacity key={item.id}
                                               onPress={() => this.props.navigation.navigate('Artizen', {
-                                                  artizenId: item.artizen_id,
+                                                  artizenId: item.id,
                                                   titleName: item.name.default,
                                               })}>
                                 <ArtizenCard name={item.name.default ? item.name.default : ""}
                                              source={item.avatar ? item.avatar : null}
                                              id={item.id}
-                                             info={item.distance}
+                                             showLoc={
+                                                 {distance: item.distance, address: item.address}
+                                             }
                                              topMargin={10}
                                              fontLoaded={this.props.screenProps.fontLoaded}/>
                             </TouchableOpacity>)

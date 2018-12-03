@@ -11,17 +11,18 @@ class ArtizenCard extends React.Component {
     render() {
         const styles = StyleSheet.create({
             cardStyle: {
-                flexDirection: 'row',
-                height: 65,
                 width: Dimensions.get('window').width * 5 / 6,
-                padding: 5,
+                paddingVertical: 10,
                 paddingHorizontal: 15,
-                alignItems: 'center',
                 backgroundColor: '#ffffff',
                 shadowColor: '#000',
                 shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.2,
                 marginTop: this.props.topMargin, marginHorizontal: 15
+            },
+            cardHeader: {
+                flexDirection: 'row',
+                alignItems: 'center',
             },
             imageStyle: {
                 width: 50,
@@ -39,17 +40,32 @@ class ArtizenCard extends React.Component {
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
             },
+            bodyText: {
+                fontSize: 15,
+                color: '#666666',
+                fontFamily: this.props.fontLoaded ? ('segoeui') : 'Cochin',
+                marginHorizontal: 15, marginTop: 10
+            }
         });
 
 
         return (
             <View style={styles.cardStyle}>
-                <View style={styles.avatarHolder}>
-                    <Image
-                        source={this.props.source ? {uri: this.props.source} : noImage}
-                        style={styles.imageStyle}/>
+                <View style={styles.cardHeader}>
+                    <View style={styles.avatarHolder}>
+                        <Image
+                            source={this.props.source ? {uri: this.props.source} : noImage}
+                            style={styles.imageStyle}/>
+                    </View>
+                    <Text numberOfLines={1} style={styles.headerText}>{this.props.name}</Text>
                 </View>
-                <Text numberOfLines={1} style={styles.headerText}>{this.props.name}</Text>
+                {this.props.showLoc ?
+                    <View style={{borderTopColor: '#666666', borderTopWidth: 1, marginTop: 5}}>
+                        <Text style={styles.bodyText}>
+                            {this.props.showLoc.address} ({Math.floor(this.props.showLoc.distance / 1000)} km from here)
+                        </Text>
+                    </View> : null}
+
             </View>
         )
     }
