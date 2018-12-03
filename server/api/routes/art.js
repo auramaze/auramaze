@@ -308,8 +308,8 @@ router.post('/:id/follow', [
     let sql, parameters;
 
     if (req.body.type) {
-        sql = 'REPLACE INTO follow (user_id, art_id) VALUES (?)';
-        parameters = [[id, req.params.id]];
+        sql = 'DELETE FROM follow WHERE user_id=? AND art_id=?; REPLACE INTO follow (user_id, art_id) VALUES (?);';
+        parameters = [id, req.params.id, [id, req.params.id]];
     } else {
         sql = 'DELETE FROM follow WHERE user_id=? AND art_id=?';
         parameters = [id, req.params.id];

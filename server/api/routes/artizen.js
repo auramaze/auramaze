@@ -247,7 +247,7 @@ router.delete('/:id', oneOf([
     });
 });
 
-/* Follow an artizen. */
+/* Get all followees of an artizen. */
 router.get('/:id/follow', [
     oneOf([
         param('id').isInt().isLength({min: 9, max: 9}),
@@ -320,8 +320,8 @@ router.post('/:id/follow', [
     let sql, parameters;
 
     if (req.body.type) {
-        sql = 'REPLACE INTO follow (user_id, artizen_id) VALUES (?)';
-        parameters = [[id, req.params.id]];
+        sql = 'DELETE FROM follow WHERE user_id=? AND artizen_id=?; REPLACE INTO follow (user_id, artizen_id) VALUES (?);';
+        parameters = [id, req.params.id, [id, req.params.id]];
     } else {
         sql = 'DELETE FROM follow WHERE user_id=? AND artizen_id=?';
         parameters = [id, req.params.id];
