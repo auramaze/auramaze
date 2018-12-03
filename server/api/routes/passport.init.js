@@ -1,5 +1,4 @@
 const passport = require('passport');
-const crypto = require('crypto');
 const validator = require('validator');
 const common = require('./common');
 const rds = common.rds;
@@ -11,10 +10,6 @@ const LocalStrategy = require('passport-local');
 const {
     GOOGLE_CONFIG, FACEBOOK_CONFIG
 } = require('./auth.config');
-
-function validatePassword(password, salt, hash) {
-    return hash === crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
-}
 
 module.exports = () => {
     // Allowing passport to serialize and deserialize users into sessions
@@ -32,7 +27,7 @@ module.exports = () => {
         id = id.toString();
         const column = validator.isEmail(id) ? 'email' : validator.isInt(id) ? 'id' : 'username';
         rds.query(`SELECT * FROM artizen WHERE ${column}=?`, [id], (err, result, fields) => {
-            if (!err && result[0] && validatePassword(password, result[0].salt, result[0].hash)) {
+            if (!err && result[0] && common.validatePassword(password, result[0].salt, result[0].hash)) {
                 return done(null, result[0]);
             } else {
                 return done(null, false);
