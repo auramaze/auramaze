@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from "react-navigation";
 import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
 import artventure from './assets/icons/artventure.png';
 import compass from './assets/icons/compass.png';
-import journal from './assets/icons/journal.png';
+import map from './assets/icons/map.png';
 import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
 import profile from './assets/icons/profile.png';
@@ -50,7 +50,7 @@ export default class App extends React.Component {
         const MyNavi = createBottomTabNavigator(
             {
                 Timeline: {screen: TimeLineStack},
-                Artventure: {screen: SettingScreen},
+                Explore: {screen: SettingScreen},
                 Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendationStack},
                 Profile: {screen: UserStack},
@@ -79,7 +79,7 @@ export default class App extends React.Component {
 
                         let iconName = '';
                         if (routeName === 'Timeline') iconName = compass;
-                        else if (routeName === 'Artventure') iconName = journal;
+                        else if (routeName === 'Explore') iconName = map;
                         else if (routeName === 'Camera') iconName = camera;
                         else if (routeName === 'Recommend') iconName = recommendation;
                         else if (routeName === 'Profile') iconName = profile;
