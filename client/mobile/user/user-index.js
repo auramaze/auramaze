@@ -50,7 +50,7 @@ class UserIndex extends React.Component {
     componentDidUpdate(prevProps) {
         const prevId = prevProps.id;
         const {id} = this.props;
-        
+
         if (!isAuthValid(prevId) && isAuthValid(id)) {
             this.fetchUserInfo().done();
             this.loadTimeline().done();
@@ -175,76 +175,74 @@ class UserIndex extends React.Component {
         };
 
         return (
-            <DismissKeyboard>
-                <View style={styles.backPage}>
-                    <FlatList data={[
-                        <View style={styles.profileHeader}>
-                            <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                             source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
-                                             style={{
-                                                 marginTop: Dimensions.get('window').width * 80 / 375,
-                                                 marginBottom: 30,
-                                                 marginHorizontal: 'auto'
-                                             }}/>
-                            <TouchableOpacity
-                                style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                                onPress={() => this.props.navigation.navigate('UserSettings', {
-                                    logOut: logOut
-                                })}
-                                underlayColor='#fff'>
-                                <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
-                            </TouchableOpacity>
-                        </View>,
-                        ...this.state.timeline.map(item => (
-                            item.art_id ?
-                                <ActivityCard
-                                    key={item.id}
-                                    fontLoaded={this.props.fontLoaded}
-                                    authorId={item.author_id}
-                                    source={item.author_avatar}
-                                    artId={item.art_id}
-                                    artSource={item.art_image && item.art_image.default.url}
-                                    artName={item.art_name && item.art_name.default}
-                                    name={item.author_name && item.author_name.default}
-                                    content={item.content}
-                                    up={item.up}
-                                    down={item.down}
-                                    status={item.status}
-                                    created={item.created}
-                                    itemType="art"
-                                    textType="review"
-                                    itemId={item.art_id}
-                                    textId={item.id}/> :
-                                <ActivityCard
-                                    key={item.id}
-                                    fontLoaded={this.props.fontLoaded}
-                                    authorId={item.author_id}
-                                    source={item.author_avatar}
-                                    artizenId={item.artizen_id}
-                                    artizenSource={item.artizen_avatar}
-                                    artizenName={item.artizen_name && item.artizen_name.default}
-                                    name={item.author_name && item.author_name.default}
-                                    content={item.content}
-                                    up={item.up}
-                                    down={item.down}
-                                    status={item.status}
-                                    created={item.created}
-                                    itemType="artizen"
-                                    textType="review"
-                                    itemId={item.artizen_id}
-                                    textId={item.id}/>)),
-                        <View style={{height: 100}}/>]}
-                              renderItem={({item}) => item}
-                              onRefresh={this.refreshTimelineHandler}
-                              refreshing={this.state.refreshing}
-                              onEndReached={this.loadMoreTimelineHandler}
-                              onEndReachedThreshold={0}
-                              onMomentumScrollBegin={() => {
-                                  this.onEndReachedCalledDuringMomentum = false;
-                              }}
-                              keyExtractor={(item, index) => index.toString()}/>
-                </View>
-            </DismissKeyboard>
+            <View style={styles.backPage}>
+                <FlatList data={[
+                    <View style={styles.profileHeader}>
+                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                         source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
+                                         style={{
+                                             marginTop: Dimensions.get('window').width * 80 / 375,
+                                             marginBottom: 30,
+                                             marginHorizontal: 'auto'
+                                         }}/>
+                        <TouchableOpacity
+                            style={[styles.buttonGeneral, styles.buttonAuramaze]}
+                            onPress={() => this.props.navigation.navigate('UserSettings', {
+                                logOut: logOut
+                            })}
+                            underlayColor='#fff'>
+                            <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
+                        </TouchableOpacity>
+                    </View>,
+                    ...this.state.timeline.map(item => (
+                        item.art_id ?
+                            <ActivityCard
+                                key={item.id}
+                                fontLoaded={this.props.fontLoaded}
+                                authorId={item.author_id}
+                                source={item.author_avatar}
+                                artId={item.art_id}
+                                artSource={item.art_image && item.art_image.default.url}
+                                artName={item.art_name && item.art_name.default}
+                                name={item.author_name && item.author_name.default}
+                                content={item.content}
+                                up={item.up}
+                                down={item.down}
+                                status={item.status}
+                                created={item.created}
+                                itemType="art"
+                                textType="review"
+                                itemId={item.art_id}
+                                textId={item.id}/> :
+                            <ActivityCard
+                                key={item.id}
+                                fontLoaded={this.props.fontLoaded}
+                                authorId={item.author_id}
+                                source={item.author_avatar}
+                                artizenId={item.artizen_id}
+                                artizenSource={item.artizen_avatar}
+                                artizenName={item.artizen_name && item.artizen_name.default}
+                                name={item.author_name && item.author_name.default}
+                                content={item.content}
+                                up={item.up}
+                                down={item.down}
+                                status={item.status}
+                                created={item.created}
+                                itemType="artizen"
+                                textType="review"
+                                itemId={item.artizen_id}
+                                textId={item.id}/>)),
+                    <View style={{height: 100}}/>]}
+                          renderItem={({item}) => item}
+                          onRefresh={this.refreshTimelineHandler}
+                          refreshing={this.state.refreshing}
+                          onEndReached={this.loadMoreTimelineHandler}
+                          onEndReachedThreshold={0}
+                          onMomentumScrollBegin={() => {
+                              this.onEndReachedCalledDuringMomentum = false;
+                          }}
+                          keyExtractor={(item, index) => index.toString()}/>
+            </View>
         );
     }
 }
