@@ -27,6 +27,8 @@ class User extends React.Component {
                 {key: 'artizen', title: 'View Artizen'},
             ],
         };
+        this._toLogIn = this._toLogIn.bind(this);
+        this._toLogOut = this._toLogOut.bind(this);
     }
 
     componentDidMount() {
@@ -49,57 +51,59 @@ class User extends React.Component {
         });
     };
 
+    _renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'profile':
+                return (
+                    <UserIndex id={this.state.id}
+                               token={this.state.token}
+                               fontLoaded={this.props.screenProps.fontLoaded}
+                               screenProps={{toLogOut: this._toLogOut}}
+                               navigation={this.props.navigation}/>
+                );
+            case 'art':
+                return (
+                    <FollowingArt id={this.state.id}
+                                  token={this.state.token}
+                                  fontLoaded={this.props.screenProps.fontLoaded}
+                                  navigation={this.props.navigation}/>
+                );
+            case 'artizen':
+                return (
+                    <FollowingArtizen id={this.state.id}
+                                      token={this.state.token}
+                                      fontLoaded={this.props.screenProps.fontLoaded}
+                                      navigation={this.props.navigation}/>
+                );
+            default:
+                return null;
+        }
+    };
+
+    _toLogIn = () => {
+        this.setState({hasAuthorized: true});
+    };
+
+    _toLogOut = () => {
+        AsyncStorage.multiSet([
+            ['isAuthorized', 'false'],
+            ["username", 'undefined'],
+            ["token", 'undefined'],
+            ["id", 'undefined'],
+        ]).then(this.setState({hasAuthorized: false}));
+        this.props.navigation.popToTop();
+    };
+
     render() {
-
-        let _toLogOut = () => {
-            AsyncStorage.multiSet([
-                ['isAuthorized', 'false'],
-                ["username", 'undefined'],
-                ["token", 'undefined'],
-                ["id", 'undefined'],
-            ]).then(this.setState({hasAuthorized: false}));
-            this.props.navigation.popToTop();
-        };
-
-        let _toLogIn = () => {
-            this.setState({hasAuthorized: true});
-        };
-
-        const ProfileRoute = () => (
-            <UserIndex id={this.state.id}
-                       token={this.state.token}
-                       fontLoaded={this.props.screenProps.fontLoaded}
-                       screenProps={{toLogOut: _toLogOut}}
-                       navigation={this.props.navigation}/>
-        );
-
-        const ArtRoute = () => (
-            <FollowingArt id={this.state.id}
-                          token={this.state.token}
-                          fontLoaded={this.props.screenProps.fontLoaded}
-                          navigation={this.props.navigation}/>
-        );
-
-        const ArtizenRoute = () => (
-            <FollowingArtizen id={this.state.id}
-                              token={this.state.token}
-                              fontLoaded={this.props.screenProps.fontLoaded}
-                              navigation={this.props.navigation}/>
-        );
-
         if (this.state.hasAuthorized !== true) {
             return (
-                <BlankUser screenProps={{toLogIn: _toLogIn}}/>
+                <BlankUser screenProps={{toLogIn: this._toLogIn}}/>
             );
         } else {
             return (
                 <TabView
                     navigationState={this.state}
-                    renderScene={SceneMap({
-                        profile: ProfileRoute,
-                        art: ArtRoute,
-                        artizen: ArtizenRoute
-                    })}
+                    renderScene={this._renderScene}
                     swipeEnabled={false}
                     onIndexChange={index => this.setState({index})}
                     renderTabBar={props =>
