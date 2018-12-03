@@ -280,11 +280,9 @@ const generateSaltHash = (password) => {
 
 Common.prototype.generateSaltHash = generateSaltHash;
 
-const validatePassword = (password, salt, hash) => {
+Common.prototype.checkPassword = (password, salt, hash) => {
     return hash === crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('hex');
 };
-
-Common.prototype.validatePassword = validatePassword;
 
 
 module.exports = new Common();

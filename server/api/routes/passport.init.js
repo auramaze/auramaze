@@ -27,7 +27,7 @@ module.exports = () => {
         id = id.toString();
         const column = validator.isEmail(id) ? 'email' : validator.isInt(id) ? 'id' : 'username';
         rds.query(`SELECT * FROM artizen WHERE ${column}=?`, [id], (err, result, fields) => {
-            if (!err && result[0] && common.validatePassword(password, result[0].salt, result[0].hash)) {
+            if (!err && result[0] && common.checkPassword(password, result[0].salt, result[0].hash)) {
                 return done(null, result[0]);
             } else {
                 return done(null, false);

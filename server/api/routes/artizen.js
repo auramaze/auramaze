@@ -221,7 +221,7 @@ router.post('/:id', oneOf([
                 next(err);
             } else {
                 const {salt, hash} = result[0];
-                if (!common.validatePassword(req.body.old_password, salt, hash)) {
+                if (!common.checkPassword(req.body.old_password, salt, hash)) {
                     res.status(400).json({
                         code: 'WRONG_OLD_PASSWORD',
                         message: `Wrong old password: ${req.body.old_password}`
