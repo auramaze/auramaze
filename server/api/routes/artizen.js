@@ -635,7 +635,7 @@ router.get('/:id/activity', [
 
             if (result[0].length < result[1][0].total && result[0].length) {
                 const nextMax = result[0][result[0].length - 1].id - 1;
-                response.next = `${process.env.API_ENDPOINT}/timeline?max=${nextMax}`;
+                response.next = `${process.env.API_ENDPOINT}/artizen/${req.params.id}/activity?max=${nextMax}`;
             }
             res.json(response);
         }
