@@ -40,15 +40,15 @@ Common.prototype.getItem = (group, id, authId, callback) => {
     if (isNaN(parseInt(id))) {
         sql = `SELECT * FROM ${group} WHERE username=?`;
         parameters = [id.toString()];
-        if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow INNER JOIN artizen ON artizen_id=artizen.id WHERE user_id=? AND artizen.username=?) AS following FROM artizen WHERE artizen.username=?';
+        if (authId) {
+            sql = `SELECT ${group}.*, EXISTS(SELECT * FROM follow INNER JOIN ${group} ON ${group}_id=${group}.id WHERE user_id=? AND ${group}.username=?) AS following FROM ${group} WHERE ${group}.username=?`;
             parameters = [authId, id.toString(), id.toString()];
         }
     } else {
         sql = `SELECT * FROM ${group} WHERE id=?`;
         parameters = [parseInt(id)];
-        if (group === 'artizen' && authId) {
-            sql = 'SELECT artizen.*, EXISTS(SELECT * FROM follow WHERE user_id=? AND artizen_id=?) AS following FROM artizen WHERE artizen.id=?';
+        if (authId) {
+            sql = `SELECT ${group}.*, EXISTS(SELECT * FROM follow WHERE user_id=? AND ${group}_id=?) AS following FROM ${group} WHERE ${group}.id=?`;
             parameters = [authId, parseInt(id), parseInt(id)];
         }
     }
