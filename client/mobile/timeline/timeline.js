@@ -14,7 +14,7 @@ import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import ActivityCard from "../components/activity-card";
 import config from "../config.json";
-import {OrderedSet} from "../utils";
+import {OrderedSet, isAuthValid} from "../utils";
 
 
 class TimeLine extends React.Component {
@@ -56,30 +56,34 @@ class TimeLine extends React.Component {
     async refreshTimelineHandler() {
         this.setState({refreshing: true});
         const token = await AsyncStorage.getItem('token', null);
-        const body = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${token}`
-            },
-        };
-        if (this.state.timeline.size) {
-            const min = this.state.timeline.toArray()[0].id;
-            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline?min=${min}`, body);
-            const timelineInfoJson = await timelineInfo.json();
+        if (isAuthValid(token)) {
+            const body = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+            };
+            if (this.state.timeline.size) {
+                const min = this.state.timeline.toArray()[0].id;
+                const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline?min=${min}`, body);
+                const timelineInfoJson = await timelineInfo.json();
 
-            if (timelineInfoJson.next) {
-                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+                if (timelineInfoJson.next) {
+                    this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+                } else {
+                    this.setState(previousState => ({
+                        timeline: previousState.timeline.unionFront(timelineInfoJson.data)
+                    }));
+                }
             } else {
-                this.setState(previousState => ({
-                    timeline: previousState.timeline.unionFront(timelineInfoJson.data)
-                }));
+                const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, body);
+                const timelineInfoJson = await timelineInfo.json();
+                this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
             }
         } else {
-            const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, body);
-            const timelineInfoJson = await timelineInfo.json();
-            this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
+            this.setState({timeline: new OrderedSet(), next: null});
         }
         this.setState({refreshing: false});
     }

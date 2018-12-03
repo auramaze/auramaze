@@ -50,7 +50,7 @@ class UserIndex extends React.Component {
     componentDidUpdate(prevProps) {
         const prevId = prevProps.id;
         const {id} = this.props;
-
+        
         if (!isAuthValid(prevId) && isAuthValid(id)) {
             this.fetchUserInfo().done();
             this.loadTimeline().done();
