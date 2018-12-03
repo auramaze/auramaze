@@ -71,7 +71,7 @@ class FollowingArtizen extends React.Component {
         const {id, token} = this.props;
 
         if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen && isAuthValid(id)) {
-            const responseArtizen = await fetch(url, {
+            const responseArtizen = await fetch(this.state.nextArtizen, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
