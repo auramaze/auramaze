@@ -10,6 +10,7 @@ import BlankUser from "./blank-user";
 import {Constants} from "expo";
 import FollowingArtizen from "./following-artizen";
 import FollowingArt from "./following-art";
+import {withAuth} from "../App";
 
 class User extends React.Component {
 
@@ -51,7 +52,7 @@ class User extends React.Component {
         });
     };
 
-    _renderScene = ({ route }) => {
+    _renderScene = ({route}) => {
         switch (route.key) {
             case 'profile':
                 return (
@@ -94,10 +95,11 @@ class User extends React.Component {
         this.props.navigation.popToTop();
     };
 
+
     render() {
-        if (this.state.hasAuthorized !== true) {
+        if (!this.props.auth.id) {
             return (
-                <BlankUser screenProps={{toLogIn: this._toLogIn}}/>
+                <BlankUser/>
             );
         } else {
             return (
@@ -130,4 +132,4 @@ class User extends React.Component {
     }
 }
 
-export default User;
+export default withAuth(User);

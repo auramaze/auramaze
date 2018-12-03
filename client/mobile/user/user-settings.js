@@ -10,8 +10,8 @@ import {
 import {Input} from "react-native-elements";
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
-import {isAuthValid} from "../utils";
 import config from "../config";
+import {withAuth} from "../App";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -26,7 +26,6 @@ class UserSettings extends React.Component {
         this.state = {
             editProfile: false,
             changePassword: false,
-            id: null,
             name: null,
             username: null,
             email: null,
@@ -38,25 +37,23 @@ class UserSettings extends React.Component {
     }
 
     componentDidMount() {
-        AsyncStorage.getItem('id', null).then((value) => {
-            this.setState({id: value});
-            if (isAuthValid(value)) {
-                fetch(`${config.API_ENDPOINT}/artizen/${value}`).then(response => response.json()).then(responseJson => {
-                    this.setState({
-                        name: responseJson.name,
-                        username: responseJson.username,
-                        email: responseJson.email,
-                        avatar: responseJson.avatar,
-                    });
+        const {id} = this.props.auth;
+        if (id) {
+            fetch(`${config.API_ENDPOINT}/artizen/${id}`).then(response => response.json()).then(responseJson => {
+                this.setState({
+                    name: responseJson.name,
+                    username: responseJson.username,
+                    email: responseJson.email,
+                    avatar: responseJson.avatar,
                 });
-            }
-        });
+            });
+        }
     };
 
     async fetchUserInfo() {
-        const {id} = this.state;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`);
             const responseJson = await response.json();
             this.setState({avatar: responseJson.avatar});
@@ -80,8 +77,8 @@ class UserSettings extends React.Component {
     };
 
     editProfile = async () => {
-        const token = await AsyncStorage.getItem('token', null);
-        const {id, name, username, email} = this.state;
+        const {id, token} = this.props.auth;
+        const {name, username, email} = this.state;
         const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`, {
             method: 'POST',
             headers: {
@@ -99,9 +96,8 @@ class UserSettings extends React.Component {
     };
 
     changePassword = async () => {
-        const token = await AsyncStorage.getItem('token', null);
-        const {id, oldPassword, newPassword, newPasswordConfirm} = this.state;
-        console.log(this.state);
+        const {id, token} = this.props.auth;
+        const {oldPassword, newPassword} = this.state;
         const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`, {
             method: 'POST',
             headers: {
@@ -257,7 +253,7 @@ class UserSettings extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonLogOut]}
-                        onPress={this.props.navigation.getParam('logOut', null)}
+                        onPress={this.props.auth.removeAuth}
                         underlayColor='#fff'>
                         <Text style={[styles.textGeneral, styles.textWhite]}>Log Out</Text>
                     </TouchableOpacity>
@@ -268,4 +264,4 @@ class UserSettings extends React.Component {
     }
 }
 
-export default UserSettings;
+export default withAuth(UserSettings);

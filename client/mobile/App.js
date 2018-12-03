@@ -1,7 +1,7 @@
 import React from 'react';
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
-import {Dimensions, Image, StyleSheet} from "react-native";
+import {AsyncStorage, Dimensions, Image, StyleSheet} from "react-native";
 import compass from './assets/icons/compass.png';
 import map from './assets/icons/map.png';
 import camera from './assets/icons/camera.png';
@@ -12,12 +12,50 @@ import TimeLineStack from "./timeline/timeline-stack";
 import RecommendationStack from "./recommendation/recommendation-stack";
 import UserStack from "./user/user-stack";
 import ExploreStack from "./explore/explore-stack";
+import {parseAuth} from "./utils";
+
+export const AuthContext = React.createContext();
+
+export function withAuth(Component) {
+    return function WrapperComponent(props) {
+        return (
+            <AuthContext.Consumer>
+                {({id, token, createAuth, removeAuth}) => {
+                    return <Component {...props} auth={{id, token, createAuth, removeAuth}}/>;
+                }}
+            </AuthContext.Consumer>
+        );
+    };
+}
 
 export default class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.createAuth = async (id, token) => {
+            await AsyncStorage.multiSet([
+                ['id', `${id}`],
+                ['token', `${token}`],
+            ]);
+            this.setState({id, token});
+        };
 
-    state = {
-        fontLoaded: false,
-    };
+        this.removeAuth = async () => {
+            await AsyncStorage.multiSet([
+                ['id', 'undefined'],
+                ['token', 'undefined'],
+            ]);
+            this.setState({id: undefined, token: undefined});
+        };
+
+        this.state = {
+            fontLoaded: false,
+            id: undefined,
+            token: undefined,
+            createAuth: this.createAuth,
+            removeAuth: this.removeAuth
+        };
+    }
+
 
     async componentDidMount() {
         await Font.loadAsync({
@@ -26,7 +64,11 @@ export default class App extends React.Component {
             'segoeui-bold': require('./assets/fonts/segoeuib.ttf'),
         });
 
-        this.setState({fontLoaded: true});
+        let id = parseAuth(await AsyncStorage.getItem('id'));
+        id = id && parseInt(id);
+        const token = parseAuth(await AsyncStorage.getItem('token'));
+
+        this.setState({fontLoaded: true, id, token});
     }
 
     render() {
@@ -93,8 +135,12 @@ export default class App extends React.Component {
             }
         );
 
+        const {id, token, createAuth, removeAuth} = this.state;
+
         return (
-            <MyNavi screenProps={{fontLoaded: this.state.fontLoaded}}/>
+            <AuthContext.Provider value={{id, token, createAuth, removeAuth}}>
+                <MyNavi screenProps={{fontLoaded: this.state.fontLoaded}}/>
+            </AuthContext.Provider>
         );
     }
 }

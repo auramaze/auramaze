@@ -12,7 +12,7 @@ import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
 import {OrderedSet} from "../utils";
 import ActivityCard from "../components/activity-card";
-import {isAuthValid} from "../utils";
+import {withAuth} from "../App";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -39,28 +39,28 @@ class UserIndex extends React.Component {
     }
 
     componentDidMount() {
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchUserInfo().done();
             this.loadTimeline().done();
         }
     };
 
     componentDidUpdate(prevProps) {
-        const prevId = prevProps.id;
-        const {id} = this.props;
+        const prevId = prevProps.auth.id;
+        const {id} = this.props.auth;
 
-        if (!isAuthValid(prevId) && isAuthValid(id)) {
+        if (prevId !== id) {
             this.fetchUserInfo().done();
             this.loadTimeline().done();
         }
     }
 
     async fetchUserInfo() {
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`);
             const responseJson = await response.json();
             this.setState({avatar: responseJson.avatar});
@@ -68,9 +68,9 @@ class UserIndex extends React.Component {
     }
 
     async loadTimeline() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             const timelineInfo = await fetch(`${config.API_ENDPOINT}/artizen/${id}/activity`, {
                 method: 'GET',
                 headers: {
@@ -86,9 +86,9 @@ class UserIndex extends React.Component {
 
     async refreshTimelineHandler() {
         this.setState({refreshing: true});
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchUserInfo().done();
             this.loadTimeline().done();
         }
@@ -96,9 +96,9 @@ class UserIndex extends React.Component {
     }
 
     async loadMoreTimelineHandler() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (!this.onEndReachedCalledDuringMomentum && this.state.next && isAuthValid(id)) {
+        if (!this.onEndReachedCalledDuringMomentum && this.state.next && id) {
             const response = await fetch(this.state.next, {
                 method: 'GET',
                 headers: {
@@ -247,4 +247,4 @@ class UserIndex extends React.Component {
     }
 }
 
-export default UserIndex;
+export default withAuth(UserIndex);

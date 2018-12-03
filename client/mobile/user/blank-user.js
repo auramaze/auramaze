@@ -22,24 +22,11 @@ class BlankUser extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {pageIsSign: true, hasAuthorized: false};
+        this.state = {pageIsSign: true};
     }
 
     componentDidMount() {
 
-        AsyncStorage.getItem('isAuthorized', null).then((value) => {
-            if (value === undefined || value === 'false') {
-                AsyncStorage.multiSet([
-                    ['isAuthorized', 'false'],
-                    ["username", 'undefined'],
-                    ["token", 'undefined'],
-                    ["id", 'undefined'],
-                ]);
-                this.setState({hasAuthorized: false});
-            } else {
-                this.setState({hasAuthorized: true});
-            }
-        });
     };
 
     render() {
@@ -83,8 +70,8 @@ class BlankUser extends React.Component {
                                      }}/>
 
                     {this.state.pageIsSign ?
-                        <SignUpPage screenProps={{toLogIn: this.props.screenProps.toLogIn}}/> :
-                        <LogInPage screenProps={{toLogIn: this.props.screenProps.toLogIn}}/>}
+                        <SignUpPage/> :
+                        <LogInPage/>}
 
                     <TouchableOpacity
                         style={styles.signupScreenButton}

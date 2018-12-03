@@ -14,6 +14,7 @@ import TopSearchBar from "../components/top-search-bar";
 import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
+import {withAuth} from "../App";
 
 
 class Recommendation extends React.Component {
@@ -42,59 +43,55 @@ class Recommendation extends React.Component {
     };
 
     async _loadRecommend() {
-        let fontLoaded = this.props.screenProps.fontLoaded;
-        let token = await AsyncStorage.getItem('token', null).catch((err) => {
-            alert(err);
-        });
+        const {id, token} = this.props.auth;
 
-        if (token === 'undefined') {
-            return;
+        if (id) {
+            let fontLoaded = this.props.screenProps.fontLoaded;
+
+            fetch(`${config.API_ENDPOINT}/recommend`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                }
+            }).then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Get recommendation.');
+                }
+            }).then((responseJsonRaw) => {
+                let responseJson = responseJsonRaw.data;
+                let artArray = [];
+                responseJson.map((item) => {
+                    artArray.push(
+                        <TouchableOpacity
+                            key={item.id}
+                            onPress={() => this.props.navigation.navigate('Art', {
+                                artId: item.id,
+                                titleName: item.title.default,
+                            })}>
+                            <ArtCard
+                                artName={item.title.default}
+                                artistName={item.artist ? item.artist.default : ""}
+                                source={item.image && item.image.default ? item.image.default.url : null}
+                                compYear={item.completionYear ? item.completionYear : ""}
+                                id={item.id}
+                                fontLoaded={fontLoaded}
+                            />
+                        </TouchableOpacity>)
+                });
+
+                this.setState({
+                    recommendation: 'defined',
+                    recommendNext: responseJsonRaw.next,
+                    recommendArt: OrderedSet(artArray)
+                });
+            }).catch(function (error) {
+                alert('There has been a problem with your fetch operation: ' + error.message);
+            });
         }
-
-        fetch(`${config.API_ENDPOINT}/recommend`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
-                "Content-Type": "application/json"
-            }
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Get recommendation.');
-            }
-        }).then((responseJsonRaw) => {
-            let responseJson = responseJsonRaw.data;
-            let artArray = [];
-            responseJson.map((item) => {
-                artArray.push(
-                    <TouchableOpacity
-                        key={item.id}
-                        onPress={() => this.props.navigation.navigate('Art', {
-                            artId: item.id,
-                            titleName: item.title.default,
-                        })}>
-                        <ArtCard
-                            artName={item.title.default}
-                            artistName={item.artist ? item.artist.default : ""}
-                            source={item.image && item.image.default ? item.image.default.url : null}
-                            compYear={item.completionYear ? item.completionYear : ""}
-                            id={item.id}
-                            fontLoaded={fontLoaded}
-                        />
-                    </TouchableOpacity>)
-            });
-
-            this.setState({
-                recommendation: 'defined',
-                recommendNext: responseJsonRaw.next,
-                recommendArt: OrderedSet(artArray)
-            });
-        }).catch(function (error) {
-            alert('There has been a problem with your fetch operation: ' + error.message);
-        });
-
     }
 
     render() {
@@ -124,15 +121,15 @@ class Recommendation extends React.Component {
                             <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
                         </View> : null}
                     {this.state.recommendation !== 'undefined' ? <View
-                    style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                    <FlatList data={this.state.recommendArt.toArray()}
-                              renderItem={({item}) => item}
-                              keyExtractor={(item, index) => index.toString()}/>
-                </View>: null}
+                        style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                        <FlatList data={this.state.recommendArt.toArray()}
+                                  renderItem={({item}) => item}
+                                  keyExtractor={(item, index) => index.toString()}/>
+                    </View> : null}
                 </ScrollView>
             </View>
         );
     }
 }
 
-export default Recommendation;
+export default withAuth(Recommendation);

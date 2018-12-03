@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {isAuthValid, OrderedSet} from '../utils';
+import {OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import config from "../config";
+import {withAuth} from "../App";
 
 
 class FollowingArtizen extends React.Component {
@@ -10,8 +11,6 @@ class FollowingArtizen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id,
-            token: this.props.token,
             searchArtizen: new OrderedSet([]),
             nextArtizen: null,
             refreshing: false
@@ -23,26 +22,26 @@ class FollowingArtizen extends React.Component {
     }
 
     componentDidMount() {
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchArtizen().done();
         }
     };
 
     componentDidUpdate(prevProps) {
-        const prevId = prevProps.id;
-        const {id} = this.props;
+        const prevId = prevProps.auth.id;
+        const {id} = this.props.auth;
 
-        if (!isAuthValid(prevId) && isAuthValid(id)) {
+        if (prevId !== id) {
             this.fetchArtizen().done();
         }
     }
 
     async fetchArtizen() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             const responseArtizen = await fetch(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`, {
                 method: 'GET',
                 headers: {
@@ -59,18 +58,18 @@ class FollowingArtizen extends React.Component {
 
     async refreshArtizenHandler() {
         this.setState({refreshing: true});
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchArtizen().done();
         }
         this.setState({refreshing: false});
     }
 
     async loadMoreArtizenHandler() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen && isAuthValid(id)) {
+        if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen && id) {
             const responseArtizen = await fetch(this.state.nextArtizen, {
                 method: 'GET',
                 headers: {
@@ -139,4 +138,4 @@ class FollowingArtizen extends React.Component {
     }
 }
 
-export default FollowingArtizen;
+export default withAuth(FollowingArtizen);

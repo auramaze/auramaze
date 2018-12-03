@@ -14,6 +14,7 @@ import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class SignUpPage extends React.Component {
 
@@ -22,7 +23,6 @@ class SignUpPage extends React.Component {
         this.state = {};
         this._createAuraMaze = this._createAuraMaze.bind(this);
         this._setSignUpData = this._setSignUpData.bind(this);
-        this._logIn = this._logIn.bind(this);
     }
 
     checkValid() {
@@ -39,7 +39,6 @@ class SignUpPage extends React.Component {
 
     _createAuraMaze() {
         if (!this.checkValid()) return;
-        this.setState(previousState => ({auramazeProcessing: true}));
         let bodyObject = JSON.stringify({
             name: {default: this.state.name},
             email: this.state.email,
@@ -62,7 +61,6 @@ class SignUpPage extends React.Component {
             }
         }).then((responseJson) => this._setSignUpData(responseJson)
         ).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
             alert('There has been a problem with your fetch operation: ' + error.message);
         });
     };
@@ -140,24 +138,9 @@ class SignUpPage extends React.Component {
     };
 
     _setSignUpData = async (responseJson) => {
-        this.setState(previousState => ({auramazeProcessing: false}));
-        await AsyncStorage.multiSet([
-            ['isAuthorized', 'true'],
-            ['username', responseJson.username ?
-                responseJson.username.toString() : "undefined"],
-            ['token', responseJson.token.toString()],
-            ['id', responseJson.id.toString()]])
-            .then(this.props.screenProps.toLogIn());
+        await this.props.auth.createAuth(responseJson.id, responseJson.token);
     };
 
-    _logIn = async () => {
-        try {
-            await AsyncStorage.setItem('isAuthorized', 'true')
-                .then(this.props.screenProps.toLogIn);
-        } catch (error) {
-            alert(error)
-        }
-    };
 
     render() {
 
@@ -264,4 +247,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SignUpPage;
+export default withAuth(SignUpPage);

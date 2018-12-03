@@ -31,6 +31,21 @@ export function isAuthValid(token) {
     return Boolean(token && token !== 'undefined' && token !== 'null');
 }
 
+export function parseAuth(token) {
+    let result;
+    switch (token) {
+        case 'undefined':
+            result = undefined;
+            break;
+        case 'null':
+            result = null;
+            break;
+        default:
+            result = token;
+    }
+    return result;
+}
+
 export class OrderedSet {
     constructor(items = []) {
         this.ids = new Set();

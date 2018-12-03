@@ -14,7 +14,8 @@ import {Constants} from 'expo';
 import TopSearchBar from "../components/top-search-bar";
 import ActivityCard from "../components/activity-card";
 import config from "../config.json";
-import {OrderedSet, isAuthValid} from "../utils";
+import {OrderedSet} from "../utils";
+import {withAuth} from "../App";
 
 
 class TimeLine extends React.Component {
@@ -32,9 +33,8 @@ class TimeLine extends React.Component {
 
     async _loadInitialState() {
         try {
-            const token = await AsyncStorage.getItem('token', null);
-
-            if (token && token !== 'undefined' && token !== 'null') {
+            const {id, token} = this.props.auth;
+            if (id) {
                 const timelineInfo = await fetch(`${config.API_ENDPOINT}/timeline`, {
                     method: 'GET',
                     headers: {
@@ -55,8 +55,8 @@ class TimeLine extends React.Component {
 
     async refreshTimelineHandler() {
         this.setState({refreshing: true});
-        const token = await AsyncStorage.getItem('token', null);
-        if (isAuthValid(token)) {
+        const {id, token} = this.props.auth;
+        if (id) {
             const body = {
                 method: 'GET',
                 headers: {
@@ -89,8 +89,8 @@ class TimeLine extends React.Component {
     }
 
     async loadMoreTimelineHandler() {
-        if (!this.onEndReachedCalledDuringMomentum && this.state.next) {
-            const token = await AsyncStorage.getItem('token', null);
+        const {id, token} = this.props.auth;
+        if (!this.onEndReachedCalledDuringMomentum && this.state.next && id) {
             const response = await fetch(this.state.next, {
                 method: 'GET',
                 headers: {
@@ -181,11 +181,10 @@ class TimeLine extends React.Component {
                                   }}
                                   keyExtractor={(item, index) => index.toString()}/> :
                         <View style={{height: Dimensions.get('window').height}}/>}
-
                 </View>
             </View>
         );
     }
 }
 
-export default TimeLine;
+export default withAuth(TimeLine);

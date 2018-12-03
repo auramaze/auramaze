@@ -14,6 +14,7 @@ import facebook from '../assets/icons/facebook.png';
 import {Input} from "react-native-elements";
 import Hr from 'react-native-hr-plus';
 import config from '../config.json';
+import {withAuth} from "../App";
 
 class LogInPage extends React.Component {
 
@@ -22,7 +23,6 @@ class LogInPage extends React.Component {
         this.state = {};
         this._logAuraMaze = this._logAuraMaze.bind(this);
         this._setLogInData = this._setLogInData.bind(this);
-        this._logIn = this._logIn.bind(this);
         this._logFacebook = this._logFacebook.bind(this);
     }
 
@@ -37,15 +37,6 @@ class LogInPage extends React.Component {
         }
         return true;
     }
-
-    _logIn = async () => {
-        try {
-            await AsyncStorage.setItem('isAuthorized', 'true')
-                .then(this.props.screenProps.toLogIn);
-        } catch (error) {
-            alert(error)
-        }
-    };
 
     _logAuraMaze() {
         if (!this.checkValid()) return;
@@ -147,18 +138,7 @@ class LogInPage extends React.Component {
     };
 
     _setLogInData = async (responseJson) => {
-        this.setState(previousState => ({auramazeProcessing: false}));
-        try {
-            await AsyncStorage.multiSet([
-                ['isAuthorized', 'true'],
-                ['username', responseJson.username ?
-                    responseJson.username.toString() : "undefined"],
-                ['token', responseJson.token.toString()],
-                ['id', responseJson.id.toString()]])
-                .then(this.props.screenProps.toLogIn());
-        } catch (error) {
-            alert(error)
-        }
+        await this.props.auth.createAuth(responseJson.id, responseJson.token);
     };
 
     render() {
@@ -266,4 +246,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LogInPage;
+export default withAuth(LogInPage);

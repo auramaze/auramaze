@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {isAuthValid, OrderedSet} from '../utils';
+import {OrderedSet} from '../utils';
 import ArtCard from "../components/art-card";
 import config from "../config";
+import {withAuth} from "../App";
 
 
 class FollowingArt extends React.Component {
@@ -10,8 +11,6 @@ class FollowingArt extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id,
-            token: this.props.token,
             searchArt: new OrderedSet([]),
             nextArt: null,
             refreshing: false
@@ -23,26 +22,26 @@ class FollowingArt extends React.Component {
     }
 
     componentDidMount() {
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchArt().done();
         }
     };
 
     componentDidUpdate(prevProps) {
-        const prevId = prevProps.id;
-        const {id} = this.props;
+        const prevId = prevProps.auth.id;
+        const {id} = this.props.auth;
 
-        if (!isAuthValid(prevId) && isAuthValid(id)) {
+        if (prevId !== id) {
             this.fetchArt().done();
         }
     }
 
     async fetchArt() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             const responseArt = await fetch(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`, {
                 method: 'GET',
                 headers: {
@@ -59,18 +58,18 @@ class FollowingArt extends React.Component {
 
     async refreshArtHandler() {
         this.setState({refreshing: true});
-        const {id} = this.props;
+        const {id} = this.props.auth;
 
-        if (isAuthValid(id)) {
+        if (id) {
             this.fetchArt().done();
         }
         this.setState({refreshing: false});
     }
 
     async loadMoreArtHandler() {
-        const {id, token} = this.props;
+        const {id, token} = this.props.auth;
 
-        if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt && isAuthValid(id)) {
+        if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt && id) {
             const responseArt = await fetch(this.state.nextArt, {
                 method: 'GET',
                 headers: {
@@ -141,4 +140,4 @@ class FollowingArt extends React.Component {
     }
 }
 
-export default FollowingArt;
+export default withAuth(FollowingArt);
