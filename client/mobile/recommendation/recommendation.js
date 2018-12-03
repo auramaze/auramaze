@@ -5,7 +5,6 @@ import {
     ScrollView,
     TouchableOpacity,
     FlatList,
-    AsyncStorage,
     RefreshControl
 } from 'react-native';
 import {Constants} from 'expo';

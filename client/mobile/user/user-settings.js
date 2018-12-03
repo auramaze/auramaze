@@ -5,7 +5,7 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Keyboard,
-    Text, TouchableOpacity, AsyncStorage
+    Text, TouchableOpacity
 } from 'react-native';
 import {Input} from "react-native-elements";
 import AutoHeightImage from "react-native-auto-height-image";

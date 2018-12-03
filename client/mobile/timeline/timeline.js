@@ -4,7 +4,6 @@ import {
     View,
     ScrollView,
     FlatList,
-    AsyncStorage,
     RefreshControl,
     Dimensions,
     Text,

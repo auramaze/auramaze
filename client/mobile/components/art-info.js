@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity, AsyncStorage} from 'react-native';
+import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
 
 import AutoHeightImage from 'react-native-auto-height-image';
 import config from "../config";
+import {withAuth} from "../App";
 
 class ArtInfo extends React.Component {
 
@@ -14,9 +15,11 @@ class ArtInfo extends React.Component {
 
     async _handleFollow(type) {
         try {
-            const token = await AsyncStorage.getItem('token', null);
+            const {token} = this.props.auth;
+            const authId = this.props.auth.id;
+
             const {id} = this.props;
-            if (token === 'undefined') {
+            if (!authId) {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`${config.API_ENDPOINT}/art/${id}/follow`, {
@@ -95,4 +98,4 @@ class ArtInfo extends React.Component {
 
 }
 
-export default ArtInfo;
+export default withAuth(ArtInfo);

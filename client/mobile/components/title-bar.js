@@ -1,11 +1,12 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Image, Dimensions, AsyncStorage} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Image, Dimensions} from 'react-native';
 import edit from "../assets/icons/edit-regular.png";
 import cross from "../assets/icons/times-solid.png";
 import AutoHeightImage from "react-native-auto-height-image";
 import {Input} from "react-native-elements";
 import {convertTextToDraftjsContent} from "../utils";
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class TitleBar extends React.Component {
 
@@ -17,8 +18,7 @@ class TitleBar extends React.Component {
     }
 
     async _handleTouchEdit() {
-        const token = await AsyncStorage.getItem('token', null);
-        if (token === 'undefined') {
+        if (!this.props.auth.id) {
             alert('Please log in to use this function!')
         } else {
             this.setState(previousState => (
@@ -29,9 +29,9 @@ class TitleBar extends React.Component {
 
     async _handleSubmit() {
         try {
-            const token = await AsyncStorage.getItem('token', null);
+            const {id, token} = this.props.auth;
             const {itemType, itemId, textType} = this.props;
-            if (token === 'undefined') {
+            if (!id) {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}`, {
@@ -145,4 +145,4 @@ class TitleBar extends React.Component {
     }
 }
 
-export default TitleBar;
+export default withAuth(TitleBar);

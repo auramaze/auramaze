@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity, AsyncStorage} from 'react-native';
+import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from '../assets/icons/no-image-artizen.png';
 import artist from '../assets/icons/artizen-type/artist.png';
@@ -9,6 +9,7 @@ import genre from '../assets/icons/artizen-type/genre.png';
 import museum from '../assets/icons/artizen-type/museum.png';
 import style from '../assets/icons/artizen-type/style.png';
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class ArtizenInfo extends React.Component {
 
@@ -20,9 +21,11 @@ class ArtizenInfo extends React.Component {
 
     async _handleFollow(type) {
         try {
-            const token = await AsyncStorage.getItem('token');
+            const {token} = this.props.auth;
+            const authId = this.props.auth.id;
+
             const {id} = this.props;
-            if (token === 'undefined') {
+            if (!authId) {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`${config.API_ENDPOINT}/artizen/${id}/follow`, {
@@ -120,4 +123,4 @@ class ArtizenInfo extends React.Component {
     }
 }
 
-export default ArtizenInfo;
+export default withAuth(ArtizenInfo);

@@ -1,11 +1,12 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, TouchableOpacity, AsyncStorage, Text, Dimensions} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableOpacity, Text, Dimensions} from 'react-native';
 import {OrderedSet} from 'immutable';
 import ReviewCard from "../components/review-card";
 import TitleBar from "../components/title-bar";
 import ArtCard from "../components/art-card";
 import ArtizenInfo from "../components/artizen-info";
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class Artizen extends React.Component {
 
@@ -13,7 +14,6 @@ class Artizen extends React.Component {
         super(props);
         this.state = {introductions: OrderedSet(), reviews: OrderedSet(), nextReview: null, nextRelated: null};
         this._loadInitialState = this._loadInitialState.bind(this);
-        this._fetchInfo = this._fetchInfo.bind(this);
         this.loadMoreReviewHandler = this.loadMoreReviewHandler.bind(this);
         this.loadMoreCollectionHandler = this.loadMoreCollectionHandler.bind(this);
         this.loadMoreArtworkHandler = this.loadMoreArtworkHandler.bind(this);
@@ -25,44 +25,23 @@ class Artizen extends React.Component {
         this._loadInitialState().done();
     }
 
-    _fetchInfo = (url, token) => fetch(url, {
-        method: 'GET',
-        headers: token && token !== 'undefined' && token !== 'null' ? {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        } : null
-    });
-
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
-            let token = await AsyncStorage.getItem('token', null);
-            let myId = await AsyncStorage.getItem('id', null);
+            const {token} = this.props.auth;
+            const myId = this.props.auth.id;
 
             const artizenId = navigation.getParam('artizenId', 0);
             let artizenInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}`, {
                 method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
+                headers: token ? {
                     'Authorization': `Bearer ${token}`
                 } : null
             });
 
-            let introInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/introduction`, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`
-                } : null
-            });
+            let introInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/introduction`);
             let artInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/art`);
-            let reviewInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/review`, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let reviewInfo = await fetch(`${config.API_ENDPOINT}/artizen/${artizenId}/review`);
             let artizenInfoJson = await artizenInfo.json();
             let artInfoJson = await artInfo.json();
             let introInfoJsonRaw = await introInfo.json();
@@ -127,15 +106,7 @@ class Artizen extends React.Component {
 
     async loadMoreArtworkHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let artworkInfo = await fetch(this.state.nextArtwork, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let artworkInfo = await fetch(this.state.nextArtwork);
             let artworkInfoJsonRaw = await artworkInfo.json();
             this.setState(previousState => ({
                 artworks: previousState.artworks.union(OrderedSet(artworkInfoJsonRaw[0].data)),
@@ -148,8 +119,7 @@ class Artizen extends React.Component {
 
     async loadMoreCollectionHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let collectionInfo = await this._fetchInfo(this.state.nextCollection, token);
+            let collectionInfo = await fetch(this.state.nextCollection);
             let collectionInfoJsonRaw = await collectionInfo.json();
             this.setState(previousState => ({
                 collections: previousState.collections.union(OrderedSet(collectionInfoJsonRaw[0].data)),
@@ -162,8 +132,7 @@ class Artizen extends React.Component {
 
     async loadMoreExhibitionHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let exhibitionInfo = await this._fetchInfo(this.state.nextExhibition, token);
+            let exhibitionInfo = await fetch(this.state.nextExhibition);
             let exhibitionInfoJsonRaw = await exhibitionInfo.json();
             this.setState(previousState => ({
                 exhibits: previousState.exhibits.union(OrderedSet(exhibitionInfoJsonRaw[0].data)),
@@ -176,8 +145,7 @@ class Artizen extends React.Component {
 
     async loadMoreRelatedHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let relatedInfo = await this._fetchInfo(this.state.nextRelated, token);
+            let relatedInfo = await fetch(this.state.nextRelated);
             let relatedInfoJsonRaw = await relatedInfo.json();
             this.setState(previousState => ({
                 related: previousState.related.union(OrderedSet(relatedInfoJsonRaw[0].data)),
@@ -190,8 +158,7 @@ class Artizen extends React.Component {
 
     async loadMoreReviewHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let reviewInfo = await this._fetchInfo(this.state.nextReview, token);
+            let reviewInfo = await fetch(this.state.nextReview);
             let reviewInfoJsonRaw = await reviewInfo.json();
             this.setState(previousState => ({
                 reviews: previousState.reviews.union(OrderedSet(reviewInfoJsonRaw.data)),
@@ -469,4 +436,4 @@ class Artizen extends React.Component {
     }
 }
 
-export default Artizen;
+export default withAuth(Artizen);

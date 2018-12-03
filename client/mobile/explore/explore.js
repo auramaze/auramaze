@@ -6,7 +6,7 @@ import {
     FlatList,
 } from 'react-native';
 import {Constants, Location, Permissions} from 'expo';
-import {isAuthValid, OrderedSet} from '../utils';
+import {OrderedSet} from '../utils';
 import TopSearchBar from "../components/top-search-bar";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";

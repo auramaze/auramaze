@@ -5,7 +5,6 @@ import {
     Dimensions,
     Text,
     TouchableOpacity,
-    AsyncStorage
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";

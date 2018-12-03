@@ -1,11 +1,12 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, TouchableOpacity, Text, AsyncStorage} from 'react-native';
+import {StyleSheet, View, ScrollView, TouchableOpacity, Text} from 'react-native';
 import {OrderedSet} from 'immutable';
 import ReviewCard from "../components/review-card";
 import ArtInfo from "../components/art-info";
 import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class Art extends React.Component {
 
@@ -23,34 +24,20 @@ class Art extends React.Component {
     async _loadInitialState() {
         try {
             const {navigation} = this.props;
-            let token = await AsyncStorage.getItem('token', null);
+            const {token} = this.props.auth;
             const artId = navigation.getParam('artId', 0);
             let artInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}`, {
                 method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
+                headers: token ? {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 } : null
             });
 
-            let introInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/introduction`, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let introInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/introduction`);
             let artizenInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/artizen`);
-            let reviewInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/review`, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let reviewInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/review`);
             let artInfoJson = await artInfo.json();
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJsonRaw = await introInfo.json();
@@ -154,15 +141,7 @@ class Art extends React.Component {
 
     async loadMoreReviewHandler() {
         try {
-            let token = await AsyncStorage.getItem('token', null);
-            let reviewInfo = await fetch(this.state.nextReview, {
-                method: 'GET',
-                headers: token && token !== 'undefined' && token !== 'null' ? {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                } : null
-            });
+            let reviewInfo = await fetch(this.state.nextReview);
             let reviewInfoJsonRaw = await reviewInfo.json();
             let reviewInfoJson = reviewInfoJsonRaw.data;
             this.setState(previousState => ({
@@ -268,4 +247,4 @@ class Art extends React.Component {
     }
 }
 
-export default Art;
+export default withAuth(Art);

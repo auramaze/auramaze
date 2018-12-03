@@ -2,7 +2,6 @@ import React from 'react';
 import {
     View,
     Dimensions,
-    AsyncStorage
 } from 'react-native';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import UserIndex from "./user-index";

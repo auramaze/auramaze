@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity, AsyncStorage} from 'react-native';
+import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import thumbs_down from '../assets/icons/thumbs-down.png';
 import thumbs_up from '../assets/icons/thumbs-up.png';
 import config from "../config.json";
+import {withAuth} from "../App";
 
 class ReviewFooter extends React.Component {
 
@@ -17,9 +18,11 @@ class ReviewFooter extends React.Component {
         if (type === 'down' && this.state.status === -1) return;
 
         try {
-            const token = await AsyncStorage.getItem('token');
+            const {token} = this.props.auth;
+            const authId = this.props.auth.id;
+
             const {itemType, itemId, textType, textId} = this.props;
-            if (token === 'undefined') {
+            if (!authId) {
                 alert('Please log in to use this function!')
             } else {
                 fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}/${textId}/vote`, {
@@ -106,4 +109,4 @@ class ReviewFooter extends React.Component {
 
 }
 
-export default ReviewFooter;
+export default withAuth(ReviewFooter);
