@@ -187,13 +187,14 @@ Common.prototype.updateItem = (group, id, item, callback) => {
 
         sql = `UPDATE art SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
         parameters = columns.map(column => conversion[column](item[column]));
+        parameters.push(id);
     } else {
         if (item.password) {
             const {salt, hash} = generateSaltHash(item.password);
             item.salt = salt;
             item.hash = hash;
         }
-        const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash'];
+        const allowed = ['username', 'name', 'type', 'avatar', 'metadata', 'email', 'salt', 'hash', 'address'];
         const conversion = {
             username: username => username,
             name: name => JSON.stringify(name),
@@ -202,22 +203,33 @@ Common.prototype.updateItem = (group, id, item, callback) => {
             metadata: metadata => JSON.stringify(metadata),
             email: email => email,
             salt: salt => salt,
-            hash: hash => hash
+            hash: hash => hash,
+            address: address => address
         };
 
         const keys = Object.keys(item);
 
         const columns = keys.filter(key => allowed.includes(key));
 
-        if (columns.length === 0) {
+        if (columns.length === 0 && !(item.location && item.location.longitude && item.location.latitude)) {
             callback(null, null);
             return;
         }
 
-        sql = `UPDATE artizen SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}`;
-        parameters = columns.map(column => conversion[column](item[column]));
+        if (columns.length > 0) {
+            sql = `UPDATE artizen SET ${columns.map(column => `${column}=?`).join(', ')} ${condition}; `;
+            parameters = columns.map(column => conversion[column](item[column]));
+            parameters.push(id);
+        } else {
+            sql = '';
+            parameters = [];
+        }
+
+        if (item.location && item.location.longitude && item.location.latitude) {
+            sql += `UPDATE artizen SET location=ST_PointFromText('Point(? ?)') ${condition};`;
+            parameters = parameters.concat([item.location.longitude, item.location.latitude, id]);
+        }
     }
-    parameters.push(id);
     rds.query(sql, parameters, callback);
 };
 
