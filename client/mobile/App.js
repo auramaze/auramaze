@@ -2,30 +2,16 @@ import React from 'react';
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
 import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
-import artventure from './assets/icons/artventure.png';
 import compass from './assets/icons/compass.png';
-import journal from './assets/icons/journal.png';
+import map from './assets/icons/map.png';
 import camera from './assets/icons/camera.png';
 import recommendation from './assets/icons/recommand.png';
 import profile from './assets/icons/profile.png';
 import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
 import RecommendationStack from "./recommendation/recommendation-stack";
-import AutoHeightImage from "react-native-auto-height-image";
 import UserStack from "./user/user-stack";
-
-class SettingScreen extends React.Component {
-    render() {
-        return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <AutoHeightImage style={{marginVertical: 100}}
-                                 width={100}
-                                 source={artventure}/>
-                <Text>Artventure page, still in constructing.</Text>
-            </View>
-        );
-    }
-}
+import ExploreStack from "./explore/explore-stack";
 
 export default class App extends React.Component {
 
@@ -50,7 +36,7 @@ export default class App extends React.Component {
         const MyNavi = createBottomTabNavigator(
             {
                 Timeline: {screen: TimeLineStack},
-                Artventure: {screen: SettingScreen},
+                Explore: {screen: ExploreStack},
                 Camera: {screen: CameraStack},
                 Recommend: {screen: RecommendationStack},
                 Profile: {screen: UserStack},
@@ -79,7 +65,7 @@ export default class App extends React.Component {
 
                         let iconName = '';
                         if (routeName === 'Timeline') iconName = compass;
-                        else if (routeName === 'Artventure') iconName = journal;
+                        else if (routeName === 'Explore') iconName = map;
                         else if (routeName === 'Camera') iconName = camera;
                         else if (routeName === 'Recommend') iconName = recommendation;
                         else if (routeName === 'Profile') iconName = profile;
