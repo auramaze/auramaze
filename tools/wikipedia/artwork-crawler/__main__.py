@@ -16,7 +16,7 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from unidecode import unidecode
 from glob import glob
-
+from tqdm import tqdm
 
 data_path = '../test/meta/'
 # data_path = './'
@@ -339,11 +339,11 @@ def main():
         with open('./art_wiki/art_queries.json', 'r') as query_file:
             queries = json.load(query_file)
         # queries = queries[109995:]
-        queries = queries[139995:]
+        queries = queries[30015:39995]
         # art_id = 0
         # pprint.pprint(queries)
         art_list = []
-        counter = 14
+        counter = 305
         for value in queries:
             new_dict = {}
             link = ''
@@ -370,11 +370,11 @@ def main():
             # queries[key]['wiki'] = wiki_dic
             # queries[key]['id'] = format(art_id, '08')
             # queries[key]['type'] = 'art'
-            if len(art_list) >= 10000:
-                exportJSON(art_list, './art_wiki/', 'arts-{}'.format(counter))
-                print('arts-{}'.format(counter), len(art_list), 'exported')
-                counter += 1
-                art_list = []
+            # if len(art_list) >= 10000:
+            #     exportJSON(art_list, './art_wiki/', 'arts-{}'.format(counter))
+            #     print('arts-{}'.format(counter), len(art_list), 'exported')
+            #     counter += 1
+            #     art_list = []
         exportJSON(art_list, './art_wiki/', 'wiki-art_{}'.format(counter))
         # pprint.pprint(queries)
 
@@ -451,31 +451,41 @@ def main():
     elif args[0] == '--postAPI':
         post_dicts = []
         # with open('draftjs/wiki-museums-draftjs.json') as original_json_file:
-        with open('post/post-artists-2.json') as original_json_file:
+        with open('wiki-json/wiki-artist-3.json') as original_json_file:
             post_dicts = json.load(original_json_file)
-        for payload in post_dicts:
+        for payload in tqdm(post_dicts):
             try:
                 url = 'https://api.auramaze.org/v1/artizen/{}'.format(payload['username'])
-                # r = requests.get('https://apidev.auramaze.org/v1/artizen/{}'.format(payload['username']), json=payload)
-                # res = r.json()
-                # token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAwMDEwLCJleHAiOjE1NDc0NDc1MDEsImlhdCI6MTU0MjI2MzUwMX0.rbxVNHVMJxZsAbizp092PFTrKjJ4TBmh-RJOcKDNqJg'
-                # header = {'Authorization': 'Bearer ' + token}
-                # url = 'https://apidev.auramaze.org/v1/artizen/{}/introduction'.format(res['id'])
-                # if payload['wikipedia'] and payload['wikipedia']['content']:
-                #     content = {'author_id': '100000010', 'content': payload['wikipedia']['content']}
-                #     r = requests.post(url, json=content, headers=header)
-                #     print(r.status_code)
-                # else:
-                #     print(payload['username'], 'no Wikipedia')
-                # img_link = 'https://s3.amazonaws.com/auramaze/avatars/{}.jpg'.format(payload['username'])
-                r1 = requests.get()
-                if r1.status_code == 200:
-                    r = requests.put(url, json=payload)
-                    print(payload['username'], 'with avatar', r.status_code)
+                r = requests.get('https://api.auramaze.org/v1/artizen/{}'.format(payload['username']), json=payload)
+                res = r.json()
+                token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDA0OTE1LCJpYXQiOjE1NDM3NzgxNDB9.3y-Quqx2NoVxDmci7IgSTxQbPtwWcjzgA9efxJsWpm0'
+                header = {'Authorization': 'Bearer ' + token}
+                url = 'https://api.auramaze.org/v1/artizen/{}/introduction'.format(res['id'])
+                # print(url)
+                if payload['wikipedia'] and payload['wikipedia']['content']:
+                    # content = {'author_id': 100004915, 'content': payload['wikipedia']['content']}
+                    content = {'content': payload['wikipedia']['content']}
+                    # pprint.pprint(content)
+                    r = requests.post(url, json=content, headers=header)
+                    print(payload['username'], 'English Wikipedia' , r.status_code)
                 else:
-                    payload['avatar'] = ""
-                    r = requests.put(url, json=payload)
-                    print(payload['username'], 'no avatar', r.status_code)
+                    print(payload['username'], 'no English Wikipedia')
+                if payload['wikipedia_zh'] and payload['wikipedia_zh']['content']:
+                    # content = {'author_id': 100004915, 'content': payload['wikipedia_zh']['content']}
+                    content = {'content': payload['wikipedia_zh']['content']}
+                    r = requests.post(url, json=content, headers=header)
+                    print(payload['username'], 'Chinese Wikipedia' , r.status_code)
+                else:
+                    print(payload['username'], 'no Chinese Wikipedia')
+                # img_link = 'https://s3.amazonaws.com/auramaze/avatars/{}.jpg'.format(payload['username'])
+                # r1 = requests.get(payload['avatar'])
+                # if r1.status_code == 200:
+                #     r = requests.put(url, json=payload)
+                #     print(payload['username'], 'with avatar', r.status_code)
+                # else:
+                #     payload['avatar'] = ""
+                #     r = requests.put(url, json=payload)
+                #     print(payload['username'], 'no avatar', r.status_code)
                 # res = requests.put(url, json=payload)
                 # print(payload['username'], res.status_code)
             except Exception as e:
@@ -485,12 +495,17 @@ def main():
         facebookAvatar()
 
     elif args[0] == '--lookup':
-        queries = {}
         artists_json = []
+        tree_lookup = []
+        genre_lookup = []
+        museum_lookup = []
+        style_lookup = []
 
         # import dictionaries
         with open('./post/post-artist-2.json') as artists_json_file:
             artists_json = json.load(artists_json_file)
+        with open('./post/tree.json') as tree_json_file:
+            tree_lookup = json.load(tree_json_file)
         # with open('./fastlookup/fast-artist.json') as fast_artist_json_file:
         #     artist_lookup = json.load(fast_artist_json_file)
         with open('./fastlookup/fast-genre.json') as fast_genre_json_file:
@@ -520,11 +535,17 @@ def main():
                             "height": work['height']
                         }}
                         work_dict['username'] = get_new_art_url(artist['username'], work['url'])
+                        if str(work['contentId']) + '.jpg' in tree_lookup:
+                            img_url = 'https://s3.amazonaws.com/auramaze/images/{}.jpg'.format(work_dict['username'])
+                            work_dict['image'] = {"default": {
+                                "url": img_url,
+                                "width": work['width'],
+                                "height": work['height']
+                            }}
 
                         # check relations
                         work_dict_relations = []
-                        if artist_name in artist_lookup:
-                            work_dict_relations.append({'artizen': artist_lookup[artist_name], 'type': 'artist'})
+                        work_dict_relations.append({'artizen': get_new_artist_url(artist['username']), 'type': 'artist'})
                         if work['genre']:
                             genres = work['genre'].split(',')
                             for genre in genres:
@@ -552,7 +573,7 @@ def main():
             except FileNotFoundError:
                 continue
                 # print(works_filename + ' not found.')
-        exportJSON(works_list, './art_posts_new/', 'arts-{}'.format(counter))
+        exportJSON(works_list, './art_posts/', 'arts-{}'.format(counter))
         print('arts-{}'.format(counter), len(works_list), 'exported')
 
 if __name__ == '__main__':
