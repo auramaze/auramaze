@@ -24,8 +24,6 @@ class User extends React.Component {
                 {key: 'artizen', title: 'View Artizen'},
             ],
         };
-        this._toLogIn = this._toLogIn.bind(this);
-        this._toLogOut = this._toLogOut.bind(this);
     }
 
     _renderScene = ({route}) => {
@@ -35,7 +33,6 @@ class User extends React.Component {
                     <UserIndex id={this.state.id}
                                token={this.state.token}
                                fontLoaded={this.props.screenProps.fontLoaded}
-                               screenProps={{toLogOut: this._toLogOut}}
                                navigation={this.props.navigation}/>
                 );
             case 'art':
