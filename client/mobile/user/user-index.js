@@ -28,11 +28,13 @@ class UserIndex extends React.Component {
             pageIsSign: true,
             avatar: null,
             timeline: new OrderedSet(),
-            next: null
+            next: null,
+            refreshing: false
         };
         this.onEndReachedCalledDuringMomentum = true;
         this.fetchUserInfo = this.fetchUserInfo.bind(this);
         this.loadTimeline = this.loadTimeline.bind(this);
+        this.refreshTimelineHandler = this.refreshTimelineHandler.bind(this);
         this.loadMoreTimelineHandler = this.loadMoreTimelineHandler.bind(this);
     }
 
@@ -82,6 +84,17 @@ class UserIndex extends React.Component {
         }
     }
 
+    async refreshTimelineHandler() {
+        this.setState({refreshing: true});
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchUserInfo().done();
+            this.loadTimeline().done();
+        }
+        this.setState({refreshing: false});
+    }
+
     async loadMoreTimelineHandler() {
         const {id, token} = this.props;
 
@@ -106,9 +119,14 @@ class UserIndex extends React.Component {
     render() {
 
         const styles = StyleSheet.create({
-            mainStruct: {
+            backPage: {
+                backgroundColor: '#cdcdcd',
+            },
+            profileHeader: {
                 flex: 1, flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor: '#fafafa',
+                marginBottom: 30
             },
             signupText: {
                 color: '#666666',
@@ -136,7 +154,8 @@ class UserIndex extends React.Component {
             },
             buttonAuramaze: {
                 backgroundColor: '#666666',
-                borderColor: '#666666'
+                borderColor: '#666666',
+                marginBottom: 40
             },
             textGeneral: {
                 textAlign: 'center',
@@ -157,9 +176,9 @@ class UserIndex extends React.Component {
 
         return (
             <DismissKeyboard>
-                <View>
+                <View style={styles.backPage}>
                     <FlatList data={[
-                        <View style={styles.mainStruct}>
+                        <View style={styles.profileHeader}>
                             <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
                                              source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
                                              style={{

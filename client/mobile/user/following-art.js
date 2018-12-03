@@ -14,8 +14,10 @@ class FollowingArt extends React.Component {
             token: this.props.token,
             searchArt: new OrderedSet([]),
             nextArt: null,
+            refreshing: false
         };
         this.onArtEndReachedCalledDuringMomentum = true;
+        this.refreshArtHandler = this.refreshArtHandler.bind(this);
         this.loadMoreArtHandler = this.loadMoreArtHandler.bind(this);
         this.fetchArt = this.fetchArt.bind(this);
     }
@@ -24,7 +26,7 @@ class FollowingArt extends React.Component {
         const {id} = this.props;
 
         if (isAuthValid(id)) {
-            this.fetchArt(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`).done();
+            this.fetchArt().done();
         }
     };
 
@@ -33,28 +35,53 @@ class FollowingArt extends React.Component {
         const {id} = this.props;
 
         if (!isAuthValid(prevId) && isAuthValid(id)) {
-            this.fetchArt(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`).done();
+            this.fetchArt().done();
         }
     }
 
-    async fetchArt(url) {
+    async fetchArt() {
         const {id, token} = this.props;
-        const responseArt = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        const responseArtJsonRaw = await responseArt.json();
-        this.setState(previousState => ({
-            searchArt: previousState.searchArt.union(responseArtJsonRaw.data),
-            nextArt: responseArtJsonRaw.next,
-        }));
+
+        if (isAuthValid(id)) {
+            const responseArt = await fetch(`${config.API_ENDPOINT}/artizen/${id}/follow?group=art`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const responseArtJsonRaw = await responseArt.json();
+            this.setState({
+                searchArt: new OrderedSet(responseArtJsonRaw.data),
+                nextArt: responseArtJsonRaw.next,
+            });
+        }
+    }
+
+    async refreshArtHandler() {
+        this.setState({refreshing: true});
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchArt().done();
+        }
+        this.setState({refreshing: false});
     }
 
     async loadMoreArtHandler() {
-        if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt) {
-            this.fetchArt(this.state.nextArt).done();
+        const {id, token} = this.props;
+
+        if (!this.onArtEndReachedCalledDuringMomentum && this.state.nextArt && isAuthValid(id)) {
+            const responseArt = await fetch(this.state.nextArt, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const responseArtJsonRaw = await responseArt.json();
+            this.setState(previousState => ({
+                searchArt: previousState.searchArt.union(responseArtJsonRaw.data),
+                nextArt: responseArtJsonRaw.next,
+            }));
             this.onArtEndReachedCalledDuringMomentum = true;
         }
     }
@@ -101,6 +128,8 @@ class FollowingArt extends React.Component {
                                            fontLoaded={fontLoadStatus}
                                   />
                               </TouchableOpacity>) : <View style={{height: 100}}/>}
+                          onRefresh={this.refreshArtHandler}
+                          refreshing={this.state.refreshing}
                           onEndReached={this.loadMoreArtHandler}
                           onEndReachedThreshold={0}
                           onMomentumScrollBegin={() => {

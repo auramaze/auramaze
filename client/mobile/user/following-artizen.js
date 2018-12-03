@@ -14,8 +14,10 @@ class FollowingArtizen extends React.Component {
             token: this.props.token,
             searchArtizen: new OrderedSet([]),
             nextArtizen: null,
+            refreshing: false
         };
         this.onArtizenEndReachedCalledDuringMomentum = true;
+        this.refreshArtizenHandler = this.refreshArtizenHandler.bind(this);
         this.loadMoreArtizenHandler = this.loadMoreArtizenHandler.bind(this);
         this.fetchArtizen = this.fetchArtizen.bind(this);
     }
@@ -24,7 +26,7 @@ class FollowingArtizen extends React.Component {
         const {id} = this.props;
 
         if (isAuthValid(id)) {
-            this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`).done();
+            this.fetchArtizen().done();
         }
     };
 
@@ -33,29 +35,53 @@ class FollowingArtizen extends React.Component {
         const {id} = this.props;
 
         if (!isAuthValid(prevId) && isAuthValid(id)) {
-            this.fetchArtizen(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`).done();
+            this.fetchArtizen().done();
         }
     }
 
-    async fetchArtizen(url) {
+    async fetchArtizen() {
         const {id, token} = this.props;
 
-        const responseArtizen = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        const responseArtizenJsonRaw = await responseArtizen.json();
-        this.setState(previousState => ({
-            searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),
-            nextArtizen: responseArtizenJsonRaw.next,
-        }));
+        if (isAuthValid(id)) {
+            const responseArtizen = await fetch(`${config.API_ENDPOINT}/artizen/${id}/follow?group=artizen`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const responseArtizenJsonRaw = await responseArtizen.json();
+            this.setState({
+                searchArtizen: new OrderedSet(responseArtizenJsonRaw.data),
+                nextArtizen: responseArtizenJsonRaw.next,
+            });
+        }
+    }
+
+    async refreshArtizenHandler() {
+        this.setState({refreshing: true});
+        const {id} = this.props;
+
+        if (isAuthValid(id)) {
+            this.fetchArtizen().done();
+        }
+        this.setState({refreshing: false});
     }
 
     async loadMoreArtizenHandler() {
-        if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen) {
-            this.fetchArtizen(this.state.nextArtizen).done();
+        const {id, token} = this.props;
+
+        if (!this.onArtizenEndReachedCalledDuringMomentum && this.state.nextArtizen && isAuthValid(id)) {
+            const responseArtizen = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const responseArtizenJsonRaw = await responseArtizen.json();
+            this.setState(previousState => ({
+                searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),
+                nextArtizen: responseArtizenJsonRaw.next,
+            }));
             this.onArtizenEndReachedCalledDuringMomentum = true;
         }
     }
@@ -100,6 +126,8 @@ class FollowingArtizen extends React.Component {
                                                topMargin={10}
                                                fontLoaded={fontLoadStatus}/>
                               </TouchableOpacity>) : <View style={{height: 100}}/>}
+                          onRefresh={this.refreshArtizenHandler}
+                          refreshing={this.state.refreshing}
                           onEndReached={this.loadMoreArtizenHandler}
                           onEndReachedThreshold={0}
                           onMomentumScrollBegin={() => {
