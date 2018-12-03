@@ -1,7 +1,7 @@
 import React from 'react';
 import {Font} from 'expo';
 import {createBottomTabNavigator} from "react-navigation";
-import {Dimensions, Image, StyleSheet, Text, View} from "react-native";
+import {Dimensions, Image, StyleSheet} from "react-native";
 import compass from './assets/icons/compass.png';
 import map from './assets/icons/map.png';
 import camera from './assets/icons/camera.png';
