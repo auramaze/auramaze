@@ -30,6 +30,15 @@ class TimeLine extends React.Component {
         this._loadInitialState().done();
     }
 
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.auth.id;
+        const {id} = this.props.auth;
+
+        if (prevId !== id) {
+            this._loadInitialState().done();
+        }
+    }
+
     async _loadInitialState() {
         try {
             const {id, token} = this.props.auth;

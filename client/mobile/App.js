@@ -28,6 +28,68 @@ export function withAuth(Component) {
     };
 }
 
+const lengthBasis = Dimensions.get('window').width / 375;
+
+const MyNavi = createBottomTabNavigator(
+    {
+        Timeline: {screen: TimeLineStack},
+        Explore: {screen: ExploreStack},
+        Camera: {screen: CameraStack},
+        Recommend: {screen: RecommendStack},
+        Profile: {screen: UserStack},
+    },
+    {
+        navigationOptions: ({navigation}) => ({
+            tabBarIcon: ({focused, tintColor}) => {
+                const styles = StyleSheet.create({
+                    imageStyle: {
+                        width: 30, height: 30, margin: 10,
+                        tintColor: tintColor
+                    },
+                    cameraStyle: {tintColor: '#fff'},
+                    cameraHolder: {
+                        flex: 1, flexDirection: 'row',
+                        width: lengthBasis * 65,
+                        height: lengthBasis * 40,
+                        backgroundColor: '#909090',
+                        borderRadius: lengthBasis * 45,
+                        alignItems: 'center', justifyContent: 'center',
+                        marginVertical: 8 / (Dimensions.get('window').width / 375)
+                    }
+                });
+
+                const {routeName} = navigation.state;
+
+                let iconName = '';
+                if (routeName === 'Timeline') iconName = compass;
+                else if (routeName === 'Explore') iconName = map;
+                else if (routeName === 'Camera') iconName = camera;
+                else if (routeName === 'Recommend') iconName = recommend;
+                else if (routeName === 'Profile') iconName = profile;
+
+                return <Image source={iconName} style={styles.imageStyle}/>;
+            },
+        }),
+        tabBarPosition: 'bottom',
+        tabBarOptions: {
+            activeTintColor: 'tomato',
+            inactiveTintColor: '#666666',
+            showLabel: true,
+            style: {
+                height: 60,
+                backgroundColor: '#ffffff',
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {width: 0, height: -2},
+                shadowOpacity: 0.2,
+                borderColor: '#fff',
+            }
+        },
+        animationEnabled: true,
+        swipeEnabled: true,
+    }
+);
+
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -72,68 +134,6 @@ export default class App extends React.Component {
     }
 
     render() {
-
-        const lengthBasis = Dimensions.get('window').width / 375;
-
-        const MyNavi = createBottomTabNavigator(
-            {
-                Timeline: {screen: TimeLineStack},
-                Explore: {screen: ExploreStack},
-                Camera: {screen: CameraStack},
-                Recommend: {screen: RecommendStack},
-                Profile: {screen: UserStack},
-            },
-            {
-                navigationOptions: ({navigation}) => ({
-                    tabBarIcon: ({focused, tintColor}) => {
-                        const styles = StyleSheet.create({
-                            imageStyle: {
-                                width: 30, height: 30, margin: 10,
-                                tintColor: tintColor
-                            },
-                            cameraStyle: {tintColor: '#fff'},
-                            cameraHolder: {
-                                flex: 1, flexDirection: 'row',
-                                width: lengthBasis * 65,
-                                height: lengthBasis * 40,
-                                backgroundColor: '#909090',
-                                borderRadius: lengthBasis * 45,
-                                alignItems: 'center', justifyContent: 'center',
-                                marginVertical: 8 / (Dimensions.get('window').width / 375)
-                            }
-                        });
-
-                        const {routeName} = navigation.state;
-
-                        let iconName = '';
-                        if (routeName === 'Timeline') iconName = compass;
-                        else if (routeName === 'Explore') iconName = map;
-                        else if (routeName === 'Camera') iconName = camera;
-                        else if (routeName === 'Recommend') iconName = recommend;
-                        else if (routeName === 'Profile') iconName = profile;
-
-                        return <Image source={iconName} style={styles.imageStyle}/>;
-                    },
-                }),
-                tabBarPosition: 'bottom',
-                tabBarOptions: {
-                    activeTintColor: 'tomato',
-                    inactiveTintColor: '#666666',
-                    showLabel: true,
-                    style: {
-                        height: 60,
-                        backgroundColor: '#ffffff',
-                        alignItems: 'center',
-                        shadowColor: '#000',
-                        shadowOffset: {width: 0, height: -2},
-                        shadowOpacity: 0.2,
-                        borderColor: '#fff',
-                    }
-                },
-                animationEnabled: true,
-                swipeEnabled: true,
-            }
-        );
 
         const {id, token, createAuth, removeAuth} = this.state;
 

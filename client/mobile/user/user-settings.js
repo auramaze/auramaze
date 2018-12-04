@@ -12,6 +12,7 @@ import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
 import {withAuth} from "../App";
+import {withNavigation} from 'react-navigation';
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -253,7 +254,10 @@ class UserSettings extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonLogOut]}
-                        onPress={this.props.auth.removeAuth}
+                        onPress={() => {
+                            this.props.auth.removeAuth();
+                            this.props.navigation.popToTop();
+                        }}
                         underlayColor='#fff'>
                         <Text style={[styles.textGeneral, styles.textWhite]}>Log Out</Text>
                     </TouchableOpacity>
@@ -264,4 +268,4 @@ class UserSettings extends React.Component {
     }
 }
 
-export default withAuth(UserSettings);
+export default withNavigation(withAuth(UserSettings));

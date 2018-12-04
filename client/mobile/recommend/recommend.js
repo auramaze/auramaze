@@ -28,8 +28,17 @@ class Recommend extends React.Component {
         this._onRefresh = this._onRefresh.bind(this);
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         this._loadRecommend().done();
+    }
+
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.auth.id;
+        const {id} = this.props.auth;
+
+        if (prevId !== id) {
+            this._loadRecommend().done();
+        }
     }
 
     _onRefresh = () => {
