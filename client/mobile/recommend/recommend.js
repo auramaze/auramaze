@@ -139,7 +139,7 @@ class Recommend extends React.Component {
                         <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
                                      text={this.props.auth.id ? 'Please view some arts to get recommendation.' : 'Please log in to view recommendation!'}
                                      onPress={() => {
-                                         this.props.navigation.push('User');
+                                         this.props.navigation.navigate('User');
                                      }}/>}}
                 </ScrollView>
             </View>
