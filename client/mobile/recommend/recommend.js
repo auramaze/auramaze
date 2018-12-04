@@ -14,6 +14,8 @@ import ArtCard from "../components/art-card";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
 import {withAuth} from "../App";
+import MessageCard from "../components/message-card";
+import {withNavigation} from "react-navigation";
 
 
 class Recommend extends React.Component {
@@ -21,7 +23,7 @@ class Recommend extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            recommendation: 'undefined', refreshing: false,
+            refreshing: false,
             recommendArt: OrderedSet([]), recommendNext: null
         };
         this._loadRecommend = this._loadRecommend.bind(this);
@@ -43,7 +45,7 @@ class Recommend extends React.Component {
 
     _onRefresh = () => {
         this.setState({
-            refreshing: true, recommendation: 'undefined'
+            refreshing: true
         });
         this._loadRecommend().then(() => {
             this.setState({refreshing: false});
@@ -92,7 +94,6 @@ class Recommend extends React.Component {
                 });
 
                 this.setState({
-                    recommendation: 'defined',
                     recommendNext: responseJsonRaw.next,
                     recommendArt: OrderedSet(artArray)
                 });
@@ -128,16 +129,22 @@ class Recommend extends React.Component {
                         <View style={{marginHorizontal: 5}}>
                             <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
                         </View> : null}
-                    {this.state.recommendation !== 'undefined' ? <View
-                        style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                        <FlatList data={this.state.recommendArt.toArray()}
-                                  renderItem={({item}) => item}
-                                  keyExtractor={(item, index) => index.toString()}/>
-                    </View> : null}
+                    {this.state.recommendArt.size ?
+                        <View
+                            style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                            <FlatList data={this.state.recommendArt.toArray()}
+                                      renderItem={({item}) => item}
+                                      keyExtractor={(item, index) => index.toString()}/>
+                        </View> :
+                        <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
+                                     text={this.props.auth.id ? 'Please view some arts to get recommendation.' : 'Please log in to view recommendation!'}
+                                     onPress={() => {
+                                         this.props.navigation.push('User');
+                                     }}/>}}
                 </ScrollView>
             </View>
         );
     }
 }
 
-export default withAuth(Recommend);
+export default withNavigation(withAuth(Recommend));

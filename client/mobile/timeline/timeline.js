@@ -205,9 +205,9 @@ class TimeLine extends React.Component {
                                   keyExtractor={(item, index) => index.toString()}/> :
                         <FlatList data={[
                             <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
-                                         text={'Please log in to view your timeline!'}
+                                         text={'Please log in to view timeline!'}
                                          onPress={() => {
-                                             this.props.navigation.push('Profile');
+                                             this.props.navigation.push('User');
                                          }}/>
                         ]}
                                   renderItem={({item}) => item}

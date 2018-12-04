@@ -8,6 +8,7 @@ import {
     Text, TouchableOpacity
 } from 'react-native';
 import {Input} from "react-native-elements";
+import {ImagePicker, Permissions} from 'expo';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
@@ -114,6 +115,26 @@ class UserSettings extends React.Component {
         }
     };
 
+    _pickImage = async () => {
+        const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        console.log(status);
+        if (status === 'granted') {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                base64: true,
+                quality: 0.5,
+            });
+
+            console.log(result);
+        }
+
+        // if (!result.cancelled) {
+        //     this.setState({ image: result.uri });
+        // }
+    };
+
     render() {
         const styles = StyleSheet.create({
             mainStruct: {
@@ -178,6 +199,15 @@ class UserSettings extends React.Component {
                     {this.state.editProfile &&
                     <View style={styles.mainStruct}>
                         <View style={styles.inputHolder}>
+                            <TouchableOpacity
+                                onPress={this._pickImage}
+                                underlayColor='#fff'>
+                                <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                                 source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
+                                                 style={{
+                                                     marginBottom: 10,
+                                                 }}/>
+                            </TouchableOpacity>
                             <Input containerStyle={styles.inputPofile}
                                    label='Name: '
                                    placeholder='Name'
