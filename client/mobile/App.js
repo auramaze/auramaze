@@ -118,7 +118,6 @@ export default class App extends React.Component {
         };
     }
 
-
     async componentDidMount() {
         await Font.loadAsync({
             'century-gothic-regular': require('./assets/fonts/century-gothic.ttf'),
@@ -134,7 +133,6 @@ export default class App extends React.Component {
     }
 
     render() {
-
         const {id, token, createAuth, removeAuth} = this.state;
 
         return (

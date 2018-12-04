@@ -21,7 +21,6 @@ const DismissKeyboard = ({children}) => (
 );
 
 class UserSettings extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -116,7 +115,6 @@ class UserSettings extends React.Component {
     };
 
     render() {
-
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
