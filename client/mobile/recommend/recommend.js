@@ -81,10 +81,10 @@ class Recommend extends React.Component {
                                 titleName: item.title.default,
                             })}>
                             <ArtCard
-                                artName={item.title.default}
-                                artistName={item.artist ? item.artist.default : ""}
-                                source={item.image && item.image.default ? item.image.default.url : null}
-                                compYear={item.completionYear ? item.completionYear : ""}
+                                artName={item.title && item.title.default}
+                                artistName={item.artist && item.artist.default}
+                                source={item.image && item.image.default && item.image.default.url}
+                                compYear={item.completionYear}
                                 id={item.id}
                                 fontLoaded={fontLoaded}
                             />

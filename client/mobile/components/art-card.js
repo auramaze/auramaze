@@ -10,7 +10,6 @@ class ArtCard extends React.Component {
     }
 
     render() {
-
         const styles = StyleSheet.create({
             cardStyle: {
                 flexDirection: 'column',
@@ -45,7 +44,6 @@ class ArtCard extends React.Component {
             </View>
         )
     }
-
 }
 
 export default ArtCard;
