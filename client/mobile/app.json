@@ -28,7 +28,8 @@
       "bundleIdentifier": "org.auramaze.auramaze"
     },
     "android": {
-      "package": "org.auramaze.auramaze"
+      "package": "org.auramaze.auramaze",
+      "versionCode": 2
     },
     "facebookScheme": "fb317848092335619",
     "facebookAppId": "317848092335619",
