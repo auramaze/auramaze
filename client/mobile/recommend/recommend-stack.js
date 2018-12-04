@@ -2,13 +2,13 @@ import React from 'react';
 import {createStackNavigator} from "react-navigation";
 import Art from "../art/art";
 import Artizen from "../artizen/artizen";
-import Recommendation from "./recommendation";
+import Recommend from "./recommend";
 import SearchPage from "../search/search-page";
 
-const RecommendationStack = createStackNavigator(
+const RecommendStack = createStackNavigator(
     {
-        Recommendation: {
-            screen: Recommendation,
+        Recommend: {
+            screen: Recommend,
             navigationOptions: {
                 header: null
             }
@@ -18,7 +18,7 @@ const RecommendationStack = createStackNavigator(
         SearchPage: {screen: SearchPage}
     },
     {
-        initialRouteName: 'Recommendation',
+        initialRouteName: 'Recommend',
         cardStyle: {
             backgroundColor: 'white'
         },
@@ -39,4 +39,4 @@ const RecommendationStack = createStackNavigator(
     }
 );
 
-export default RecommendationStack;
+export default RecommendStack;

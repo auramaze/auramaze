@@ -16,7 +16,7 @@ import config from "../config.json";
 import {withAuth} from "../App";
 
 
-class Recommendation extends React.Component {
+class Recommend extends React.Component {
 
     constructor(props) {
         super(props);
@@ -131,4 +131,4 @@ class Recommendation extends React.Component {
     }
 }
 
-export default withAuth(Recommendation);
+export default withAuth(Recommend);

@@ -5,11 +5,11 @@ import {AsyncStorage, Dimensions, Image, StyleSheet} from "react-native";
 import compass from './assets/icons/compass.png';
 import map from './assets/icons/map.png';
 import camera from './assets/icons/camera.png';
-import recommendation from './assets/icons/recommand.png';
+import recommend from './assets/icons/recommand.png';
 import profile from './assets/icons/profile.png';
 import CameraStack from "./camera/camera-stack";
 import TimeLineStack from "./timeline/timeline-stack";
-import RecommendationStack from "./recommendation/recommendation-stack";
+import RecommendStack from "./recommend/recommend-stack";
 import UserStack from "./user/user-stack";
 import ExploreStack from "./explore/explore-stack";
 import {parseAuth} from "./utils";
@@ -80,7 +80,7 @@ export default class App extends React.Component {
                 Timeline: {screen: TimeLineStack},
                 Explore: {screen: ExploreStack},
                 Camera: {screen: CameraStack},
-                Recommend: {screen: RecommendationStack},
+                Recommend: {screen: RecommendStack},
                 Profile: {screen: UserStack},
             },
             {
@@ -109,7 +109,7 @@ export default class App extends React.Component {
                         if (routeName === 'Timeline') iconName = compass;
                         else if (routeName === 'Explore') iconName = map;
                         else if (routeName === 'Camera') iconName = camera;
-                        else if (routeName === 'Recommend') iconName = recommendation;
+                        else if (routeName === 'Recommend') iconName = recommend;
                         else if (routeName === 'Profile') iconName = profile;
 
                         return <Image source={iconName} style={styles.imageStyle}/>;
