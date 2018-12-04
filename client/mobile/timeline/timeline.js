@@ -207,7 +207,7 @@ class TimeLine extends React.Component {
                             <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
                                          text={'Please log in to view timeline!'}
                                          onPress={() => {
-                                             this.props.navigation.push('User');
+                                             this.props.navigation.navigate('User');
                                          }}/>
                         ]}
                                   renderItem={({item}) => item}
