@@ -10,11 +10,15 @@ import {
     TouchableOpacity
 } from 'react-native';
 import {Constants} from 'expo';
+import {withNavigation} from 'react-navigation';
 import TopSearchBar from "../components/top-search-bar";
 import ActivityCard from "../components/activity-card";
 import config from "../config.json";
 import {OrderedSet} from "../utils";
 import {withAuth} from "../App";
+import MessageCard from "../components/message-card";
+import TitleBar from "../components/title-bar";
+import ArtizenCard from "../components/artizen-card";
 
 
 class TimeLine extends React.Component {
@@ -137,7 +141,7 @@ class TimeLine extends React.Component {
                     <TopSearchBar navigation={this.props.navigation}
                                   fontLoaded={this.props.screenProps.fontLoaded}/>
 
-                    {this.state.timeline.size ?
+                    {this.props.auth.id ? this.state.timeline.size ?
                         <FlatList data={this.state.timeline.toArray().concat([{}])}
                                   renderItem={({item}) => {
                                       return (
@@ -188,11 +192,33 @@ class TimeLine extends React.Component {
                                       this.onEndReachedCalledDuringMomentum = false;
                                   }}
                                   keyExtractor={(item, index) => index.toString()}/> :
-                        <View style={{height: Dimensions.get('window').height}}/>}
+                        <FlatList data={[
+                            <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
+                                         text={'Please follow arts/artizens to get their latest activities!'}
+                                         onPress={() => {
+                                             this.props.navigation.push('Explore');
+                                         }}/>
+                        ]}
+                                  renderItem={({item}) => item}
+                                  onRefresh={this.refreshTimelineHandler}
+                                  refreshing={this.state.refreshing}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        <FlatList data={[
+                            <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
+                                         text={'Please log in to view your timeline!'}
+                                         onPress={() => {
+                                             this.props.navigation.push('Profile');
+                                         }}/>
+                        ]}
+                                  renderItem={({item}) => item}
+                                  onRefresh={this.refreshTimelineHandler}
+                                  refreshing={this.state.refreshing}
+                                  keyExtractor={(item, index) => index.toString()}/>
+                    }
                 </View>
             </View>
         );
     }
 }
 
-export default withAuth(TimeLine);
+export default withNavigation(withAuth(TimeLine));

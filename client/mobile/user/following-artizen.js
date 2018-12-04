@@ -4,6 +4,8 @@ import {OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import config from "../config";
 import {withAuth} from "../App";
+import MessageCard from "../components/message-card";
+import {Constants} from "expo";
 
 
 class FollowingArtizen extends React.Component {
@@ -88,8 +90,11 @@ class FollowingArtizen extends React.Component {
     render() {
 
         const styles = StyleSheet.create({
+            mainStruct: {
+                flex: 1, alignItems: 'center',
+            },
             mainContext: {
-                paddingHorizontal: 15, justifyContent: 'center',
+               justifyContent: 'center',
             },
             headerText: {
                 fontSize: 20,
@@ -101,38 +106,50 @@ class FollowingArtizen extends React.Component {
                 borderBottomColor: '#666666',
                 borderBottomWidth: 1,
                 padding: 5,
-            },
-            container: {
-                paddingVertical: 5,
             }
         });
 
         let fontLoadStatus = this.props.fontLoaded;
 
         return (
-            <View style={styles.mainContext}>
-                <FlatList style={{paddingVertical: 20}}
-                          data={this.state.searchArtizen.toArray().concat([{}])}
-                          renderItem={({item}) => item.id ? (
-                              <TouchableOpacity key={item.id}
-                                                onPress={() => this.props.navigation.navigate('Artizen', {
-                                                    artizenId: item.artizen_id,
-                                                    titleName: item.name.default,
-                                                })}>
-                                  <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                               source={item.avatar ? item.avatar : null}
-                                               id={item.id}
-                                               topMargin={10}
-                                               fontLoaded={fontLoadStatus}/>
-                              </TouchableOpacity>) : <View style={{height: 100}}/>}
-                          onRefresh={this.refreshArtizenHandler}
-                          refreshing={this.state.refreshing}
-                          onEndReached={this.loadMoreArtizenHandler}
-                          onEndReachedThreshold={0}
-                          onMomentumScrollBegin={() => {
-                              this.onArtizenEndReachedCalledDuringMomentum = false;
-                          }}
-                          keyExtractor={(item, index) => index.toString()}/>
+            <View style={styles.mainStruct}>
+                <View style={styles.mainContext}>
+                    {this.state.searchArtizen.size ?
+                        <FlatList style={{paddingVertical: 20}}
+                                  data={this.state.searchArtizen.toArray().concat([{}])}
+                                  renderItem={({item}) => item.id ? (
+                                      <TouchableOpacity key={item.id}
+                                                        onPress={() => this.props.navigation.navigate('Artizen', {
+                                                            artizenId: item.artizen_id,
+                                                            titleName: item.name.default,
+                                                        })}>
+                                          <ArtizenCard name={item.name.default ? item.name.default : ""}
+                                                       source={item.avatar ? item.avatar : null}
+                                                       id={item.id}
+                                                       topMargin={10}
+                                                       fontLoaded={fontLoadStatus}/>
+                                      </TouchableOpacity>) : <View style={{height: 100}}/>}
+                                  onRefresh={this.refreshArtizenHandler}
+                                  refreshing={this.state.refreshing}
+                                  onEndReached={this.loadMoreArtizenHandler}
+                                  onEndReachedThreshold={0}
+                                  onMomentumScrollBegin={() => {
+                                      this.onArtizenEndReachedCalledDuringMomentum = false;
+                                  }}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        <FlatList data={[
+                            <MessageCard fontLoaded={fontLoadStatus}
+                                         text={'You haven\'t followed any artizen yet.'}
+                                         onPress={() => {
+                                             this.props.navigation.push('Explore');
+                                         }}/>
+                        ]}
+                                  renderItem={({item}) => item}
+                                  onRefresh={this.refreshArtizenHandler}
+                                  refreshing={this.state.refreshing}
+                                  keyExtractor={(item, index) => index.toString()}/>
+                    }
+                </View>
             </View>
         );
     }

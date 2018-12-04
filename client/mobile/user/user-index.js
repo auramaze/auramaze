@@ -223,7 +223,7 @@ class UserIndex extends React.Component {
                                 textType="review"
                                 itemId={item.artizen_id}
                                 textId={item.id}/>)),
-                    <View style={{height: 100}}/>]}
+                    <View style={{height: 200}}/>]}
                           renderItem={({item}) => item}
                           onRefresh={this.refreshTimelineHandler}
                           refreshing={this.state.refreshing}

@@ -4,6 +4,8 @@ import {OrderedSet} from '../utils';
 import ArtCard from "../components/art-card";
 import config from "../config";
 import {withAuth} from "../App";
+import MessageCard from "../components/message-card";
+import {Constants} from "expo";
 
 
 class FollowingArt extends React.Component {
@@ -88,8 +90,11 @@ class FollowingArt extends React.Component {
     render() {
 
         const styles = StyleSheet.create({
+            mainStruct: {
+                flex: 1, alignItems: 'center',
+            },
             mainContext: {
-                paddingHorizontal: 15, justifyContent: 'center',
+                justifyContent: 'center',
             },
             headerText: {
                 fontSize: 20,
@@ -101,40 +106,53 @@ class FollowingArt extends React.Component {
                 borderBottomColor: '#666666',
                 borderBottomWidth: 1,
                 padding: 5,
-            },
-            container: {
-                paddingVertical: 5,
             }
         });
 
         let fontLoadStatus = this.props.fontLoaded;
 
         return (
-            <View style={styles.mainContext}>
-                <FlatList style={{paddingVertical: 20}}
-                          data={this.state.searchArt.toArray().concat([{}])}
-                          renderItem={({item}) => item.id ? (
-                              <TouchableOpacity key={item.id}
-                                                onPress={() => this.props.navigation.navigate('Art', {
-                                                    artId: item.art_id,
-                                                    titleName: item.title.default,
-                                                })}>
-                                  <ArtCard artName={item.title.default}
-                                           artistName={item.artist ? item.artist.default : ""}
-                                           source={item.image && item.image.default ? item.image.default.url : null}
-                                           compYear={item.completionYear ? item.completionYear : ""}
-                                           id={item.id}
-                                           fontLoaded={fontLoadStatus}
-                                  />
-                              </TouchableOpacity>) : <View style={{height: 100}}/>}
-                          onRefresh={this.refreshArtHandler}
-                          refreshing={this.state.refreshing}
-                          onEndReached={this.loadMoreArtHandler}
-                          onEndReachedThreshold={0}
-                          onMomentumScrollBegin={() => {
-                              this.onArtEndReachedCalledDuringMomentum = false;
-                          }}
-                          keyExtractor={(item, index) => index.toString()}/>
+            <View style={styles.mainStruct}>
+
+                <View style={styles.mainContext}>
+                    {this.state.searchArt.size ?
+                        <FlatList style={{paddingVertical: 20}}
+                                  data={this.state.searchArt.toArray().concat([{}])}
+                                  renderItem={({item}) => item.id ? (
+                                      <TouchableOpacity key={item.id}
+                                                        onPress={() => this.props.navigation.navigate('Art', {
+                                                            artId: item.art_id,
+                                                            titleName: item.title.default,
+                                                        })}>
+                                          <ArtCard artName={item.title.default}
+                                                   artistName={item.artist ? item.artist.default : ""}
+                                                   source={item.image && item.image.default ? item.image.default.url : null}
+                                                   compYear={item.completionYear ? item.completionYear : ""}
+                                                   id={item.id}
+                                                   fontLoaded={fontLoadStatus}
+                                          />
+                                      </TouchableOpacity>) : <View style={{height: 100}}/>}
+                                  onRefresh={this.refreshArtHandler}
+                                  refreshing={this.state.refreshing}
+                                  onEndReached={this.loadMoreArtHandler}
+                                  onEndReachedThreshold={0}
+                                  onMomentumScrollBegin={() => {
+                                      this.onArtEndReachedCalledDuringMomentum = false;
+                                  }}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        <FlatList data={[
+                            <MessageCard fontLoaded={fontLoadStatus}
+                                         text={'You haven\'t followed any art yet.'}
+                                         onPress={() => {
+                                             this.props.navigation.push('Explore');
+                                         }}/>
+                        ]}
+                                  renderItem={({item}) => item}
+                                  onRefresh={this.refreshArtHandler}
+                                  refreshing={this.state.refreshing}
+                                  keyExtractor={(item, index) => index.toString()}/>
+                    }
+                </View>
             </View>
         );
     }

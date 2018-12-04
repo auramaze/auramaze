@@ -184,7 +184,7 @@ class UserSettings extends React.Component {
                                    value={this.state.name && this.state.name.default}
                                    inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
                                    onChangeText={(name) => {
-                                       this.setState(prevState => ({name: Object.assign(prevState.name, {default: name})}));
+                                       this.setState(prevState => ({name: Object.assign(prevState.name || {}, {default: name})}));
                                    }}/>
                             <Input containerStyle={styles.inputPofile}
                                    label='Username: '

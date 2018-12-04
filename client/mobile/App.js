@@ -87,6 +87,7 @@ const MyNavi = createBottomTabNavigator(
         },
         animationEnabled: true,
         swipeEnabled: true,
+        initialRouteName: 'Profile'
     }
 );
 

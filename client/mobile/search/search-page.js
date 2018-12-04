@@ -5,6 +5,8 @@ import Art from "../art/art";
 import {OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import ArtCard from "../components/art-card";
+import MessageCard from "../components/message-card";
+import {withNavigation} from "react-navigation";
 
 
 class SearchPage extends React.Component {
@@ -125,16 +127,21 @@ class SearchPage extends React.Component {
 
         return (
             <View style={styles.mainContext}>
-                <FlatList data={dataToRender}
-                          renderItem={({item}) => (item)}
-                          onEndReached={this.loadMoreArtHandler}
-                          onMomentumScrollBegin={() => {
-                              this.onArtEndReachedCalledDuringMomentum = false;
-                          }}
-                          keyExtractor={(item, index) => index.toString()}/>
+                {dataToRender.length ? <FlatList data={dataToRender}
+                                                 renderItem={({item}) => (item)}
+                                                 onEndReached={this.loadMoreArtHandler}
+                                                 onMomentumScrollBegin={() => {
+                                                     this.onArtEndReachedCalledDuringMomentum = false;
+                                                 }}
+                                                 keyExtractor={(item, index) => index.toString()}/> :
+                    <MessageCard fontLoaded={fontLoadStatus}
+                                 text={'No search result.\nPlease try other keywords.'}
+                                 onPress={() => {
+                                     this.props.navigation.pop();
+                                 }}/>}
             </View>
         );
     }
 }
 
-export default SearchPage;
+export default withNavigation(SearchPage);

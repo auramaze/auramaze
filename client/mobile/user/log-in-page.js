@@ -162,26 +162,6 @@ class LogInPage extends React.Component {
                     <Text style={[styles.textGenreal, styles.textWhite]}>Log in with AuraMaze account</Text>
                 </TouchableOpacity>
 
-                <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
-                    <Text style={styles.textWithDivider}>OR</Text>
-                </Hr>
-
-                <TouchableOpacity
-                    style={[styles.buttonGeneral, styles.buttonGoogle]}
-                    onPress={this._logGoogle}
-                    underlayColor='#fff'>
-                    <AutoHeightImage width={20} source={google}/>
-                    <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={[styles.buttonGeneral, styles.buttonFacebook]}
-                    onPress={this._logFacebook}
-                    underlayColor='#fff'>
-                    <AutoHeightImage width={20} source={facebook}/>
-                    <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>
-                </TouchableOpacity>
-
             </View>
         );
     }
@@ -195,7 +175,7 @@ const styles = StyleSheet.create({
     inputHolder: {
         width: Dimensions.get('window').width,
         alignItems: 'center', justifyContent: 'center',
-        marginVertical: 20.5
+        marginVertical: 20
     },
     textWithDivider: {
         color: '#666666',
