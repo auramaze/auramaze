@@ -89,7 +89,7 @@ class LogInPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setLogInData(authJson);
+                    await this._setLogInData(authJson);
                 } else {
                     throw new Error('Facebook auth fail.');
                 }
@@ -125,7 +125,7 @@ class LogInPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setLogInData(authJson);
+                    await this._setLogInData(authJson);
                 } else {
                     throw new Error('Google auth fail.');
                 }

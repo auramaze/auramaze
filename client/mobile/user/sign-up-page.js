@@ -89,7 +89,7 @@ class SignUpPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setSignUpData(authJson).done();
+                    await this._setSignUpData(authJson);
                 } else {
                     throw new Error('Facebook auth fail.');
                 }
@@ -125,7 +125,7 @@ class SignUpPage extends React.Component {
                 });
                 if (auth.ok) {
                     const authJson = await auth.json();
-                    this._setSignUpData(authJson).done();
+                    await this._setSignUpData(authJson);
                 } else {
                     throw new Error('Google auth fail.');
                 }
