@@ -91,15 +91,15 @@ class ReviewCard extends React.Component {
                                     Expo.Speech.stop();
                                     this.setState({isSpeaking: false});
                                 } else {
-                                    Expo.Speech.speak(removeParentheses(this.props.content.blocks.map(block => block.text).join('\n')), {
-                                        language: this.props.language,
-                                        onDone: () => {
-                                            this.setState({isSpeaking: false});
-                                        },
-                                        onStopped: () => {
-                                            this.setState({isSpeaking: false});
-                                        }
-                                    });
+                                    Expo.Speech.speak(removeParentheses(this.props.content.blocks.map(block => block.text).join('\n')),
+                                        Object.assign({
+                                            onDone: () => {
+                                                this.setState({isSpeaking: false});
+                                            },
+                                            onStopped: () => {
+                                                this.setState({isSpeaking: false});
+                                            }
+                                        }, this.props.language === 'zh' ? {language: 'zh'} : null));
                                     this.setState({isSpeaking: true});
                                 }
                             });
