@@ -4,6 +4,7 @@ const router = express.Router();
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 const common = require('./common');
 const rds = common.rds;
+const s3 = common.s3;
 const {auth} = require('./auth.config');
 
 /* GET artizen data. */
@@ -214,17 +215,56 @@ router.post('/:id', oneOf([
         id = parseInt(id);
     }
 
-    if (req.body.old_password) {
-        rds.query(`SELECT salt, hash FROM artizen ${condition}`, [id], (err, result, fields) => {
+    if (req.body.avatar_image) {
+        const buf = new Buffer(req.body.avatar_image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+        const path = `avatars/${req.params.id}.jpg`;
+        var data = {
+            Key: path,
+            Body: buf,
+            ContentEncoding: 'base64',
+            ContentType: 'image/jpeg',
+            ACL: 'public-read'
+        };
+        s3.putObject(data, (err, data) => {
             /* istanbul ignore if */
             if (err) {
                 next(err);
             } else {
-                const {salt, hash} = result[0];
-                if (!common.checkPassword(req.body.old_password, salt, hash)) {
-                    res.status(400).json({
-                        code: 'WRONG_OLD_PASSWORD',
-                        message: `Wrong old password: ${req.body.old_password}`
+                req.body.avatar = `${process.env.AWS_S3_HOST}/${process.env.AWS_S3_BUCKET}/${path}`;
+                if (req.body.old_password) {
+                    rds.query(`SELECT salt, hash FROM artizen ${condition}`, [id], (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            const {salt, hash} = result[0];
+                            if (!common.checkPassword(req.body.old_password, salt, hash)) {
+                                res.status(400).json({
+                                    code: 'WRONG_OLD_PASSWORD',
+                                    message: `Wrong old password: ${req.body.old_password}`
+                                });
+                            } else {
+                                common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+                                    /* istanbul ignore if */
+                                    if (err) {
+                                        /* istanbul ignore else */
+                                        if (err.code === 'ER_DUP_ENTRY') {
+                                            const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
+                                            res.status(400).json({
+                                                code: `${key.toUpperCase()}_EXIST`,
+                                                message: `${key} already exists: ${req.body[key]}`
+                                            });
+                                        } else {
+                                            next(err);
+                                        }
+                                    } else {
+                                        res.json({
+                                            message: `Update artizen success: ${req.params.id}`
+                                        });
+                                    }
+                                });
+                            }
+                        }
                     });
                 } else {
                     common.updateItem('artizen', req.params.id, req.body, (err, data) => {
@@ -250,25 +290,62 @@ router.post('/:id', oneOf([
             }
         });
     } else {
-        common.updateItem('artizen', req.params.id, req.body, (err, data) => {
-            /* istanbul ignore if */
-            if (err) {
-                /* istanbul ignore else */
-                if (err.code === 'ER_DUP_ENTRY') {
-                    const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
-                    res.status(400).json({
-                        code: `${key.toUpperCase()}_EXIST`,
-                        message: `${key} already exists: ${req.body[key]}`
-                    });
-                } else {
+        if (req.body.old_password) {
+            rds.query(`SELECT salt, hash FROM artizen ${condition}`, [id], (err, result, fields) => {
+                /* istanbul ignore if */
+                if (err) {
                     next(err);
+                } else {
+                    const {salt, hash} = result[0];
+                    if (!common.checkPassword(req.body.old_password, salt, hash)) {
+                        res.status(400).json({
+                            code: 'WRONG_OLD_PASSWORD',
+                            message: `Wrong old password: ${req.body.old_password}`
+                        });
+                    } else {
+                        common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                /* istanbul ignore else */
+                                if (err.code === 'ER_DUP_ENTRY') {
+                                    const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
+                                    res.status(400).json({
+                                        code: `${key.toUpperCase()}_EXIST`,
+                                        message: `${key} already exists: ${req.body[key]}`
+                                    });
+                                } else {
+                                    next(err);
+                                }
+                            } else {
+                                res.json({
+                                    message: `Update artizen success: ${req.params.id}`
+                                });
+                            }
+                        });
+                    }
                 }
-            } else {
-                res.json({
-                    message: `Update artizen success: ${req.params.id}`
-                });
-            }
-        });
+            });
+        } else {
+            common.updateItem('artizen', req.params.id, req.body, (err, data) => {
+                /* istanbul ignore if */
+                if (err) {
+                    /* istanbul ignore else */
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        const key = err.sqlMessage.match(/for key '(\w+)'$/i)[1];
+                        res.status(400).json({
+                            code: `${key.toUpperCase()}_EXIST`,
+                            message: `${key} already exists: ${req.body[key]}`
+                        });
+                    } else {
+                        next(err);
+                    }
+                } else {
+                    res.json({
+                        message: `Update artizen success: ${req.params.id}`
+                    });
+                }
+            });
+        }
     }
 });
 
