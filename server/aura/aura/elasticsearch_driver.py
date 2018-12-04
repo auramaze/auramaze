@@ -129,7 +129,13 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
             transformed_records.append(transformed_record)
 
-        return self.search_multiple_records(transformed_records)
+        res = self.search_multiple_records_single_query(transformed_records)
+        for record in res:
+            for field in record['image']:
+                new_dict = {key: record['image'][field][key] for key in record['image'][field] if
+                            not key.startswith('simple_word') and key != 'signature'}
+                record['image'][field] = new_dict
+        return res
 
     def search_single_record(self, rec, pre_filter=None):
         path = rec.pop('path')
@@ -153,9 +159,9 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         # print('send-{}'.format(time.time()))
         try:
             res = self.es.search(index=self.index,
-                             doc_type=self.doc_type,
-                             body=body,
-                             size=self.size)['hits']['hits']
+                                 doc_type=self.doc_type,
+                                 body=body,
+                                 size=self.size)['hits']['hits']
         except KeyError:
             res = []
         # print('receive-{}'.format(time.time()))
@@ -208,6 +214,63 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
         for response, signature in zip(responses, signatures):
             try:
                 res = response['hits']['hits']
+            except KeyError:
+                res = []
+            sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
+
+            if sigs.size == 0:
+                continue
+
+            dists = normalized_distance(sigs, np.array(signature))
+
+            formatted_res = [{**x['_source'], '_score': x['_score']}
+                             for x in res]
+
+            for i, row in enumerate(formatted_res):
+                row['dist'] = dists[i]
+            formatted_res = filter(lambda y: y['dist'] < self.distance_cutoff, formatted_res)
+
+            result.extend(formatted_res)
+
+        ids = set()
+        result = sorted(result, key=itemgetter('dist'))
+        unique = []
+        for item in result:
+            if 'id' in item and item['id'] not in ids:
+                unique.append(item)
+                ids.add(item['id'])
+
+        return unique
+
+    def search_multiple_records_single_query(self, rec_arr, pre_filter=None):
+        signatures = []
+        multi_should = []
+        for rec in rec_arr:
+            path = rec.pop('path')
+            signatures.append(rec.pop('signature'))
+            if 'metadata' in rec:
+                rec.pop('metadata')
+
+            # build the 'should' list
+            should = [{'term': {'image.default.' + word: rec[word]}} for word in rec]
+            multi_should = multi_should + should
+        body = {
+            'query': {
+                'bool': {'should': multi_should}
+            },
+            '_source': {'excludes': ['simple_word_*']},
+            'size': 100
+        }
+        if pre_filter is not None:
+            body['query']['bool']['filter'] = pre_filter
+
+        responses = self.es.search(index=self.index, body=body)
+
+        result = []
+
+        for signature in signatures:
+            try:
+                res = responses['hits']['hits']
             except KeyError:
                 res = []
             sigs = np.array([x['_source']['image']['default']['signature'] for x in res])
