@@ -115,25 +115,40 @@ class UserSettings extends React.Component {
         }
     };
 
-    _pickImage = async () => {
-        const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        console.log(status);
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [1, 1],
-                base64: true,
-                quality: 0.5,
-            });
-
-            console.log(result);
-        }
-
-        // if (!result.cancelled) {
-        //     this.setState({ image: result.uri });
-        // }
-    };
+    // _pickImage = async () => {
+    //     const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    //     console.log(status);
+    //     if (status === 'granted') {
+    //         let result = await ImagePicker.launchImageLibraryAsync({
+    //             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //             allowsEditing: true,
+    //             aspect: [1, 1],
+    //             base64: true,
+    //             quality: 0.1,
+    //         });
+    //
+    //         const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({avatar_image: result.base64})
+    //         });
+    //
+    //         console.log(result.base64.length);
+    //
+    //         if (response.ok) {
+    //             alert('Update avatar success!');
+    //         } else {
+    //             alert('Unable to update avatar!');
+    //         }
+    //     }
+    //
+    //     // if (!result.cancelled) {
+    //     //     this.setState({ image: result.uri });
+    //     // }
+    // };
 
     render() {
         const styles = StyleSheet.create({
@@ -199,15 +214,15 @@ class UserSettings extends React.Component {
                     {this.state.editProfile &&
                     <View style={styles.mainStruct}>
                         <View style={styles.inputHolder}>
-                            <TouchableOpacity
-                                onPress={this._pickImage}
-                                underlayColor='#fff'>
-                                <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                                 source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
-                                                 style={{
-                                                     marginBottom: 10,
-                                                 }}/>
-                            </TouchableOpacity>
+                            {/*<TouchableOpacity*/}
+                                {/*onPress={this._pickImage}*/}
+                                {/*underlayColor='#fff'>*/}
+                                {/*<AutoHeightImage width={Dimensions.get('window').width * 2 / 7}*/}
+                                                 {/*source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}*/}
+                                                 {/*style={{*/}
+                                                     {/*marginBottom: 10,*/}
+                                                 {/*}}/>*/}
+                            {/*</TouchableOpacity>*/}
                             <Input containerStyle={styles.inputPofile}
                                    label='Name: '
                                    placeholder='Name'
