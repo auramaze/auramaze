@@ -109,7 +109,10 @@ class Recommend extends React.Component {
             mainStruct: {
                 flex: 1, alignItems: 'center',
                 paddingTop: Constants.statusBarHeight,
-            }
+            },
+            mainContext: {
+                paddingHorizontal: 15, justifyContent: 'center',
+            },
         });
 
         return (
@@ -117,31 +120,34 @@ class Recommend extends React.Component {
 
                 <TopSearchBar navigation={this.props.navigation}
                               fontLoaded={this.props.screenProps.fontLoaded}/>
+                <View style={styles.mainContext}>
 
-                <ScrollView keyboardDismissMode='on-drag'
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.refreshing}
-                                    onRefresh={this._onRefresh}
-                                />
-                            }>
-                    {this.state.recommendArt ?
-                        <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Recommend Artworks"} fontLoaded={this.props.screenProps.fontLoaded}/>
-                        </View> : null}
-                    {this.state.recommendArt.size ?
-                        <View
-                            style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
-                            <FlatList data={this.state.recommendArt.toArray()}
-                                      renderItem={({item}) => item}
-                                      keyExtractor={(item, index) => index.toString()}/>
-                        </View> :
-                        <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
-                                     text={this.props.auth.id ? 'Please view some arts to get recommendation.' : 'Please log in to view recommendation!'}
-                                     onPress={() => {
-                                         this.props.navigation.navigate('User');
-                                     }}/>}}
-                </ScrollView>
+                    <ScrollView keyboardDismissMode='on-drag'
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state.refreshing}
+                                        onRefresh={this._onRefresh}
+                                    />
+                                }>
+                        {this.state.recommendArt ?
+                            <View style={{marginHorizontal: 5}}>
+                                <TitleBar titleText={"Recommend Artworks"}
+                                          fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </View> : null}
+                        {this.state.recommendArt.size ?
+                            <View
+                                style={{flex: 1, alignItems: 'center', paddingBottom: 60}}>
+                                <FlatList data={this.state.recommendArt.toArray()}
+                                          renderItem={({item}) => item}
+                                          keyExtractor={(item, index) => index.toString()}/>
+                            </View> :
+                            <MessageCard fontLoaded={this.props.screenProps.fontLoaded}
+                                         text={this.props.auth.id ? 'Please view some arts to get recommendation.' : 'Please log in to view recommendation!'}
+                                         onPress={() => {
+                                             this.props.navigation.navigate('User');
+                                         }}/>}}
+                    </ScrollView>
+                </View>
             </View>
         );
     }

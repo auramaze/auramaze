@@ -64,6 +64,9 @@ class TitleBar extends React.Component {
 
     render() {
         const styles = StyleSheet.create({
+            mainStruct: {
+                width: Dimensions.get('window').width - 15,
+            },
             headerText: {
                 fontSize: 20,
                 width: 300,
@@ -107,7 +110,7 @@ class TitleBar extends React.Component {
         });
 
         return (
-            <View>
+            <View style={styles.mainStruct}>
                 <View style={styles.bottomLine}>
                     <Text style={styles.headerText}>
                         {this.props.titleText}
