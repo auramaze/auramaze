@@ -7,6 +7,7 @@ import headphone from "../assets/icons/headphones-alt-solid.png"
 import headphone_gif from "../assets/icons/headphones-alt-solid.gif"
 import AutoHeightImage from 'react-native-auto-height-image';
 import noImage from "../assets/icons/no-image-artizen.png";
+import {removeParentheses} from "../utils";
 
 class ReviewCard extends React.Component {
 
@@ -83,14 +84,23 @@ class ReviewCard extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
-                    {this.props.isIntro && this.props.content ?
+                    {this.props.isIntro && this.props.content && ['en', 'zh'].includes(this.props.language) ?
                         <TouchableOpacity onPress={() => {
                             Expo.Speech.isSpeakingAsync().then((result) => {
-                                this.setState(previousState => ({isSpeaking: !previousState.isSpeaking}));
                                 if (result) {
                                     Expo.Speech.stop();
+                                    this.setState({isSpeaking: false});
                                 } else {
-                                    Expo.Speech.speak(this.props.content.blocks.map(block => block.text).join('\n'));
+                                    Expo.Speech.speak(removeParentheses(this.props.content.blocks.map(block => block.text).join('\n')), {
+                                        language: this.props.language,
+                                        onDone: () => {
+                                            this.setState({isSpeaking: false});
+                                        },
+                                        onStopped: () => {
+                                            this.setState({isSpeaking: false});
+                                        }
+                                    });
+                                    this.setState({isSpeaking: true});
                                 }
                             });
                         }}>

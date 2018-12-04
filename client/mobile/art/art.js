@@ -191,6 +191,7 @@ class Art extends React.Component {
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         content={item.content}
+                                        language={item.language}
                                         itemId={this.state.artId} itemType={'art'}
                                         textId={item.id} textType={'introduction'}
                                         isIntro={true} up={item.up} down={item.down}
@@ -224,6 +225,7 @@ class Art extends React.Component {
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         content={item.content}
+                                        language={item.language}
                                         itemId={this.state.artId} itemType={'art'}
                                         textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}

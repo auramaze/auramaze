@@ -121,6 +121,8 @@ class UserIndex extends React.Component {
         const styles = StyleSheet.create({
             backPage: {
                 backgroundColor: '#cdcdcd',
+                marginBottom: 40,
+                height: Dimensions.get('window').height
             },
             profileHeader: {
                 flex: 1, flexDirection: 'column',

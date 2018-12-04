@@ -222,6 +222,7 @@ class Artizen extends React.Component {
                                         name={item.author_name ? item.author_name.default : ""}
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
+                                        language={item.language}
                                         content={item.content}
                                         itemId={this.state.artizenId} itemType={'artizen'}
                                         textId={item.id} textType={'introduction'}
@@ -413,6 +414,7 @@ class Artizen extends React.Component {
                                         authorId={item.author_id}
                                         source={item.author_avatar ? item.author_avatar : ""}
                                         content={item.content}
+                                        language={item.language}
                                         itemId={this.state.artizenId} itemType={'artizen'}
                                         textId={item.id} textType={'review'}
                                         isIntro={false} up={item.up} down={item.down}

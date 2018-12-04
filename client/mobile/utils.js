@@ -46,6 +46,10 @@ export function parseAuth(token) {
     return result;
 }
 
+export function removeParentheses(text) {
+    return text.replace(/\[(?:[^\]\[]|\[[^\]\[]*\])*\]/g, '').replace(/\((?:[^)(]|\([^)(]*\))*\)/g, '').replace(/【(?:[^】【]|（[^】【]*】)*】/g, '').replace(/（(?:[^）（]|（[^）（]*）)*）/g, '')
+}
+
 export class OrderedSet {
     constructor(items = []) {
         this.ids = new Set();
