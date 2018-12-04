@@ -252,8 +252,8 @@ class UserSettings extends React.Component {
 
                     <TouchableOpacity
                         style={[styles.buttonGeneral, styles.buttonLogOut]}
-                        onPress={() => {
-                            this.props.auth.removeAuth();
+                        onPress={async () => {
+                            await this.props.auth.removeAuth();
                             this.props.navigation.popToTop();
                         }}
                         underlayColor='#fff'>

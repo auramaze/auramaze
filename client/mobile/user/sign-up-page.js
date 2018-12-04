@@ -107,6 +107,7 @@ class SignUpPage extends React.Component {
                 androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
                 iosClientId: config.GOOGLE_IOS_CLIENT_ID,
                 scopes: ['profile', 'email'],
+                behavior: 'web'
             });
 
             if (result.type === 'success') {
