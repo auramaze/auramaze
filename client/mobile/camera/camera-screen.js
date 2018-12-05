@@ -201,7 +201,7 @@ class CameraScreen extends React.Component {
                 <View style={{flex: 1}}>
                     <Camera
                         style={{
-                            width: Platform.OS === 'ios' ? this.state.windowWidth : this.state.windowHeight * 3 / 4,
+                            width: this.state.windowWidth,
                             height: this.state.windowHeight
                         }}
                         type={this.state.type}
