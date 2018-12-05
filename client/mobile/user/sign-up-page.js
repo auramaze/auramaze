@@ -36,32 +36,28 @@ class SignUpPage extends React.Component {
         return true;
     }
 
-    _createAuraMaze() {
+    _createAuraMaze = async () => {
         if (!this.checkValid()) return;
-        let bodyObject = JSON.stringify({
+        const bodyObject = JSON.stringify({
             name: {default: this.state.name},
             email: this.state.email,
             password: this.state.password
         });
-
-        fetch(`${config.API_ENDPOINT}/auth/signup`, {
+        const response = await fetch(`${config.API_ENDPOINT}/auth/signup`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 "Content-Type": "application/json"
             },
             body: bodyObject
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                Promise.reject(response.json());
-                throw new Error('Create account fail.');
-            }
-        }).then((responseJson) => this._setSignUpData(responseJson)
-        ).catch(function (error) {
-            alert('There has been a problem with your fetch operation: ' + error.message);
         });
+        console.log(response);
+        if (response.ok) {
+            const responseJson = await response.json();
+            await this._setSignUpData(responseJson);
+        } else {
+            alert('Create account fail.');
+        }
     };
 
     _logFacebook = async () => {
@@ -112,7 +108,7 @@ class SignUpPage extends React.Component {
 
             if (result.type === 'success') {
                 const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-                    headers: { Authorization: `Bearer ${result.accessToken}`},
+                    headers: {Authorization: `Bearer ${result.accessToken}`},
                 });
                 const profile = await response.json();
                 const auth = await fetch(`${config.API_ENDPOINT}/auth/google/mobile`, {

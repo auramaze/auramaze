@@ -37,31 +37,27 @@ class LogInPage extends React.Component {
         return true;
     }
 
-    _logAuraMaze() {
+    _logAuraMaze = async () => {
         if (!this.checkValid()) return;
-        this.setState(previousState => ({auramazeProcessing: true}));
-        let bodyObject = JSON.stringify({
+        const bodyObject = JSON.stringify({
             id: this.state.id,
             password: this.state.password
         });
-        fetch(`${config.API_ENDPOINT}/auth/login`, {
+        const response = await fetch(`${config.API_ENDPOINT}/auth/login`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 "Content-Type": "application/json"
             },
             body: bodyObject
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Log in fail.');
-            }
-        }).then((responseJson) => this._setLogInData(responseJson)
-        ).catch(function (error) {
-            this.setState(previousState => ({auramazeProcessing: false}));
-            alert('There has been a problem with your fetch operation: ' + error.message);
         });
+        console.log(response.ok);
+        if (response.ok) {
+            const responseJson = await response.json();
+            await this._setLogInData(responseJson);
+        } else {
+            alert('Log in fail.');
+        }
     };
 
     _logFacebook = async () => {
