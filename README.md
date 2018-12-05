@@ -311,16 +311,56 @@
 git clone https://github.com/auramaze/auramaze.git
 ```
 
-## Node.js
-
+## Load Balancer
 * Connect
 ```
-ssh -i auramaze-test-ec2.pem ubuntu@<IP>
+ssh -i auramaze-test-load-balancer.pem ubuntu@<IP>
+```
+
+* Config
+```
+upstream api {
+	server api1.auramaze.org;
+	server api2.auramaze.org;
+	server api3.auramaze.org;
+}
+
+server {
+    server_name api.auramaze.org;
+
+	location / {
+		proxy_pass http://api;
+	}
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/api.auramaze.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/api.auramaze.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+
+server {
+    if ($host = api.auramaze.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+	listen 80;
+        server_name api.auramaze.org;
+    return 404; # managed by Certbot
+}
+```
+
+## API
+* Connect
+```
+ssh -i auramaze-test-api.pem ubuntu@<IP>
 ```
 
 * Config
 ```
 echo 'COVERALLS_REPO_TOKEN=<SECRET>
+API_ENDPOINT=https://apidev.auramaze.org/v1
 AWS_ACCESS_KEY_ID=<SECRET>
 AWS_SECRET_ACCESS_KEY=<SECRET>
 AWS_REGION=us-east-2
