@@ -116,10 +116,17 @@ class Explore extends React.Component {
             },
             textWhite: {color: 'white'},
             infoText: {
-                marginBottom: 40,
-                fontSize: 20,
+                fontSize: 15,
                 paddingHorizontal: 20,
-                color: '#666666'
+                color: '#666666',
+                textAlign: 'center',
+                marginVertical: 25,
+            },
+            headerText: {
+                fontSize: 30,
+                paddingHorizontal: 20,
+                color: 'black',
+                textAlign: 'center'
             }
         });
 
@@ -177,6 +184,9 @@ class Explore extends React.Component {
                                 <AutoHeightImage source={locIcon} width={90}
                                                  style={{tintColor: 'tomato', marginRight: 40}}/>
                             </View>
+                            <Text style={styles.headerText}>
+                                Welcome to AuraMaze Explore!
+                            </Text>
                             <Text style={styles.infoText}>
                                 Let AuraMaze access your current location to explore nearby museums!
                             </Text>
@@ -187,8 +197,9 @@ class Explore extends React.Component {
                                         await this._loadExplore();
                                     }}
                                     underlayColor='#fff'>
-                                    <Text style={[styles.textGeneral, styles.textWhite]}>Please go to Settings to enable
-                                        location.</Text>
+                                    <Text style={[styles.textGeneral, styles.textWhite]}>
+                                        Enable in Settings and reload
+                                    </Text>
                                 </TouchableOpacity> :
                                 <TouchableOpacity
                                     style={[styles.buttonGeneral, styles.buttonAuraMaze]}
