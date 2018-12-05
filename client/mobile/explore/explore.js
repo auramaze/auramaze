@@ -4,6 +4,7 @@ import {
     View,
     TouchableOpacity,
     FlatList,
+    Text
 } from 'react-native';
 import {Constants, Location, Permissions} from 'expo';
 import {OrderedSet} from '../utils';
@@ -17,10 +18,13 @@ class Explore extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             exploreMuseum: new OrderedSet([]),
             nextMuseum: null,
-            refreshing: false
+            refreshing: false,
+            hasPermission: false,
+            askedPermission: false
         };
         this.onExploreEndReachedCalledDuringMomentum = true;
         this._loadExplore = this._loadExplore.bind(this);
@@ -30,16 +34,23 @@ class Explore extends React.Component {
     }
 
     _getLocationAsync = async () => {
-        let {status} = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            alert('Permission to access location was denied');
+        const {status} = await Permissions.askAsync(Permissions.LOCATION);
+
+        if (status === 'granted') {
+            this.setState({hasPermission: true, askedPermission: true});
+            return await Location.getCurrentPositionAsync({});
+        } else {
+            this.setState({hasPermission: false, askedPermission: true});
             return null;
         }
-        return await Location.getCurrentPositionAsync({});
     };
 
     async componentDidMount() {
-        this._loadExplore().done();
+        const {status} = await Permissions.getAsync(Permissions.LOCATION);
+        if (status === 'granted') {
+            this.setState({hasPermission: true, askedPermission: true});
+            await this._loadExplore();
+        }
     }
 
     async _loadExplore() {
@@ -67,7 +78,7 @@ class Explore extends React.Component {
 
     async refreshHandler() {
         this.setState({refreshing: true});
-        this._loadExplore().done();
+        await this._loadExplore();
         this.setState({refreshing: false});
     }
 
@@ -91,37 +102,48 @@ class Explore extends React.Component {
                               fontLoaded={this.props.screenProps.fontLoaded}/>
 
                 <View style={styles.mainContext}>
-
-                    <FlatList data={[
-                        <View style={{marginHorizontal: 5}}>
-                            <TitleBar titleText={"Explore Nearby Museums"}
-                                      fontLoaded={this.props.screenProps.fontLoaded}/>
-                        </View>,
-                        ...this.state.exploreMuseum.map(item =>
-                            <TouchableOpacity key={item.id}
-                                              onPress={() => this.props.navigation.navigate('Artizen', {
-                                                  artizenId: item.id,
-                                                  titleName: item.name.default,
-                                              })}>
-                                <ArtizenCard name={item.name.default ? item.name.default : ""}
-                                             source={item.avatar ? item.avatar : null}
-                                             id={item.id}
-                                             showLoc={
-                                                 {distance: item.distance, address: item.address}
-                                             }
-                                             topMargin={10}
-                                             fontLoaded={this.props.screenProps.fontLoaded}/>
-                            </TouchableOpacity>)
-                    ]}
-                              renderItem={({item}) => item}
-                              onRefresh={this.refreshHandler}
-                              refreshing={this.state.refreshing}
-                              onEndReached={this._loadMoreExploreHandler}
-                              onEndReachedThreshold={0}
-                              onMomentumScrollBegin={() => {
-                                  this.onExploreEndReachedCalledDuringMomentum = false;
-                              }}
-                              keyExtractor={(item, index) => index.toString()}/>
+                    {this.state.hasPermission ?
+                        <FlatList data={[
+                            <View style={{marginHorizontal: 5}}>
+                                <TitleBar titleText={"Explore Nearby Museums"}
+                                          fontLoaded={this.props.screenProps.fontLoaded}/>
+                            </View>,
+                            ...this.state.exploreMuseum.map(item =>
+                                <TouchableOpacity key={item.id}
+                                                  onPress={() => this.props.navigation.navigate('Artizen', {
+                                                      artizenId: item.id,
+                                                      titleName: item.name.default,
+                                                  })}>
+                                    <ArtizenCard name={item.name.default ? item.name.default : ""}
+                                                 source={item.avatar ? item.avatar : null}
+                                                 id={item.id}
+                                                 showLoc={
+                                                     {distance: item.distance, address: item.address}
+                                                 }
+                                                 topMargin={10}
+                                                 fontLoaded={this.props.screenProps.fontLoaded}/>
+                                </TouchableOpacity>)
+                        ]}
+                                  renderItem={({item}) => item}
+                                  onRefresh={this.refreshHandler}
+                                  refreshing={this.state.refreshing}
+                                  onEndReached={this._loadMoreExploreHandler}
+                                  onEndReachedThreshold={0}
+                                  onMomentumScrollBegin={() => {
+                                      this.onExploreEndReachedCalledDuringMomentum = false;
+                                  }}
+                                  keyExtractor={(item, index) => index.toString()}/> :
+                        this.state.askedPermission ?
+                            <TouchableOpacity onPress={async () => {
+                                await this._loadExplore();
+                            }}>
+                                <Text>Please go to Settings to enable location.</Text>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={async () => {
+                                await this._loadExplore();
+                            }}>
+                                <Text>has not asked permission</Text>
+                            </TouchableOpacity>}
                 </View>
             </View>
         );
