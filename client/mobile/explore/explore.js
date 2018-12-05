@@ -4,7 +4,7 @@ import {
     View,
     TouchableOpacity,
     FlatList,
-    Text
+    Text, Dimensions
 } from 'react-native';
 import {Constants, Location, Permissions} from 'expo';
 import {OrderedSet} from '../utils';
@@ -12,6 +12,10 @@ import TopSearchBar from "../components/top-search-bar";
 import TitleBar from "../components/title-bar";
 import config from "../config.json";
 import ArtizenCard from "../components/artizen-card";
+import AutoHeightImage from "react-native-auto-height-image";
+import logoIcon from "../assets/auramaze-logo.png";
+import locIcon from "../assets/icons/location-arrow.png";
+import plusIcon from "../assets/icons/plus-solid.png";
 
 
 class Explore extends React.Component {
@@ -92,6 +96,31 @@ class Explore extends React.Component {
             mainContext: {
                 paddingHorizontal: 15, justifyContent: 'center',
             },
+            buttonGeneral: {
+                flexDirection: 'row', alignItems: 'center',
+                justifyContent: 'center',
+                width: Dimensions.get('window').width - 40,
+                height: 45,
+                marginVertical: 10,
+                borderWidth: 1
+            },
+            buttonAuraMaze: {
+                backgroundColor: '#666666',
+                borderColor: '#666666',
+                marginBottom: 40
+            },
+            textGeneral: {
+                textAlign: 'center',
+                paddingHorizontal: 10,
+                fontSize: 15
+            },
+            textWhite: {color: 'white'},
+            infoText: {
+                marginBottom: 40,
+                fontSize: 20,
+                paddingHorizontal: 20,
+                color: '#666666'
+            }
         });
 
         return (
@@ -133,17 +162,43 @@ class Explore extends React.Component {
                                       this.onExploreEndReachedCalledDuringMomentum = false;
                                   }}
                                   keyExtractor={(item, index) => index.toString()}/> :
-                        this.state.askedPermission ?
-                            <TouchableOpacity onPress={async () => {
-                                await this._loadExplore();
-                            }}>
-                                <Text>Please go to Settings to enable location.</Text>
-                            </TouchableOpacity> :
-                            <TouchableOpacity onPress={async () => {
-                                await this._loadExplore();
-                            }}>
-                                <Text>has not asked permission</Text>
-                            </TouchableOpacity>}
+                        <View style={{justifyContent: 'center', alignItems: 'center',}}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    height: 200,
+                                    verticalAlign: 'center'
+                                }}>
+                                <AutoHeightImage source={logoIcon} width={100}
+                                                 style={{tintColor: '#666666', marginLeft: 40}}/>
+                                <AutoHeightImage source={plusIcon} width={20}
+                                                 style={{tintColor: '#666666', marginHorizontal: 20}}/>
+                                <AutoHeightImage source={locIcon} width={90}
+                                                 style={{tintColor: 'tomato', marginRight: 40}}/>
+                            </View>
+                            <Text style={styles.infoText}>
+                                Let AuraMaze access your current location to explore nearby museums!
+                            </Text>
+                            {this.state.askedPermission ?
+                                <TouchableOpacity
+                                    style={[styles.buttonGeneral, styles.buttonAuraMaze]}
+                                    onPress={async () => {
+                                        await this._loadExplore();
+                                    }}
+                                    underlayColor='#fff'>
+                                    <Text style={[styles.textGeneral, styles.textWhite]}>Please go to Settings to enable
+                                        location.</Text>
+                                </TouchableOpacity> :
+                                <TouchableOpacity
+                                    style={[styles.buttonGeneral, styles.buttonAuraMaze]}
+                                    onPress={async () => {
+                                        await this._loadExplore();
+                                    }}
+                                    underlayColor='#fff'>
+                                    <Text style={[styles.textGeneral, styles.textWhite]}>Enable Access</Text>
+                                </TouchableOpacity>}
+                        </View>}
                 </View>
             </View>
         );
