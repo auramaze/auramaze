@@ -5,12 +5,15 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Keyboard,
-    Text, TouchableOpacity
+    Text,
+    TouchableOpacity,
+    Linking
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import SignUpPage from "./sign-up-page";
 import LogInPage from "./log-in-page";
+import WebLinks from './web-links';
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -24,10 +27,6 @@ class BlankUser extends React.Component {
         super(props);
         this.state = {pageIsSign: true};
     }
-
-    componentDidMount() {
-
-    };
 
     render() {
 
@@ -52,6 +51,13 @@ class BlankUser extends React.Component {
                 borderColor: '#666666',
                 borderRadius: 5
             },
+            webLinks: {
+                flexDirection: 'row',
+                alignItems: 'center',
+            },
+            webLink: {
+                color: '#666666',
+            }
         });
 
         let _onPressButton = () => {
@@ -83,7 +89,8 @@ class BlankUser extends React.Component {
                                 "No account? Sign up"}
                         </Text>
                     </TouchableOpacity>
-
+                    <View style={{height: 20}}/>
+                    <WebLinks/>
                 </View>
             </DismissKeyboard>
         );
