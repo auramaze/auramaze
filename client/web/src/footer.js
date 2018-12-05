@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 import MapWithAMarker from './map-with-marker';
 import logo from './logo-white-frame.svg';
 import './footer.css';
@@ -23,7 +24,7 @@ class Footer extends Component {
                                 <div className="contact-info">
                                 Email: <br/><a href="mailto:service@auramaze.org">service@auramaze.org</a><br/>Address:
                                     <br/>1760 Broadway St.<br/>Ann Arbor, MI 48105<br/><br/>
-                                    <a href="https://beta.auramaze.org/privacy">Privacy Policy</a>
+                                    <Link to="/privacy">Privacy Policy</Link>
                                 </div>
                             </td>
                             {this.isWideScreen() &&
