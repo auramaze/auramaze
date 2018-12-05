@@ -145,7 +145,7 @@ class Recommend extends React.Component {
                                          text={this.props.auth.id ? 'Please view some arts to get recommendation.' : 'Please log in to view recommendation!'}
                                          onPress={() => {
                                              this.props.navigation.navigate('User');
-                                         }}/>}}
+                                         }}/>}
                     </ScrollView>
                 </View>
             </View>

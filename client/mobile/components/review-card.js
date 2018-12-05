@@ -99,30 +99,30 @@ class ReviewCard extends React.Component {
                                             onStopped: () => {
                                                 this.setState({isSpeaking: false});
                                             }
-                                        }, this.props.language === 'zh' ? {language: 'zh'} : null));
+                                        }, {language: this.props.language}));
                                     this.setState({isSpeaking: true});
                                 }
                             });
                         }}>
-                            {this.state.isSpeaking && this.props.isIntro ?
-                                <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
-                                <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                        </TouchableOpacity> : null}
+                        {this.state.isSpeaking && this.props.isIntro ?
+                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
+                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
+                            </TouchableOpacity> : null}
 
-                </View>
-                <View style={styles.bodyView}>
+                        </View>
+                        <View style={styles.bodyView}>
                     {this.props.content &&
-                    getRNDraftJSBlocks({
+                        getRNDraftJSBlocks({
                         contentState: this.props.content
                     })}
-                </View>
-                <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
-                              itemType={this.props.itemType} itemId={this.props.itemId}
-                              textType={this.props.textType} textId={this.props.textId}/>
-            </View>
-        )
-    }
+                        </View>
+                        <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
+                        itemType={this.props.itemType} itemId={this.props.itemId}
+                        textType={this.props.textType} textId={this.props.textId}/>
+                        </View>
+                        )
+                    }
 
-}
+                    }
 
-export default withNavigation(ReviewCard);
+                    export default withNavigation(ReviewCard);
