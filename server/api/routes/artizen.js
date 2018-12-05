@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
+const crypto = require('crypto');
 const common = require('./common');
 const rds = common.rds;
 const s3 = common.s3;
@@ -224,8 +225,8 @@ router.post('/:id', oneOf([
         }
 
         if (req.body.avatar_image) {
+            const path = `avatars/${req.params.id}_${crypto.createHash('md5').update(req.body.avatar_image).digest('hex')}.jpg`;
             const buf = new Buffer(req.body.avatar_image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-            const path = `avatars/${req.params.id}.jpg`;
             var data = {
                 Key: path,
                 Body: buf,
