@@ -22,7 +22,8 @@ class Footer extends Component {
                             <td width={this.isWideScreen() ? '45%' : '80%'}>
                                 <div className="contact-info">
                                 Email: <br/><a href="mailto:service@auramaze.org">service@auramaze.org</a><br/>Address:
-                                    <br/>1760 Broadway St.<br/>Ann Arbor, MI 48105
+                                    <br/>1760 Broadway St.<br/>Ann Arbor, MI 48105<br/><br/>
+                                    <a href="https://beta.auramaze.org/privacy">Privacy Policy</a>
                                 </div>
                             </td>
                             {this.isWideScreen() &&
