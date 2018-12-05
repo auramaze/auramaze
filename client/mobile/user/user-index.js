@@ -52,10 +52,14 @@ class UserIndex extends React.Component {
         const {id} = this.props.auth;
 
         if (prevId !== id) {
-            this.fetchUserInfo().done();
-            this.loadTimeline().done();
+            this.refreshUserIndex().done();
         }
     }
+
+    refreshUserIndex = async () => {
+        await this.fetchUserInfo();
+        await this.loadTimeline();
+    };
 
     async fetchUserInfo() {
         const {id} = this.props.auth;
@@ -89,8 +93,7 @@ class UserIndex extends React.Component {
         const {id} = this.props.auth;
 
         if (id) {
-            this.fetchUserInfo().done();
-            this.loadTimeline().done();
+            this.refreshUserIndex().done();
         }
         this.setState({refreshing: false});
     }
@@ -180,7 +183,9 @@ class UserIndex extends React.Component {
                                          }}/>
                         <TouchableOpacity
                             style={[styles.buttonGeneral, styles.buttonAuramaze]}
-                            onPress={() => this.props.navigation.navigate('UserSettings')}
+                            onPress={() => this.props.navigation.push('UserSettings', {
+                                refreshUserIndex: this.refreshUserIndex
+                            })}
                             underlayColor='#fff'>
                             <Text style={[styles.textGeneral, styles.textWhite]}>User Settings</Text>
                         </TouchableOpacity>

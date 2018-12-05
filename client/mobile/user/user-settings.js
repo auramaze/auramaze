@@ -5,16 +5,18 @@ import {
     Dimensions,
     TouchableWithoutFeedback,
     Keyboard,
-    Text, TouchableOpacity
+    Text, TouchableOpacity,
+    ScrollView
 } from 'react-native';
 import {Input} from "react-native-elements";
-import {ImagePicker, Permissions} from 'expo';
+import {ImageManipulator, ImagePicker, Permissions} from 'expo';
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
 import {withAuth} from "../App";
 import {withNavigation} from 'react-navigation';
 import WebLinks from './web-links';
+import noImage from '../assets/icons/no-image-artizen.png';
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -116,46 +118,52 @@ class UserSettings extends React.Component {
         }
     };
 
-    // _pickImage = async () => {
-    //     const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    //     console.log(status);
-    //     if (status === 'granted') {
-    //         let result = await ImagePicker.launchImageLibraryAsync({
-    //             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //             allowsEditing: true,
-    //             aspect: [1, 1],
-    //             base64: true,
-    //             quality: 0.1,
-    //         });
-    //
-    //         const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({avatar_image: result.base64})
-    //         });
-    //
-    //         console.log(result.base64.length);
-    //
-    //         if (response.ok) {
-    //             alert('Update avatar success!');
-    //         } else {
-    //             alert('Unable to update avatar!');
-    //         }
-    //     }
-    //
-    //     // if (!result.cancelled) {
-    //     //     this.setState({ image: result.uri });
-    //     // }
-    // };
+    _pickImage = async () => {
+        const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status === 'granted') {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+            });
+
+            const manipResult = await ImageManipulator.manipulate(
+                result.uri,
+                [{resize: {width: 200, height: 200}}],
+                {base64: true}
+            );
+
+            const {token} = this.props.auth;
+
+            const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({avatar_image: manipResult.base64})
+            });
+
+            if (response.ok) {
+                await this.fetchUserInfo();
+                const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {
+                });
+                await refreshUserIndex();
+            } else {
+                alert('Unable to update avatar!');
+            }
+        } else {
+            alert('Please go to Settings to enable access to photo!');
+        }
+    };
 
     render() {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center',
+                paddingVertical: Dimensions.get('window').height / 20
             },
             signupText: {
                 color: '#666666',
@@ -211,103 +219,105 @@ class UserSettings extends React.Component {
 
         return (
             <DismissKeyboard>
-                <View style={styles.mainStruct}>
-                    {this.state.editProfile &&
+                <ScrollView>
                     <View style={styles.mainStruct}>
-                        <View style={styles.inputHolder}>
-                            {/*<TouchableOpacity*/}
-                                {/*onPress={this._pickImage}*/}
-                                {/*underlayColor='#fff'>*/}
-                                {/*<AutoHeightImage width={Dimensions.get('window').width * 2 / 7}*/}
-                                                 {/*source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}*/}
-                                                 {/*style={{*/}
-                                                     {/*marginBottom: 10,*/}
-                                                 {/*}}/>*/}
-                            {/*</TouchableOpacity>*/}
-                            <Input containerStyle={styles.inputPofile}
-                                   label='Name: '
-                                   placeholder='Name'
-                                   value={this.state.name && this.state.name.default}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(name) => {
-                                       this.setState(prevState => ({name: Object.assign(prevState.name || {}, {default: name})}));
-                                   }}/>
-                            <Input containerStyle={styles.inputPofile}
-                                   label='Username: '
-                                   placeholder='Username'
-                                   value={this.state.username}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(username) => this.setState({username: username})}/>
-                            <Input containerStyle={styles.inputPofile}
-                                   label='Email: '
-                                   placeholder='Email'
-                                   value={this.state.email}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(email) => this.setState({email: email})}/>
-                        </View>
+                        {this.state.editProfile &&
+                        <View style={styles.mainStruct}>
+                            <View style={styles.inputHolder}>
+                                <TouchableOpacity
+                                    onPress={this._pickImage}
+                                    underlayColor='#fff'>
+                                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
+                                                     source={this.state.avatar ? {uri: this.state.avatar} : noImage}
+                                                     style={{
+                                                         marginBottom: 10,
+                                                     }}/>
+                                </TouchableOpacity>
+                                <Input containerStyle={styles.inputPofile}
+                                       label='Name: '
+                                       placeholder='Name'
+                                       value={this.state.name && this.state.name.default}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(name) => {
+                                           this.setState(prevState => ({name: Object.assign(prevState.name || {}, {default: name})}));
+                                       }}/>
+                                <Input containerStyle={styles.inputPofile}
+                                       label='Username: '
+                                       placeholder='Username'
+                                       value={this.state.username}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(username) => this.setState({username: username})}/>
+                                <Input containerStyle={styles.inputPofile}
+                                       label='Email: '
+                                       placeholder='Email'
+                                       value={this.state.email}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(email) => this.setState({email: email})}/>
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.buttonGeneral, styles.buttonSubmit]}
+                                onPress={this.editProfile}
+                                underlayColor='#fff'>
+                                <Text style={[styles.textGenreal, styles.textWhite]}>Submit</Text>
+                            </TouchableOpacity>
+                        </View>}
+
+                        {this.state.changePassword &&
+                        <View style={styles.mainStruct}>
+                            <View style={styles.inputHolder}>
+                                <Input placeholder='Old password'
+                                       secureTextEntry={true}
+                                       value={this.state.oldPassword}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(oldPassword) => this.setState({oldPassword})}/>
+                                <Input placeholder='New password'
+                                       secureTextEntry={true}
+                                       value={this.state.newPassword}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(newPassword) => this.setState({newPassword})}/>
+                                <Input placeholder='Confirm new password'
+                                       secureTextEntry={true}
+                                       value={this.state.newPasswordConfirm}
+                                       inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
+                                       onChangeText={(newPasswordConfirm) => this.setState({newPasswordConfirm})}/>
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.buttonGeneral, styles.buttonSubmit]}
+                                onPress={this.changePassword}
+                                underlayColor='#fff'>
+                                <Text style={[styles.textGenreal, styles.textWhite]}>Submit</Text>
+                            </TouchableOpacity>
+                        </View>}
 
                         <TouchableOpacity
-                            style={[styles.buttonGeneral, styles.buttonSubmit]}
-                            onPress={this.editProfile}
+                            style={[styles.buttonGeneral, styles.buttonEdit]}
+                            onPress={this.toggleEditProfile}
                             underlayColor='#fff'>
-                            <Text style={[styles.textGenreal, styles.textWhite]}>Submit</Text>
+                            <Text style={[styles.textGeneral, styles.textWhite]}>Edit Profile</Text>
                         </TouchableOpacity>
-                    </View>}
-
-                    {this.state.changePassword &&
-                    <View style={styles.mainStruct}>
-                        <View style={styles.inputHolder}>
-                            <Input placeholder='Old password'
-                                   secureTextEntry={true}
-                                   value={this.state.oldPassword}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(oldPassword) => this.setState({oldPassword})}/>
-                            <Input placeholder='New password'
-                                   secureTextEntry={true}
-                                   value={this.state.newPassword}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(newPassword) => this.setState({newPassword})}/>
-                            <Input placeholder='Confirm new password'
-                                   secureTextEntry={true}
-                                   value={this.state.newPasswordConfirm}
-                                   inputContainerStyle={{borderBottomColor: '#cdcdcd'}}
-                                   onChangeText={(newPasswordConfirm) => this.setState({newPasswordConfirm})}/>
-                        </View>
 
                         <TouchableOpacity
-                            style={[styles.buttonGeneral, styles.buttonSubmit]}
-                            onPress={this.changePassword}
+                            style={[styles.buttonGeneral, styles.buttonEdit]}
+                            onPress={this.toggleChangePassword}
                             underlayColor='#fff'>
-                            <Text style={[styles.textGenreal, styles.textWhite]}>Submit</Text>
+                            <Text style={[styles.textGeneral, styles.textWhite]}>Change Password</Text>
                         </TouchableOpacity>
-                    </View>}
 
-                    <TouchableOpacity
-                        style={[styles.buttonGeneral, styles.buttonEdit]}
-                        onPress={this.toggleEditProfile}
-                        underlayColor='#fff'>
-                        <Text style={[styles.textGeneral, styles.textWhite]}>Edit Profile</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.buttonGeneral, styles.buttonEdit]}
-                        onPress={this.toggleChangePassword}
-                        underlayColor='#fff'>
-                        <Text style={[styles.textGeneral, styles.textWhite]}>Change Password</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.buttonGeneral, styles.buttonLogOut]}
-                        onPress={async () => {
-                            await this.props.auth.removeAuth();
-                            this.props.navigation.popToTop();
-                        }}
-                        underlayColor='#fff'>
-                        <Text style={[styles.textGeneral, styles.textWhite]}>Log Out</Text>
-                    </TouchableOpacity>
-                    <View style={{height: 20}}/>
-                    <WebLinks/>
-                </View>
+                        <TouchableOpacity
+                            style={[styles.buttonGeneral, styles.buttonLogOut]}
+                            onPress={async () => {
+                                await this.props.auth.removeAuth();
+                                this.props.navigation.popToTop();
+                            }}
+                            underlayColor='#fff'>
+                            <Text style={[styles.textGeneral, styles.textWhite]}>Log Out</Text>
+                        </TouchableOpacity>
+                        <View style={{height: 20}}/>
+                        <WebLinks/>
+                    </View>
+                </ScrollView>
             </DismissKeyboard>
         );
     }
