@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Text, View, TouchableOpacity, Image, Dimensions, Animated,
-    Easing
+    Easing, Platform
 } from 'react-native';
 import {Camera, Permissions, ImageManipulator} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
@@ -54,7 +54,7 @@ class CameraScreen extends React.Component {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify(dataJson)
-                    }).then(function (response) {
+                    }).then((response) => {
                         if (response.ok) {
                             return response.json();
                         } else {
@@ -75,7 +75,7 @@ class CameraScreen extends React.Component {
                                 alert("No image found");
                             }
                         }
-                    ).catch(function (error) {
+                    ).catch((error) => {
                         this.setState({imageProcessing: false});
                         alert('There has been a problem with your fetch operation: ' + error.message);
                     });
@@ -110,8 +110,8 @@ class CameraScreen extends React.Component {
                 <View style={{flex: 1}}>
                     <Camera
                         style={{
-                            width: this.state.windowWidth,
-                            height: Platform.OS === 'ios' ? this.state.windowHeight : this.state.windowWidth * 4 / 3
+                            width: Platform.OS === 'ios' ? this.state.windowWidth : this.state.windowHeight * 3 / 4,
+                            height: this.state.windowHeight
                         }}
                         type={this.state.type}
                         onMountError={this.handleMountError}
@@ -154,21 +154,23 @@ class CameraScreen extends React.Component {
                                 opacity: 0.6
                             }}/>
 
-                            <View style={{
-                                flex: 1,
-                                alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: this.state.windowHeight * 1 / 7,
-                            }}>
-                                <TouchableOpacity
-                                    onPress={this.takePicture}
-                                    style={{alignSelf: 'center'}}
-                                >
-                                    <AutoHeightImage width={75} style={{tintColor: 'white'}}
-                                                     source={camera_button}/>
-                                </TouchableOpacity>
-                            </View>
+
                         </View>
                     </Camera>
+
+                    <View style={{
+                        flex: 1,
+                        alignItems: 'center', position: 'absolute',
+                        left: 0, right: 0, bottom: this.state.windowHeight * 1 / 25,
+                    }}>
+                        <TouchableOpacity
+                            onPress={this.takePicture}
+                            style={{alignSelf: 'center'}}
+                        >
+                            <AutoHeightImage width={75} style={{tintColor: 'white'}}
+                                             source={camera_button}/>
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
             );
