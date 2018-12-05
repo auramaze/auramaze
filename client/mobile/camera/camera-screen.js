@@ -3,7 +3,7 @@ import {
     Text, View, TouchableOpacity, Image, Dimensions, Animated,
     Easing, Platform
 } from 'react-native';
-import {Camera, Permissions, ImageManipulator} from 'expo';
+import {Camera, Permissions, ImageManipulator, Location} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
 import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -18,16 +18,29 @@ class CameraScreen extends React.Component {
     }
 
     state = {
-        hasCameraPermission: null,
         type: Camera.Constants.Type.back,
         windowHeight: Dimensions.get('window').height,
-        windowWidth: Dimensions.get('window').width
+        windowWidth: Dimensions.get('window').width,
+        hasPermission: false,
+        hasAskedPermission: false
     };
 
     async componentDidMount() {
-        const {status} = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({hasCameraPermission: status === 'granted'});
+        const {status} = await Permissions.getAsync(Permissions.CAMERA);
+        if (status === 'granted') {
+            this.setState({hasPermission: true, askedPermission: true});
+        }
         this.spin();
+    }
+
+    async askPermission() {
+        const {status} = await Permissions.askAsync(Permissions.CAMERA);
+
+        if (status === 'granted') {
+            this.setState({hasPermission: true, askedPermission: true});
+        } else {
+            this.setState({hasPermission: false, askedPermission: true});
+        }
     }
 
     handleMountError = ({message}) => console.error(message);
@@ -100,11 +113,20 @@ class CameraScreen extends React.Component {
             inputRange: [0, 1],
             outputRange: ['0deg', '360deg']
         });
-        const {hasCameraPermission} = this.state;
-        if (hasCameraPermission === null) {
-            return <View/>;
-        } else if (hasCameraPermission === false) {
-            return <Text>No access to camera</Text>;
+        if (!this.state.hasPermission) {
+            return (<View style={{marginTop: 100}}>
+                {this.state.askedPermission ?
+                    <TouchableOpacity onPress={async () => {
+                        await this.askPermission();
+                    }}>
+                        <Text>Please go to Settings to enable camera.</Text>
+                    </TouchableOpacity> :
+                    <TouchableOpacity onPress={async () => {
+                        await this.askPermission();
+                    }}>
+                        <Text>has not asked permission</Text>
+                    </TouchableOpacity>}
+            </View>);
         } else {
             return (
                 <View style={{flex: 1}}>
