@@ -37,6 +37,7 @@ class UserSettings extends React.Component {
             oldPassword: '',
             newPassword: '',
             newPasswordConfirm: '',
+            avatarImage: null
         };
     }
 
@@ -83,6 +84,10 @@ class UserSettings extends React.Component {
     editProfile = async () => {
         const {id, token} = this.props.auth;
         const {name, username, email} = this.state;
+        const body = {name, username, email};
+        if (this.state.avatarImage) {
+            body.avatar_image = this.state.avatarImage;
+        }
         const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`, {
             method: 'POST',
             headers: {
@@ -90,10 +95,12 @@ class UserSettings extends React.Component {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({name, username, email})
+            body: JSON.stringify(body)
         });
         if (response.ok) {
             alert('Edit profile success!');
+            const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {});
+            await refreshUserIndex();
         } else {
             alert('Unable to edit profile!');
         }
@@ -133,26 +140,28 @@ class UserSettings extends React.Component {
                 {base64: true}
             );
 
-            const {token} = this.props.auth;
-
-            const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({avatar_image: manipResult.base64})
-            });
-
-            if (response.ok) {
-                await this.fetchUserInfo();
-                const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {
-                });
-                await refreshUserIndex();
-            } else {
-                alert('Unable to update avatar!');
-            }
+            this.setState({avatar: manipResult.uri, avatarImage: manipResult.base64});
+            //
+            // const {token} = this.props.auth;
+            //
+            // const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         "Content-Type": "application/json",
+            //         'Authorization': `Bearer ${token}`
+            //     },
+            //     body: JSON.stringify({avatar_image: manipResult.base64})
+            // });
+            //
+            // if (response.ok) {
+            //     await this.fetchUserInfo();
+            //     const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {
+            //     });
+            //     await refreshUserIndex();
+            // } else {
+            //     alert('Unable to update avatar!');
+            // }
         } else {
             alert('Please go to Settings to enable access to photo!');
         }
