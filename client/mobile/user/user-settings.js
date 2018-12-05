@@ -14,6 +14,7 @@ import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
 import {withAuth} from "../App";
 import {withNavigation} from 'react-navigation';
+import WebLinks from './web-links';
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -304,7 +305,8 @@ class UserSettings extends React.Component {
                         underlayColor='#fff'>
                         <Text style={[styles.textGeneral, styles.textWhite]}>Log Out</Text>
                     </TouchableOpacity>
-
+                    <View style={{height: 20}}/>
+                    <WebLinks/>
                 </View>
             </DismissKeyboard>
         );
