@@ -141,27 +141,6 @@ class UserSettings extends React.Component {
             );
 
             this.setState({avatar: manipResult.uri, avatarImage: manipResult.base64});
-            //
-            // const {token} = this.props.auth;
-            //
-            // const response = await fetch(`${config.API_ENDPOINT}/artizen/${this.props.auth.id}`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         "Content-Type": "application/json",
-            //         'Authorization': `Bearer ${token}`
-            //     },
-            //     body: JSON.stringify({avatar_image: manipResult.base64})
-            // });
-            //
-            // if (response.ok) {
-            //     await this.fetchUserInfo();
-            //     const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {
-            //     });
-            //     await refreshUserIndex();
-            // } else {
-            //     alert('Unable to update avatar!');
-            // }
         } else {
             alert('Please go to Settings to enable access to photo!');
         }
