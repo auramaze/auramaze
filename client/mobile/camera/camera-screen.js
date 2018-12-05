@@ -109,7 +109,10 @@ class CameraScreen extends React.Component {
             return (
                 <View style={{flex: 1}}>
                     <Camera
-                        style={{width: this.state.windowWidth, height: this.state.windowHeight}}
+                        style={{
+                            width: this.state.windowWidth,
+                            height: Platform.OS === 'ios' ? this.state.windowHeight : this.state.windowWidth * 4 / 3
+                        }}
                         type={this.state.type}
                         onMountError={this.handleMountError}
                         pictureSize={"High"}
@@ -154,7 +157,7 @@ class CameraScreen extends React.Component {
                             <View style={{
                                 flex: 1,
                                 alignItems: 'center', position: 'absolute',
-                                left: 0, right: 0, bottom: this.state.windowWidth * 1 / 5,
+                                left: 0, right: 0, bottom: this.state.windowHeight * 1 / 7,
                             }}>
                                 <TouchableOpacity
                                     onPress={this.takePicture}
