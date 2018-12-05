@@ -225,7 +225,7 @@ router.post('/:id', oneOf([
         }
 
         if (req.body.avatar_image) {
-            const path = `avatars/${req.params.id}_${crypto.createHash('md5').update(req.body.avatar_image).digest('hex')}.jpg`;
+            const path = `avatars/${req.params.id}${crypto.createHash('md5').update(req.body.avatar_image).digest('hex')}.jpg`;
             const buf = new Buffer(req.body.avatar_image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             var data = {
                 Key: path,
