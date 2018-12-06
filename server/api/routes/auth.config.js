@@ -41,4 +41,15 @@ exports.auth = {
         getToken: getTokenFromHeaders,
         credentialsRequired: false,
     }),
+    admin: (req, res, next) => {
+        const {payload: {id}} = req;
+        if (id !== parseInt(process.env.ADMIN_ID)) {
+            res.status(403).json({
+                code: 'FORBIDDEN',
+                message: 'Unauthorized for admin API.'
+            }).end();
+        } else {
+            next();
+        }
+    }
 };
