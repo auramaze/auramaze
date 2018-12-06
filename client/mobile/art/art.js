@@ -7,6 +7,7 @@ import TitleBar from "../components/title-bar";
 import ArtizenCard from "../components/artizen-card";
 import config from "../config.json";
 import {withAuth} from "../App";
+import {checkResponseStatus} from "../utils";
 
 class Art extends React.Component {
 
@@ -35,9 +36,29 @@ class Art extends React.Component {
                 } : null
             });
 
-            let introInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/introduction`);
-            let artizenInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/artizen`);
-            let reviewInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/review`);
+            let introInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/introduction`, {
+                method: 'GET',
+                headers: token ? {
+                    'Authorization': `Bearer ${token}`
+                } : null
+            });
+            let artizenInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/artizen`, {
+                method: 'GET',
+                headers: token ? {
+                    'Authorization': `Bearer ${token}`
+                } : null
+            });
+            let reviewInfo = await fetch(`${config.API_ENDPOINT}/art/${artId}/review`, {
+                method: 'GET',
+                headers: token ? {
+                    'Authorization': `Bearer ${token}`
+                } : null
+            });
+
+            if (!await checkResponseStatus([artizenInfo, introInfo, artInfo, reviewInfo], this.props.auth.removeAuth)) {
+                return;
+            }
+
             let artInfoJson = await artInfo.json();
             let artizenInfoJson = await artizenInfo.json();
             let introInfoJsonRaw = await introInfo.json();

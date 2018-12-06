@@ -35,7 +35,7 @@ class WebLinks extends React.Component {
                     }}
                     underlayColor='#fff'>
                     <Text style={styles.webLink}>
-                        Privacy policy
+                        Privacy Policy
                     </Text>
                 </TouchableOpacity>
                 <Text>|</Text>
@@ -45,7 +45,7 @@ class WebLinks extends React.Component {
                     }}
                     underlayColor='#fff'>
                     <Text style={styles.webLink}>
-                        Contact us
+                        Contact Us
                     </Text>
                 </TouchableOpacity>
             </View>

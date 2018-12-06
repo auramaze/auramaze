@@ -4,6 +4,7 @@ import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react
 import AutoHeightImage from 'react-native-auto-height-image';
 import config from "../config";
 import {withAuth} from "../App";
+import {checkResponseStatus} from "../utils";
 
 class ArtInfo extends React.Component {
 
@@ -22,7 +23,7 @@ class ArtInfo extends React.Component {
             if (!authId) {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`${config.API_ENDPOINT}/art/${id}/follow`, {
+                const response = await fetch(`${config.API_ENDPOINT}/art/${id}/follow`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -30,19 +31,14 @@ class ArtInfo extends React.Component {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({type})
-                }).then(function (response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Follow fail.');
-                    }
-                }).then((responseJson) => {
-                    this.setState(previousState => (
-                        {isFollowing: !previousState.isFollowing}
-                    ));
-                }).catch(function (error) {
-                    alert('There has been a problem with your fetch operation: ' + error.message);
                 });
+                if (!await checkResponseStatus(response, this.props.auth.removeAuth)) {
+                    return;
+                }
+                const responseJson = await response.json();
+                this.setState(previousState => (
+                    {isFollowing: !previousState.isFollowing}
+                ));
             }
         } catch (error) {
             alert(error);

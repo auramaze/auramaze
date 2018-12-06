@@ -50,6 +50,26 @@ export function removeParentheses(text) {
     return text.replace(/\[(?:[^\]\[]|\[[^\]\[]*\])*\]/g, '').replace(/\((?:[^)(]|\([^)(]*\))*\)/g, '').replace(/【(?:[^】【]|（[^】【]*】)*】/g, '').replace(/（(?:[^）（]|（[^）（]*）)*）/g, '')
 }
 
+export async function checkResponseStatus(response, removeAuth) {
+    let allOk, any401;
+    if (Array.isArray(response)) {
+        allOk = response.every(item => item.ok);
+        any401 = response.some(item => item.status === 401);
+    } else {
+        allOk = response.ok;
+        any401 = response.status === 401;
+    }
+    if (!allOk) {
+        if (any401) {
+            alert('Token invalid. Please log in again.');
+            await removeAuth();
+        } else {
+            alert('Request failed. Please try again later.');
+        }
+    }
+    return allOk;
+}
+
 export class OrderedSet {
     constructor(items = []) {
         this.ids = new Set();

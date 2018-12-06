@@ -17,6 +17,7 @@ import {withAuth} from "../App";
 import {withNavigation} from 'react-navigation';
 import WebLinks from './web-links';
 import noImage from '../assets/icons/no-image-artizen.png';
+import {checkResponseStatus} from "../utils";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -97,7 +98,7 @@ class UserSettings extends React.Component {
             },
             body: JSON.stringify(body)
         });
-        if (response.ok) {
+        if (await checkResponseStatus(response, this.props.auth.removeAuth)) {
             alert('Edit profile success!');
             const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {});
             await refreshUserIndex();
@@ -118,7 +119,7 @@ class UserSettings extends React.Component {
             },
             body: JSON.stringify({old_password: oldPassword, password: newPassword})
         });
-        if (response.ok) {
+        if (await checkResponseStatus(response, this.props.auth.removeAuth)) {
             alert('Change password success!');
         } else {
             alert('Unable to change password!');

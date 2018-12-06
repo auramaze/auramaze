@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {OrderedSet} from '../utils';
+import {checkResponseStatus, OrderedSet} from '../utils';
 import ArtizenCard from "../components/artizen-card";
 import config from "../config";
 import {withAuth} from "../App";
@@ -50,6 +50,9 @@ class FollowingArtizen extends React.Component {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (!await checkResponseStatus(responseArtizen, this.props.auth.removeAuth)) {
+                return;
+            }
             const responseArtizenJsonRaw = await responseArtizen.json();
             this.setState({
                 searchArtizen: new OrderedSet(responseArtizenJsonRaw.data),
@@ -78,6 +81,9 @@ class FollowingArtizen extends React.Component {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (!await checkResponseStatus(responseArtizen, this.props.auth.removeAuth)) {
+                return;
+            }
             const responseArtizenJsonRaw = await responseArtizen.json();
             this.setState(previousState => ({
                 searchArtizen: previousState.searchArtizen.union(responseArtizenJsonRaw.data),

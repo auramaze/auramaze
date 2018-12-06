@@ -16,6 +16,7 @@ import config from "../config.json";
 import {withAuth} from "../App";
 import MessageCard from "../components/message-card";
 import {withNavigation} from "react-navigation";
+import {checkResponseStatus} from "../utils";
 
 
 class Recommend extends React.Component {
@@ -56,49 +57,44 @@ class Recommend extends React.Component {
         const {id, token} = this.props.auth;
 
         if (id) {
-            let fontLoaded = this.props.screenProps.fontLoaded;
+            const fontLoaded = this.props.screenProps.fontLoaded;
 
-            fetch(`${config.API_ENDPOINT}/recommend`, {
+            const response = await fetch(`${config.API_ENDPOINT}/recommend`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 }
-            }).then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Get recommendation.');
-                }
-            }).then((responseJsonRaw) => {
-                let responseJson = responseJsonRaw.data;
-                let artArray = [];
-                responseJson.map((item) => {
-                    artArray.push(
-                        <TouchableOpacity
-                            key={item.id}
-                            onPress={() => this.props.navigation.navigate('Art', {
-                                artId: item.id,
-                                titleName: item.title.default,
-                            })}>
-                            <ArtCard
-                                artName={item.title && item.title.default}
-                                artistName={item.artist && item.artist.default}
-                                source={item.image && item.image.default && item.image.default.url}
-                                compYear={item.completionYear}
-                                id={item.id}
-                                fontLoaded={fontLoaded}
-                            />
-                        </TouchableOpacity>)
-                });
+            });
+            if (!await checkResponseStatus(response, this.props.auth.removeAuth)) {
+                return;
+            }
+            const responseJsonRaw = await response.json();
+            const responseJson = responseJsonRaw.data;
+            const artArray = [];
+            responseJson.forEach((item) => {
+                artArray.push(
+                    <TouchableOpacity
+                        key={item.id}
+                        onPress={() => this.props.navigation.navigate('Art', {
+                            artId: item.id,
+                            titleName: item.title.default,
+                        })}>
+                        <ArtCard
+                            artName={item.title && item.title.default}
+                            artistName={item.artist && item.artist.default}
+                            source={item.image && item.image.default && item.image.default.url}
+                            compYear={item.completionYear}
+                            id={item.id}
+                            fontLoaded={fontLoaded}
+                        />
+                    </TouchableOpacity>)
+            });
 
-                this.setState({
-                    recommendNext: responseJsonRaw.next,
-                    recommendArt: OrderedSet(artArray)
-                });
-            }).catch(function (error) {
-                alert('There has been a problem with your fetch operation: ' + error.message);
+            this.setState({
+                recommendNext: responseJsonRaw.next,
+                recommendArt: OrderedSet(artArray)
             });
         }
     }

@@ -4,6 +4,7 @@ import thumbs_down from '../assets/icons/thumbs-down.png';
 import thumbs_up from '../assets/icons/thumbs-up.png';
 import config from "../config.json";
 import {withAuth} from "../App";
+import {checkResponseStatus} from "../utils";
 
 class ReviewFooter extends React.Component {
 
@@ -25,7 +26,7 @@ class ReviewFooter extends React.Component {
             if (!authId) {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}/${textId}/vote`, {
+                const response = await fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}/${textId}/vote`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -33,29 +34,24 @@ class ReviewFooter extends React.Component {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({type})
-                }).then(function (response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Vote fail.');
-                    }
-                }).then((responseJson) => {
-                    let newUp = this.state.up;
-                    let newDown = this.state.down;
-                    if (type === 'up') {
-                        if (this.state.status !== 1) newUp++;
-                        if (this.state.status === -1) newDown--;
-                    } else {
-                        if (this.state.status !== -1) newDown++;
-                        if (this.state.status === 1) newUp--;
-                    }
-                    this.setState({
-                        status: type === 'up' ? 1 : -1,
-                        up: newUp,
-                        down: newDown
-                    });
-                }).catch(function (error) {
-                    alert('There has been a problem with your fetch operation: ' + error.message);
+                });
+                if (!await checkResponseStatus(response, this.props.auth.removeAuth)) {
+                    return;
+                }
+                const responseJson = await response.json();
+                let newUp = this.state.up;
+                let newDown = this.state.down;
+                if (type === 'up') {
+                    if (this.state.status !== 1) newUp++;
+                    if (this.state.status === -1) newDown--;
+                } else {
+                    if (this.state.status !== -1) newDown++;
+                    if (this.state.status === 1) newUp--;
+                }
+                this.setState({
+                    status: type === 'up' ? 1 : -1,
+                    up: newUp,
+                    down: newDown
                 });
             }
         } catch (error) {

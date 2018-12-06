@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
-import {OrderedSet} from '../utils';
+import {checkResponseStatus, OrderedSet} from '../utils';
 import ArtCard from "../components/art-card";
 import config from "../config";
 import {withAuth} from "../App";
@@ -50,6 +50,9 @@ class FollowingArt extends React.Component {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (!await checkResponseStatus(responseArt, this.props.auth.removeAuth)) {
+                return;
+            }
             const responseArtJsonRaw = await responseArt.json();
             this.setState({
                 searchArt: new OrderedSet(responseArtJsonRaw.data),
@@ -78,6 +81,9 @@ class FollowingArt extends React.Component {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (!await checkResponseStatus(responseArt, this.props.auth.removeAuth)) {
+                return;
+            }
             const responseArtJsonRaw = await responseArt.json();
             this.setState(previousState => ({
                 searchArt: previousState.searchArt.union(responseArtJsonRaw.data),

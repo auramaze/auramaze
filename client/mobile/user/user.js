@@ -29,23 +29,17 @@ class User extends React.Component {
         switch (route.key) {
             case 'profile':
                 return (
-                    <UserIndex id={this.state.id}
-                               token={this.state.token}
-                               fontLoaded={this.props.screenProps.fontLoaded}
+                    <UserIndex fontLoaded={this.props.screenProps.fontLoaded}
                                navigation={this.props.navigation}/>
                 );
             case 'art':
                 return (
-                    <FollowingArt id={this.state.id}
-                                  token={this.state.token}
-                                  fontLoaded={this.props.screenProps.fontLoaded}
+                    <FollowingArt fontLoaded={this.props.screenProps.fontLoaded}
                                   navigation={this.props.navigation}/>
                 );
             case 'artizen':
                 return (
-                    <FollowingArtizen id={this.state.id}
-                                      token={this.state.token}
-                                      fontLoaded={this.props.screenProps.fontLoaded}
+                    <FollowingArtizen fontLoaded={this.props.screenProps.fontLoaded}
                                       navigation={this.props.navigation}/>
                 );
             default:

@@ -10,7 +10,7 @@ import {
 import AutoHeightImage from "react-native-auto-height-image";
 import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
-import {OrderedSet} from "../utils";
+import {checkResponseStatus, OrderedSet} from "../utils";
 import ActivityCard from "../components/activity-card";
 import {withAuth} from "../App";
 
@@ -83,6 +83,9 @@ class UserIndex extends React.Component {
                     'Authorization': `Bearer ${token}`
                 },
             });
+            if (!await checkResponseStatus(timelineInfo, this.props.auth.removeAuth)) {
+                return;
+            }
             const timelineInfoJson = await timelineInfo.json();
             this.setState({timeline: new OrderedSet(timelineInfoJson.data), next: timelineInfoJson.next});
         }
@@ -110,6 +113,9 @@ class UserIndex extends React.Component {
                     'Authorization': `Bearer ${token}`
                 },
             });
+            if (!await checkResponseStatus(response, this.props.auth.removeAuth)) {
+                return;
+            }
             const responseJsonRaw = await response.json();
             this.setState(previousState => ({
                 timeline: previousState.timeline.union(responseJsonRaw.data),

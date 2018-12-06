@@ -4,7 +4,7 @@ import edit from "../assets/icons/edit-regular.png";
 import cross from "../assets/icons/times-solid.png";
 import AutoHeightImage from "react-native-auto-height-image";
 import {Input} from "react-native-elements";
-import {convertTextToDraftjsContent} from "../utils";
+import {checkResponseStatus, convertTextToDraftjsContent} from "../utils";
 import config from "../config.json";
 import {withAuth} from "../App";
 
@@ -34,7 +34,7 @@ class TitleBar extends React.Component {
             if (!id) {
                 alert('Please log in to use this function!')
             } else {
-                fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}`, {
+                const response = await fetch(`${config.API_ENDPOINT}/${itemType}/${itemId}/${textType}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -42,20 +42,15 @@ class TitleBar extends React.Component {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({content: convertTextToDraftjsContent(this.state.review), rating: null})
-                }).then(function (response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Review fail.');
-                    }
-                }).then((responseJson) => {
-                    this.setState(previousState => (
-                        {isEditing: !previousState.isEditing}
-                    ));
-                    this.props.reloadFunc();
-                }).catch(function (error) {
-                    alert('There has been a problem with your fetch operation: ' + error.message);
                 });
+                if (!await checkResponseStatus(response, this.props.auth.removeAuth)) {
+                    return;
+                }
+                const responseJson = await response.json();
+                this.setState(previousState => (
+                    {isEditing: !previousState.isEditing}
+                ));
+                this.props.reloadFunc();
             }
         } catch (error) {
             alert(error);

@@ -9,7 +9,7 @@
       "ios",
       "android"
     ],
-    "version": "1.3.4",
+    "version": "1.3.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -33,7 +33,7 @@
     },
     "android": {
       "package": "org.auramaze.auramaze",
-      "versionCode": 3
+      "versionCode": 4
     },
     "facebookScheme": "fb317848092335619",
     "facebookAppId": "317848092335619",
