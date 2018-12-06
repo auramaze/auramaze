@@ -97,13 +97,12 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             # rotations = [lambda x: x]
 
             # crop image
-            crops = [lambda x: x,
-                     lambda x: crop_by_scale(x, 0.9),
-                     lambda x: crop_by_scale(x, 0.8),
-                     lambda x: crop_by_scale(x, 0.7)]
-
             # crops = [lambda x: x,
-            #          lambda x: crop_by_scale(x, 0.9)]
+            #          lambda x: crop_by_scale(x, 0.9),
+            #          lambda x: crop_by_scale(x, 0.8),
+            #          lambda x: crop_by_scale(x, 0.7)]
+
+            crops = [lambda x: x]
 
             orientations = product(rotations, crops)
 
@@ -129,7 +128,7 @@ class AuraMazeSignatureES(SignatureDatabaseBase):
             transformed_record = make_record(transformed_img, self.gis, self.k, self.N)
             transformed_records.append(transformed_record)
 
-        res = self.search_multiple_records_single_query(transformed_records)
+        res = self.search_multiple_records(transformed_records)
         for record in res:
             for field in record['image']:
                 new_dict = {key: record['image'][field][key] for key in record['image'][field] if
