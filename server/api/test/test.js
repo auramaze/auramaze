@@ -248,7 +248,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(parseInt(res.body.id) === 100000001);
+                        assert(parseInt(res.body.id) === 100000001 && !res.body.salt && !res.body.hash);
                     })
                     .end(done);
             });

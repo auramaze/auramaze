@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const {param, query, body, oneOf, validationResult} = require('express-validator/check');
 const crypto = require('crypto');
+const _ = require('lodash');
 const common = require('./common');
 const rds = common.rds;
 const s3 = common.s3;
@@ -26,7 +27,7 @@ router.get('/:id', oneOf([
             next(err);
         } else {
             if (result.length) {
-                res.json(result[0]);
+                res.json(_.omit(result[0], ['salt', 'hash']));
                 if (userId) {
                     common.insertHistory(userId, 'artizen', result[0].id);
                 }
@@ -58,7 +59,7 @@ router.post('/batch', [
             }
             else {
                 res.json(data.reduce((result, item) => {
-                    result[item.id] = item; //a, b, c
+                    result[item.id] = _.omit(item, ['salt', 'hash']);
                     return result;
                 }, {}));
             }
