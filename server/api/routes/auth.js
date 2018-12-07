@@ -8,6 +8,7 @@ const authMobile = require('./auth.mobile');
 const {auth} = require('./auth.config');
 const common = require('./common');
 const rds = common.rds;
+const _ = require('lodash');
 // Setting up the passport middleware for each of the OAuth providers
 const googleAuth = passport.authenticate('google', {scope: ['profile']});
 const facebookAuth = passport.authenticate('facebook');
@@ -43,17 +44,19 @@ router.post('/signup', [
         return res.status(400).json({errors: errors.array()});
     }
 
-    const {salt, hash} = common.generateSaltHash(req.body.password);
-    req.body.salt = salt;
-    req.body.hash = hash;
+    const body = _.pick(req.body, ['name', 'username', 'email', 'password', 'avatar']);
 
-    common.putItem('artizen', req.body, (err, result, fields) => {
+    const {salt, hash} = common.generateSaltHash(body.password);
+    body.salt = salt;
+    body.hash = hash;
+
+    common.putItem('artizen', body, (err, result, fields) => {
         if (err) {
             /* istanbul ignore else */
             if (err.code === 'ER_DUP_ENTRY') {
                 res.status(400).json({
                     code: 'EMAIL_EXIST',
-                    message: `Email already exists: ${req.body.email}`
+                    message: `Email already exists: ${body.email}`
                 });
             } else {
                 next(err);

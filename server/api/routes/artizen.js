@@ -168,7 +168,7 @@ router.put('/:username', [
         body('type').isArray().isLength({min: 1}),
         body('type').not().exists()
     ])
-], (req, res, next) => {
+], auth.required, auth.admin, (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});

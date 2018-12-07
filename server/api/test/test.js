@@ -1,3 +1,4 @@
+require('dotenv').config();
 const request = require('supertest');
 const app = require('../server');
 const uuidv4 = require('uuid/v4');
@@ -467,451 +468,634 @@ describe('Test api', function () {
         describe('PUT artizen', () => {
             it('should put artizen data with username', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': username,
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${username}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name A' && !res.body.type);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': username,
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${username}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name A' && !res.body.type);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should put artizen data with username and types', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${username}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name B' && res.body.type.length === 2);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${username}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name B' && res.body.type.length === 2);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should put artizen data without username', done => {
                 let id;
-                request(app).put('/v1/artizen/000000000')
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(!res.body.username);
-                        id = res.body.id;
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${id}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name A' && !res.body.type);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/000000000')
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(!res.body.username);
+                            id = res.body.id;
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${id}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name A' && !res.body.type);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should report invalid url', done => {
-                request(app).put('/v1/artizen/100000000')
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/100000000')
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should not have username', done => {
                 const username = randomUsername();
-                request(app).put('/v1/artizen/000000000')
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/000000000')
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid data with unequal usernames', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': randomUsername()
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': randomUsername()
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid data without default name', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'en': 'This is name A'},
-                        'username': username
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'en': 'This is name A'},
+                            'username': username
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report duplicate username', done => {
                 const username = 'nga';
-                request(app).put('/v1/artizen/nga')
-                    .send({
-                        'name': {'default': 'NGA', 'en': 'NGA'},
-                        'username': username
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.code === 'USERNAME_EXIST');
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/nga')
+                        .send({
+                            'name': {'default': 'NGA', 'en': 'NGA'},
+                            'username': username
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.code === 'USERNAME_EXIST');
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('PUT art', () => {
             it('should put art data and relations', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                        'username': username,
-                        'completion_year': 'c.1517',
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/) && res.body.completion_year === 'c.1517');
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/art/${username}/artizen`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.length === 3);
-                                for (let item of res.body) {
-                                    assert((item.type === 'artist' && item.data.length === 2) || (item.type === 'museum' && item.data.length === 1) || (item.type === 'exhibition' && item.data.length === 1 && parseInt(item.data[0].id) === 100000012));
-                                }
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                            'username': username,
+                            'completion_year': 'c.1517',
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/) && res.body.completion_year === 'c.1517');
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/art/${username}/artizen`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.length === 3);
+                                    for (let item of res.body) {
+                                        assert((item.type === 'artist' && item.data.length === 2) || (item.type === 'museum' && item.data.length === 1) || (item.type === 'exhibition' && item.data.length === 1 && parseInt(item.data[0].id) === 100000012));
+                                    }
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should add to artizen type', done => {
                 const artizenUsername = randomUsername();
-                request(app).put(`/v1/artizen/${artizenUsername}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': artizenUsername,
-                        'type': ['museum']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(() => {
-                        const artUsername = randomUsername();
-                        request(app).put(`/v1/art/${artUsername}`)
-                            .send({
-                                'title': {'default': 'This is title A', 'en': 'This is title A'},
-                                'username': artUsername,
-                                'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
-                            })
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .end(() => {
-                                request(app).get(`/v1/artizen/${artizenUsername}`)
-                                    .expect(200)
-                                    .expect('Content-Type', /json/)
-                                    .expect(res => {
-                                        assert(res.body.type.length === 2);
-                                    })
-                                    .end(() => {
-                                        request(app).get(`/v1/artizen/${artizenUsername}/art`)
-                                            .expect(200)
-                                            .expect(res => {
-                                                assert(res.body.length === 1);
-                                            })
-                                            .end(done);
-                                    });
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${artizenUsername}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': artizenUsername,
+                            'type': ['museum']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(() => {
+                            const artUsername = randomUsername();
+                            request(app).put(`/v1/art/${artUsername}`)
+                                .send({
+                                    'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                    'username': artUsername,
+                                    'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
+                                })
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .end(() => {
+                                    request(app).get(`/v1/artizen/${artizenUsername}`)
+                                        .expect(200)
+                                        .expect('Content-Type', /json/)
+                                        .expect(res => {
+                                            assert(res.body.type.length === 2);
+                                        })
+                                        .end(() => {
+                                            request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                .expect(200)
+                                                .expect(res => {
+                                                    assert(res.body.length === 1);
+                                                })
+                                                .end(done);
+                                        });
+                                });
+                        });
+                });
             });
 
             it('should not add to artizen type', done => {
                 const artizenUsername = randomUsername();
-                request(app).put(`/v1/artizen/${artizenUsername}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': artizenUsername,
-                        'type': ['museum']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${artizenUsername}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.type.length === 1);
-                            })
-                            .end(() => {
-                                const artUsername = randomUsername();
-                                request(app).put(`/v1/art/${artUsername}`)
-                                    .send({
-                                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                                        'username': artUsername,
-                                        'relations': [{'artizen': artizenUsername, 'type': 'museum'}]
-                                    })
-                                    .expect(200)
-                                    .expect('Content-Type', /json/)
-                                    .end(() => {
-                                        request(app).get(`/v1/artizen/${artizenUsername}`)
-                                            .expect(200)
-                                            .expect('Content-Type', /json/)
-                                            .expect(res => {
-                                                assert(res.body.type.length === 1);
-                                            })
-                                            .end(() => {
-                                                request(app).get(`/v1/artizen/${artizenUsername}/art`)
-                                                    .expect(200)
-                                                    .expect(res => {
-                                                        assert(res.body.length === 1);
-                                                    })
-                                                    .end(done);
-                                            });
-                                    });
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${artizenUsername}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': artizenUsername,
+                            'type': ['museum']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${artizenUsername}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.type.length === 1);
+                                })
+                                .end(() => {
+                                    const artUsername = randomUsername();
+                                    request(app).put(`/v1/art/${artUsername}`)
+                                        .send({
+                                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                            'username': artUsername,
+                                            'relations': [{'artizen': artizenUsername, 'type': 'museum'}]
+                                        })
+                                        .set('Authorization', `Bearer ${token}`)
+                                        .expect(200)
+                                        .expect('Content-Type', /json/)
+                                        .end(() => {
+                                            request(app).get(`/v1/artizen/${artizenUsername}`)
+                                                .expect(200)
+                                                .expect('Content-Type', /json/)
+                                                .expect(res => {
+                                                    assert(res.body.type.length === 1);
+                                                })
+                                                .end(() => {
+                                                    request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                        .expect(200)
+                                                        .expect(res => {
+                                                            assert(res.body.length === 1);
+                                                        })
+                                                        .end(done);
+                                                });
+                                        });
+                                });
+                        });
+                });
             });
 
             it('should put art data without username', done => {
                 let id;
-                request(app).put('/v1/art/00000000')
-                    .send({
-                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(!res.body.username);
-                        id = res.body.id;
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/art/${id}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.title.default === 'This is title A');
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/art/00000000')
+                        .send({
+                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(!res.body.username);
+                            id = res.body.id;
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/art/${id}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.title.default === 'This is title A');
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should report invalid url', done => {
-                request(app).put('/v1/art/10000000')
-                    .send({
-                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/art/10000000')
+                        .send({
+                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should not have username', done => {
                 const username = randomUsername();
-                request(app).put('/v1/art/00000000')
-                    .send({
-                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                        'username': username,
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/art/00000000')
+                        .send({
+                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                            'username': username,
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report USERNAME_EXIST', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title A', 'en': 'This is title A'},
-                        'username': username,
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(200)
-                    .end(() => {
-                        request(app).put(`/v1/art/${username}`)
-                            .send({
-                                'title': {'default': 'This is title A', 'en': 'This is title A'},
-                                'username': username,
-                                'relations': [
-                                    {'artizen': 'nga', 'type': 'museum'},
-                                    {'artizen': 'nga', 'type': 'exhibition'},
-                                    {'artizen': 'caravaggio', 'type': 'artist'},
-                                    {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                            })
-                            .expect(400)
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title A', 'en': 'This is title A'},
+                            'username': username,
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .end(() => {
+                            request(app).put(`/v1/art/${username}`)
+                                .send({
+                                    'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                    'username': username,
+                                    'relations': [
+                                        {'artizen': 'nga', 'type': 'museum'},
+                                        {'artizen': 'nga', 'type': 'exhibition'},
+                                        {'artizen': 'caravaggio', 'type': 'artist'},
+                                        {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                                })
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(400)
+                                .end(done);
+                        });
+                });
             });
 
             it('should report invalid title', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'en': 'This is title B'},
-                        'username': username,
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'en': 'This is title B'},
+                            'username': username,
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid username', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title B', 'en': 'This is title B'},
-                        'username': randomUsername(),
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title B', 'en': 'This is title B'},
+                            'username': randomUsername(),
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid relation', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title C', 'en': 'This is title C'},
-                        'username': username,
-                        'relations': []
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title C', 'en': 'This is title C'},
+                            'username': username,
+                            'relations': []
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid relation', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title D', 'en': 'This is title D'},
-                        'username': username,
-                        'relations': [
-                            {'artizen': '1234', 'type': 'museum'},
-                            {'artizen': 'nga', 'type': '5678'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title D', 'en': 'This is title D'},
+                            'username': username,
+                            'relations': [
+                                {'artizen': '1234', 'type': 'museum'},
+                                {'artizen': 'nga', 'type': '5678'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report RELATED_ARTIZEN_NOT_FOUND', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/art/${username}`)
-                    .send({
-                        'title': {'default': 'This is title E', 'en': 'This is title E'},
-                        'username': username,
-                        'relations': [
-                            {'artizen': 'nga', 'type': 'museum'},
-                            {'artizen': 'notexist', 'type': 'exhibition'},
-                            {'artizen': 'caravaggio', 'type': 'artist'},
-                            {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
-                    })
-                    .expect(404)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.code === 'RELATED_ARTIZEN_NOT_FOUND');
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/art/${username}`)
+                        .send({
+                            'title': {'default': 'This is title E', 'en': 'This is title E'},
+                            'username': username,
+                            'relations': [
+                                {'artizen': 'nga', 'type': 'museum'},
+                                {'artizen': 'notexist', 'type': 'exhibition'},
+                                {'artizen': 'caravaggio', 'type': 'artist'},
+                                {'artizen': 'leonardo-da-vinci', 'type': 'artist'}]
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(404)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.code === 'RELATED_ARTIZEN_NOT_FOUND');
+                        })
+                        .end(done);
+                });
             });
         });
     });
@@ -920,159 +1104,242 @@ describe('Test api', function () {
         describe('DELETE artizen', () => {
             it('should not found deleted artizen', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(200)
-                    .end(() => {
-                        request(app).delete(`/v1/artizen/${username}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .end(() => {
-                                request(app).get(`/v1/artizen/${username}`)
-                                    .expect(404)
-                                    .expect(res => {
-                                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
-                                    })
-                                    .end(done);
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .end(() => {
+                            request(app).delete(`/v1/artizen/${username}`)
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .end(() => {
+                                    request(app).get(`/v1/artizen/${username}`)
+                                        .expect(404)
+                                        .expect(res => {
+                                            assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                                        })
+                                        .end(done);
+                                });
+                        });
+                });
             });
 
             it('should delete artizen by id', done => {
                 const username = randomUsername();
                 let id;
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(200)
-                    .expect(res => {
-                        id = res.body.id;
-                    })
-                    .end(() => {
-                        request(app).delete(`/v1/artizen/${id}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .end(() => {
-                                request(app).get(`/v1/artizen/${id}`)
-                                    .expect(404)
-                                    .expect(res => {
-                                        assert(res.body.code === 'ARTIZEN_NOT_FOUND');
-                                    })
-                                    .end(done);
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect(res => {
+                            id = res.body.id;
+                        })
+                        .end(() => {
+                            request(app).delete(`/v1/artizen/${id}`)
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .end(() => {
+                                    request(app).get(`/v1/artizen/${id}`)
+                                        .expect(404)
+                                        .expect(res => {
+                                            assert(res.body.code === 'ARTIZEN_NOT_FOUND');
+                                        })
+                                        .end(done);
+                                });
+                        });
+                });
             });
 
             it('should delete relations of artizen', done => {
                 const artizenUsername = randomUsername();
-                request(app).put(`/v1/artizen/${artizenUsername}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': artizenUsername,
-                        'type': ['museum']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(() => {
-                        const artUsername = randomUsername();
-                        request(app).put(`/v1/art/${artUsername}`)
-                            .send({
-                                'title': {'default': 'This is title A', 'en': 'This is title A'},
-                                'username': artUsername,
-                                'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
-                            })
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .end(() => {
-                                request(app).delete(`/v1/artizen/${artizenUsername}`)
-                                    .expect(200)
-                                    .end(() => {
-                                        request(app).get(`/v1/art/${artUsername}/artizen`)
-                                            .expect(200)
-                                            .expect('Content-Type', /json/)
-                                            .expect(res => {
-                                                assert(res.body.length === 0);
-                                            })
-                                            .end(done);
-                                    });
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${artizenUsername}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': artizenUsername,
+                            'type': ['museum']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(() => {
+                            const artUsername = randomUsername();
+                            request(app).put(`/v1/art/${artUsername}`)
+                                .send({
+                                    'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                    'username': artUsername,
+                                    'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
+                                })
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .end(() => {
+                                    request(app).delete(`/v1/artizen/${artizenUsername}`)
+                                        .set('Authorization', `Bearer ${token}`)
+                                        .expect(200)
+                                        .end(() => {
+                                            request(app).get(`/v1/art/${artUsername}/artizen`)
+                                                .expect(200)
+                                                .expect('Content-Type', /json/)
+                                                .expect(res => {
+                                                    assert(res.body.length === 0);
+                                                })
+                                                .end(done);
+                                        });
+                                });
+                        });
+                });
             });
 
             it('should not return 404', done => {
-                request(app).delete(`/v1/artizen/${randomUsername()}`).expect(200, done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app)
+                        .delete(`/v1/artizen/${randomUsername()}`)
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200, done);
+                });
             });
 
             it('should report invalid username', done => {
-                request(app).delete('/v1/artizen/as')
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).delete('/v1/artizen/as')
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('DELETE art', () => {
             it('should delete data and relations of art', done => {
                 const artizenUsername = randomUsername();
-                request(app).put(`/v1/artizen/${artizenUsername}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': artizenUsername,
-                        'type': ['museum']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(() => {
-                        const artUsername = randomUsername();
-                        request(app).put(`/v1/art/${artUsername}`)
-                            .send({
-                                'title': {'default': 'This is title A', 'en': 'This is title A'},
-                                'username': artUsername,
-                                'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
-                            })
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .end(() => {
-                                request(app).delete(`/v1/art/${artUsername}`)
-                                    .expect(200)
-                                    .end(() => {
-                                        request(app).get(`/v1/art/${artUsername}`)
-                                            .expect(404)
-                                            .end(() => {
-                                                request(app).get(`/v1/artizen/${artizenUsername}/art`)
-                                                    .expect(200)
-                                                    .expect(res => {
-                                                        assert(res.body.length === 0);
-                                                    })
-                                                    .end(done);
-                                            });
-                                    });
-                            });
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${artizenUsername}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': artizenUsername,
+                            'type': ['museum']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(() => {
+                            const artUsername = randomUsername();
+                            request(app).put(`/v1/art/${artUsername}`)
+                                .send({
+                                    'title': {'default': 'This is title A', 'en': 'This is title A'},
+                                    'username': artUsername,
+                                    'relations': [{'artizen': artizenUsername, 'type': 'exhibition'}]
+                                })
+                                .set('Authorization', `Bearer ${token}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .end(() => {
+                                    request(app).delete(`/v1/art/${artUsername}`)
+                                        .set('Authorization', `Bearer ${token}`)
+                                        .expect(200)
+                                        .end(() => {
+                                            request(app).get(`/v1/art/${artUsername}`)
+                                                .expect(404)
+                                                .end(() => {
+                                                    request(app).get(`/v1/artizen/${artizenUsername}/art`)
+                                                        .expect(200)
+                                                        .expect(res => {
+                                                            assert(res.body.length === 0);
+                                                        })
+                                                        .end(done);
+                                                });
+                                        });
+                                });
+                        });
+                });
             });
 
             it('should not return 404', done => {
-                request(app).delete(`/v1/art/${randomUsername()}`).expect(200, done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app)
+                        .delete(`/v1/art/${randomUsername()}`)
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200, done);
+                });
             });
 
             it('should report invalid username', done => {
-                request(app).delete('/v1/art/as')
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app)
+                        .delete('/v1/art/as')
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
     });
@@ -1360,7 +1627,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.data.length===0);
+                        assert(res.body.data.length === 0);
                     })
                     .end(done);
             });
@@ -1519,7 +1786,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.data.length===0);
+                        assert(res.body.data.length === 0);
                     })
                     .end(done);
             });
@@ -1679,7 +1946,7 @@ describe('Test api', function () {
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .expect(res => {
-                        assert(res.body.data.length===0);
+                        assert(res.body.data.length === 0);
                     })
                     .end(done);
             });
