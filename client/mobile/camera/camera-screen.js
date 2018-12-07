@@ -1,9 +1,9 @@
 import React from 'react';
 import {
     Text, View, TouchableOpacity, Image, Dimensions, Animated,
-    Easing, Platform, StyleSheet
+    Easing, StyleSheet
 } from 'react-native';
-import {Camera, Permissions, ImageManipulator, Location, Constants} from 'expo';
+import {Camera, Permissions, ImageManipulator} from 'expo';
 import camera_button from '../assets/icons/camera-button.png';
 import loading from "../assets/auramaze-logo-white.png";
 import AutoHeightImage from "react-native-auto-height-image";
