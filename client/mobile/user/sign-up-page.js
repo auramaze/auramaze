@@ -98,38 +98,39 @@ class SignUpPage extends React.Component {
     };
 
     _logGoogle = async () => {
-        try {
-            const result = await Expo.Google.logInAsync({
-                androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
-                iosClientId: config.GOOGLE_IOS_CLIENT_ID,
-                scopes: ['profile', 'email'],
-                behavior: 'web'
-            });
+        const result = await Expo.Google.logInAsync({
+            androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
+            androidStandaloneAppClientId: config.GOOGLE_ANDROID_STANDALONE_APP_CLIENT_ID,
+            iosClientId: config.GOOGLE_IOS_CLIENT_ID,
+            iosStandaloneAppClientId: config.GOOGLE_IOS_STANDALONE_APP_CLIENT_ID,
+            scopes: ['profile', 'email'],
+        });
 
-            if (result.type === 'success') {
-                const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-                    headers: {Authorization: `Bearer ${result.accessToken}`},
-                });
-                const profile = await response.json();
-                const auth = await fetch(`${config.API_ENDPOINT}/auth/google/mobile`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(profile)
-                });
-                if (auth.ok) {
-                    const authJson = await auth.json();
-                    await this._setSignUpData(authJson);
-                } else {
-                    throw new Error('Google auth fail.');
-                }
-            } else {
-                // type === 'cancel'
+        if (result.type === 'success') {
+            const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+                headers: {Authorization: `Bearer ${result.accessToken}`},
+            });
+            if (!response.ok) {
+                alert('Google Login Error');
+                return;
             }
-        } catch ({message}) {
-            alert(`Google Login Error: ${message}`);
+            const profile = await response.json();
+            const auth = await fetch(`${config.API_ENDPOINT}/auth/google/mobile`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(profile)
+            });
+            if (!auth.ok) {
+                alert('Google Login Error');
+                return;
+            }
+            const authJson = await auth.json();
+            await this._setSignUpData(authJson);
+        } else {
+            // type === 'cancel'
         }
     };
 
@@ -139,7 +140,6 @@ class SignUpPage extends React.Component {
 
 
     render() {
-
         return (
             <View style={styles.mainStruct}>
                 <View style={styles.inputHolder}>
@@ -163,6 +163,17 @@ class SignUpPage extends React.Component {
                     <Text style={[styles.textGenreal, styles.textWhite]}>Create AuraMaze account</Text>
                 </TouchableOpacity>
 
+                <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
+                    <Text style={styles.textWithDivider}>OR</Text>
+                </Hr>
+
+                <TouchableOpacity
+                    style={[styles.buttonGeneral, styles.buttonGoogle]}
+                    onPress={this._logGoogle}
+                    underlayColor='#fff'>
+                    <AutoHeightImage width={20} source={google}/>
+                    <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>
+                </TouchableOpacity>
             </View>
         );
     }
