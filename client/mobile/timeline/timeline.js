@@ -2,12 +2,8 @@ import React from 'react';
 import {
     StyleSheet,
     View,
-    ScrollView,
     FlatList,
-    RefreshControl,
     Dimensions,
-    Text,
-    TouchableOpacity
 } from 'react-native';
 import {Constants} from 'expo';
 import {withNavigation} from 'react-navigation';
@@ -17,8 +13,6 @@ import config from "../config.json";
 import {OrderedSet} from "../utils";
 import {withAuth} from "../App";
 import MessageCard from "../components/message-card";
-import TitleBar from "../components/title-bar";
-import ArtizenCard from "../components/artizen-card";
 
 
 class TimeLine extends React.Component {
