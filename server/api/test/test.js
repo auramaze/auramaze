@@ -468,142 +468,214 @@ describe('Test api', function () {
         describe('PUT artizen', () => {
             it('should put artizen data with username', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': username,
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${username}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name A' && !res.body.type);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': username,
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${username}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name A' && !res.body.type);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should put artizen data with username and types', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${username}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name B' && res.body.type.length === 2);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.username === username && res.body.id.toString().match(/^\d{9}$/));
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${username}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name B' && res.body.type.length === 2);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should put artizen data without username', done => {
                 let id;
-                request(app).put('/v1/artizen/000000000')
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(!res.body.username);
-                        id = res.body.id;
-                    })
-                    .end(() => {
-                        request(app).get(`/v1/artizen/${id}`)
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.name.default === 'This is name A' && !res.body.type);
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/000000000')
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(!res.body.username);
+                            id = res.body.id;
+                        })
+                        .end(() => {
+                            request(app).get(`/v1/artizen/${id}`)
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.name.default === 'This is name A' && !res.body.type);
+                                })
+                                .end(done);
+                        });
+                });
             });
 
             it('should report invalid url', done => {
-                request(app).put('/v1/artizen/100000000')
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/100000000')
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should not have username', done => {
                 const username = randomUsername();
-                request(app).put('/v1/artizen/000000000')
-                    .send({
-                        'name': {'default': 'This is name B', 'en': 'This is name B'},
-                        'username': username,
-                        'type': ['museum', 'exhibition']
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/000000000')
+                        .send({
+                            'name': {'default': 'This is name B', 'en': 'This is name B'},
+                            'username': username,
+                            'type': ['museum', 'exhibition']
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid data with unequal usernames', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'default': 'This is name A', 'en': 'This is name A'},
-                        'username': randomUsername()
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'default': 'This is name A', 'en': 'This is name A'},
+                            'username': randomUsername()
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report invalid data without default name', done => {
                 const username = randomUsername();
-                request(app).put(`/v1/artizen/${username}`)
-                    .send({
-                        'name': {'en': 'This is name A'},
-                        'username': username
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put(`/v1/artizen/${username}`)
+                        .send({
+                            'name': {'en': 'This is name A'},
+                            'username': username
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
 
             it('should report duplicate username', done => {
                 const username = 'nga';
-                request(app).put('/v1/artizen/nga')
-                    .send({
-                        'name': {'default': 'NGA', 'en': 'NGA'},
-                        'username': username
-                    })
-                    .expect(400)
-                    .expect(res => {
-                        assert(res.body.code === 'USERNAME_EXIST');
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).put('/v1/artizen/nga')
+                        .send({
+                            'name': {'default': 'NGA', 'en': 'NGA'},
+                            'username': username
+                        })
+                        .set('Authorization', `Bearer ${token}`)
+                        .expect(400)
+                        .expect(res => {
+                            assert(res.body.code === 'USERNAME_EXIST');
+                        })
+                        .end(done);
+                });
             });
         });
 
