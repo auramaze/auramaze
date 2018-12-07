@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, FlatList, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import TitleBar from "../components/title-bar";
 import Art from "../art/art";
 import {OrderedSet} from '../utils';

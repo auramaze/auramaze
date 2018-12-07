@@ -169,7 +169,7 @@ class Explore extends React.Component {
                                       this.onExploreEndReachedCalledDuringMomentum = false;
                                   }}
                                   keyExtractor={(item, index) => index.toString()}/> :
-                        <View style={{justifyContent: 'center', alignItems: 'center',}}>
+                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
                             <View
                                 style={{
                                     flexDirection: 'row',
