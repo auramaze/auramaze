@@ -2098,6 +2098,110 @@ describe('Test api', function () {
                     .end(done);
             });
         });
+    });
 
+    describe('Auth api', () => {
+        describe('Sign up', () => {
+            it('should create new AuraMaze account', done => {
+                const username = randomUsername();
+                const email = `${username}@example.com`;
+                let id;
+                request(app).post('/v1/auth/signup')
+                    .send({
+                        'email': email,
+                        'password': username
+                    })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .expect(res => {
+                        assert(res.body.username === null && res.body.id && res.body.token);
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).get(`/v1/artizen/${id}`)
+                            .expect(200)
+                            .expect(res => {
+                                assert(res.body.email === email);
+                            }).end(done);
+                    });
+            });
+
+            it('should log in AuraMaze account with 3 methods', done => {
+                const username = randomUsername();
+                const email = `${username}@example.com`;
+                let id;
+                request(app).post('/v1/auth/signup')
+                    .send({
+                        'email': email,
+                        'username': username,
+                        'password': username
+                    })
+                    .expect(200)
+                    .expect(res => {
+                        id = res.body.id;
+                    })
+                    .end(() => {
+                        request(app).post('/v1/auth/login')
+                            .send({
+                                'id': username,
+                                'password': username
+                            })
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(res => {
+                                assert(res.body.username === username);
+                            })
+                            .end(() => {
+                                request(app).post('/v1/auth/login')
+                                    .send({
+                                        'id': email,
+                                        'password': username
+                                    })
+                                    .expect(200)
+                                    .expect('Content-Type', /json/)
+                                    .expect(res => {
+                                        assert(res.body.username === username);
+                                    })
+                                    .end(() => {
+                                        request(app).post('/v1/auth/login')
+                                            .send({
+                                                'id': id,
+                                                'password': username
+                                            })
+                                            .expect(200)
+                                            .expect('Content-Type', /json/)
+                                            .expect(res => {
+                                                assert(res.body.username === username);
+                                            })
+                                            .end(done);
+                                    });
+                            });
+                    });
+            });
+
+            it('should report wrong password', done => {
+                const username = randomUsername();
+                const email = `${username}@example.com`;
+                request(app).post('/v1/auth/signup')
+                    .send({
+                        'email': email,
+                        'username': username,
+                        'password': username
+                    })
+                    .expect(200)
+                    .end(() => {
+                        request(app).post('/v1/auth/login')
+                            .send({
+                                'id': username,
+                                'password': '12345678'
+                            })
+                            .expect(400)
+                            .expect(res => {
+                                assert(res.body.code === 'LOGIN_ERROR');
+                            })
+                            .end(done);
+                    });
+            });
+        });
     });
 });
