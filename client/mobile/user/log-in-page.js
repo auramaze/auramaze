@@ -128,7 +128,7 @@ class LogInPage extends React.Component {
                 return;
             }
             const authJson = await auth.json();
-            await this._setSignUpData(authJson);
+            await this._setLogInData(authJson);
         } else {
             // type === 'cancel'
         }
