@@ -31,6 +31,8 @@ router.get('/google', googleAuth);
 router.get('/facebook', facebookAuth);
 
 // Routes that are triggered on the mobile client
+router.post('/google', [body('id').isInt()], authMobile.google);
+router.post('/facebook', [body('id').isInt()], authMobile.facebook);
 router.post('/google/mobile', [body('id').isInt()], authMobile.google);
 router.post('/facebook/mobile', [body('id').isInt()], authMobile.facebook);
 
