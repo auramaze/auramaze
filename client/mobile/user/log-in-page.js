@@ -61,39 +61,35 @@ class LogInPage extends React.Component {
     };
 
     _logFacebook = async () => {
-        try {
-            const {
-                type,
-                token,
-                expires,
-                permissions,
-                declinedPermissions,
-            } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
-                permissions: ['public_profile']
-            });
-            if (type === 'success') {
-                // Get the user's name using Facebook's Graph API
-                const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
-                const profile = await response.json();
-                const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(profile)
-                });
-                if (auth.ok) {
-                    const authJson = await auth.json();
-                    await this._setLogInData(authJson);
-                } else {
-                    throw new Error('Facebook auth fail.');
-                }
-            } else {
-                // type === 'cancel'
+        const {
+            type,
+            token
+        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
+            permissions: ['public_profile']
+        });
+        if (type === 'success') {
+            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
+            if (!response.ok) {
+                alert('Facebook Login Error');
+                return;
             }
-        } catch ({message}) {
-            alert(`Facebook Login Error: ${message}`);
+            const profile = await response.json();
+            const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(profile)
+            });
+            if (!auth.ok) {
+                alert('Facebook Login Error');
+                return;
+            }
+            const authJson = await auth.json();
+            await this._setLogInData(authJson);
+        } else {
+            // type === 'cancel'
         }
     };
 
@@ -169,6 +165,14 @@ class LogInPage extends React.Component {
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
                     <Text style={[styles.textGenreal, styles.textBlack]}>Log in with Google</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.buttonGeneral, styles.buttonFacebook]}
+                    onPress={this._logFacebook}
+                    underlayColor='#fff'>
+                    <AutoHeightImage width={20} source={facebook}/>
+                    <Text style={[styles.textGenreal, styles.textWhite]}>Log in with Facebook</Text>
                 </TouchableOpacity>
             </View>
         );
