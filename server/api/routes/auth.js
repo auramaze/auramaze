@@ -64,6 +64,7 @@ router.post('/signup', [
                 next(err);
             }
         } else {
+            rds.query('INSERT INTO follow (user_id, artizen_id) VALUES (?, (SELECT id FROM artizen WHERE username="wikipedia"))', [result[0].id]);
             res.json(common.toAuthJSON(result[0]));
         }
     });
