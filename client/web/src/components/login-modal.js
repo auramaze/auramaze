@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from 'react-cookie';
 import {injectIntl, FormattedMessage} from 'react-intl';
-import io from 'socket.io-client'
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
@@ -12,7 +11,6 @@ import {API_URL} from "../common";
 import {API_ENDPOINT} from "../common";
 import './login-modal.css';
 
-const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
 const buttonboxStyle = {
     margin: '20px 0',

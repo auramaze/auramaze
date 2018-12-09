@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from "react-cookie";
 import {injectIntl, FormattedMessage} from 'react-intl';
-import io from 'socket.io-client'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import {faTimesCircle} from '@fortawesome/free-regular-svg-icons';
@@ -15,7 +14,6 @@ import {API_ENDPOINT, API_URL} from "../common";
 import OAuthButtonbox from "./oauth-buttonbox";
 import {validateEmail, validatePassword} from "../utils";
 
-const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
 const buttonboxStyle = {
     margin: '20px 0',
