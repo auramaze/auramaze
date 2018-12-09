@@ -2,9 +2,9 @@ const common = require('./common');
 const rds = common.rds;
 
 exports.google = (req, res, next) => {
-    const {id, name, picture} = req.body;
+    const {id, name, avatar} = req.body;
     rds.query('INSERT INTO artizen (google, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
-        [[id, JSON.stringify({default: name}), picture]],
+        [[id, JSON.stringify({default: name}), avatar]],
         (err, result, fields) => {
             /* istanbul ignore if */
             if (err) {
@@ -26,8 +26,7 @@ exports.google = (req, res, next) => {
 
 
 exports.facebook = (req, res, next) => {
-    const {id, name, picture} = req.body;
-    const avatar = picture && picture.data && picture.data.url;
+    const {id, name, avatar} = req.body;
     rds.query('INSERT INTO artizen (facebook, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
         [[id, JSON.stringify({default: name}), avatar]],
         (err, result, fields) => {

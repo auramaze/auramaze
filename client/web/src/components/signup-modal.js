@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import request from 'request';
 import {withCookies} from "react-cookie";
 import {injectIntl, FormattedMessage} from 'react-intl';
-import io from 'socket.io-client'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import {faTimesCircle} from '@fortawesome/free-regular-svg-icons';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
@@ -15,7 +16,6 @@ import {API_ENDPOINT, API_URL} from "../common";
 import OAuthButtonbox from "./oauth-buttonbox";
 import {validateEmail, validatePassword} from "../utils";
 
-const socket = io(API_URL);
 const inputboxStyle = {margin: '20px 0', width: '100%'};
 const buttonboxStyle = {
     margin: '20px 0',
@@ -79,6 +79,76 @@ class SignupModal extends Component {
             }
         });
     }
+
+    signGoogle = (response) => {
+        const body = {
+            id: response.profileObj.googleId,
+            name: response.profileObj.name,
+            avatar: response.profileObj.imageUrl
+        };
+
+        request.post({
+            url: `${API_ENDPOINT}/auth/google`,
+            body: body,
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                const {cookies} = this.props;
+                if (body.id) {
+                    cookies.set('id', body.id, {path: '/'});
+                } else {
+                    cookies.remove('id', {path: '/'});
+                }
+                if (body.username) {
+                    cookies.set('username', body.username, {path: '/'});
+                } else {
+                    cookies.remove('username', {path: '/'});
+                }
+                if (body.token) {
+                    cookies.set('token', body.token, {path: '/'});
+                } else {
+                    cookies.remove('token', {path: '/'});
+                }
+                this.setState({id: '', password: '', auramazeProcessing: false});
+                window.location.reload();
+            }
+        });
+    };
+
+    signFacebook = (response) => {
+        const body = {
+            id: response.id,
+            name: response.name,
+            avatar: response.picture && response.picture.data && response.picture.data.url
+        };
+
+        request.post({
+            url: `${API_ENDPOINT}/auth/facebook`,
+            body: body,
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                const {cookies} = this.props;
+                if (body.id) {
+                    cookies.set('id', body.id, {path: '/'});
+                } else {
+                    cookies.remove('id', {path: '/'});
+                }
+                if (body.username) {
+                    cookies.set('username', body.username, {path: '/'});
+                } else {
+                    cookies.remove('username', {path: '/'});
+                }
+                if (body.token) {
+                    cookies.set('token', body.token, {path: '/'});
+                } else {
+                    cookies.remove('token', {path: '/'});
+                }
+                this.setState({id: '', password: '', auramazeProcessing: false});
+                window.location.reload();
+            }
+        });
+    };
 
     render() {
         const {intl} = this.props;
@@ -188,8 +258,23 @@ class SignupModal extends Component {
                         </div>
                     </Buttonbox>
                     <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
-                    <OAuthButtonbox signup provider="google" socket={socket}/>
-                    <OAuthButtonbox signup provider="facebook" socket={socket}/>
+                    <GoogleLogin
+                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                        render={renderProps => (
+                            <OAuthButtonbox signup provider="google" onClick={renderProps.onClick}/>
+                        )}
+                        onSuccess={this.signGoogle}
+                        onFailure={() => {
+                        }}
+                    />
+                    <FacebookLogin
+                        appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+                        callback={this.signFacebook}
+                        fields="id,name,picture.width(250)"
+                        render={renderProps => (
+                            <OAuthButtonbox signup provider="facebook" onClick={renderProps.onClick}/>
+                        )}
+                    />
                 </div>
             </Modal>
         );
