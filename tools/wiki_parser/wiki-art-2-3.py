@@ -61,6 +61,6 @@ for artist in artists:
 
 arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 for art in arts:
-    art['image_url'] = art_dict[art['new_username']]
+    art['image_url'] = art_dict[art['username']]
 
 json.dump(arts, open('wiki-art_{}-{}.json'.format(index, next), 'w+'), indent=4)

@@ -47,7 +47,9 @@ arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 for i, art in enumerate(arts):
     old_art_url = art['username']
     old_artist_url = art['artist_url']
-    art['new_artist_url'] = get_new_artist_url(old_artist_url)
-    art['new_username'] = get_new_art_url(old_artist_url, old_art_url)
+    art['old_artist_url'] = old_artist_url
+    art['old_username'] = old_art_url
+    art['artist_url'] = get_new_artist_url(old_artist_url)
+    art['username'] = get_new_art_url(old_artist_url, old_art_url)
 
 json.dump(arts, open('wiki-art_{}-{}.json'.format(index, next), 'w+'), indent=4)

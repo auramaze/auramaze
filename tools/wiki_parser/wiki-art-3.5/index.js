@@ -10,7 +10,7 @@ $(document).ready(function () {
 
         $.each(data, function (key, val) {
             if (satisfy_variants(val)) {
-                status[val.new_username] = 0;
+                status[val.username] = 0;
                 items.push(`
                     <tr>
                         <td width="10%">
@@ -26,9 +26,9 @@ $(document).ready(function () {
                             <iframe width="100%" height="100%" src="${val.wikipedia_url}"></iframe>
                         </td>
                         <td width="5%">
-                            <input username="${val.new_username}" type="radio" name="${val.new_username}" value="0" checked> 0<br>
-                            <input username="${val.new_username}" type="radio" name="${val.new_username}" value="1"> 1<br>
-                            <input username="${val.new_username}" type="radio" name="${val.new_username}" value="2"> 2
+                            <input username="${val.username}" type="radio" name="${val.username}" value="0" checked> 0<br>
+                            <input username="${val.username}" type="radio" name="${val.username}" value="1"> 1<br>
+                            <input username="${val.username}" type="radio" name="${val.username}" value="2"> 2
                         </td>
                     </tr>
                 `);
