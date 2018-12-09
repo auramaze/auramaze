@@ -34,49 +34,7 @@ const providerLogo = {google: google, facebook: facebook};
 class OAuthButtonbox extends Component {
     constructor(props) {
         super(props);
-        this.state = {processing: false};
     }
-
-    componentDidMount() {
-        const {socket, provider} = this.props;
-
-        socket.on(provider, user => {
-            this.popup.close();
-            this.onAuth(user);
-        })
-    }
-
-    checkPopup() {
-        const check = setInterval(() => {
-            const {popup} = this;
-            if (!popup || popup.closed || popup.closed === undefined) {
-                clearInterval(check);
-                this.setState({processing: false})
-            }
-        }, 1000)
-    }
-
-    openPopup() {
-        const {provider, socket} = this.props;
-        const width = 600, height = 600;
-        const left = (window.innerWidth / 2) - (width / 2);
-        const top = (window.innerHeight / 2) - (height / 2);
-        const url = `${API_ENDPOINT}/auth/${provider}?socketId=${socket.id}`;
-
-        return window.open(url, '',
-            `toolbar=no, location=no, directories=no, status=no, menubar=no, 
-      scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
-      height=${height}, top=${top}, left=${left}`
-        )
-    }
-
-    startAuth = () => {
-        if (!this.state.processing) {
-            this.popup = this.openPopup();
-            this.checkPopup();
-            this.setState({processing: true})
-        }
-    };
 
     onAuth(user) {
         const {cookies} = this.props;
@@ -102,8 +60,7 @@ class OAuthButtonbox extends Component {
         return (
             <Buttonbox
                 style={oauthButtonboxStyle[provider]}
-                processing={this.state.processing}
-                onClick={this.startAuth}
+                onClick={this.props.onClick}
             >
                 <div style={oauthInnerStyle[provider]}>
                     <img src={providerLogo[provider]} alt={provider}

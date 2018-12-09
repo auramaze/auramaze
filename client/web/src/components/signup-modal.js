@@ -5,6 +5,7 @@ import {injectIntl, FormattedMessage} from 'react-intl';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import {faTimesCircle} from '@fortawesome/free-regular-svg-icons';
+import GoogleLogin from 'react-google-login';
 import Modal from './modal';
 import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
@@ -26,6 +27,10 @@ const auramazeButtonboxStyle = Object.assign({
     backgroundColor: '#cdcdcd',
     color: '#666666'
 }, buttonboxStyle);
+
+const responseGoogle = (response) => {
+    console.log(response);
+}
 
 class SignupModal extends Component {
     constructor(props) {
@@ -77,6 +82,41 @@ class SignupModal extends Component {
             }
         });
     }
+
+    signGoogle = (response) => {
+        const body = {
+            id: response.profileObj.googleId,
+            name: response.profileObj.name,
+            picture: response.profileObj.imageUrl
+        };
+
+        request.post({
+            url: `${API_ENDPOINT}/auth/google`,
+            body: body,
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                const {cookies} = this.props;
+                if (body.id) {
+                    cookies.set('id', body.id, {path: '/'});
+                } else {
+                    cookies.remove('id', {path: '/'});
+                }
+                if (body.username) {
+                    cookies.set('username', body.username, {path: '/'});
+                } else {
+                    cookies.remove('username', {path: '/'});
+                }
+                if (body.token) {
+                    cookies.set('token', body.token, {path: '/'});
+                } else {
+                    cookies.remove('token', {path: '/'});
+                }
+                this.setState({id: '', password: '', auramazeProcessing: false});
+                window.location.reload();
+            }
+        });
+    };
 
     render() {
         const {intl} = this.props;
@@ -185,6 +225,18 @@ class SignupModal extends Component {
                                 }}><FormattedMessage id="app.signup.auramaze"/></span>
                         </div>
                     </Buttonbox>
+                    <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
+                    <GoogleLogin
+                        clientId="340126114858-n6rlvgkbb1qt10qtcvclq0b93qtfrsfq.apps.googleusercontent.com"
+                        render={renderProps => (
+                            <OAuthButtonbox signup provider="google" onClick={renderProps.onClick}/>
+                        )}
+                        buttonText="Login"
+                        onSuccess={this.signGoogle}
+                        onFailure={() => {
+                            alert('Google Login Error');
+                        }}
+                    />
                 </div>
             </Modal>
         );
