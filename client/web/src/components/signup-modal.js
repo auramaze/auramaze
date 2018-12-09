@@ -187,9 +187,6 @@ class SignupModal extends Component {
                                 }}><FormattedMessage id="app.signup.auramaze"/></span>
                         </div>
                     </Buttonbox>
-                    <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
-                    <OAuthButtonbox signup provider="google" socket={socket}/>
-                    <OAuthButtonbox signup provider="facebook" socket={socket}/>
                 </div>
             </Modal>
         );

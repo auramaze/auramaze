@@ -114,9 +114,6 @@ class LoginModal extends Component {
                                 }}><FormattedMessage id="app.login.auramaze"/></span>
                         </div>
                     </Buttonbox>
-                    <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
-                    <OAuthButtonbox login provider="google" socket={socket}/>
-                    <OAuthButtonbox login provider="facebook" socket={socket}/>
                 </div>
             </Modal>
         );
