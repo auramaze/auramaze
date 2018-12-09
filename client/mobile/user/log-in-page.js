@@ -74,6 +74,7 @@ class LogInPage extends React.Component {
                 return;
             }
             const profile = await response.json();
+            profile.avatar = profile.picture && profile.picture.data && profile.picture.data.url;
             const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
                 method: 'POST',
                 headers: {
@@ -111,6 +112,7 @@ class LogInPage extends React.Component {
                 return;
             }
             const profile = await response.json();
+            profile.avatar = profile.picture;
             const auth = await fetch(`${config.API_ENDPOINT}/auth/google`, {
                 method: 'POST',
                 headers: {
