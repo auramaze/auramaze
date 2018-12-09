@@ -7,6 +7,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import random
+random.seed(10)
 import re
 from unidecode import unidecode
 
