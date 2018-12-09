@@ -1,0 +1,11 @@
+beautifulsoup4==4.6.3
+bs4==0.0.1
+certifi==2018.10.15
+chardet==3.0.4
+fuzzywuzzy==0.17.0
+idna==2.7
+python-Levenshtein==0.12.0
+requests==2.20.1
+tqdm==4.28.1
+Unidecode==1.0.23
+urllib3==1.24.1
