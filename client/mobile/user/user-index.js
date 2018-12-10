@@ -185,7 +185,8 @@ class UserIndex extends React.Component {
                                          style={{
                                              marginTop: Dimensions.get('window').width * 80 / 375,
                                              marginBottom: 30,
-                                             marginHorizontal: 'auto'
+                                             marginHorizontal: 'auto',
+                                             borderRadius: Dimensions.get('window').width * 14 / 750
                                          }}/>
                         <TouchableOpacity
                             style={[styles.buttonGeneral, styles.buttonAuramaze]}

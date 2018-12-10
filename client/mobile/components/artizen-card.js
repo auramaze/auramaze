@@ -1,11 +1,18 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import noImage from '../assets/icons/no-image-artizen.png';
+import {StyleSheet, View, Text, Image, Dimensions} from 'react-native';
+import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
+import {noImage} from '../utils';
 
 class ArtizenCard extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {path: null};
+    }
+
+    async componentDidMount() {
+        const path = await CacheManager.get(this.props.source).getPath();
+        this.setState({path});
     }
 
     render() {
@@ -48,14 +55,11 @@ class ArtizenCard extends React.Component {
             }
         });
 
-
         return (
             <View style={styles.cardStyle}>
                 <View style={styles.cardHeader}>
                     <View style={styles.avatarHolder}>
-                        <Image
-                            source={this.props.source ? {uri: this.props.source} : noImage}
-                            style={styles.imageStyle}/>
+                        <CachedImage style={styles.imageStyle} uri={this.state.path || noImage}/>
                     </View>
                     <Text style={styles.headerText}>{this.props.name}</Text>
                 </View>

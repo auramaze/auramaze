@@ -1,17 +1,21 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
-
-import AutoHeightImage from 'react-native-auto-height-image';
+import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
 import config from "../config";
 import {withAuth} from "../App";
-import {checkResponseStatus} from "../utils";
+import {checkResponseStatus, getImageDefaultHeight, getImageDefaultUrl, getImageDefaultWidth, noImage} from "../utils";
 
 class ArtInfo extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {isFollowing: this.props.isFollowing};
+        this.state = {isFollowing: this.props.isFollowing, path: null};
         this._handleFollow = this._handleFollow.bind(this);
+    }
+
+    async componentDidMount() {
+        const path = await CacheManager.get(getImageDefaultUrl(this.props.image)).getPath();
+        this.setState({path});
     }
 
     async _handleFollow(type) {
@@ -71,10 +75,14 @@ class ArtInfo extends React.Component {
             }
         });
 
+        console.log(this.state.path);
+
         return (
             <View style={styles.viewStyle}>
-                <AutoHeightImage width={Dimensions.get('window').width}
-                                 source={{uri: this.props.url}}/>
+                <CachedImage style={{
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').width * getImageDefaultHeight(this.props.image) / getImageDefaultWidth(this.props.image)
+                }} uri={this.state.path || noImage}/>
                 <Text style={[styles.textStyle, styles.textTitleStyle]}>
                     {this.props.title}
                 </Text>

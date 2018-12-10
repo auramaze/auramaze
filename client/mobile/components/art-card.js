@@ -1,12 +1,19 @@
 import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
-import noImage from "../assets/icons/no-image-artizen.png";
+import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
+import {getImageDefaultHeight, getImageDefaultUrl, getImageDefaultWidth, noImage} from "../utils";
 
 class ArtCard extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {path: null};
+    }
+
+    async componentDidMount() {
+        const path = await CacheManager.get(getImageDefaultUrl(this.props.image)).getPath();
+        this.setState({path});
     }
 
     render() {
@@ -35,8 +42,10 @@ class ArtCard extends React.Component {
 
         return (
             <View style={styles.cardStyle}>
-                <AutoHeightImage width={Dimensions.get('window').width * 5 / 6}
-                                 source={this.props.source? {uri: this.props.source} : noImage}/>
+                <CachedImage style={{
+                    width: Dimensions.get('window').width * 5 / 6,
+                    height: Dimensions.get('window').width * 5 / 6 * getImageDefaultHeight(this.props.image) / getImageDefaultWidth(this.props.image)
+                }} uri={this.state.path || noImage}/>
                 <Text style={[styles.generalText, styles.headerText]}>{this.props.artName}</Text>
                 {this.props.artistName ? <Text style={[styles.generalText, styles.infoText]}>
                     {this.props.artistName} {this.props.compYear ? "," + this.props.compYear : ""}
