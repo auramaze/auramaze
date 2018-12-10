@@ -7,12 +7,11 @@ import {
     Keyboard,
     Text, TouchableOpacity, FlatList
 } from 'react-native';
-import AutoHeightImage from "react-native-auto-height-image";
-import logoIcon from "../assets/auramaze-logo.png";
 import config from "../config";
-import {checkResponseStatus, OrderedSet} from "../utils";
+import {checkResponseStatus, noImage, logoIcon, OrderedSet} from "../utils";
 import ActivityCard from "../components/activity-card";
 import {withAuth} from "../App";
+import {CacheManager, Image as CachedImage} from "react-native-expo-image-cache";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -67,7 +66,8 @@ class UserIndex extends React.Component {
         if (id) {
             const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`);
             const responseJson = await response.json();
-            this.setState({avatar: responseJson.avatar});
+            const avatar = responseJson.avatar ? await CacheManager.get(responseJson.avatar).getPath() : null;
+            this.setState({avatar});
         }
     }
 
@@ -180,14 +180,14 @@ class UserIndex extends React.Component {
             <View style={styles.backPage}>
                 <FlatList data={[
                     <View style={styles.profileHeader}>
-                        <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                         source={this.state.avatar ? {uri: this.state.avatar} : logoIcon}
-                                         style={{
-                                             marginTop: Dimensions.get('window').width * 80 / 375,
-                                             marginBottom: 30,
-                                             marginHorizontal: 'auto',
-                                             borderRadius: Dimensions.get('window').width * 14 / 750
-                                         }}/>
+                        <CachedImage style={{
+                            width: Dimensions.get('window').width * 2 / 7,
+                            height: Dimensions.get('window').width * 2 / 7,
+                            marginTop: Dimensions.get('window').width * 80 / 375,
+                            marginBottom: 30,
+                            marginHorizontal: 'auto',
+                            borderRadius: Dimensions.get('window').width * 14 / 750
+                        }} uri={this.state.avatar || logoIcon}/>
                         <TouchableOpacity
                             style={[styles.buttonGeneral, styles.buttonAuramaze]}
                             onPress={() => this.props.navigation.push('UserSettings', {
@@ -205,7 +205,7 @@ class UserIndex extends React.Component {
                                 authorId={item.author_id}
                                 source={item.author_avatar}
                                 artId={item.art_id}
-                                artSource={item.art_image && item.art_image.default.url}
+                                artImage={item.art_image}
                                 artName={item.art_name && item.art_name.default}
                                 name={item.author_name && item.author_name.default}
                                 content={item.content}
@@ -223,7 +223,7 @@ class UserIndex extends React.Component {
                                 authorId={item.author_id}
                                 source={item.author_avatar}
                                 artizenId={item.artizen_id}
-                                artizenSource={item.artizen_avatar}
+                                artizenAvatar={item.artizen_avatar}
                                 artizenName={item.artizen_name && item.artizen_name.default}
                                 name={item.author_name && item.author_name.default}
                                 content={item.content}

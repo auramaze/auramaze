@@ -20,7 +20,8 @@ class ArtizenInfo extends React.Component {
     }
 
     async componentDidMount() {
-        const path = await CacheManager.get(this.props.url).getPath();
+        const uri = this.props.url;
+        const path = uri ? await CacheManager.get(uri).getPath() : null;
         this.setState({path});
     }
 

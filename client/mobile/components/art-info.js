@@ -14,7 +14,8 @@ class ArtInfo extends React.Component {
     }
 
     async componentDidMount() {
-        const path = await CacheManager.get(getImageDefaultUrl(this.props.image)).getPath();
+        const uri = getImageDefaultUrl(this.props.image);
+        const path = uri ? await CacheManager.get(uri).getPath() : null;
         this.setState({path});
     }
 

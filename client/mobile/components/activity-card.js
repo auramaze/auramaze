@@ -1,19 +1,34 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
 import getRNDraftJSBlocks from 'react-native-draftjs-render';
 import ReviewFooter from "./review-footer";
-import AutoHeightImage from 'react-native-auto-height-image';
-import noImage from "../assets/icons/no-image-artizen.png";
+import {getImageDefaultHeight, getImageDefaultUrl, getImageDefaultWidth, noImage} from "../utils";
 import Moment from 'react-moment';
 
 class ActivityCard extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {authorPath: null, artPath: null, artizenPath: null};
     }
 
-    state = {isSpeaking: false};
+    async componentDidMount() {
+        const uri = this.props.source;
+        const authorPath = uri ? await CacheManager.get(uri).getPath() : null;
+        this.setState({authorPath});
+        if (this.props.artId) {
+            const uri = getImageDefaultUrl(this.props.artImage);
+            const artPath = uri ? await CacheManager.get(uri).getPath() : null;
+            this.setState({artPath});
+        }
+        if (this.props.artizenId) {
+            const uri = this.props.artizenAvatar;
+            const artizenPath = uri ? await CacheManager.get(uri).getPath() : null;
+            this.setState({artizenPath});
+        }
+    }
 
     render() {
         const styles = StyleSheet.create({
@@ -104,9 +119,7 @@ class ActivityCard extends React.Component {
                             artizenId: this.props.authorId
                         })}>
                         <View style={styles.avatarHolder}>
-                            <Image
-                                source={this.props.source ? {uri: this.props.source} : noImage}
-                                style={styles.avatarStyle}/>
+                            <CachedImage style={styles.avatarStyle} uri={this.state.authorPath || noImage}/>
                         </View>
                     </TouchableOpacity>
                     <Text style={styles.headerText} numberOfLines={1}>{this.props.name}</Text>
@@ -117,17 +130,23 @@ class ActivityCard extends React.Component {
                         onPress={() => this.props.navigation.push('Art', {
                             artId: this.props.artId
                         })}>
-                        <AutoHeightImage style={styles.imageStyle} width={Dimensions.get('window').width}
-                                         source={{uri: this.props.artSource}}/>
+                        <CachedImage style={{
+                            width: Dimensions.get('window').width,
+                            height: Dimensions.get('window').width * getImageDefaultHeight(this.props.artImage) / getImageDefaultWidth(this.props.artImage),
+                            marginHorizontal: -10,
+                            marginVertical: 10
+                        }} uri={this.state.artPath || noImage}/>
                     </TouchableOpacity> :
                     <TouchableOpacity
                         onPress={() => this.props.navigation.push('Artizen', {
                             artizenId: this.props.artizenId
                         })}>
                         <View style={styles.artizenViewStyle}>
-                            <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
-                                             style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
-                                             source={this.props.artizenSource ? {uri: this.props.artizenSource} : noImage}/>
+                            <CachedImage style={{
+                                height: Dimensions.get('window').width * 2 / 5,
+                                width: Dimensions.get('window').width * 2 / 5,
+                                borderRadius: Dimensions.get('window').width * 14 / 750
+                            }} uri={this.state.artizenPath || noImage}/>
                             <Text style={styles.artizenNameStyle}>
                                 {this.props.artizenName}
                             </Text>

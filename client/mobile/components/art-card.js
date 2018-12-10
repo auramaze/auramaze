@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
-import AutoHeightImage from "react-native-auto-height-image";
 import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
 import {getImageDefaultHeight, getImageDefaultUrl, getImageDefaultWidth, noImage} from "../utils";
 
@@ -12,7 +11,8 @@ class ArtCard extends React.Component {
     }
 
     async componentDidMount() {
-        const path = await CacheManager.get(getImageDefaultUrl(this.props.image)).getPath();
+        const uri = getImageDefaultUrl(this.props.image);
+        const path = uri ? await CacheManager.get(uri).getPath() : null;
         this.setState({path});
     }
 

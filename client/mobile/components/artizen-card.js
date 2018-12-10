@@ -11,7 +11,8 @@ class ArtizenCard extends React.Component {
     }
 
     async componentDidMount() {
-        const path = await CacheManager.get(this.props.source).getPath();
+        const uri = this.props.source;
+        const path = uri ? await CacheManager.get(uri).getPath() : null;
         this.setState({path});
     }
 
