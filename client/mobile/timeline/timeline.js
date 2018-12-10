@@ -118,7 +118,7 @@ class TimeLine extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
-                paddingTop: Constants.statusBarHeight,
+                marginTop: Constants.statusBarHeight,
                 height: Dimensions.get('window').height
             },
             backPage: {

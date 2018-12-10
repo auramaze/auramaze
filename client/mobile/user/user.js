@@ -76,7 +76,7 @@ class User extends React.Component {
                     initialLayout={{
                         width: Dimensions.get('window').width,
                     }}
-                    style={{paddingTop: Constants.statusBarHeight}}
+                    style={{marginTop: Constants.statusBarHeight}}
                 />
             )
         }

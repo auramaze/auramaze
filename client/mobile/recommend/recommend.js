@@ -104,7 +104,7 @@ class Recommend extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1, alignItems: 'center',
-                paddingTop: Constants.statusBarHeight,
+                marginTop: Constants.statusBarHeight,
             },
             mainContext: {
                 paddingHorizontal: 15, justifyContent: 'center',
