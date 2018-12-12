@@ -68,20 +68,13 @@ class SignUpPage extends React.Component {
             permissions: ['public_profile']
         });
         if (type === 'success') {
-            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,picture.width(250)`);
-            if (!response.ok) {
-                alert('Facebook Login Error');
-                return;
-            }
-            const profile = await response.json();
-            profile['avatar'] = profile['picture'] && profile['picture']['data'] && profile['picture']['data']['url'];
             const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(profile)
+                body: JSON.stringify({access_token: token})
             });
             if (!auth.ok) {
                 alert('Facebook Login Error');
@@ -104,22 +97,13 @@ class SignUpPage extends React.Component {
         });
 
         if (result.type === 'success') {
-            const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-                headers: {Authorization: `Bearer ${result.accessToken}`},
-            });
-            if (!response.ok) {
-                alert('Google Login Error');
-                return;
-            }
-            const profile = await response.json();
-            profile['avatar'] = profile['picture'];
             const auth = await fetch(`${config.API_ENDPOINT}/auth/google`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(profile)
+                body: JSON.stringify({access_token: result.accessToken})
             });
             if (!auth.ok) {
                 alert('Google Login Error');
