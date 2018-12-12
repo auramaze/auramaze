@@ -82,9 +82,7 @@ class SignupModal extends Component {
 
     signGoogle = (response) => {
         const body = {
-            id: response.profileObj.googleId,
-            name: response.profileObj.name,
-            avatar: response.profileObj.imageUrl
+            access_token: response.accessToken,
         };
 
         request.post({
@@ -117,9 +115,7 @@ class SignupModal extends Component {
 
     signFacebook = (response) => {
         const body = {
-            id: response.id,
-            name: response.name,
-            avatar: response.picture && response.picture.data && response.picture.data.url
+            access_token: response.accessToken,
         };
 
         request.post({
