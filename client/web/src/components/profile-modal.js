@@ -124,7 +124,7 @@ class ProfileModal extends Component {
                 window.location.reload();
             } else if (response.statusCode === 400) {
                 if (body.code === 'GOOGLE_EXIST') {
-                    alert('Google already binded to another account!');
+                    alert('Google already bound to another account!');
                 }
                 if (body.code === 'GOOGLE_ACCESS_TOKEN_INVALID') {
                     alert('Google access token invalid!');
@@ -150,7 +150,7 @@ class ProfileModal extends Component {
                 window.location.reload();
             } else if (response.statusCode === 400) {
                 if (body.code === 'FACEBOOK_EXIST') {
-                    alert('Facebook already binded to another account!');
+                    alert('Facebook already bound to another account!');
                 }
                 if (body.code === 'FACEBOOK_ACCESS_TOKEN_INVALID') {
                     alert('Facebook access token invalid!');
@@ -302,7 +302,7 @@ class ProfileModal extends Component {
                             </Buttonbox>
                             <div style={{width: '100%', height: 0, borderBottom: 'solid 1px #666666'}}/>
                             {this.state.google ?
-                                <OAuthButtonbox binded provider="google" onClick={() => {
+                                <OAuthButtonbox bound provider="google" onClick={() => {
                                 }}/> :
                                 <GoogleLogin
                                     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
@@ -315,7 +315,7 @@ class ProfileModal extends Component {
                                     }}
                                 />}
                             {this.state.facebook ?
-                                <OAuthButtonbox binded provider="facebook" onClick={() => {
+                                <OAuthButtonbox bound provider="facebook" onClick={() => {
                                 }}/> :
                                 <FacebookLogin
                                     appId={process.env.REACT_APP_FACEBOOK_APP_ID}

@@ -56,7 +56,7 @@ class OAuthButtonbox extends Component {
     }
 
     render() {
-        const {provider, signup, bind, binded} = this.props;
+        const {provider, signup, bind, bound} = this.props;
         return (
             <Buttonbox
                 style={oauthButtonboxStyle[provider]}
@@ -69,7 +69,7 @@ class OAuthButtonbox extends Component {
                         display: 'inlineBlock',
                         verticalAlign: 'middle'
                     }}><FormattedMessage
-                        id={`app.${signup ? 'signup' : bind ? 'bind' : binded ? 'binded' : 'login'}.${provider}`}/></span>
+                        id={`app.${signup ? 'signup' : bind ? 'bind' : bound ? 'bound' : 'login'}.${provider}`}/></span>
                 </div>
             </Buttonbox>
         );
