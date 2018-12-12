@@ -7,10 +7,11 @@ import {
     Keyboard,
     Text,
     TouchableOpacity,
+    ScrollView,
     Linking
 } from 'react-native';
 import AutoHeightImage from "react-native-auto-height-image";
-import logoIcon from "../assets/auramaze-logo.png";
+import logoIcon from "../assets/auramaze.png";
 import SignUpPage from "./sign-up-page";
 import LogInPage from "./log-in-page";
 import WebLinks from './web-links';
@@ -66,32 +67,33 @@ class BlankUser extends React.Component {
 
         return (
             <DismissKeyboard>
-                <View style={styles.mainStruct}>
+                <ScrollView>
+                    <View style={styles.mainStruct}>
+                        <AutoHeightImage width={Dimensions.get('window').width / 3}
+                                         source={logoIcon}
+                                         style={{
+                                             marginTop: Dimensions.get('window').width * 80 / 375,
+                                             marginBottom: 10
+                                         }}/>
 
-                    <AutoHeightImage width={Dimensions.get('window').width * 2 / 7}
-                                     source={logoIcon}
-                                     style={{
-                                         marginTop: Dimensions.get('window').width * 80 / 375,
-                                         marginBottom: 30
-                                     }}/>
+                        {this.state.pageIsSign ?
+                            <SignUpPage/> :
+                            <LogInPage/>}
 
-                    {this.state.pageIsSign ?
-                        <SignUpPage/> :
-                        <LogInPage/>}
-
-                    <TouchableOpacity
-                        style={styles.signupScreenButton}
-                        onPress={_onPressButton}
-                        underlayColor='#fff'>
-                        <Text style={styles.signupText}>
-                            {this.state.pageIsSign === true ?
-                                "Already have an account? Log In" :
-                                "No account? Sign up"}
-                        </Text>
-                    </TouchableOpacity>
-                    <View style={{height: 20}}/>
-                    <WebLinks/>
-                </View>
+                        <TouchableOpacity
+                            style={styles.signupScreenButton}
+                            onPress={_onPressButton}
+                            underlayColor='#fff'>
+                            <Text style={styles.signupText}>
+                                {this.state.pageIsSign === true ?
+                                    "Already have an account? Log In" :
+                                    "No account? Sign up"}
+                            </Text>
+                        </TouchableOpacity>
+                        <View style={{height: 20}}/>
+                        <WebLinks/>
+                    </View>
+                </ScrollView>
             </DismissKeyboard>
         );
 
