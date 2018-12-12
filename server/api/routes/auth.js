@@ -3,44 +3,153 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const {body, oneOf, validationResult} = require('express-validator/check');
-const authController = require('./auth.controller');
-const authMobile = require('./auth.mobile');
-const {auth} = require('./auth.config');
 const common = require('./common');
 const rds = common.rds;
 const _ = require('lodash');
-// Setting up the passport middleware for each of the OAuth providers
-const googleAuth = passport.authenticate('google', {scope: ['profile']});
-const facebookAuth = passport.authenticate('facebook');
+const request = require('request');
 
-// Routes that are triggered by the callbacks from each OAuth provider once 
-// the user has authenticated successfully
-router.get('/google/callback', googleAuth, authController.google);
-router.get('/facebook/callback', facebookAuth, authController.facebook);
+router.post('/google', oneOf([
+    body('access_token').exists(),
+    body('id').isInt()
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
 
-// This custom middleware allows us to attach the socket id to the session
-// With that socket id we can send back the right user info to the right 
-// socket
-router.use((req, res, next) => {
-    req.session.socketId = req.query.socketId;
-    next();
+    let {id, name, avatar, access_token} = req.body;
+    if (access_token) {
+        request.get({
+            url: 'https://www.googleapis.com/userinfo/v2/me',
+            headers: {Authorization: `Bearer ${access_token}`},
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                id = body.id;
+                name = body.name;
+                avatar = body.picture;
+                rds.query('INSERT INTO artizen (google, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+                    [[id, JSON.stringify({default: name}), avatar]],
+                    (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
+                                /* istanbul ignore if */
+                                if (err) {
+                                    next(err);
+                                } else {
+                                    const {id, username} = result[0];
+                                    const user = common.toAuthJSON({id, username});
+                                    res.json(user);
+                                }
+                            });
+                        }
+                    });
+            } else {
+                res.status(400).json({
+                    code: 'GOOGLE_ACCESS_TOKEN_INVALID',
+                    message: `Google access token invalid: ${req.body.access_token}`
+                });
+            }
+        });
+    } else {
+        rds.query('INSERT INTO artizen (google, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+            [[id, JSON.stringify({default: name}), avatar]],
+            (err, result, fields) => {
+                /* istanbul ignore if */
+                if (err) {
+                    next(err);
+                } else {
+                    rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            const {id, username} = result[0];
+                            const user = common.toAuthJSON({id, username});
+                            res.json(user);
+                        }
+                    });
+                }
+            });
+    }
 });
 
-// Routes that are triggered on the web client
-router.get('/google', googleAuth);
-router.get('/facebook', facebookAuth);
+router.post('/facebook', oneOf([
+    body('access_token').exists(),
+    body('id').isInt()
+]), (req, res, next) => {
+    const errors = validationResult(req);
+    if (!validationResult(req).isEmpty()) {
+        return res.status(400).json({errors: errors.array()});
+    }
 
-// Routes that are triggered on the mobile client
-router.post('/google', [body('id').isInt()], authMobile.google);
-router.post('/facebook', [body('id').isInt()], authMobile.facebook);
-router.post('/google/mobile', [body('id').isInt()], authMobile.google);
-router.post('/facebook/mobile', [body('id').isInt()], authMobile.facebook);
+    let {id, name, avatar, access_token} = req.body;
+    if (access_token) {
+        request.get({
+            url: `https://graph.facebook.com/me?access_token=${access_token}&fields=id,name,picture.width(250)`,
+            json: true
+        }, (error, response, body) => {
+            if (response && response.statusCode === 200) {
+                id = body.id;
+                name = body.name;
+                avatar = body.picture && body.picture.data && body.picture.data.url;
+                rds.query('INSERT INTO artizen (facebook, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+                    [[id, JSON.stringify({default: name}), avatar]],
+                    (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
+                                /* istanbul ignore if */
+                                if (err) {
+                                    next(err);
+                                } else {
+                                    const {id, username} = result[0];
+                                    const user = common.toAuthJSON({id, username});
+                                    res.json(user);
+                                }
+                            });
+                        }
+                    });
+            } else {
+                res.status(400).json({
+                    code: 'FACEBOOK_ACCESS_TOKEN_INVALID',
+                    message: `Facebook access token invalid: ${req.body.access_token}`
+                });
+            }
+        });
+    } else {
+        rds.query('INSERT INTO artizen (facebook, name, avatar) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)',
+            [[id, JSON.stringify({default: name}), avatar]],
+            (err, result, fields) => {
+                /* istanbul ignore if */
+                if (err) {
+                    next(err);
+                } else {
+                    rds.query('SELECT id, username from artizen where id=LAST_INSERT_ID()', (err, result, fields) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            next(err);
+                        } else {
+                            const {id, username} = result[0];
+                            const user = common.toAuthJSON({id, username});
+                            res.json(user);
+                        }
+                    });
+                }
+            });
+    }
+});
 
 // Sign up with email
 router.post('/signup', [
     body('email').isEmail(),
     body('password').custom(common.validatePassword).withMessage('Invalid password')
-], auth.optional, (req, res, next) => {
+], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
@@ -78,7 +187,7 @@ router.post('/login', [
         body('id').custom(common.validateUsername).withMessage('Invalid username')
     ]),
     body('password').custom(common.validatePassword).withMessage('Invalid password')
-], auth.optional, (req, res, next) => {
+], (req, res, next) => {
     const errors = validationResult(req);
     if (!validationResult(req).isEmpty()) {
         return res.status(400).json({errors: errors.array()});
@@ -99,20 +208,6 @@ router.post('/login', [
             }
         }
     })(req, res, next);
-});
-
-// Test route only authenticated users have access
-router.get('/current', auth.required, (req, res, next) => {
-    const {payload: {id}} = req;
-
-    rds.query('SELECT * FROM artizen WHERE id=?', [id], (err, result, fields) => {
-        /* istanbul ignore else */
-        if (!err && result[0]) {
-            return res.json(result[0]);
-        } else {
-            return res.status(400);
-        }
-    });
 });
 
 module.exports = router;

@@ -34,7 +34,7 @@ class ReviewCard extends React.Component {
                 borderColor: '#666666', borderWidth: 1,
             },
             headphoneStyle: {
-                tintColor: '#666666'
+                // tintColor: '#666666'
             },
             headphoneStyleGif: {
                 tintColor: 'tomato'
@@ -52,7 +52,7 @@ class ReviewCard extends React.Component {
                 alignItems: 'center',
             },
             headerText: {
-                fontSize: 20, width: this.props.isIntro ? 195 : 225,
+                fontSize: 20, width: this.props.isIntro ? 170 : 225,
                 color: '#666666',
                 fontFamily: this.props.fontLoaded ? ('century-gothic-regular') : 'Cochin',
                 marginHorizontal: 15
@@ -104,25 +104,25 @@ class ReviewCard extends React.Component {
                                 }
                             });
                         }}>
-                        {this.state.isSpeaking && this.props.isIntro ?
-                            <AutoHeightImage width={30} source={headphone_gif} style={styles.headphoneStyleGif}/> :
-                            <AutoHeightImage width={30} source={headphone} style={styles.headphoneStyle}/>}
-                            </TouchableOpacity> : null}
+                            {this.state.isSpeaking && this.props.isIntro ?
+                                <AutoHeightImage width={50} source={headphone_gif} style={styles.headphoneStyleGif}/> :
+                                <AutoHeightImage width={50} source={headphone} style={styles.headphoneStyle}/>}
+                        </TouchableOpacity> : null}
 
-                        </View>
-                        <View style={styles.bodyView}>
+                </View>
+                <View style={styles.bodyView}>
                     {this.props.content &&
-                        getRNDraftJSBlocks({
+                    getRNDraftJSBlocks({
                         contentState: this.props.content
                     })}
-                        </View>
-                        <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
-                        itemType={this.props.itemType} itemId={this.props.itemId}
-                        textType={this.props.textType} textId={this.props.textId}/>
-                        </View>
-                        )
-                    }
+                </View>
+                <ReviewFooter up={this.props.up} down={this.props.down} status={this.props.status}
+                              itemType={this.props.itemType} itemId={this.props.itemId}
+                              textType={this.props.textType} textId={this.props.textId}/>
+            </View>
+        )
+    }
 
-                    }
+}
 
-                    export default withNavigation(ReviewCard);
+export default withNavigation(ReviewCard);

@@ -265,7 +265,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>
@@ -295,7 +295,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>
@@ -326,7 +326,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>
@@ -357,7 +357,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>
@@ -379,7 +379,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>
@@ -401,7 +401,7 @@ class Artizen extends React.Component {
                                     <ArtCard
                                         artName={item.title.default}
                                         artistName={this.state.artizenName}
-                                        source={item.image && item.image.default ? item.image.default.url : ""}
+                                        image={item.image}
                                         compYear={item.completionYear ? item.completionYear : ""}
                                         id={item.id}
                                         fontLoaded={fontLoadStatus}/>

@@ -31,7 +31,7 @@ class WebLinks extends React.Component {
             <View style={styles.webLinks}>
                 <TouchableOpacity
                     onPress={() => {
-                        Linking.openURL('https://beta.auramaze.org/privacy');
+                        Linking.openURL('https://auramaze.org/privacy');
                     }}
                     underlayColor='#fff'>
                     <Text style={styles.webLink}>
@@ -41,7 +41,7 @@ class WebLinks extends React.Component {
                 <Text>|</Text>
                 <TouchableOpacity
                     onPress={() => {
-                        Linking.openURL('https://beta.auramaze.org/#contact');
+                        Linking.openURL('https://auramaze.org/#contact');
                     }}
                     underlayColor='#fff'>
                     <Text style={styles.webLink}>

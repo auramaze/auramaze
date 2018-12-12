@@ -1,9 +1,5 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
 import {SearchBar} from 'react-native-elements';
-import ArtCard from "../components/art-card";
-import ArtizenCard from "../components/artizen-card";
-import Art from "../art/art";
 import config from "../config.json";
 import {OrderedSet} from 'immutable';
 

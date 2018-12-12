@@ -118,7 +118,7 @@ class TimeLine extends React.Component {
         const styles = StyleSheet.create({
             mainStruct: {
                 flex: 1,
-                paddingTop: Constants.statusBarHeight,
+                marginTop: Constants.statusBarHeight,
                 height: Dimensions.get('window').height
             },
             backPage: {
@@ -146,7 +146,7 @@ class TimeLine extends React.Component {
                                                   authorId={item.author_id}
                                                   source={item.author_avatar}
                                                   artId={item.art_id}
-                                                  artSource={item.art_image && item.art_image.default.url}
+                                                  artImage={item.art_image}
                                                   artName={item.art_name && item.art_name.default}
                                                   name={item.author_name && item.author_name.default}
                                                   content={item.content}
@@ -165,7 +165,7 @@ class TimeLine extends React.Component {
                                                       authorId={item.author_id}
                                                       source={item.author_avatar}
                                                       artizenId={item.artizen_id}
-                                                      artizenSource={item.artizen_avatar}
+                                                      artizenAvatar={item.artizen_avatar}
                                                       artizenName={item.artizen_name && item.artizen_name.default}
                                                       name={item.author_name && item.author_name.default}
                                                       content={item.content}

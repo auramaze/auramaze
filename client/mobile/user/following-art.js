@@ -132,7 +132,7 @@ class FollowingArt extends React.Component {
                                                         })}>
                                           <ArtCard artName={item.title.default}
                                                    artistName={item.artist ? item.artist.default : ""}
-                                                   source={item.image && item.image.default ? item.image.default.url : null}
+                                                   image={item.image}
                                                    compYear={item.completionYear ? item.completionYear : ""}
                                                    id={item.id}
                                                    fontLoaded={fontLoadStatus}

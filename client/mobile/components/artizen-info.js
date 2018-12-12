@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Image, Text, Dimensions, TouchableOpacity} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
-import noImage from '../assets/icons/no-image-artizen.png';
+import {Image as CachedImage, CacheManager} from "react-native-expo-image-cache";
 import artist from '../assets/icons/artizen-type/artist.png';
 import critic from '../assets/icons/artizen-type/critic.png';
 import exhibition from '../assets/icons/artizen-type/exhibition.png';
@@ -10,14 +9,20 @@ import museum from '../assets/icons/artizen-type/museum.png';
 import style from '../assets/icons/artizen-type/style.png';
 import config from "../config.json";
 import {withAuth} from "../App";
-import {checkResponseStatus} from "../utils";
+import {checkResponseStatus, noImage} from "../utils";
 
 class ArtizenInfo extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {isFollowing: this.props.isFollowing};
+        this.state = {isFollowing: this.props.isFollowing, path: null};
         this._handleFollow = this._handleFollow.bind(this);
+    }
+
+    async componentDidMount() {
+        const uri = this.props.url;
+        const path = uri ? await CacheManager.get(uri).getPath() : null;
+        this.setState({path});
     }
 
     async _handleFollow(type) {
@@ -87,9 +92,11 @@ class ArtizenInfo extends React.Component {
 
         return (
             <View style={styles.viewStyle}>
-                <AutoHeightImage width={Dimensions.get('window').width * 2 / 5}
-                                 style={{borderRadius: Dimensions.get('window').width * 14 / 750}}
-                                 source={this.props.url ? {uri: this.props.url} : noImage}/>
+                <CachedImage style={{
+                    height: Dimensions.get('window').width * 2 / 5,
+                    width: Dimensions.get('window').width * 2 / 5,
+                    borderRadius: Dimensions.get('window').width * 14 / 750
+                }} uri={this.state.path || noImage}/>
                 <Text style={[styles.textStyle, styles.textTitleStyle]}>
                     {this.props.title}
                 </Text>

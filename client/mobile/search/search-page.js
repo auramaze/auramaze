@@ -116,7 +116,7 @@ class SearchPage extends React.Component {
                                       titleName: item.title.default,
                                   })}>
                     <ArtCard artName={item.title.default}
-                             source={item.image && item.image.default ? item.image.default.url : null}
+                             image={item.image}
                              compYear={item.completionYear ? item.completionYear : ""}
                              id={item.id}
                              fontLoaded={fontLoadStatus}

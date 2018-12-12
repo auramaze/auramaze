@@ -7,12 +7,13 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import random
+random.seed(10)
 import re
 from unidecode import unidecode
 
 prev = 0
 next = 1
-index = 0
+index = 14
 
 def get_new_artist_url(artist_url):
     if artist_url == '':
@@ -46,6 +47,8 @@ arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 for i, art in enumerate(arts):
     old_art_url = art['username']
     old_artist_url = art['artist_url']
+    art['old_artist_url'] = old_artist_url
+    art['old_username'] = old_art_url
     art['artist_url'] = get_new_artist_url(old_artist_url)
     art['username'] = get_new_art_url(old_artist_url, old_art_url)
 

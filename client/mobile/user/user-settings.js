@@ -220,6 +220,7 @@ class UserSettings extends React.Component {
                                                      source={this.state.avatar ? {uri: this.state.avatar} : noImage}
                                                      style={{
                                                          marginBottom: 10,
+                                                         borderRadius: Dimensions.get('window').width * 14 / 750
                                                      }}/>
                                 </TouchableOpacity>
                                 <Input containerStyle={styles.inputPofile}

@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 prev = 1
 next = 2
-index = 2
+index = 14
 
 arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 for i, art in enumerate(arts):
