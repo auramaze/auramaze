@@ -7,7 +7,6 @@ import Inputbox from './inputbox';
 import Buttonbox from './buttonbox';
 import OAuthButtonbox from './oauth-buttonbox';
 import auramaze from '../static/logo-white-frame.svg';
-import {API_URL} from "../common";
 import {API_ENDPOINT} from "../common";
 import './login-modal.css';
 import GoogleLogin from "react-google-login";

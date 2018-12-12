@@ -282,6 +282,7 @@ class Artizen extends Component {
                                      textType="review"/>
                         <ProfileModal id={this.state.artizen.id} username={this.state.artizen.username}
                                       name={this.state.artizen.name} email={this.state.artizen.email}
+                                      google={this.state.artizen.google} facebook={this.state.artizen.facebook}
                                       show={this.state.profileModalShow} handleClose={() => {
                             this.setState({profileModalShow: false})
                         }}/>

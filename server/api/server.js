@@ -21,6 +21,7 @@ const timelineRouter = require('./routes/timeline');
 const exploreRouter = require('./routes/explore');
 const slideRouter = require('./routes/slide');
 const authRouter = require('./routes/auth');
+const bindRouter = require('./routes/bind');
 const passportInit = require('./routes/passport.init');
 
 const app = express();
@@ -54,6 +55,7 @@ app.use('/v1/timeline', timelineRouter);
 app.use('/v1/explore', exploreRouter);
 app.use('/v1/slide', slideRouter);
 app.use('/v1/auth', authRouter);
+app.use('/v1/bind', bindRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
