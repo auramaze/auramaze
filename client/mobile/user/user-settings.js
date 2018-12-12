@@ -18,6 +18,8 @@ import {withNavigation} from 'react-navigation';
 import WebLinks from './web-links';
 import noImage from '../assets/icons/no-image-artizen.png';
 import {checkResponseStatus} from "../utils";
+import google from "../assets/icons/google.png";
+import facebook from "../assets/icons/facebook.png";
 
 const DismissKeyboard = ({children}) => (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -35,6 +37,8 @@ class UserSettings extends React.Component {
             username: null,
             email: null,
             avatar: null,
+            google: null,
+            facebook: null,
             oldPassword: '',
             newPassword: '',
             newPasswordConfirm: '',
@@ -42,29 +46,20 @@ class UserSettings extends React.Component {
         };
     }
 
-    componentDidMount() {
-        const {id} = this.props.auth;
-        if (id) {
-            fetch(`${config.API_ENDPOINT}/artizen/${id}`).then(response => response.json()).then(responseJson => {
-                this.setState({
-                    name: responseJson.name,
-                    username: responseJson.username,
-                    email: responseJson.email,
-                    avatar: responseJson.avatar,
-                });
-            });
-        }
+    async componentDidMount() {
+        await this.fetchUserInfo();
     };
 
-    async fetchUserInfo() {
+    fetchUserInfo = async () => {
         const {id} = this.props.auth;
 
         if (id) {
             const response = await fetch(`${config.API_ENDPOINT}/artizen/${id}`);
             const responseJson = await response.json();
-            this.setState({avatar: responseJson.avatar});
+            const {name, username, email, avatar, google, facebook} = responseJson;
+            this.setState({name, username, email, avatar, google, facebook});
         }
-    }
+    };
 
     toggleEditProfile = () => {
         if (this.state.editProfile) {
@@ -100,7 +95,8 @@ class UserSettings extends React.Component {
         });
         if (await checkResponseStatus(response, this.props.auth.removeAuth)) {
             alert('Edit profile success!');
-            const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {});
+            const refreshUserIndex = this.props.navigation.getParam('refreshUserIndex', async () => {
+            });
             await refreshUserIndex();
         } else {
             alert('Unable to edit profile!');
@@ -147,6 +143,66 @@ class UserSettings extends React.Component {
         }
     };
 
+    _bindFacebook = async () => {
+        const authToken = this.props.auth.token;
+
+        const {
+            type,
+            token
+        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
+            permissions: ['public_profile']
+        });
+        if (type === 'success') {
+            const auth = await fetch(`${config.API_ENDPOINT}/bind/facebook`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({access_token: token})
+            });
+            if (!auth.ok) {
+                alert('Facebook Bind Error');
+                return;
+            }
+            this.setState({facebook: true});
+        } else {
+            // type === 'cancel'
+        }
+    };
+
+    _bindGoogle = async () => {
+        const authToken = this.props.auth.token;
+
+        const result = await Expo.Google.logInAsync({
+            androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
+            androidStandaloneAppClientId: config.GOOGLE_ANDROID_STANDALONE_APP_CLIENT_ID,
+            iosClientId: config.GOOGLE_IOS_CLIENT_ID,
+            iosStandaloneAppClientId: config.GOOGLE_IOS_STANDALONE_APP_CLIENT_ID,
+            scopes: ['profile', 'email'],
+        });
+
+        if (result.type === 'success') {
+            const auth = await fetch(`${config.API_ENDPOINT}/bind/google`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({access_token: result.accessToken})
+            });
+            if (!auth.ok) {
+                alert('Google Bind Error');
+                return;
+            }
+            this.setState({google: true});
+        } else {
+            // type === 'cancel'
+        }
+    };
+
     render() {
         const styles = StyleSheet.create({
             mainStruct: {
@@ -178,6 +234,14 @@ class UserSettings extends React.Component {
                 marginVertical: 10,
                 borderWidth: 1
             },
+            buttonGoogle: {
+                backgroundColor: 'white',
+                borderColor: '#666666'
+            },
+            buttonFacebook: {
+                backgroundColor: '#3B5998',
+                borderColor: '#3B5998'
+            },
             buttonSubmit: {
                 backgroundColor: '#666666',
                 borderColor: '#666666',
@@ -197,6 +261,7 @@ class UserSettings extends React.Component {
                 fontSize: 15
             },
             textWhite: {color: 'white'},
+            textBlack: {color: 'black'},
             inputHolder: {
                 width: Dimensions.get('window').width,
                 alignItems: 'center', justifyContent: 'center'
@@ -294,6 +359,34 @@ class UserSettings extends React.Component {
                             underlayColor='#fff'>
                             <Text style={[styles.textGeneral, styles.textWhite]}>Change Password</Text>
                         </TouchableOpacity>
+
+                        {this.state.google ?
+                            <View
+                                style={[styles.buttonGeneral, styles.buttonGoogle]}>
+                                <AutoHeightImage width={20} source={google}/>
+                                <Text style={[styles.textGeneral, styles.textBlack]}>Google Associated</Text>
+                            </View> :
+                            <TouchableOpacity
+                                style={[styles.buttonGeneral, styles.buttonGoogle]}
+                                onPress={this._bindGoogle}
+                                underlayColor='#fff'>
+                                <AutoHeightImage width={20} source={google}/>
+                                <Text style={[styles.textGeneral, styles.textBlack]}>Enable Login with Google</Text>
+                            </TouchableOpacity>}
+
+                        {this.state.facebook ?
+                            <View
+                                style={[styles.buttonGeneral, styles.buttonFacebook]}>
+                                <AutoHeightImage width={20} source={facebook}/>
+                                <Text style={[styles.textGeneral, styles.textWhite]}>Facebook Associated</Text>
+                            </View> :
+                            <TouchableOpacity
+                                style={[styles.buttonGeneral, styles.buttonFacebook]}
+                                onPress={this._bindFacebook}
+                                underlayColor='#fff'>
+                                <AutoHeightImage width={20} source={facebook}/>
+                                <Text style={[styles.textGeneral, styles.textWhite]}>Enable Login with Facebook</Text>
+                            </TouchableOpacity>}
 
                         <TouchableOpacity
                             style={[styles.buttonGeneral, styles.buttonLogOut]}

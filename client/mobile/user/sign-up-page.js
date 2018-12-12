@@ -142,7 +142,7 @@ class SignUpPage extends React.Component {
                     onPress={this._createAuraMaze}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={logoIcon} style={{tintColor: 'white'}}/>
-                    <Text style={[styles.textGenreal, styles.textWhite]}>Create AuraMaze account</Text>
+                    <Text style={[styles.textGeneral, styles.textWhite]}>Create AuraMaze account</Text>
                 </TouchableOpacity>
 
                 <Hr color='#666666' width={1} style={{paddingHorizontal: 20}}>
@@ -154,7 +154,7 @@ class SignUpPage extends React.Component {
                     onPress={this._logGoogle}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={google}/>
-                    <Text style={[styles.textGenreal, styles.textBlack]}>Sign up with Google</Text>
+                    <Text style={[styles.textGeneral, styles.textBlack]}>Sign up with Google</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -162,7 +162,7 @@ class SignUpPage extends React.Component {
                     onPress={this._logFacebook}
                     underlayColor='#fff'>
                     <AutoHeightImage width={20} source={facebook}/>
-                    <Text style={[styles.textGenreal, styles.textWhite]}>Sign up with Facebook</Text>
+                    <Text style={[styles.textGeneral, styles.textWhite]}>Sign up with Facebook</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         borderColor: '#666666',
         borderRadius: 5
     },
-    textGenreal: {
+    textGeneral: {
         textAlign: 'center',
         paddingHorizontal: 10,
         fontSize: 15

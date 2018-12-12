@@ -32,7 +32,7 @@ router.post('/google', [
                         if (err.code === 'ER_DUP_ENTRY') {
                             res.status(400).json({
                                 code: 'GOOGLE_EXIST',
-                                message: 'Google already binded to another account'
+                                message: 'Google already bound to another account'
                             });
                         } else {
                             next(err);
@@ -76,7 +76,7 @@ router.post('/facebook', oneOf([
                         if (err.code === 'ER_DUP_ENTRY') {
                             res.status(400).json({
                                 code: 'FACEBOOK_EXIST',
-                                message: 'Facebook already binded to another account'
+                                message: 'Facebook already bound to another account'
                             });
                         } else {
                             next(err);
