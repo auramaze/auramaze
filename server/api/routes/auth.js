@@ -19,7 +19,7 @@ router.post('/google', oneOf([
 
     let {id, name, avatar, access_token} = req.body;
     if (access_token) {
-        request.post({
+        request.get({
             url: 'https://www.googleapis.com/userinfo/v2/me',
             headers: {Authorization: `Bearer ${access_token}`},
             json: true
