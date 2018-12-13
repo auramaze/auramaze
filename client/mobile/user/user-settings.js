@@ -143,35 +143,6 @@ class UserSettings extends React.Component {
         }
     };
 
-    _bindFacebook = async () => {
-        const authToken = this.props.auth.token;
-
-        const {
-            type,
-            token
-        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
-            permissions: ['public_profile']
-        });
-        if (type === 'success') {
-            const auth = await fetch(`${config.API_ENDPOINT}/bind/facebook`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${authToken}`
-                },
-                body: JSON.stringify({access_token: token})
-            });
-            if (!auth.ok) {
-                alert('Facebook Bind Error');
-                return;
-            }
-            this.setState({facebook: true});
-        } else {
-            // type === 'cancel'
-        }
-    };
-
     _bindGoogle = async () => {
         const authToken = this.props.auth.token;
 
@@ -198,6 +169,35 @@ class UserSettings extends React.Component {
                 return;
             }
             this.setState({google: true});
+        } else {
+            // type === 'cancel'
+        }
+    };
+
+    _bindFacebook = async () => {
+        const authToken = this.props.auth.token;
+
+        const {
+            type,
+            token
+        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
+            permissions: ['public_profile']
+        });
+        if (type === 'success') {
+            const auth = await fetch(`${config.API_ENDPOINT}/bind/facebook`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({access_token: token})
+            });
+            if (!auth.ok) {
+                alert('Facebook Bind Error');
+                return;
+            }
+            this.setState({facebook: true});
         } else {
             // type === 'cancel'
         }

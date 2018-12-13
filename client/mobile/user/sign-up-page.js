@@ -60,33 +60,6 @@ class SignUpPage extends React.Component {
         }
     };
 
-    _logFacebook = async () => {
-        const {
-            type,
-            token
-        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
-            permissions: ['public_profile']
-        });
-        if (type === 'success') {
-            const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({access_token: token})
-            });
-            if (!auth.ok) {
-                alert('Facebook Login Error');
-                return;
-            }
-            const authJson = await auth.json();
-            await this._setSignUpData(authJson);
-        } else {
-            // type === 'cancel'
-        }
-    };
-
     _logGoogle = async () => {
         const result = await Expo.Google.logInAsync({
             androidClientId: config.GOOGLE_ANDROID_CLIENT_ID,
@@ -107,6 +80,33 @@ class SignUpPage extends React.Component {
             });
             if (!auth.ok) {
                 alert('Google Login Error');
+                return;
+            }
+            const authJson = await auth.json();
+            await this._setSignUpData(authJson);
+        } else {
+            // type === 'cancel'
+        }
+    };
+
+    _logFacebook = async () => {
+        const {
+            type,
+            token
+        } = await Expo.Facebook.logInWithReadPermissionsAsync(config.FACEBOOK_APP_ID, {
+            permissions: ['public_profile']
+        });
+        if (type === 'success') {
+            const auth = await fetch(`${config.API_ENDPOINT}/auth/facebook`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({access_token: token})
+            });
+            if (!auth.ok) {
+                alert('Facebook Login Error');
                 return;
             }
             const authJson = await auth.json();
