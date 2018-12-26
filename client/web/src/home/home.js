@@ -174,10 +174,6 @@ class Home extends Component {
                                 </div>
                                 <div
                                     className="library-cards-mobile"
-                                    style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
-                                    onClick={() => {
-                                        this.setState({clickCount: this.state.clickCount + 1});
-                                    }}
                                 >
                                     <div className="library-card-item">
                                         <Fade bottom when={this.state.clickCount > 0}>
