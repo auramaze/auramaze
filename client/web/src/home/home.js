@@ -20,6 +20,7 @@ class Home extends Component {
         this.column2 = React.createRef();
         this.demo = React.createRef();
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.increaseClickCount = this.increaseClickCount.bind(this);
     }
 
     componentDidMount() {
@@ -35,6 +36,10 @@ class Home extends Component {
         this.setState({
             demoHeight: this.column1.current && this.column2.current && this.demo.current ? Math.max(this.column1.current.clientHeight, this.column2.current.clientHeight, this.demo.current.clientHeight) + 150 : 0
         });
+    }
+
+    increaseClickCount() {
+        this.setState({clickCount: this.state.clickCount + 1});
     }
 
     render() {
@@ -56,7 +61,9 @@ class Home extends Component {
                                     }}
                                 >
                                     <div className="library-card-item">
-                                        <Fade bottom when={this.state.clickCount > 0}>
+                                        <Fade bottom when={this.state.clickCount > 0} onReveal={() => {
+                                            setTimeout(this.increaseClickCount, 400);
+                                        }}>
                                             <LibraryCard
                                                 name="Nginx"
                                                 avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_21.png"
@@ -65,7 +72,9 @@ class Home extends Component {
                                         </Fade>
                                     </div>
                                     <div className="library-card-item">
-                                        <Fade bottom when={this.state.clickCount > 2}>
+                                        <Fade bottom when={this.state.clickCount > 2} onReveal={() => {
+                                            setTimeout(this.increaseClickCount, 400);
+                                        }}>
                                             <LibraryCard
                                                 name="Amazon Aurora"
                                                 avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_22.png"
@@ -84,7 +93,9 @@ class Home extends Component {
                                     </div>
                                 </div>
                                 <div ref={this.demo} className="architecture-demo">
-                                    <Fade>
+                                    <Fade onReveal={() => {
+                                        setTimeout(this.increaseClickCount, 400);
+                                    }}>
                                         <Lottie
                                             options={{
                                                 loop: true,
@@ -104,7 +115,9 @@ class Home extends Component {
                                     }}
                                 >
                                     <div className="library-card-item">
-                                        <Fade bottom when={this.state.clickCount > 1}>
+                                        <Fade bottom when={this.state.clickCount > 1} onReveal={() => {
+                                            setTimeout(this.increaseClickCount, 400);
+                                        }}>
                                             <LibraryCard
                                                 name="Express.js"
                                                 avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_9.png"
@@ -113,7 +126,9 @@ class Home extends Component {
                                         </Fade>
                                     </div>
                                     <div className="library-card-item">
-                                        <Fade bottom when={this.state.clickCount > 3}>
+                                        <Fade bottom when={this.state.clickCount > 3} onReveal={() => {
+                                            setTimeout(this.increaseClickCount, 400);
+                                        }}>
                                             <LibraryCard
                                                 name="Kafka"
                                                 avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_20.png"
@@ -122,7 +137,9 @@ class Home extends Component {
                                         </Fade>
                                     </div>
                                     <div className="library-card-item">
-                                        <Fade bottom when={this.state.clickCount > 4}>
+                                        <Fade bottom when={this.state.clickCount > 4} onReveal={() => {
+                                            setTimeout(this.increaseClickCount, 400);
+                                        }}>
                                             <LibraryCard
                                                 name="ElasticSearch"
                                                 avatar="https://s3.us-east-2.amazonaws.com/auramaze-test/architecture/img_7.png"
