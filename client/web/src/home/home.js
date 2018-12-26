@@ -55,10 +55,6 @@ class Home extends Component {
                                 <div
                                     ref={this.column1}
                                     className="library-cards-column-1"
-                                    style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
-                                    onClick={() => {
-                                        this.setState({clickCount: this.state.clickCount + 1});
-                                    }}
                                 >
                                     <div className="library-card-item">
                                         <Fade bottom when={this.state.clickCount > 0} onReveal={() => {
@@ -109,10 +105,6 @@ class Home extends Component {
                                 <div
                                     ref={this.column2}
                                     className="library-cards-column-2"
-                                    style={{cursor: this.state.clickCount < 5 ? 'pointer' : 'default'}}
-                                    onClick={() => {
-                                        this.setState({clickCount: this.state.clickCount + 1});
-                                    }}
                                 >
                                     <div className="library-card-item">
                                         <Fade bottom when={this.state.clickCount > 1} onReveal={() => {
