@@ -4,6 +4,10 @@
 
 > Smart audio guide for Art Museums
 
+[<img src="https://github.com/auramaze/auramaze/blob/master/client/web/src/static/AppStore.svg" height="50">](https://itunes.apple.com/us/app/auramaze/id1445348108?ls=1&mt=8)
+&nbsp;&nbsp;
+[<img src="https://github.com/auramaze/auramaze/blob/master/client/web/src/static/GooglePlay.svg" height="50">](https://play.google.com/store/apps/details?id=org.auramaze.auramaze&hl=en)
+
 ## Getting Started
 
 ```
