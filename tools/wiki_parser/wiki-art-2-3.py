@@ -15,7 +15,7 @@ from unidecode import unidecode
 
 prev = 2
 next = 3
-index = 14
+index = 10
 
 
 def get_new_artist_url(artist_url):
@@ -47,7 +47,7 @@ def get_new_art_url(artist_url, art_url):
     return new_art_url
 
 
-meta_dir = '/Users/zianke/Google Drive/University of Michigan/EECS 441/wikiart/meta'
+meta_dir = '/Users/youdymoo/Documents/UM/Fall-2018/EECS-441/test/meta'
 art_dict = {}
 
 artists = json.load(open(os.path.join(meta_dir, 'artists.json')))
@@ -61,6 +61,9 @@ for artist in artists:
 
 arts = json.load(open('wiki-art_{}-{}.json'.format(index, prev)))
 for art in arts:
-    art['image_url'] = art_dict[art['username']]
+    try:
+        art['image_url'] = art_dict[art['username']]
+    except Exception as e:
+        print(art['username'])
 
 json.dump(arts, open('wiki-art_{}-{}.json'.format(index, next), 'w+'), indent=4)

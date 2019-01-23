@@ -5,7 +5,7 @@ import json
 
 prev = 3
 next = 4
-index = 14
+index = 10
 
 try:
     fault = json.load(open('wiki-art_{}-{}.4.json'.format(index, prev)))

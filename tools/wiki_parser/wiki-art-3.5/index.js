@@ -4,7 +4,7 @@ function satisfy_variants(art) {
 
 $(document).ready(function () {
     console.log("ready!");
-    $.getJSON("http://127.0.0.1:3000/wiki-art_2-3.json", function (data) {
+    $.getJSON("http://127.0.0.1:3000/wiki-art_10-3.json", function (data) {
         var items = [];
         const status = {};
 

@@ -13,7 +13,7 @@ from unidecode import unidecode
 
 prev = 0
 next = 1
-index = 14
+index = 10
 
 def get_new_artist_url(artist_url):
     if artist_url == '':
