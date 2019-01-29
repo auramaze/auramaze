@@ -1347,148 +1347,196 @@ describe('Test api', function () {
     describe('POST api', () => {
         describe('POST introduction to art', () => {
             it('should post introdcution to art', done => {
-                request(app).post('/v1/art/10000003/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid id', done => {
-                request(app).post('/v1/art/artid/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/artid/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid introdcution', done => {
-                request(app).post('/v1/art/10000003/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report no content', done => {
-                request(app).post('/v1/art/10000003/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid introduction content', done => {
-                request(app).post('/v1/art/10000003/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': 'this is not a json'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': 'this is not a json'
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('GET introduction to art', () => {
             it('should not get invalid introdcution to art', done => {
-                let text_id;
-                request(app).post('/v1/art/10000003/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        text_id = parseInt(res.body.id);
-                    })
-                    .end(() => {
-                        request(app).get('/v1/art/10000003/introduction')
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    let text_id;
+                    request(app).post('/v1/art/10000003/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Ginevra de\' Benci is a portrait painting by Leonardo da Vinci of the 15th-century Florentine aristocrat Ginevra de\' Benci (born c. 1458). The oil-on-wood portrait was acquired by the National Gallery of Art in Washington, D.C. in 1967. The sum of US$5 million—an absolute record price at the time—came from the Ailsa Mellon Bruce Fund and was paid to the Princely House of Liechtenstein. It is the only painting by Leonardo on public view in the Americas.',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            text_id = parseInt(res.body.id);
+                        })
+                        .end(() => {
+                            request(app).get('/v1/art/10000003/introduction')
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
+                                })
+                                .end(done);
+                        });
+                });
             });
             it('should accept username', done => {
                 request(app).get('/v1/art/artid/introduction')
@@ -1503,283 +1551,379 @@ describe('Test api', function () {
 
         describe('POST introduction to artizen', () => {
             it('should post introdcution to artizen', done => {
-                request(app).post('/v1/artizen/100000011/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid id', done => {
-                request(app).post('/v1/artizen/metmuseum/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/metmuseum/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid introdcution', done => {
-                request(app).post('/v1/artizen/100000011/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: '大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid introduction content', done => {
-                request(app).post('/v1/artizen/100000011/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': 'this is not a json'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': 'this is not a json'
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('GET introduction to artizen', () => {
             it('should not get invalid introdcution to artizen', done => {
-                let text_id;
-                request(app).post('/v1/artizen/100000011/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': JSON.stringify('大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。')
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        text_id = parseInt(res.body.id);
-                    })
-                    .end(() => {
-                        request(app).get('/v1/artizen/100000011/introduction')
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    let text_id;
+                    request(app).post('/v1/artizen/100000011/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': JSON.stringify('大都会艺术博物馆（英语：Metropolitan Museum of Art，昵称The Met）位于美国纽约州纽约市曼哈顿中央公园旁，是世界上最大的、参观人数最多的艺术博物馆之一。[4]主建筑物面积约有8公顷，展出面积有20多公顷。馆藏超过二百万件艺术品[5]，整个博物馆被划分为十七个馆部。[6]主除了主馆外，还有位于曼哈顿上城区修道院博物馆的第二分馆。那里主要展出中世纪的艺术品。')
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            text_id = parseInt(res.body.id);
+                        })
+                        .end(() => {
+                            request(app).get('/v1/artizen/100000011/introduction')
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(!res.body.data.map(item => parseInt(item.id)).includes(text_id));
+                                })
+                                .end(done);
+                        });
+                });
             });
             it('should accept username', done => {
-                request(app).get('/v1/artizen/artizenid/introduction')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.data.length === 0);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).get('/v1/artizen/artizenid/introduction')
+                        .set({Authorization: `Bearer ${token}`})
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.data.length === 0);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('POST review of art', () => {
             it('should post review of art', done => {
-                request(app).post('/v1/art/10000003/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Ginevra de\' Benci',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Ginevra de\' Benci',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should post rating of art', done => {
-                request(app).post('/v1/art/10000003/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should post review of art with rating', done => {
-                request(app).post('/v1/art/10000003/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Ginevra de\' Benci',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Ginevra de\' Benci',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid id', done => {
-                request(app).post('/v1/art/artid/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Ginevra de\' Benci',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/artid/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Ginevra de\' Benci',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid review content', done => {
-                request(app).post('/v1/art/10000003/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': 'this is not a json'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/art/10000003/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': 'this is not a json'
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('GET review of art', () => {
             it('should get review of art', done => {
-                let text_id;
-                request(app).post('/v1/art/10000003/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Ginevra de\' Benci',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        text_id = parseInt(res.body.id);
-                    })
-                    .end(() => {
-                        request(app).get('/v1/art/10000003/review')
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.art_id)).includes(10000003));
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    let text_id;
+                    request(app).post('/v1/art/10000003/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Ginevra de\' Benci',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            text_id = parseInt(res.body.id);
+                        })
+                        .end(() => {
+                            request(app).get('/v1/art/10000003/review')
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.art_id)).includes(10000003));
+                                })
+                                .end(done);
+                        });
+                });
             });
             it('should accept usernmae', done => {
                 request(app).get('/v1/art/artid/review')
@@ -1794,152 +1938,200 @@ describe('Test api', function () {
 
         describe('POST review of artizen', () => {
             it('should post review of artizen', done => {
-                request(app).post('/v1/artizen/100000011/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Metropolitan Museum of Art',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Metropolitan Museum of Art',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should post rating of artizen', done => {
-                request(app).post('/v1/artizen/100000011/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should post review of artizen with rating', done => {
-                request(app).post('/v1/artizen/100000011/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Metropolitan Museum of Art',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.id.toString().match(/^\d{10}$/));
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Metropolitan Museum of Art',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.id.toString().match(/^\d{10}$/));
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid id', done => {
-                request(app).post('/v1/artizen/metmuseum/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Metropolitan Museum of Art',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/metmuseum/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Metropolitan Museum of Art',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
             it('should report invalid review content', done => {
-                request(app).post('/v1/artizen/100000011/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 5,
-                        'content': 'this is not a json'
-                    })
-                    .expect(400)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        assert(res.body.errors);
-                    })
-                    .end(done);
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    request(app).post('/v1/artizen/100000011/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 5,
+                            'content': 'this is not a json'
+                        })
+                        .expect(400)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            assert(res.body.errors);
+                        })
+                        .end(done);
+                });
             });
         });
 
         describe('GET review of artizen', () => {
             it('should get review of artizen', done => {
-                let text_id;
-                request(app).post('/v1/artizen/100000011/review')
-                    .set({Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMjQwNzM2LCJleHAiOjE1NDcxNjE1NzAsImlhdCI6MTU0MTk3NzU3MH0.8BkZiRc4PprcCCvMF0Ymlchs_qhsqqvNzcwPg6JpHu0'})
-                    .send({
-                        'author_id': '100240736',
-                        'rating': 3,
-                        'content': {
-                            entityMap: {},
-                            blocks:
-                                [{
-                                    key: '9dib2',
-                                    inlineStyleRanges: [],
-                                    entityRanges: [],
-                                    data: {},
-                                    type: 'unstyled',
-                                    text: 'Review of Metropolitan Museum of Art',
-                                    depth: 0
-                                }]
-                        }
-                    })
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .expect(res => {
-                        text_id = parseInt(res.body.id);
-                    })
-                    .end(() => {
-                        request(app).get('/v1/artizen/100000011/review')
-                            .expect(200)
-                            .expect('Content-Type', /json/)
-                            .expect(res => {
-                                assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.artizen_id)).includes(100000011));
-                            })
-                            .end(done);
-                    });
+                let token;
+                request(app).post('/v1/auth/login').send({
+                    'id': 'admin',
+                    'password': process.env.AWS_RDS_PASSWORD
+                }).expect(res => {
+                    token = res.body.token;
+                }).end(() => {
+                    let text_id;
+                    request(app).post('/v1/artizen/100000011/review')
+                        .set({Authorization: `Bearer ${token}`})
+                        .send({
+                            'author_id': '100240736',
+                            'rating': 3,
+                            'content': {
+                                entityMap: {},
+                                blocks:
+                                    [{
+                                        key: '9dib2',
+                                        inlineStyleRanges: [],
+                                        entityRanges: [],
+                                        data: {},
+                                        type: 'unstyled',
+                                        text: 'Review of Metropolitan Museum of Art',
+                                        depth: 0
+                                    }]
+                            }
+                        })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(res => {
+                            text_id = parseInt(res.body.id);
+                        })
+                        .end(() => {
+                            request(app).get('/v1/artizen/100000011/review')
+                                .expect(200)
+                                .expect('Content-Type', /json/)
+                                .expect(res => {
+                                    assert(res.body.data.map(item => parseInt(item.id)).includes(text_id) && res.body.data.map(item => parseInt(item.artizen_id)).includes(100000011));
+                                })
+                                .end(done);
+                        });
+                });
             });
             it('should accept username', done => {
                 request(app).get('/v1/artizen/artizenid/review')
