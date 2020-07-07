@@ -10,7 +10,7 @@
     "draft-js": "^0.10.5",
     "i": "^0.3.6",
     "lodash.after": "^4.0.4",
-    "npm": "^6.4.1",
+    "npm": "^6.14.6",
     "query-string": "^5.1.1",
     "react": "^16.5.2",
     "react-cookie": "^3.0.4",
