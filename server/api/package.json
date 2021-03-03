@@ -34,7 +34,7 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
-    "pug": "2.0.0-beta11",
+    "pug": "3.0.1",
     "request": "^2.88.0",
     "socket.io": "^2.1.1",
     "validator": "^10.8.0"
