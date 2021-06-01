@@ -8,4 +8,4 @@ python-Levenshtein==0.12.0
 requests==2.20.1
 tqdm==4.28.1
 Unidecode==1.0.23
-urllib3==1.24.1
+urllib3==1.26.5
