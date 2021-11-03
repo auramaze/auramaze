@@ -37,7 +37,7 @@
     "pug": "2.0.0-beta11",
     "request": "^2.88.0",
     "socket.io": "^2.1.1",
-    "validator": "^10.8.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.2",
