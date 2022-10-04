@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "draft-js": "^0.10.5",
-    "expo": "^31.0.1",
+    "expo": "^46.0.14",
     "immutable": "^4.0.0-rc.12",
     "moment": "^2.22.2",
     "react": "16.5.0",
