@@ -36,7 +36,7 @@
     "passport-local": "^1.0.0",
     "pug": "2.0.0-beta11",
     "request": "^2.88.0",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.5.0",
     "validator": "^10.8.0"
   },
   "devDependencies": {
